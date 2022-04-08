@@ -1,0 +1,15 @@
+### OPS WEBSOCKET SAMPLE for JAVA ##############################
+# 실행파일 : ops_ws_sample.jar (runnable JAR file)
+# 실행환경 : Java SE Development 17.0.1 설치 (Windows x64 Installer)
+https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
+
+# jdk 는 설치 후 환경변수를 등록해야 한다.
+1. 시스템 변수에 다음을 추가한다.
+> 변수명 : JAVA_HOME
+> 값 : 설치경로 jdk path
+
+2. 환경변수 추가
+
+
+# 실행방법
+> java -jar ops_ws_sample.jar
