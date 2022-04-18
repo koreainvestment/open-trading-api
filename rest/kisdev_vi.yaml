@@ -1,0 +1,20 @@
+my_app: ""
+my_sec: ""
+paper_app: ""
+paper_sec: ""
+my_acct_stock: ""
+my_acct_future: ""
+my_paper_stock: ""
+my_paper_future: ""
+
+
+# User Agent
+my_agent: "'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36"
+
+
+
+#domain info
+prod: "https://openapi.koreainvestment.com:9443" #서비스
+ops: "ws://ops.koreainvestment.com:21000" #웹소켓
+vps: "https://openapivts.koreainvestment.com:29443" #모의투자서비스
+vops: "ws://ops.koreainvestment.com:31000" #모의투자웹소켓
