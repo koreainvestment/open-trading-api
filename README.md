@@ -1,4 +1,13 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header&text=한국투자증권+KIS+Developers&fontSize=50)
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=header)
+<p align='center'> 한국투자증권 KIS Developers </p>
+<p align='center'>
+  <a href="https://apiportal.koreainvestment.com/intro">
+    <img src="https://img.shields.io/badge/IDEA%20ISSUE%20-%23F7DF1E.svg?&style=for-the-badge&&logoColor=white"/>
+  </a>
+  <a href="#apiList">
+    <img src="https://img.shields.io/badge/DEMO%20-%234FC08D.svg?&style=for-the-badge&&logoColor=white"/>
+  </a>
+</p>
 
 ## 1. KIS Developers 개발자 센터 소개
 [KIS Developers](https://apiportal.koreainvestment.com/)는 한국투자증권의 트레이딩 서비스를 오픈API로 제공하여 개발자들이 다양한 금융서비스를 만들 수 있도록 지원하는 개발자 센터입니다. KIS Developers에서는 개발자의 금융 서비스 개발을 지원하기 위해 API 문서 메뉴 내 API에 대한 상세한 설명과 예제를 제공합니다. 전문 개발자가 아닌 일반인들도 쉽게 금융 서비스를 만들 수 있습니다.
@@ -37,7 +46,7 @@ KIS Developers 서비스는 한국투자증권 홈페이지에서 신청하실 �
 ![enter image description here](https://wikidocs.net/images/page/159301/%EC%84%9C%EB%B9%84%EC%8A%A4%EC%8B%A0%EC%B2%AD%EC%99%84%EB%A3%8C.JPG)
 신청한 계좌의 App Key와 App Secret을 확인합니다. 두 암호키를 통해 계좌에 접근할 수 있는 토큰을 발급받을 수 있어, 타인에게 유출을 금하며 관리에 유의해야합니다. 유출시 즉시 홈페이지에서 재발급 하시기 바랍니다.
 
-## 3. API 제공 목록
+## 3. API 제공 목록 <a id="apiList">
 
 |구분 |API명 |모의투자 제공 여부|
 |--|--|--|
