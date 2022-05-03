@@ -268,7 +268,7 @@ def _url_fetch(api_url, ptr_id, params, appendHeaders=None, postFlag=False, hash
 # Output: DataFrame (Option) rtCashFlag=True 면 예수금 총액을 반환하게 된다
 
 def get_acct_balance(rtCashFlag=False):
-    url = '/uapi/domestic-stock/v1/trading/inquire-psbl-order'
+    url = '/uapi/domestic-stock/v1/trading/inquire-balance'
     tr_id = "TTTC8434R"
 
     params = {
