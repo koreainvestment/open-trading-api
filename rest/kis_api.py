@@ -268,7 +268,7 @@ def _url_fetch(api_url, ptr_id, params, appendHeaders=None, postFlag=False, hash
 # Output: DataFrame (Option) rtCashFlag=True 면 예수금 총액을 반환하게 된다
 
 def get_acct_balance(rtCashFlag=False):
-    url = '/uapi/domestic-stock/v1/trading/inquire-psbl-order'
+    url = '/uapi/domestic-stock/v1/trading/inquire-balance'
     tr_id = "TTTC8434R"
 
     params = {
@@ -290,8 +290,9 @@ def get_acct_balance(rtCashFlag=False):
         r2 = t1.getBody().output2
         return int(r2[0]['dnca_tot_amt'])
     
-    if t1.isOK():  #body 의 rt_cd 가 0 인 경우만 성공
-        tdf = pd.DataFrame(t1.getBody().output1)
+    output1 = t1.getBody().output1
+    if t1.isOK() and output1:  #body 의 rt_cd 가 0 인 경우만 성공
+        tdf = pd.DataFrame(output1)
         tdf.set_index('pdno', inplace=True)  
         cf1 = ['prdt_name','hldg_qty', 'ord_psbl_qty', 'pchs_avg_pric', 'evlu_pfls_rt', 'prpr', 'bfdy_cprs_icdc', 'fltt_rt']
         cf2 = ['종목명', '보유수량', '매도가능수량', '매입단가', '수익율', '현재가' ,'전일대비', '등락']
