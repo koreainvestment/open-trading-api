@@ -126,7 +126,6 @@ public class PrintOpsData {
 			
 			switch (tr_id)	{
 				case "H0STCNI0":	// 주식체결통보(고객용)
-				case "K0STCNI0":	// 주식체결통보(직원용)
 				case "H0STCNI9":	// 주식체결통보(모의투자)
 					System.out.println("["+tr_id+"]"+"###################################################");
 					stocksigningnotice(mData[3]);
@@ -182,7 +181,6 @@ public class PrintOpsData {
 							System.out.println("주식체결 ["+rt_msg+"] ["+msg+"]");
 							break;
 						case "H0STCNI0":	// 주식체결통보(고객용)
-						case "K0STCNI0":	// 주식체결통보(직원용)
 						case "H0STCNI9":	// 주식체결통보(모의투자)
 							System.out.println("주식체결통보 ["+rt_msg+"] ["+msg+"]");
 							// 체결통보일 경우 복호화를 해야 하므로 key, iv를 저장해서 쓴다.

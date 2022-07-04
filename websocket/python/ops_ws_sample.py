@@ -190,7 +190,7 @@ async def connect():
                     elif data[0] == '1':
                         recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                         trid0 = recvstr[1]
-                        if trid0 == "K0STCNI0" or trid0 == "K0STCNI9" or trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
+                        if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
                             print("#### 주식체결통보 ####")
                             stocksigningnotice(recvstr[3], aes_key, aes_iv)
                             await websocket.send(senddata)
@@ -209,7 +209,7 @@ async def connect():
                         elif rt_cd == '0':  # 정상일 경우 처리
                             print("### RETURN CODE [ %s ] MSG [ %s ]" % (rt_cd, jsonObject["body"]["msg1"]))
                             # 체결통보 처리를 위한 AES256 KEY, IV 처리 단계
-                            if trid == "K0STCNI0" or trid == "K0STCNI9" or trid == "H0STCNI0" or trid == "H0STCNI9":
+                            if trid == "H0STCNI0" or trid == "H0STCNI9":
                                 aes_key = jsonObject["body"]["output"]["key"]
                                 aes_iv = jsonObject["body"]["output"]["iv"]
                                 print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))

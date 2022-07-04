@@ -192,7 +192,7 @@
 			
 			var trid = strArray[1];		// Tr ID 
 			var bodydata = (strArray[3]);	// 수신받은 데이터 중 실시간데이터 부분
-			if (trid == "H0STCNT0" || trid == "K0STCNT0")	{
+			if (trid == "H0STCNT0")	{
 				console.log (bodydata);
 			}
 			
@@ -202,7 +202,7 @@
 					// aes256Decode function 을 사용해 key, iv, 암호화데이터를 넘겨 decode를 한다
 					var decodedata = aes256Decode (encryptkey, iv, bodydata);
 				
-					if (trid == "K0STCNI0" || trid == "K0STCNI9" ||trid == "H0STCNI0" || trid == "H0STCNI9")	// 주식체결통보, 모의투자체결통보 step 
+					if (trid == "H0STCNI0" || trid == "H0STCNI9")	// 주식체결통보, 모의투자체결통보 step 
 					{
 						var i=0;
 						var objectlist="고 객 I D        ,계 좌 번 호      ,주 문 번 호      ,원주문 번 호     ,매도매수 구분    ,정 정 구 분      ,주 문 종 류      ,주 문 조 건      ,주식단축종목코드 ,체 결 수 량      ,체 결 단 가      ,주식체결 시간    ,거 부 여 부      ,체 결 여 부      ,접 수 여 부      ,지 점 번 호      ,주 문 수 량      ,계  좌  명       ,체결  종목명     ,신 용 구 분      ,신용 대출일자    ,체결종목명40     ,주 문 가 격      ";
@@ -276,7 +276,7 @@
 						log("주식매매 구분코드     ["+strResult[58]+"]", screenflag); 
 
 					}
-					else if (trid == "H0STCNT0" || trid == "K0STCNT0")	{	//주식체결가  
+					else if (trid == "H0STCNT0")	{	//주식체결가  
 						// 주식 체결가 값이름
 						var objectlist = "유가증권단축종목코드       ,주식체결시간               ,주식현재가                 ,전일대비부호               ,전일대비                   ,전일대비율                 ,가중평균주식가격           ,주식시가                   ,주식최고가                 ,주식최저가                 ,매도호가1                  ,매수호가1                  ,체결거래량                 ,누적거래량                 ,누적거래대금               ,매도체결건수               ,매수체결건수               ,순매수 체결건수            ,체결강도                   ,총 매도수량                ,총 매수수량                ,체결구분                   ,매수비율                   ,전일 거래량대비등락율      ,시가시간                   ,시가대비 구분              ,시가대비                   ,최고가 시간                ,고가대비구분               ,고가대비                   ,최저가시간                 ,저가대비구분               ,저가대비                   ,영업일자                   ,신 장운영 구분코드         ,거래정지 여부              ,매도호가잔량               ,매수호가잔량               ,총 매도호가잔량            ,총 매수호가잔량            ,거래량 회전율              ,전일 동시간 누적거래량     ,전일 동시간 누적거래량 비율,시간구분코드               ,임의종료구분코드           ,정적VI발동기준가           ";
 						var strResult = bodydata.split('^');		// 주식체결가 구분값으로 분할해서 array 처리
@@ -344,7 +344,7 @@
 			}
 			
 			// key, iv set step, 들어온 데이터가 parsing 후 trid를 참조하여 전달받은 keyt, iv 값을 사용하기 위한처리, 체결통보의 경우에만 암호화 처리를 하므로 해당 trid만 처리하도록 한다.
-			if (trid == 'K0STCNI0' || trid == 'H0STCNI0' || trid == 'H0STCNI9')
+			if (trid == 'H0STCNI0' || trid == 'H0STCNI9')
 			{
 				var rt_cd = obj.body.rt_cd;
 				if (rt_cd == '1')	{
@@ -379,7 +379,7 @@
 				w.send(result);
 				log3 ("[SEND] > "+"["+result.length+"] "+result);								
 				pingpong+=1;
-			}	else if (trid == "H0STCNT0" || trid == "K0STCNT0")	{	//성공실패 메세지 처리를 한다.
+			}	else if (trid == "H0STCNT0")	{	//성공실패 메세지 처리를 한다.
 				var rt_cd = obj.body.rt_cd;
 				if (obj.body.msg1.includes("UNSUBSCRIBE"))	// 실패일경우 msg영역에 해당 메세지가 존재하므로 구분
 				{
