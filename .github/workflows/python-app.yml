@@ -32,8 +32,8 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         python3 ./preset_files.py
         
-    - uses: stefanzweifel/git-auto-commit-action@v4
     - name: stock-info-up-to-date
+      uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: stock-info-up-to-date
     
