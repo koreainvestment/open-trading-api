@@ -5,16 +5,12 @@ import os
 import pandas as pd
 
 
-def kospi_master_download(base_dir, verbose=False):
-    cwd = os.getcwd()
-    if (verbose): print(f"current directory is {cwd}")
+def kospi_master_download():
     ssl._create_default_https_context = ssl._create_unverified_context
 
     urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip",
-                               base_dir + "\\kospi_code.zip")
+                               "kospi_code.zip")
 
-    os.chdir(base_dir)
-    if (verbose): print(f"change directory to {base_dir}")
     kospi_zip = zipfile.ZipFile('kospi_code.zip')
     kospi_zip.extractall()
 
@@ -24,15 +20,15 @@ def kospi_master_download(base_dir, verbose=False):
         os.remove("kospi_code.zip")
 
 
-def get_kospi_master_dataframe(base_dir):
-    file_name = base_dir + "\\kospi_code.mst"
-    tmp_fil1 = base_dir + "\\kospi_code_part1.tmp"
-    tmp_fil2 = base_dir + "\\kospi_code_part2.tmp"
+def get_kospi_master_dataframe():
+    file_name = "kospi_code.mst"
+    tmp_fil1 = "kospi_code_part1.tmp"
+    tmp_fil2 = "kospi_code_part2.tmp"
 
     wf1 = open(tmp_fil1, mode="w")
     wf2 = open(tmp_fil2, mode="w")
 
-    with open(file_name, mode="r", encoding="cp949") as f:
+    with open(file_name, mode="r", encoding="EUC-KR") as f:
         for row in f:
             rf1 = row[0:len(row) - 228]
             rf1_1 = rf1[0:9].rstrip()
@@ -46,7 +42,7 @@ def get_kospi_master_dataframe(base_dir):
     wf2.close()
 
     part1_columns = ['단축코드', '표준코드', '한글명']
-    df1 = pd.read_csv(tmp_fil1, header=None, names=part1_columns, encoding='cp949')
+    df1 = pd.read_csv(tmp_fil1, header=None, names=part1_columns, encoding='utf-8')
 
     field_specs = [2, 1, 4, 4, 4,
                    1, 1, 1, 1, 1,
@@ -93,16 +89,5 @@ def get_kospi_master_dataframe(base_dir):
     return df
 
 
-########### 작업 폴더 생성
-my_dir = "d:\\pysam"
-# 작업 폴더 없으면 생성
-if not os.path.exists(my_dir):
-    os.mkdir(my_dir)
-
-kospi_master_download(my_dir)
-df = get_kospi_master_dataframe(my_dir)
-
-#df3 = df[df['KRX증권'] == 'Y']
-df3 = df
-print(df3[['단축코드', '한글명', 'KRX', 'KRX증권', '기준가', '증거금비율', '상장일자', 'ROE']])
-
+kospi_master_download()
+df = get_kospi_master_dataframe()
