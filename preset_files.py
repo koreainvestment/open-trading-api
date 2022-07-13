@@ -11,7 +11,7 @@ if not os.path.exists("pysam"):
 os.chdir("pysam")
 
 # file write
-with open(".ignore", mode="w", encoding="UTF-8") as f:
+with open(".gitignore", mode="w", encoding="UTF-8") as f:
     f.write("*")
 
 from stocks_info import kis_kospi_code_mst, sector_code, theme_code
