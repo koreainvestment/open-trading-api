@@ -36,7 +36,7 @@ def get_kospi_master_dataframe(base_dir):
         for row in f:
             rf1 = row[0:len(row) - 228]
             rf1_1 = rf1[0:9].rstrip()
-            rf1_2 = rf1[10:21].rstrip()
+            rf1_2 = rf1[9:21].rstrip()
             rf1_3 = rf1[21:].strip()
             wf1.write(rf1_1 + ',' + rf1_2 + ',' + rf1_3 + '\n')
             rf2 = row[-228:]
