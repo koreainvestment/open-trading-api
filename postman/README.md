@@ -6,7 +6,7 @@
 [포스트맨(Postman)](https://www.postman.com/)은 개발자들이 API를 디자인하고 빌드하고 테스트하고 반복하기 위한 API 플랫폼입니다. 2022년 4월 기준으로 포스트맨의 등록 사용자는 20,000,000명 이상, 개방 API 수는 75,000개로 보고되었으며, 세계 최대의 공개 API 허브입니다. (출처 : [위키백과-포스트맨](https://ko.wikipedia.org/wiki/포스트맨_(소프트웨어)))
 
 
-## 2. 사전 준비 사항
+## 2. Postman 활용 사전 준비 사항
 1.  [한국투자증권 홈페이지](https://securities.koreainvestment.com/main/A_CO_10004.jsp) 혹은 [가까운 영업점](https://securities.koreainvestment.com/main/customer/guide/branch/branch.jsp)에서 계좌 개설(모의계좌 or 실전계좌) → **계좌번호 준비**
 2.  [KIS Developers 홈페이지](https://apiportal.koreainvestment.com/)에서 API신청 - 사용할 계좌번호로 API신청 → **APP KEY & APP SECRET 준비**
 3.  [Postman](https://www.postman.com/downloads/) 설치
