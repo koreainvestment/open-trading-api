@@ -32,8 +32,8 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 #### 3.2.1. 모의Env의 경우 아래의 값들을 각각 채워 넣어줍니다.
 |순번 |환경변수명 |값(Initial Value, Current Value) |
 |--|--|--|
-|1|CANO|계좌번호(주식)|
-|2|CANO_T|계좌번호(선물옵션)|
+|1|CANO|본인의 모의계좌번호(주식)|
+|2|CANO_T|본인의 모의계좌번호(선물옵션)|
 |3|VTS_APPKEY|홈페이지에서 발급 받은 계좌번호(주식) APP KEY|
 |4|VTS_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|
 |5|VTT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|
@@ -43,8 +43,8 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 #### 3.2.2. 실전Env의 경우 아래의 값들을 각각 채워 넣어줍니다.
 |순번 |환경변수명 |값(Initial Value, Current Value) |
 |--|--|--|
-|1|CANO_REAL|계좌번호(주식)|
-|2|CANO_REAL_T|계좌번호(선물옵션)|
+|1|CANO_REAL|본인의 실전계좌번호(주식)|
+|2|CANO_REAL_T|본인의 실전계좌번호(선물옵션)|
 |3|PROD_APPKEY|홈페이지에서 발급 받은 계좌번호(주식) APP KEY|
 |4|PROD_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|
 |5|PROT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|
