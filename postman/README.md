@@ -5,10 +5,12 @@
 
 [포스트맨(Postman)](https://www.postman.com/)은 개발자들이 API를 디자인하고 빌드하고 테스트하고 반복하기 위한 API 플랫폼입니다. 2022년 4월 기준으로 포스트맨의 등록 사용자는 20,000,000명 이상, 개방 API 수는 75,000개로 보고되었으며, 이는 세계 최대의 공개 API 허브를 구성한 것입니다. (출처 : [위키백과-포스트맨](https://ko.wikipedia.org/wiki/포스트맨_(소프트웨어)))
 
+
 ## 2. 사전 준비 사항
 1.  [한국투자증권 홈페이지](https://securities.koreainvestment.com/main/A_CO_10004.jsp) 혹은 [가까운 영업점](https://securities.koreainvestment.com/main/customer/guide/branch/branch.jsp)에서 계좌 개설(모의계좌 or 실전계좌) → **계좌번호 준비**
 2.  [KIS Developers 홈페이지](https://apiportal.koreainvestment.com/)에서 API신청 - 사용할 계좌번호로 API신청 → **APP KEY & APP SECRET 준비**
 3.  [Postman](https://www.postman.com/downloads/) 설치
+
 
 ## 3. Postman을 활용한 API 호출 방법
 ### 3.1. Postman 실행 및 json 파일 Import
@@ -34,6 +36,7 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 |5|VTT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|
 |6|VTT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|
 
+
 #### 3.2.2. 실전Env의 경우 아래의 값들을 각각 채워 넣어줍니다.
 |순번 |환경변수명 |값 |
 |--|--|--|
@@ -44,13 +47,16 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 |5|PROT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|
 |6|PROT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|
 
+
 ### 3.3. 환경변수 선택
 모의계좌를 활용하여 API테스트를 하실 경우 왼쪽 바의 Collections에서 모의투자(모의Env)를, 실전계좌를 활용하여 API테스트를 하실 경우 실전투자(실전Env)를 선택합니다.
+
 
 ### 3.4. API 호출
 호출하고 싶은 API를 각 폴더에서 찾아 header값, body값을 변경하시면서 사용하시면 됩니다.
 * 각 API 이름 앞에 V는 모의계좌를, J는 실전계좌를, T는 선물옵션계좌(모의/실전 공통)를 의미합니다.
 * GET 요청의 경우, 계좌번호 환경변수가 불러와져 그대로 사용하시면 되지만, POST 요청의 경우 계좌번호를 BODY값에 직접 입력하셔야 하는 점 유의 부탁드립니다.
+
 
 ## 3.5. Postman 샘플코드 목록
 
