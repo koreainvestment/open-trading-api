@@ -14,7 +14,7 @@
 
 ## 3. Postman을 활용한 API 호출 방법
 ### 3.1. Postman 실행 및 json 파일 Import
-Postman 실행 후 아래 4개의 json 파일들을 Import 해주세요. Import하는 방법은 Postman 좌측 상단의 Import 버튼을 누르시고 File 탭에 파일을 끌어다 놓아주세요. 파일이 정상적으로 끌어와지면 아래 이미지와 같이 파일들이 식별되며, Import 버튼을 누르시면 됩니다.
+Postman 실행 후 아래 4개의 json 파일들을 Import 해주세요. Import하는 방법은 Postman 좌측 상단의 Import 버튼을 누르시고 File 탭에 파일을 끌어다 놓아주세요. 파일이 정상적으로 끌어와지면 아래 이미지와 같이 파일들이 식별되며, 이후 Import 버튼을 누르시면 됩니다.
 * 모의계좌만을 사용하시는 경우 1,2번 파일을, 실전계좌만을 사용하시는 경우 3,4번 파일만 Import하셔도 됩니다.
 
 |순번 |파일명 |파일 상세 |
