@@ -37,9 +37,9 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 |1|CANO|본인의 모의계좌 종합계좌번호 8자리(주식)|ex.50012345|
 |2|CANO_T|본인의 모의계좌 종합계좌번호 8자리(선물옵션)|ex.60012345|
 |3|VTS_APPKEY|홈페이지에서 발급 받은 계좌번호(주식) APP KEY|ex.PSabcmEJH4U9dfewefwJdfsa4P5qewrPdf4n|
-|4|VTS_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|ex.FoB6uLRLw5o0OzxsdfkejklskjkrocmvMdlkuIysNO5OGp8QAlkHuFg9Ya0=|
+|4|VTS_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|ex.FoB6uLRLw5o0Ozxsdfkejklskjkr...MdlkuIysNO5OGp8QAlkHuFg9Ya0=|
 |5|VTT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|ex.PSabcmEJH4U9dfewefwJdfsa4P5qewrPdf4n|
-|6|VTT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|ex.FoB6uLRLw5o0OzxsdfkejklskjkrocmvMdlkuIysNO5OGp8QAlkHuFg9Ya0=|
+|6|VTT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|ex.FoB6uLRLw5o0Ozxsdfkejklskjkr...MdlkuIysNO5OGp8QAlkHuFg9Ya0=|
 
 #### 3.2.2. 실전Env의 경우 아래의 값들을 각각 채워 넣어줍니다.
 |순번 |환경변수명 |값(Initial Value, Current Value) |값 예시 |
@@ -47,9 +47,9 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 |1|CANO_REAL|본인의 실전계좌 종합계좌번호(주식)|ex.50012345|
 |2|CANO_REAL_T|본인의 실전계좌 종합계좌번호(선물옵션)|ex.60012345|
 |3|PROD_APPKEY|홈페이지에서 발급 받은 계좌번호(주식) APP KEY|ex.PSabcmEJH4U9dfewefwJdfsa4P5qewrPdf4n|
-|4|PROD_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|ex.FoB6uLRLw5o0OzxsdfkejklskjkrocmvMdlkuIysNO5OGp8QAlkHuFg9Ya0=|
+|4|PROD_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|ex.FoB6uLRLw5o0Ozxsdfkejklskjkr...MdlkuIysNO5OGp8QAlkHuFg9Ya0=|
 |5|PROT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|ex.PSabcmEJH4U9dfewefwJdfsa4P5qewrPdf4n|
-|6|PROT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|ex.FoB6uLRLw5o0OzxsdfkejklskjkrocmvMdlkuIysNO5OGp8QAlkHuFg9Ya0=|
+|6|PROT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|ex.FoB6uLRLw5o0Ozxsdfkejklskjkr...MdlkuIysNO5OGp8QAlkHuFg9Ya0=|
 
 
 ### 3.3. 환경변수 선택
