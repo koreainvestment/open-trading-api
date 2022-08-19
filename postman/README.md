@@ -29,26 +29,28 @@ Postman 실행 후 아래 4개의 json 파일들을 Import 해주세요. Import�
 ### 3.2. 환경변수 설정
 Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활용하여 API테스트를 하실 경우 왼쪽 바의 Environments의 모의Env를, 실전계좌를 활용하여 API테스트를 하실 경우 실전 Env를 환경변수로 사용합니다. 따라서 사용하실 환경변수 값들을 채워주어야 합니다. 아래 설명대로 값들을 전부 채워 넣어주세요. 값을 채워 넣을 때는 Initial Value, Current Value 모두 값을 넣어주셔야 합니다. (VTS, PROD는 이미 값이 채워져 있으니 수정하지 말아주세요.)
 
+* 아직 다중계좌 지원 전이어서, 실전계좌와 모의계좌 모두 하나의 계좌(주식 or 선물옵션)만 API 신청이 가능합니다. 따라서 API 신청한 계좌번호와 해당 계좌의 APPKEY, APPSECRET 값만 채워주시면 됩니다. 예를 들어, 주식계좌로 API 신청하셨으면 아래 각 표의 1,3,4번만을 채워주시면 되고, 선물옵션계좌로 API신청하셨으면 아래 각 표의 2,5,6번만을 채워주시면 됩니다. (9월 말 다중계좌 오픈 예정, 업데이트 사항 KIS Developers - 공지사항에 업로드 예쩡)
+
 #### 3.2.1. 모의Env의 경우 아래의 값들을 각각 채워 넣어줍니다.
-|순번 |환경변수명 |값(Initial Value, Current Value) |
-|--|--|--|
-|1|CANO|본인의 모의계좌번호(주식)|
-|2|CANO_T|본인의 모의계좌번호(선물옵션)|
-|3|VTS_APPKEY|홈페이지에서 발급 받은 계좌번호(주식) APP KEY|
-|4|VTS_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|
-|5|VTT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|
-|6|VTT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|
+|순번 |환경변수명 |값(Initial Value, Current Value) |값 예시 |
+|--|--|--|--|
+|1|CANO|본인의 모의계좌 종합계좌번호 8자리(주식)|ex. 50012345|
+|2|CANO_T|본인의 모의계좌 종합계좌번호 8자리(선물옵션)|ex. 60012345|
+|3|VTS_APPKEY|홈페이지에서 발급 받은 계좌번호(주식) APP KEY|ex. PSabcmEJH4U9dfewefwJdfsa4P5qewrPdf4n|
+|4|VTS_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|ex. FoB6uLRLw5o0OzxsdfkejklskjkrocmvMdjfkjdkslkwjeajeuoirvbzmxflkdsjfjkm4CQKnJvY8afjkldsjfkdsjflkjlkjelkjaflkawjkdsafsdfiYJeuURppiXk6oo39Ho1Fb60uIysNO5OGp8QAlkHuFg9Ya0=|
+|5|VTT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|ex. PSabcmEJH4U9dfewefwJdfsa4P5qewrPdf4n|
+|6|VTT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|ex. FoB6uLRLw5o0OzxsdfkejklskjkrocmvMdjfkjdkslkwjeajeuoirvbzmxflkdsjfjkm4CQKnJvY8afjkldsjfkdsjflkjlkjelkjaflkawjkdsafsdfiYJeuURppiXk6oo39Ho1Fb60uIysNO5OGp8QAlkHuFg9Ya0=|
 
 
 #### 3.2.2. 실전Env의 경우 아래의 값들을 각각 채워 넣어줍니다.
-|순번 |환경변수명 |값(Initial Value, Current Value) |
-|--|--|--|
-|1|CANO_REAL|본인의 실전계좌번호(주식)|
-|2|CANO_REAL_T|본인의 실전계좌번호(선물옵션)|
-|3|PROD_APPKEY|홈페이지에서 발급 받은 계좌번호(주식) APP KEY|
-|4|PROD_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|
-|5|PROT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|
-|6|PROT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|
+|순번 |환경변수명 |값(Initial Value, Current Value) |값 예시 |
+|--|--|--|--|
+|1|CANO_REAL|본인의 실전계좌 종합계좌번호(주식)|ex. 50012345|
+|2|CANO_REAL_T|본인의 실전계좌 종합계좌번호(선물옵션)|ex. 60012345|
+|3|PROD_APPKEY|홈페이지에서 발급 받은 계좌번호(주식) APP KEY|ex. PSabcmEJH4U9dfewefwJdfsa4P5qewrPdf4n|
+|4|PROD_APPSECRET|홈페이지에서 발급 받은 계좌번호(주식) APP SECRET|ex. FoB6uLRLw5o0OzxsdfkejklskjkrocmvMdjfkjdkslkwjeajeuoirvbzmxflkdsjfjkm4CQKnJvY8afjkldsjfkdsjflkjlkjelkjaflkawjkdsafsdfiYJeuURppiXk6oo39Ho1Fb60uIysNO5OGp8QAlkHuFg9Ya0=|
+|5|PROT_APPKEY|홈페이지에서 발급 받은 계좌번호(선물옵션) APP KEY|ex. PSabcmEJH4U9dfewefwJdfsa4P5qewrPdf4n|
+|6|PROT_APPSECRET|홈페이지에서 발급 받은 계좌번호(선물옵션) APP SECRET|ex. FoB6uLRLw5o0OzxsdfkejklskjkrocmvMdjfkjdkslkwjeajeuoirvbzmxflkdsjfjkm4CQKnJvY8afjkldsjfkdsjflkjlkjelkjaflkawjkdsafsdfiYJeuURppiXk6oo39Ho1Fb60uIysNO5OGp8QAlkHuFg9Ya0=|
 
 
 ### 3.3. 환경변수 선택
