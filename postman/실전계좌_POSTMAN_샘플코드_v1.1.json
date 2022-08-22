@@ -187,7 +187,7 @@
 									"console.log(jsonData)\r",
 									"\r",
 									"if (jsonData) { \r",
-									"    pm.environment.set(\"VTT_TOKEN\", jsonData.access_token); \r",
+									"    pm.environment.set(\"PROT_TOKEN\", jsonData.access_token); \r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -205,7 +205,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"grant_type\": \"client_credentials\",\r\n    \"appkey\": \"{{VTT_APPKEY}}\",\r\n    \"appsecret\": \"{{VTT_APPSECRET}}\"\r\n}",
+							"raw": "{\r\n    \"grant_type\": \"client_credentials\",\r\n    \"appkey\": \"{{PROT_APPKEY}}\",\r\n    \"appsecret\": \"{{PROT_APPSECRET}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -213,9 +213,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{VTS}}/oauth2/tokenP",
+							"raw": "{{PROD}}/oauth2/tokenP",
 							"host": [
-								"{{VTS}}"
+								"{{PROD}}"
 							],
 							"path": [
 								"oauth2",
@@ -249,7 +249,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"appkey\": \"{{VTT_APPKEY}}\",\r\n    \"appsecret\": \"{{VTT_APPSECRET}}\",\r\n    \"token\": \"{{VTT_TOKEN}}\"\r\n}",
+							"raw": "{\r\n    \"appkey\": \"{{PROT_APPKEY}}\",\r\n    \"appsecret\": \"{{PROT_APPSECRET}}\",\r\n    \"token\": \"{{PROT_TOKEN}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -257,9 +257,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{VTS}}/oauth2/revokeP",
+							"raw": "{{PROD}}/oauth2/revokeP",
 							"host": [
-								"{{VTS}}"
+								"{{PROD}}"
 							],
 							"path": [
 								"oauth2",
@@ -290,7 +290,7 @@
 									"console.log(jsonData)\r",
 									"\r",
 									"if (jsonData) { \r",
-									"    pm.environment.set(\"VTT_HASH\", jsonData.HASH); \r",
+									"    pm.environment.set(\"PROT_HASH\", jsonData.HASH); \r",
 									"}"
 								],
 								"type": "text/javascript"
@@ -308,20 +308,20 @@
 							},
 							{
 								"key": "appkey",
-								"value": "{{VTT_APPKEY}}",
+								"value": "{{PROT_APPKEY}}",
 								"type": "text",
 								"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
 							},
 							{
 								"key": "appsecret",
-								"value": "{{VTT_APPSECRET}}",
+								"value": "{{PROT_APPSECRET}}",
 								"type": "text",
 								"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"CANO\": \"{{CANO_T}}\",\r\n\t\"ACNT_PRDT_CD\": \"03\",\r\n\t\"PDNO\": \"071050\",\r\n\t\"ORD_DVSN\": \"01\",\r\n\t\"ORD_QTY\": \"1\",\r\n\t\"ORD_UNPR\": \"0\"\r\n}",
+							"raw": "{\r\n\t\"CANO\": \"{{CANO_REAL_T}}\",\r\n\t\"ACNT_PRDT_CD\": \"03\",\r\n\t\"PDNO\": \"071050\",\r\n\t\"ORD_DVSN\": \"01\",\r\n\t\"ORD_QTY\": \"1\",\r\n\t\"ORD_UNPR\": \"0\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -329,9 +329,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{VTS}}/uapi/hashkey",
+							"raw": "{{PROD}}/uapi/hashkey",
 							"host": [
-								"{{VTS}}"
+								"{{PROD}}"
 							],
 							"path": [
 								"uapi",
@@ -615,19 +615,19 @@
 									},
 									{
 										"key": "authorization",
-										"value": "Bearer {{VTS_TOKEN}}",
+										"value": "Bearer {{PROD_TOKEN}}",
 										"type": "text",
 										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
 									},
 									{
 										"key": "appkey",
-										"value": "{{VTS_APPKEY}}",
+										"value": "{{PROD_APPKEY}}",
 										"type": "text",
 										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
 									},
 									{
 										"key": "appsecret",
-										"value": "{{VTS_APPSECRET}}",
+										"value": "{{PROD_APPSECRET}}",
 										"type": "text",
 										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
 									},
@@ -639,9 +639,9 @@
 									}
 								],
 								"url": {
-									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn?fid_cond_mrkt_div_code=J&fid_input_iscd=005930",
+									"raw": "{{PROD}}/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn?fid_cond_mrkt_div_code=J&fid_input_iscd=005930",
 									"host": [
-										"{{VTS}}"
+										"{{PROD}}"
 									],
 									"path": [
 										"uapi",
@@ -5439,12 +5439,6 @@
 										"value": "CTRP6504R",
 										"type": "text",
 										"description": "[실전투자]\nCTRP6504R\n\n[모의투자]\nVTRP6504R"
-									},
-									{
-										"key": "custtype",
-										"value": "P",
-										"type": "text",
-										"description": "P : 개인, B:제휴사"
 									}
 								],
 								"body": {
@@ -6001,19 +5995,19 @@
 									},
 									{
 										"key": "authorization",
-										"value": "Bearer {{VTS_TOKEN}}",
+										"value": "Bearer {{PROD_TOKEN}}",
 										"type": "text",
 										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
 									},
 									{
 										"key": "appkey",
-										"value": "{{VTS_APPKEY}}",
+										"value": "{{PROD_APPKEY}}",
 										"type": "text",
 										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
 									},
 									{
 										"key": "appsecret",
-										"value": "{{VTS_APPSECRET}}",
+										"value": "{{PROD_APPSECRET}}",
 										"type": "text",
 										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
 									},
@@ -6029,9 +6023,9 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "{{VTS}}/uapi/overseas-price/v1/quotations/inquire-daily-chartprice?FID_COND_MRKT_DIV_CODE=N&FID_INPUT_ISCD=QQQ&FID_INPUT_DATE_1=20220531&FID_INPUT_DATE_2=20220731&FID_PERIOD_DIV_CODE=D",
+									"raw": "{{PROD}}/uapi/overseas-price/v1/quotations/inquire-daily-chartprice?FID_COND_MRKT_DIV_CODE=N&FID_INPUT_ISCD=QQQ&FID_INPUT_DATE_1=20220531&FID_INPUT_DATE_2=20220731&FID_PERIOD_DIV_CODE=D",
 									"host": [
-										"{{VTS}}"
+										"{{PROD}}"
 									],
 									"path": [
 										"uapi",
