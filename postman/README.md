@@ -19,9 +19,9 @@ Postman 실행 후 아래 4개의 json 파일들을 Import 해주세요. Import�
 
 |순번 |파일명 |파일 상세 |
 |--|--|--|
-|1|모의계좌_POSTMAN_샘플코드.json|postman collections json file(모의계좌용)|
+|1|모의계좌_POSTMAN_샘플코드_v1.2.json|postman collections json file(모의계좌용)|
 |2|모의계좌_POSTMAN_환경변수.json|postman environments json file(모의계좌용)|
-|3|실전계좌_POSTMAN_샘플코드_v1.1.json|postman collections json file(실전계좌용)|
+|3|실전계좌_POSTMAN_샘플코드_v1.2.json|postman collections json file(실전계좌용)|
 |4|실전계좌_POSTMAN_환경변수.json|postman environments json file(실전계좌용)|
 
 ![pm_image01](https://user-images.githubusercontent.com/87407853/185285464-84554b6c-2ed6-47da-86c4-7e73197ae26f.png)
@@ -117,6 +117,7 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 |해외주식현재가|해외주식 현재체결가|⭕|⭕|
 |해외주식현재가|해외주식 기간별시세|⭕|⭕|
 |해외주식현재가|해외주식 종목/지수/환율기간별시세(일/주/월/년)|⭕|⭕|
+|해외주식현재가|해외주식 조건검색|⭕|⭕|
 
 
 **사용하시면서 어려운 점이 생기면 KIS Developers - Q&A 게시판에 문의 부탁드립니다 :)**
