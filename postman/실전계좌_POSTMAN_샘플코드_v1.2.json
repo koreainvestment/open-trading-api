@@ -6064,6 +6064,208 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "J_해외주식 조건검색",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{PROD_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{PROD_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{PROD_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFS76410000",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nHHDFS76410000"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{PROD}}/uapi/overseas-price/v1/quotations/inquire-search?AUTH=&EXCD=NAS&CO_YN_PRICECUR=1&CO_ST_PRICECUR=160&CO_EN_PRICECUR=170&CO_YN_RATE&CO_ST_RATE&CO_EN_RATE&CO_YN_VALX&CO_ST_VALX&CO_EN_VALX&CO_YN_SHAR&CO_ST_SHAR&CO_EN_SHAR&CO_YN_VOLUME&CO_ST_VOLUME&CO_EN_VOLUME&CO_YN_AMT&CO_ST_AMT&CO_EN_AMT&CO_YN_EPS&CO_ST_EPS&CO_EN_EPS&CO_YN_PER&CO_ST_PER&CO_EN_PER",
+									"host": [
+										"{{PROD}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-price",
+										"v1",
+										"quotations",
+										"inquire-search"
+									],
+									"query": [
+										{
+											"key": "AUTH",
+											"value": "",
+											"description": "사용자권한정보\n\"\" (Null 값 설정)"
+										},
+										{
+											"key": "EXCD",
+											"value": "NAS",
+											"description": "거래소코드\nNYS : 뉴욕, NAS : 나스닥, AMS : 아멕스\nHKS : 홍콩, SHS : 상해 , SZS : 심천\nHSX : 호치민, HNX : 하노이\nTSE : 도쿄"
+										},
+										{
+											"key": "CO_YN_PRICECUR",
+											"value": "1",
+											"description": "현재가선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_PRICECUR",
+											"value": "160",
+											"description": "현재가시작범위가"
+										},
+										{
+											"key": "CO_EN_PRICECUR",
+											"value": "170",
+											"description": "현재가끝범위가"
+										},
+										{
+											"key": "CO_YN_RATE",
+											"value": "",
+											"description": "등락율선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_RATE",
+											"value": "",
+											"description": "등락율시작율"
+										},
+										{
+											"key": "CO_EN_RATE",
+											"value": "",
+											"description": "등락율끝율"
+										},
+										{
+											"key": "CO_YN_VALX",
+											"value": "",
+											"description": "시가총액선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_VALX",
+											"value": "",
+											"description": "시가총액시작액"
+										},
+										{
+											"key": "CO_EN_VALX",
+											"value": "",
+											"description": "시가총액끝액"
+										},
+										{
+											"key": "CO_YN_SHAR",
+											"value": "",
+											"description": "발행주식수선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_SHAR",
+											"value": "",
+											"description": "발행주식시작수"
+										},
+										{
+											"key": "CO_EN_SHAR",
+											"value": "",
+											"description": "발행주식끝수"
+										},
+										{
+											"key": "CO_YN_VOLUME",
+											"value": "",
+											"description": "거래량선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_VOLUME",
+											"value": "",
+											"description": "거래량시작량"
+										},
+										{
+											"key": "CO_EN_VOLUME",
+											"value": "",
+											"description": "거래량끝량"
+										},
+										{
+											"key": "CO_YN_AMT",
+											"value": "",
+											"description": "거래대금선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_AMT",
+											"value": "",
+											"description": "거래대금시작금"
+										},
+										{
+											"key": "CO_EN_AMT",
+											"value": "",
+											"description": "거래대금끝금"
+										},
+										{
+											"key": "CO_YN_EPS",
+											"value": "",
+											"description": "EPS선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_EPS",
+											"value": "",
+											"description": "EPS시작"
+										},
+										{
+											"key": "CO_EN_EPS",
+											"value": "",
+											"description": "EPS끝"
+										},
+										{
+											"key": "CO_YN_PER",
+											"value": "",
+											"description": "PER선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_PER",
+											"value": "",
+											"description": "PER시작"
+										},
+										{
+											"key": "CO_EN_PER",
+											"value": "",
+											"description": "PER끝"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}
