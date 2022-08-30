@@ -4,6 +4,8 @@ import ssl
 import zipfile
 import os
 
+base_dir = os.getcwd()
+
 def get_theme_master_dataframe(base_dir):
 
     ssl._create_default_https_context = ssl._create_unverified_context
@@ -24,9 +26,11 @@ def get_theme_master_dataframe(base_dir):
             jcode = row[-10:].rstrip()  # 테마명
             tname = row[3:-10].rstrip() # 종목코드
             df.loc[ridx] = [tcode, tname, jcode]
-            print(df.loc[ridx])
+            # print(df.loc[ridx])  # 파일 작성중인 것을 확인할 수 있음
             ridx += 1
 
     return df
 
-df1 = get_theme_master_dataframe("d:\\pysam")   # pysam 임시폴더 사용
+df1 = get_theme_master_dataframe(base_dir)
+df1.to_excel('theme_code.xlsx',index=False)  # 현재 위치에 엑셀파일로 저장
+df1
