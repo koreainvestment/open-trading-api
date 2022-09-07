@@ -7,7 +7,8 @@
 
 
 ## 2. 사전 준비 사항
-1.  [한국투자증권 홈페이지](https://securities.koreainvestment.com/main/A_CO_10004.jsp) 혹은 [가까운 영업점](https://securities.koreainvestment.com/main/customer/guide/branch/branch.jsp)에서 계좌 개설(모의계좌 or 실전계좌) → **계좌번호 준비**
+1.  [한국투자증권 홈페이지](https://securities.koreainvestment.com/main/A_CO_10004.jsp) 혹은 [가까운 영업점](https://securities.koreainvestment.com/main/customer/guide/branch/branch.jsp)에서 계좌 개설(실전계좌) 
+[한국투자증권 홈페이지](https://securities.koreainvestment.com/main/research/virtual/_static/TF07da010000.jsp) 혹은 한국투자 MTS에서 계좌 개설(모의계좌)→ **계좌번호 준비**
 2.  [KIS Developers 홈페이지](https://apiportal.koreainvestment.com/)에서 API신청 - 사용할 계좌번호로 API신청 → **APP KEY & APP SECRET 준비**
 3.  [Postman](https://www.postman.com/downloads/) 설치
 
