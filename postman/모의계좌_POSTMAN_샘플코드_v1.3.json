@@ -1316,6 +1316,117 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "V_주식당일분봉조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST03010200",
+										"type": "text",
+										"description": "[모의투자/실전투자]\nFHKST03010100"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice?FID_ETC_CLS_CODE=&FID_COND_MRKT_DIV_CODE=J&FID_INPUT_ISCD=005930&FID_INPUT_HOUR_1=092800&FID_PW_DATA_INCU_YN=Y",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-time-itemchartprice"
+									],
+									"query": [
+										{
+											"key": "FID_ETC_CLS_CODE",
+											"value": "",
+											"description": "기타 구분 코드(\"\")"
+										},
+										{
+											"key": "FID_COND_MRKT_DIV_CODE",
+											"value": "J",
+											"description": "시장 분류 코드(J : 주식)"
+										},
+										{
+											"key": "FID_INPUT_ISCD",
+											"value": "005930",
+											"description": "종목코드(6자리)"
+										},
+										{
+											"key": "FID_INPUT_HOUR_1",
+											"value": "092800",
+											"description": "조회 시작일자(HHMMSS)"
+										},
+										{
+											"key": "FID_PW_DATA_INCU_YN",
+											"value": "Y",
+											"description": "과거 데이터 포함 여부(Y/N)"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -5350,6 +5461,163 @@
 											"key": "CO_EN_PER",
 											"value": "",
 											"description": "PER끝"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "해외선물옵션",
+			"item": [
+				{
+					"name": "해외선물옵션시세",
+					"item": [
+						{
+							"name": "V_해외선물종목상세",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFC55010100",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nHHDFC55010100"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-futureoption/v1/quotations/stock-detail?SRS_CD=6AU22",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-futureoption",
+										"v1",
+										"quotations",
+										"stock-detail"
+									],
+									"query": [
+										{
+											"key": "SRS_CD",
+											"value": "6AU22",
+											"description": "종목코드"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외선물종목현재가",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFC55010000",
+										"type": "text",
+										"description": "[실전/모의투자]\nHHDFC55010000"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-futureoption/v1/quotations/inquire-price?SRS_CD=6AU22",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-futureoption",
+										"v1",
+										"quotations",
+										"inquire-price"
+									],
+									"query": [
+										{
+											"key": "SRS_CD",
+											"value": "6AU22",
+											"description": "종목코드"
 										}
 									]
 								}
