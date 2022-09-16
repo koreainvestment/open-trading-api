@@ -117,7 +117,7 @@ KIS Developers 서비스는 한국투자증권 홈페이지에서 신청하실 �
 |websocket|ws_realstkprice.py|python|
 |websocket|ws_realstkquote.py|python|
 
-## 5. 참고 교안
+## 5. Wikidocs(참고 교안)
 |구분|도서명|지원언어|링크|
 |--|--|--|--|
 |rest|파이썬으로 배우는 오픈API 트레이딩 초급 예제|python|https://wikidocs.net/book/7559|
