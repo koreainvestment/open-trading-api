@@ -67,6 +67,7 @@ KIS Developers 서비스는 한국투자증권 홈페이지에서 신청하실 �
 |국내주식시세|주식현재가 당일시간대별체결|⭕|
 |국내주식시세|주식현재가 시간외시간별체결|⭕|
 |국내주식시세|주식현재가 시간외일자별주가|⭕|
+|국내주식시세|주식당일분봉조회|⭕|
 |국내주식실시간|주식현재가 실시간주식체결가|⭕|
 |국내주식실시간|주식현재가 실시간주식호가|⭕|
 |국내주식실시간|주식현재가 실시간주식체결통보|⭕|
@@ -93,16 +94,34 @@ KIS Developers 서비스는 한국투자증권 홈페이지에서 신청하실 �
 |해외주식현재가|해외주식 기간별시세|⭕|
 |해외주식현재가|해외주식 종목/지수/환율기간별시세(일/주/월/년)|⭕|
 |해외주식현재가|해외주식 조건검색|⭕|
+|해외선물옵션주문|해외선물옵션 주문|⭕|
+|해외선물옵션주문|해외선물옵션 정정취소주문|⭕|
+|해외선물옵션주문|해외선물옵션 당일주문내역조회|⭕|
+|해외선물옵션주문|해외선물옵션 미결제내역조회(잔고)|⭕|
+|해외선물옵션주문|해외선물옵션 주문가능조회|⭕|
+|해외선물옵션시세|해외선물종목상세|⭕|
+|해외선물옵션시세|해외선물종목현재가|⭕|
 
 ## 4. API 예제 목록
 
 |구분|예제명|지원언어|
 |--|--|--|
 |rest|kis_api.py|python|
+|rest|reauth.py|python|
 |websocket|ops_ws_sample.jar|java|
 |websocket|ops_ws_sample.html|js|
 |websocket|ops_ws_sample.py|python|
+|websocket|ws_domestic_stock.py|python|
+|websocket|ws_overseas_stock.py|python|
+|websocket|ws_real_multiple_stocks.py|python|
 |websocket|ws_realstkprice.py|python|
 |websocket|ws_realstkquote.py|python|
+
+## 5. 참고 교안
+|구분|도서명|지원언어|링크|
+|--|--|--|--|
+|rest|파이썬으로 배우는 오픈API 트레이딩 초급 예제|python|https://wikidocs.net/book/7559|
+|websocket|파이썬으로 배우는 한국투자증권 Websocket 사용 예제|python|https://wikidocs.net/book/7847|
+
 
 ![Footer](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=200&section=footer)
