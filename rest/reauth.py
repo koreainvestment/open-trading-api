@@ -41,7 +41,7 @@ def get_current_price(stock_no):
     # 호출
     res = requests.get(URL, headers=headers, params=params)
 
-    if res.status_code == 200 and res.json()["rt_cd"] == 0 :
+    if res.status_code == 200 and res.json()["rt_cd"] == "0" :
         return(res.json())
     # 토큰 만료 시
     elif res.status_code == 200 and res.json()["msg_cd"] == "EGW00123" :
