@@ -7,6 +7,7 @@
 #엑셀파일 실시간.xlsx 띄우고 프로그램 실행하세요
 import os
 import json
+import requests
 import pandas as pd
 
 try:
@@ -23,14 +24,31 @@ except ImportError:
     print("websocket-client 설치중입니다.")
     os.system('python3 -m pip3 install websocket-client')
 
+def get_approval(key, secret):
+    """웹소켓 접속키 발급"""
+    url = 'https://openapi.koreainvestment.com:9443'
+    headers = {"content-type": "application/json"}
+    body = {"grant_type": "client_credentials",
+            "appkey": key,
+            "secretkey": secret}
+    PATH = "oauth2/Approval"
+    URL = f"{url}/{PATH}"
+    res = requests.post(URL, headers=headers, data=json.dumps(body))
+    approval_key = res.json()["approval_key"]
+    return approval_key    
+
+g_appkey = "Appkey값셋팅하세요"
+g_appsecret = "Appsecret값셋팅하세요"
+g_approval_key = get_approval(g_appkey, g_appsceret)    
+    
+    
 h = {
-    "appkey": "Appkey값셋팅하세요",
-    "appsecret": "Appsecret값셋팅하세요"
+    "appkey": g_appkey,
+    "appsecret": g_appsecret
 }
 b = {
     "header": {
-        "appkey": "Appkey값셋팅하세요",
-        "appsecret": "Appsecret값셋팅하세요",
+        "approval_key": g_approval_key,
         "custtype": "P",
         "tr_type": "1",
         "content-type": "utf-8"
