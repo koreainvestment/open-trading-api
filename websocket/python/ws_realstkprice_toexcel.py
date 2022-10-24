@@ -7,6 +7,7 @@
 #엑셀파일 실시간.xlsx 띄우고 프로그램 실행하세요
 import os
 import json
+import requests
 import pandas as pd
 
 try:
