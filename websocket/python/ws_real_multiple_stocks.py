@@ -1,5 +1,6 @@
 import os
 import json
+import requests
 import pandas as pd
 
 try:
@@ -9,25 +10,42 @@ except ImportError:
     print("websocket-client 설치중입니다.")
     os.system('python3 -m pip3 install websocket-client')
 
+def get_approval(key, secret):
+    """웹소켓 접속키 발급"""
+    url = 'https://openapi.koreainvestment.com:9443'
+    headers = {"content-type": "application/json"}
+    body = {"grant_type": "client_credentials",
+            "appkey": key,
+            "secretkey": secret}
+    PATH = "oauth2/Approval"
+    URL = f"{url}/{PATH}"
+    res = requests.post(URL, headers=headers, data=json.dumps(body))
+    approval_key = res.json()["approval_key"]
+    return approval_key    
+    
 i_stock = ["005930","011700","000270"]
 i_appkey    = "API신청시 발급 앱키"
 i_appsecret = "API신청시 발급 앱시크리트"
+
+i_approval_key = get_approval(i_appkey, i_appsecret)
+print("approval_key [%s]" % (i_approval_key))
+
 b = {
-    "header": {"appkey": i_appkey, "appsecret": i_appkey, "custtype": "P", "tr_type": "1", "content-type": "utf-8"},
+    "header": {"approval_key": i_approval_key, "custtype": "P", "tr_type": "1", "content-type": "utf-8"},
     "body": { "input": {"tr_id": "H0STCNT0",  # API명
                         "tr_key": i_stock[0]  # 종목번호
                        }
             }
 }
 b2 = {
-    "header": {"appkey": i_appkey, "appsecret": i_appkey, "custtype": "P", "tr_type": "1", "content-type": "utf-8"},
+    "header": {"approval_key": i_approval_key, "custtype": "P", "tr_type": "1", "content-type": "utf-8"},
     "body": { "input": {"tr_id": "H0STCNT0",  # API명
                         "tr_key": i_stock[1]  # 종목번호
                        }
             }
 }
 b3 = {
-    "header": {"appkey": i_appkey, "appsecret": i_appkey, "custtype": "P", "tr_type": "1", "content-type": "utf-8"},
+    "header": {"approval_key": i_approval_key, "custtype": "P", "tr_type": "1", "content-type": "utf-8"},
     "body": { "input": {"tr_id": "H0STCNT0",  # API명
                         "tr_key": i_stock[2]  # 종목번호
                        }
