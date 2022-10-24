@@ -1,6 +1,7 @@
 # 웹 소켓 모듈을 선언한다.
 import websockets
 import json
+import requests
 import os
 import asyncio
 import time
