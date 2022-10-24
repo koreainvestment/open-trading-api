@@ -1,6 +1,7 @@
 # 웹 소켓 모듈을 선언한다.
 import websockets
 import json
+import requests
 import os
 import asyncio
 import time
@@ -23,6 +24,19 @@ def aes_cbc_base64_dec(key, iv, cipher_text):
     """
     cipher = AES.new(key.encode('utf-8'), AES.MODE_CBC, iv.encode('utf-8'))
     return bytes.decode(unpad(cipher.decrypt(b64decode(cipher_text)), AES.block_size))
+
+def get_approval(key, secret):
+    """웹소켓 접속키 발급"""
+    url = 'https://openapi.koreainvestment.com:9443'
+    headers = {"content-type": "application/json"}
+    body = {"grant_type": "client_credentials",
+            "appkey": key,
+            "secretkey": secret}
+    PATH = "oauth2/Approval"
+    URL = f"{url}/{PATH}"
+    res = requests.post(URL, headers=headers, data=json.dumps(body))
+    approval_key = res.json()["approval_key"]
+    return approval_key
 
 # 주식체결 출력라이브러리
 def stockhoka(data):
@@ -113,6 +127,10 @@ async def connect():
     htsid = '101334'    # 체결통보용 htsid 입력
     custtype = 'P'      # customer type, 개인:'P' 법인 'B'
     url = 'ws://ops.koreainvestment.com:21000'
+    
+    g_approval_key = get_approval(g_appkey, g_appsceret)
+    print("approval_key [%s]" % (g_approval_key))
+    
     async with websockets.connect(url, ping_interval=None) as websocket:
 
         """" 주석처리는 더블쿼트 3개로 처리
@@ -160,9 +178,9 @@ async def connect():
 
             # send json, 체결통보는 tr_key 입력항목이 상이하므로 분리를 한다.
             if cmd == '5' or cmd == '6' or cmd == '7' or cmd == '8':
-                senddata = '{"header":{"appkey":"' + g_appkey + '","appsecret":"' + g_appsceret + '","personalseckey":"' + g_personalsecKey + '","custtype":"'+custtype+'","tr_type":"' + tr_type + '","content-type":"utf-8"},"body":{"input":{"tr_id":"' + tr_id + '","tr_key":"' + htsid + '"}}}'
+                senddata = '{"header":{"approval_key":"' + g_approval_key + '","personalseckey":"' + g_personalsecKey + '","custtype":"'+custtype+'","tr_type":"' + tr_type + '","content-type":"utf-8"},"body":{"input":{"tr_id":"' + tr_id + '","tr_key":"' + htsid + '"}}}'
             else :
-                senddata = '{"header":{"appkey":"' + g_appkey + '","appsecret":"' + g_appsceret + '","personalseckey":"' + g_personalsecKey + '","custtype":"'+custtype+'","tr_type":"' + tr_type + '","content-type":"utf-8"},"body":{"input":{"tr_id":"' + tr_id + '","tr_key":"' + stockcode + '"}}}'
+                senddata = '{"header":{"approval_key":"' + g_approval_key + '","personalseckey":"' + g_personalsecKey + '","custtype":"'+custtype+'","tr_type":"' + tr_type + '","content-type":"utf-8"},"body":{"input":{"tr_id":"' + tr_id + '","tr_key":"' + stockcode + '"}}}'
 
             print('Input Command is :', senddata)
 
