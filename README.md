@@ -9,7 +9,7 @@
 
 ## 2. 이용 안내
 ### 2.1. 사전 준비
-KIS Developers 서비스는 한국투자증권 홈페이지에서 신청하실 수 있습니다. 신청을 위해서는 2가지 사전 준비물이 필요합니다. 첫 번째로는 한국투자증권 계좌가 개설되어있어야 하며, 두 번째로는 한국투자증권 ID 등록이 필요합니다. 만약 계좌가 없으시다면 한국투자증권 앱을 통해 비대면 개설을 진행하거나, 가까운 영업점을 방문해주시길 바랍니다. 모의투자계좌의 경우, 한국투자 홈페이지 혹은 MTS에서 모의투자 서비스 신청 후 발급받은 모의계좌번호로 API 신청을 하셔야 합니다.
+KIS Developers 서비스는 한국투자증권 홈페이지에서 신청하실 수 있습니다. 신청을 위해서는 2가지 사전 준비물이 필요합니다. 첫 번째로는 한국투자증권 계좌가 개설되어있어야 하며, 두 번째로는 한국투자증권 ID 등록이 필요합니다. 만약 계좌가 없으시다면 한국투자증권 앱을 통해 비대면 개설을 진행하거나, 가까운 영업점을 방문해주시길 바랍니다. (모의투자계좌의 경우, 한국투자 홈페이지 혹은 MTS에서 모의투자 서비스 신청 후 발급받은 모의계좌번호로 API 신청을 하셔야 합니다.)
 
 -   한국투자증권 앱 :  [https://securities.koreainvestment.com/main/customer/cusGuide/customerGuide.jsp](https://securities.koreainvestment.com/main/customer/cusGuide/customerGuide.jsp)
 -   가까운 영업점 찾기 :  [https://securities.koreainvestment.com/main/customer/guide/branch/branch.jsp](https://securities.koreainvestment.com/main/customer/guide/branch/branch.jsp)
