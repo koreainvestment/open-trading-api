@@ -56,7 +56,7 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 ### 3.3. 환경변수 선택
 환경변수 설정이 완료되면 다시 Collections 바로 돌아가셔서 사용할 환경변수를 선택을 해줍니다. 환경변수 선택은 Postman 화면 우측 상단에서 아래 화살표(∨)를 눌러 선택 가능합니다. 모의계좌를 활용하여 API테스트를 하실 경우 모의투자(모의Env)를, 실전계좌를 활용하여 API테스트를 하실 경우 실전투자(실전Env)를 환경변수로 선택합니다.
 
-![image](https://user-images.githubusercontent.com/87407853/200476610-8574cea0-ca3f-4926-9778-ae156da70cf9.png)
+![image](https://user-images.githubusercontent.com/87407853/200476740-beceda63-4d7e-48e2-ba4e-f69a8a850fea.png)
 
 ### 3.4. API 호출
 호출하고 싶은 API를 각 폴더에서 찾아 header값, body값을 변경하시면서 사용하시면 됩니다.
