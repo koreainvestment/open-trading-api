@@ -24,7 +24,7 @@ Postman 실행 후 아래 4개의 json 파일들을 Import 해주세요. Import�
 |3|실전계좌_POSTMAN_샘플코드_v1.3.json|postman collections json file(실전계좌용)|
 |4|실전계좌_POSTMAN_환경변수.json|postman environments json file(실전계좌용)|
 
-![image](https://user-images.githubusercontent.com/87407853/200476169-97458feb-3e59-422b-a034-361fa7cde5f5.png)
+![image](https://user-images.githubusercontent.com/87407853/200476463-17e69b7d-cbb5-4833-b389-74d1c3af2808.png)
 
 ### 3.2. 환경변수 설정
 Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활용하여 API테스트를 하실 경우 왼쪽 바의 Environments의 모의Env를, 실전계좌를 활용하여 API테스트를 하실 경우 실전 Env를 환경변수로 사용합니다. 따라서 사용하실 환경변수 값들을 채워주어야 합니다. 아래 설명대로 값들을 전부 채워 넣어주세요. 값을 채워 넣을 때는 Initial Value, Current Value 모두 값을 넣어주셔야 합니다. (VTS, PROD는 이미 값이 채워져 있으니 수정하지 말아주세요.)
