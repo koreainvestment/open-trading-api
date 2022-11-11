@@ -278,11 +278,8 @@ async def connect():
                             print("### RECV [PINGPONG] [%s]" % (data))
                             print("### SEND [PINGPONG] [%s]" % (data))
                             
-                except:
-                    print('Reconnecting...')
-                    for senddata in senddata_list:
-                        await websocket.send(senddata)
-                        time.sleep(0.5)
+                except websockets.ConnectionClosed:
+                    continue
                     
                     
 # 비동기로 서버에 접속한다.
