@@ -1,91 +1,89 @@
 /*****************************************************************************
- *	ÄÚ½º´Ú Á¾¸ñ ÄÚµå ÆÄÀÏ ±¸Á¶
+ *	ì½”ìŠ¤ë‹¥ ì¢…ëª© ì½”ë“œ íŒŒì¼ êµ¬ì¡°
  ****************************************************************************/
 typedef struct
 {
-    char    mksc_shrn_iscd[SZ_SHRNCODE];        /* ´ÜÃàÄÚµå                                     */
-    char    stnd_iscd[SZ_STNDCODE];             /* Ç¥ÁØÄÚµå                                     */
-    char    hts_kor_isnm[SZ_KORNAME];           /* ÇÑ±ÛÁ¾¸ñ¸í                                   */
-    char    scrt_grp_cls_code[2];               /* Áõ±Ç±×·ì±¸ºĞÄÚµå                             */
-                                                /* ST:ÁÖ±Ç MF:Áõ±ÇÅõÀÚÈ¸»ç RT:ºÎµ¿»êÅõÀÚÈ¸»ç    */
-                                                /* SC:¼±¹ÚÅõÀÚÈ¸»ç IF:»çÈ¸°£Á¢ÀÚº»ÅõÀ¶ÀÚÈ¸»ç    */
-                                                /* DR:ÁÖ½Ä¿¹Å¹Áõ¼­ EW:ELW EF:ETF                */
-                                                /* SW:½ÅÁÖÀÎ¼ö±ÇÁõ±Ç SR:½ÅÁÖÀÎ¼ö±ÇÁõ¼­          */
-                                                /* BC:¼öÀÍÁõ±Ç FE:ÇØ¿ÜETF FS:¿Ü±¹ÁÖ±Ç           */
-    char    avls_scal_cls_code[1];              /* ½Ã°¡ÃÑ¾× ±Ô¸ğ ±¸ºĞ ÄÚµå À¯°¡                 */
-                                                /* 0:Á¦¿Ü 1:KOSDAQ100 2:KOSDAQmid300 			*/
-												/* 3:KOSDAQsmall)                       		*/
-	char    bstp_larg_div_code[4];              /* Áö¼ö¾÷Á¾ ´ëºĞ·ù ÄÚµå                         */
-    char    bstp_medm_div_code[4];              /* Áö¼ö ¾÷Á¾ ÁßºĞ·ù ÄÚµå                        */
-    char    bstp_smal_div_code[4];              /* Áö¼ö¾÷Á¾ ¼ÒºĞ·ù ÄÚµå                         */
-    char    vntr_issu_yn[1];                    /* º¥Ã³±â¾÷ ¿©ºÎ (Y/N)               			*/
-    char    low_current_yn[1];               	/* ÀúÀ¯µ¿¼ºÁ¾¸ñ ¿©ºÎ 							*/
-    char    krx_issu_yn[1];                     /* KRX Á¾¸ñ ¿©ºÎ                                */
-    char    etp_prod_cls_code[1];            	/* ETP »óÇ°±¸ºĞÄÚµå								*/
-												/* 0:ÇØ´ç¾øÀ½ 1:ÅõÀÚÈ¸»çÇü 2:¼öÀÍÁõ±ÇÇü			*/
-												/* 3:ETN 4:¼Õ½ÇÁ¦ÇÑETN							*/
-    char    krx100_issu_yn[1];                  /* KRX100 Á¾¸ñ ¿©ºÎ (Y/N)                       */
-    char    krx_car_yn[1];                      /* KRX ÀÚµ¿Â÷ ¿©ºÎ                              */
-    char    krx_smcn_yn[1];                     /* KRX ¹İµµÃ¼ ¿©ºÎ                              */
-    char    krx_bio_yn[1];                      /* KRX ¹ÙÀÌ¿À ¿©ºÎ                              */
-    char    krx_bank_yn[1];                     /* KRX ÀºÇà ¿©ºÎ                                */
-    char    etpr_undt_objt_co_yn[1];            /* ±â¾÷ÀÎ¼ö¸ñÀûÈ¸»ç¿©ºÎ 						*/
-    char    krx_enrg_chms_yn[1];                /* KRX ¿¡³ÊÁö È­ÇĞ ¿©ºÎ                         */
-    char    krx_stel_yn[1];                     /* KRX Ã¶°­ ¿©ºÎ                                */
-    char    short_over_cls_code[1];             /* ´Ü±â°ú¿­Á¾¸ñ±¸ºĞÄÚµå 0:ÇØ´ç¾øÀ½              */
-                                                /* 1:ÁöÁ¤¿¹°í 2:ÁöÁ¤ 3:ÁöÁ¤¿¬Àå(ÇØÁ¦¿¬±â)       */
-    char    krx_medi_cmnc_yn[1];                /* KRX ¹Ìµğ¾î Åë½Å ¿©ºÎ                         */
-    char    krx_cnst_yn[1];                     /* KRX °Ç¼³ ¿©ºÎ                                */
-    char    invt_alrm_yn[1];                    /* (ÄÚ½º´Ú)ÅõÀÚÁÖÀÇÈ¯±âÁ¾¸ñ¿©ºÎ                 */
-    char    krx_scrt_yn [1];                    /* KRX Áõ±Ç ±¸ºĞ                                */
-    char    krx_ship_yn [1];                    /* KRX ¼±¹Ú ±¸ºĞ                                */
-    char    krx_insu_yn[1];                     /* KRX¼½ÅÍÁö¼ö º¸Çè¿©ºÎ                         */
-    char    krx_trnp_yn[1];                     /* KRX¼½ÅÍÁö¼ö ¿î¼Û¿©ºÎ                         */
-	char	ksq150_nmix_yn[1];                  /* KOSDAQ150Áö¼ö¿©ºÎ (Y,N)                      */
-    char    stck_sdpr[9];                       /* ÁÖ½Ä ±âÁØ°¡                                  */
-    char    frml_mrkt_deal_qty_unit[5];         /* Á¤±Ô ½ÃÀå ¸Å¸Å ¼ö·® ´ÜÀ§                     */
-    char    ovtm_mrkt_deal_qty_unit[5];         /* ½Ã°£¿Ü ½ÃÀå ¸Å¸Å ¼ö·® ´ÜÀ§                   */
-    char    trht_yn[1];                         /* °Å·¡Á¤Áö ¿©ºÎ                                */
-    char    sltr_yn[1];                         /* Á¤¸®¸Å¸Å ¿©ºÎ                                */
-    char    mang_issu_yn[1];                    /* °ü¸® Á¾¸ñ ¿©ºÎ                               */
-    char    mrkt_alrm_cls_code[2];              /* ½ÃÀå °æ°í ±¸ºĞ ÄÚµå (00:ÇØ´ç¾øÀ½ 01:ÅõÀÚÁÖÀÇ */
-                                                /* 02:ÅõÀÚ°æ°í 03:ÅõÀÚÀ§Çè                      */
-    char    mrkt_alrm_risk_adnt_yn[1];          /* ½ÃÀå °æ°íÀ§Çè ¿¹°í ¿©ºÎ                      */
-    char    insn_pbnt_yn[1];                    /* ºÒ¼º½Ç °ø½Ã ¿©ºÎ                             */
-    char    byps_lstn_yn[1];                    /* ¿ìÈ¸ »óÀå ¿©ºÎ                               */
-    char    flng_cls_code[2];                   /* ¶ô±¸ºĞ ÄÚµå (00:ÇØ´ç»çÇ×¾øÀ½ 01:±Ç¸®¶ô       */
-                                                /* 02:¹è´ç¶ô 03:ºĞ¹è¶ô 04:±Ç¹è¶ô 05:Áß°£¹è´ç¶ô  */
-                                                /* 06:±Ç¸®Áß°£¹è´ç¶ô 99:±âÅ¸                    */
-                                                /* S?W,SR,EW´Â ¹ÌÇØ´ç(SPACE)                   */
-    char    fcam_mod_cls_code[2];               /* ¾×¸é°¡ º¯°æ ±¸ºĞ ÄÚµå (00:ÇØ´ç¾øÀ½           */
-                                                /* 01:¾×¸éºĞÇÒ 02:¾×¸éº´ÇÕ 99:±âÅ¸              */
-    char    icic_cls_code[2];                   /* ÁõÀÚ ±¸ºĞ ÄÚµå (00:ÇØ´ç¾øÀ½ 01:À¯»óÁõÀÚ      */
-                                                /* 02:¹«»óÁõÀÚ 03:À¯¹«»óÁõÀÚ 99:±âÅ¸)           */
-    char    marg_rate[3];                       /* Áõ°Å±İ ºñÀ²                                  */
-    char    crdt_able[1];                       /* ½Å¿ëÁÖ¹® °¡´É ¿©ºÎ                           */
-    char    crdt_days[3];                       /* ½Å¿ë±â°£                                     */
-    char    prdy_vol[12];                       /* ÀüÀÏ °Å·¡·®                                  */
-    char    stck_fcam[12];                      /* ÁÖ½Ä ¾×¸é°¡                                  */
-    char    stck_lstn_date[8];                  /* ÁÖ½Ä »óÀå ÀÏÀÚ                               */
-    char    lstn_stcn[15];                      /* »óÀå ÁÖ¼ö(Ãµ)                                */
-    char    cpfn[21];                           /* ÀÚº»±İ                                       */
-    char    stac_month[2];                      /* °á»ê ¿ù                                      */
-    char    po_prc[7];                          /* °ø¸ğ °¡°İ                                    */
-    char    prst_cls_code[1];                   /* ¿ì¼±ÁÖ ±¸ºĞ ÄÚµå (0:ÇØ´ç¾øÀ½(º¸ÅëÁÖ)         */
-                                                /* 1:±¸Çü¿ì¼±ÁÖ 2:½ÅÇü¿ì¼±ÁÖ                    */
-    char    ssts_hot_yn[1];                     /* °ø¸Åµµ°ú¿­Á¾¸ñ¿©ºÎ  							*/
-    char    stange_runup_yn[1];                 /* ÀÌ»ó±ŞµîÁ¾¸ñ¿©ºÎ 							*/
-    char    krx300_issu_yn[1];                  /* KRX300 Á¾¸ñ ¿©ºÎ (Y/N)                       */
-    char    sale_account[9];                    /* ¸ÅÃâ¾×                                       */
-    char    bsop_prfi[9];                       /* ¿µ¾÷ÀÌÀÍ                                     */
-    char    op_prfi[9];                         /* °æ»óÀÌÀÍ                                     */
-    char    thtr_ntin[5];                       /* ´Ü±â¼øÀÌÀÍ                                   */
-    char    roe[9];                             /* ROE(ÀÚ±âÀÚº»ÀÌÀÍ·ü)                          */
-    char    base_date[8];                       /* ±âÁØ³â¿ù                                     */
-    char    prdy_avls_scal[9];                  /* ÀüÀÏ±âÁØ ½Ã°¡ÃÑ¾× (¾ï)                       */
-
-	char	grp_code[3];						/* ±×·ì»ç ÄÚµå                                  */
-    char    co_crdt_limt_over_yn[1];            /* È¸»ç½Å¿ëÇÑµµÃÊ°ú¿©ºÎ                         */
-    char    secu_lend_able_yn[1];               /* ´ãº¸´ëÃâ°¡´É¿©ºÎ                             */
-    char    stln_able_yn[1];                    /* ´ëÁÖ°¡´É¿©ºÎ                                 */
+    char    mksc_shrn_iscd[SZ_SHRNCODE];        /* ë‹¨ì¶•ì½”ë“œ                                     */
+    char    stnd_iscd[SZ_STNDCODE];             /* í‘œì¤€ì½”ë“œ                                     */
+    char    hts_kor_isnm[SZ_KORNAME];           /* í•œê¸€ì¢…ëª©ëª…                                   */
+    char    scrt_grp_cls_code[2];               /* ì¦ê¶Œê·¸ë£¹êµ¬ë¶„ì½”ë“œ                             */
+                                                /* ST:ì£¼ê¶Œ MF:ì¦ê¶Œíˆ¬ìíšŒì‚¬ RT:ë¶€ë™ì‚°íˆ¬ìíšŒì‚¬    */
+                                                /* SC:ì„ ë°•íˆ¬ìíšŒì‚¬ IF:ì‚¬íšŒê°„ì ‘ìë³¸íˆ¬ìœµìíšŒì‚¬    */
+                                                /* DR:ì£¼ì‹ì˜ˆíƒì¦ì„œ EW:ELW EF:ETF                */
+                                                /* SW:ì‹ ì£¼ì¸ìˆ˜ê¶Œì¦ê¶Œ SR:ì‹ ì£¼ì¸ìˆ˜ê¶Œì¦ì„œ          */
+                                                /* BC:ìˆ˜ìµì¦ê¶Œ FE:í•´ì™¸ETF FS:ì™¸êµ­ì£¼ê¶Œ           */
+    char    avls_scal_cls_code[1];              /* ì‹œê°€ì´ì•¡ ê·œëª¨ êµ¬ë¶„ ì½”ë“œ ìœ ê°€                 */
+                                                /* 0:ì œì™¸ 1:KOSDAQ100 2:KOSDAQmid300 3:KOSDAQsmall) */
+    char    bstp_larg_div_code[4];              /* ì§€ìˆ˜ì—…ì¢… ëŒ€ë¶„ë¥˜ ì½”ë“œ                         */
+    char    bstp_medm_div_code[4];              /* ì§€ìˆ˜ ì—…ì¢… ì¤‘ë¶„ë¥˜ ì½”ë“œ                        */
+    char    bstp_smal_div_code[4];              /* ì§€ìˆ˜ì—…ì¢… ì†Œë¶„ë¥˜ ì½”ë“œ                         */
+    char    vntr_issu_yn[1];                    /* ë²¤ì²˜ê¸°ì—… ì—¬ë¶€ (Y/N)               		 */
+    char    low_current_yn[1];               	/* ì €ìœ ë™ì„±ì¢…ëª© ì—¬ë¶€ 				*/
+    char    krx_issu_yn[1];                     /* KRX ì¢…ëª© ì—¬ë¶€                               */
+    char    etp_prod_cls_code[1];            	/* ETP ìƒí’ˆêµ¬ë¶„ì½”ë“œ				  */
+						/* 0:í•´ë‹¹ì—†ìŒ 1:íˆ¬ìíšŒì‚¬í˜• 2:ìˆ˜ìµì¦ê¶Œí˜•	    */
+						/* 3:ETN 4:ì†ì‹¤ì œí•œETN			    */
+    char    krx100_issu_yn[1];                  /* KRX100 ì¢…ëª© ì—¬ë¶€ (Y/N)                       */
+    char    krx_car_yn[1];                      /* KRX ìë™ì°¨ ì—¬ë¶€                              */
+    char    krx_smcn_yn[1];                     /* KRX ë°˜ë„ì²´ ì—¬ë¶€                              */
+    char    krx_bio_yn[1];                      /* KRX ë°”ì´ì˜¤ ì—¬ë¶€                              */
+    char    krx_bank_yn[1];                     /* KRX ì€í–‰ ì—¬ë¶€                                */
+    char    etpr_undt_objt_co_yn[1];            /* ê¸°ì—…ì¸ìˆ˜ëª©ì íšŒì‚¬ì—¬ë¶€ 				*/
+    char    krx_enrg_chms_yn[1];                /* KRX ì—ë„ˆì§€ í™”í•™ ì—¬ë¶€                         */
+    char    krx_stel_yn[1];                     /* KRX ì² ê°• ì—¬ë¶€                                */
+    char    short_over_cls_code[1];             /* ë‹¨ê¸°ê³¼ì—´ì¢…ëª©êµ¬ë¶„ì½”ë“œ 0:í•´ë‹¹ì—†ìŒ              */
+                                                /* 1:ì§€ì •ì˜ˆê³  2:ì§€ì • 3:ì§€ì •ì—°ì¥(í•´ì œì—°ê¸°)       */
+    char    krx_medi_cmnc_yn[1];                /* KRX ë¯¸ë””ì–´ í†µì‹  ì—¬ë¶€                         */
+    char    krx_cnst_yn[1];                     /* KRX ê±´ì„¤ ì—¬ë¶€                                */
+    char    invt_alrm_yn[1];                    /* (ì½”ìŠ¤ë‹¥)íˆ¬ìì£¼ì˜í™˜ê¸°ì¢…ëª©ì—¬ë¶€                 */
+    char    krx_scrt_yn [1];                    /* KRX ì¦ê¶Œ êµ¬ë¶„                                */
+    char    krx_ship_yn [1];                    /* KRX ì„ ë°• êµ¬ë¶„                                */
+    char    krx_insu_yn[1];                     /* KRXì„¹í„°ì§€ìˆ˜ ë³´í—˜ì—¬ë¶€                         */
+    char    krx_trnp_yn[1];                     /* KRXì„¹í„°ì§€ìˆ˜ ìš´ì†¡ì—¬ë¶€                         */
+    char    ksq150_nmix_yn[1];                  /* KOSDAQ150ì§€ìˆ˜ì—¬ë¶€ (Y,N)                     */
+    char    stck_sdpr[9];                       /* ì£¼ì‹ ê¸°ì¤€ê°€                                  */
+    char    frml_mrkt_deal_qty_unit[5];         /* ì •ê·œ ì‹œì¥ ë§¤ë§¤ ìˆ˜ëŸ‰ ë‹¨ìœ„                     */
+    char    ovtm_mrkt_deal_qty_unit[5];         /* ì‹œê°„ì™¸ ì‹œì¥ ë§¤ë§¤ ìˆ˜ëŸ‰ ë‹¨ìœ„                   */
+    char    trht_yn[1];                         /* ê±°ë˜ì •ì§€ ì—¬ë¶€                                */
+    char    sltr_yn[1];                         /* ì •ë¦¬ë§¤ë§¤ ì—¬ë¶€                                */
+    char    mang_issu_yn[1];                    /* ê´€ë¦¬ ì¢…ëª© ì—¬ë¶€                               */
+    char    mrkt_alrm_cls_code[2];              /* ì‹œì¥ ê²½ê³  êµ¬ë¶„ ì½”ë“œ (00:í•´ë‹¹ì—†ìŒ 01:íˆ¬ìì£¼ì˜ */
+                                                /* 02:íˆ¬ìê²½ê³  03:íˆ¬ììœ„í—˜)                     */
+    char    mrkt_alrm_risk_adnt_yn[1];          /* ì‹œì¥ ê²½ê³ ìœ„í—˜ ì˜ˆê³  ì—¬ë¶€                      */
+    char    insn_pbnt_yn[1];                    /* ë¶ˆì„±ì‹¤ ê³µì‹œ ì—¬ë¶€                             */
+    char    byps_lstn_yn[1];                    /* ìš°íšŒ ìƒì¥ ì—¬ë¶€                               */
+    char    flng_cls_code[2];                   /* ë½êµ¬ë¶„ ì½”ë“œ (00:í•´ë‹¹ì‚¬í•­ì—†ìŒ 01:ê¶Œë¦¬ë½       */
+                                                /* 02:ë°°ë‹¹ë½ 03:ë¶„ë°°ë½ 04:ê¶Œë°°ë½ 05:ì¤‘ê°„ë°°ë‹¹ë½  */
+                                                /* 06:ê¶Œë¦¬ì¤‘ê°„ë°°ë‹¹ë½ 99:ê¸°íƒ€                    */
+                                                /* SW,SR,EWëŠ” ë¯¸í•´ë‹¹(SPACE)                   */
+    char    fcam_mod_cls_code[2];               /* ì•¡ë©´ê°€ ë³€ê²½ êµ¬ë¶„ ì½”ë“œ (00:í•´ë‹¹ì—†ìŒ           */
+                                                /* 01:ì•¡ë©´ë¶„í•  02:ì•¡ë©´ë³‘í•© 99:ê¸°íƒ€              */
+    char    icic_cls_code[2];                   /* ì¦ì êµ¬ë¶„ ì½”ë“œ (00:í•´ë‹¹ì—†ìŒ 01:ìœ ìƒì¦ì      */
+                                                /* 02:ë¬´ìƒì¦ì 03:ìœ ë¬´ìƒì¦ì 99:ê¸°íƒ€)           */
+    char    marg_rate[3];                       /* ì¦ê±°ê¸ˆ ë¹„ìœ¨                                  */
+    char    crdt_able[1];                       /* ì‹ ìš©ì£¼ë¬¸ ê°€ëŠ¥ ì—¬ë¶€                           */
+    char    crdt_days[3];                       /* ì‹ ìš©ê¸°ê°„                                     */
+    char    prdy_vol[12];                       /* ì „ì¼ ê±°ë˜ëŸ‰                                  */
+    char    stck_fcam[12];                      /* ì£¼ì‹ ì•¡ë©´ê°€                                  */
+    char    stck_lstn_date[8];                  /* ì£¼ì‹ ìƒì¥ ì¼ì                               */
+    char    lstn_stcn[15];                      /* ìƒì¥ ì£¼ìˆ˜(ì²œ)                                */
+    char    cpfn[21];                           /* ìë³¸ê¸ˆ                                       */
+    char    stac_month[2];                      /* ê²°ì‚° ì›”                                      */
+    char    po_prc[7];                          /* ê³µëª¨ ê°€ê²©                                    */
+    char    prst_cls_code[1];                   /* ìš°ì„ ì£¼ êµ¬ë¶„ ì½”ë“œ (0:í•´ë‹¹ì—†ìŒ(ë³´í†µì£¼)         */
+                                                /* 1:êµ¬í˜•ìš°ì„ ì£¼ 2:ì‹ í˜•ìš°ì„ ì£¼                    */
+    char    ssts_hot_yn[1];                     /* ê³µë§¤ë„ê³¼ì—´ì¢…ëª©ì—¬ë¶€  				*/
+    char    stange_runup_yn[1];                 /* ì´ìƒê¸‰ë“±ì¢…ëª©ì—¬ë¶€ 				*/
+    char    krx300_issu_yn[1];                  /* KRX300 ì¢…ëª© ì—¬ë¶€ (Y/N)                       */
+    char    sale_account[9];                    /* ë§¤ì¶œì•¡                                       */
+    char    bsop_prfi[9];                       /* ì˜ì—…ì´ìµ                                     */
+    char    op_prfi[9];                         /* ê²½ìƒì´ìµ                                     */
+    char    thtr_ntin[5];                       /* ë‹¨ê¸°ìˆœì´ìµ                                   */
+    char    roe[9];                             /* ROE(ìê¸°ìë³¸ì´ìµë¥ )                          */
+    char    base_date[8];                       /* ê¸°ì¤€ë…„ì›”                                     */
+    char    prdy_avls_scal[9];                  /* ì „ì¼ê¸°ì¤€ ì‹œê°€ì´ì•¡ (ì–µ)                       */
+    char    grp_code[3];			/* ê·¸ë£¹ì‚¬ ì½”ë“œ                                  */
+    char    co_crdt_limt_over_yn[1];            /* íšŒì‚¬ì‹ ìš©í•œë„ì´ˆê³¼ì—¬ë¶€                         */
+    char    secu_lend_able_yn[1];               /* ë‹´ë³´ëŒ€ì¶œê°€ëŠ¥ì—¬ë¶€                             */
+    char    stln_able_yn[1];                    /* ëŒ€ì£¼ê°€ëŠ¥ì—¬ë¶€                                 */
 }	ST_KSQ_CODE;
