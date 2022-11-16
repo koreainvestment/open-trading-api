@@ -1,3 +1,5 @@
+'''코스피주식종목코드(kospi_code.mst) 정제 파이썬 파일'''
+
 import urllib.request
 import ssl
 import zipfile
@@ -90,6 +92,8 @@ def get_kospi_master_dataframe(base_dir):
     del (df2)
     os.remove(tmp_fil1)
     os.remove(tmp_fil2)
+    
+    print("Done")
 
     return df
 
