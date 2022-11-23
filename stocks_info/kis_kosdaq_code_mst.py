@@ -27,7 +27,7 @@ def kosdaq_master_download(base_dir, verbose=False):
     if os.path.exists("kosdaq_code.zip"):
         os.remove("kosdaq_code.zip")
 
-def get_kospi_master_dataframe(base_dir):
+def get_kosdaq_master_dataframe(base_dir):
     file_name = base_dir + "\\kosdaq_code.mst"
     tmp_fil1 = base_dir + "\\kosdaq_code_part1.tmp"
     tmp_fil2 = base_dir + "\\kosdaq_code_part2.tmp"
@@ -98,7 +98,7 @@ def get_kospi_master_dataframe(base_dir):
     return df
 
 kosdaq_master_download(base_dir)
-df = get_kospi_master_dataframe(base_dir)
+df = get_kosdaq_master_dataframe(base_dir)
 
 df.to_excel('kosdaq_code.xlsx',index=False)  # 현재 위치에 엑셀파일로 저장
 df
