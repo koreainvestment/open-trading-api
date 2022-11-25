@@ -29,9 +29,11 @@ def aes_cbc_base64_dec(key, iv, cipher_text):
     return bytes.decode(unpad(cipher.decrypt(b64decode(cipher_text)), AES.block_size))
 
 
+# 웹소켓 접속키 발급
 def get_approval(key, secret):
-    """웹소켓 접속키 발급"""
-    url = 'https://openapi.koreainvestment.com:9443'
+    
+    # url = https://openapivts.koreainvestment.com:29443' # 모의투자계좌     
+    url = 'https://openapi.koreainvestment.com:9443' # 실전투자계좌
     headers = {"content-type": "application/json"}
     body = {"grant_type": "client_credentials",
             "appkey": key,
