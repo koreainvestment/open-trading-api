@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 ### 모듈 임포트 ###
 import websockets
 import json
