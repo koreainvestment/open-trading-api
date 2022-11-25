@@ -24,9 +24,10 @@ except ImportError:
     print("websocket-client 설치중입니다.")
     os.system('python3 -m pip3 install websocket-client')
 
+# 웹소켓 접속키 발급
 def get_approval(key, secret):
-    """웹소켓 접속키 발급"""
-    url = 'https://openapi.koreainvestment.com:9443'
+    # url = https://openapivts.koreainvestment.com:29443' # 모의투자계좌     
+    url = 'https://openapi.koreainvestment.com:9443' # 실전투자계좌
     headers = {"content-type": "application/json"}
     body = {"grant_type": "client_credentials",
             "appkey": key,
