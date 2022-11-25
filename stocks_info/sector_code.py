@@ -6,15 +6,15 @@ import os
 
 base_dir = os.getcwd()
 
-def get_theme_master_dataframe(base_dir):
+def get_sector_master_dataframe(base_dir):
 
     ssl._create_default_https_context = ssl._create_unverified_context
     urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/idxcode.mst.zip", base_dir + "\\idxcode.zip")
     os.chdir(base_dir)
 
-    kospi_zip = zipfile.ZipFile('idxcode.zip')
-    kospi_zip.extractall()
-    kospi_zip.close()
+    idxcode_zip = zipfile.ZipFile('idxcode.zip')
+    idxcode_zip.extractall()
+    idxcode_zip.close()
 
     file_name = base_dir + "\\idxcode.mst"
     df = pd.DataFrame(columns = ['업종코드', '업종명'])
@@ -30,6 +30,6 @@ def get_theme_master_dataframe(base_dir):
 
     return df
 
-df2 = get_theme_master_dataframe(base_dir)
+df2 = get_sector_master_dataframe(base_dir)
 df2.to_excel('idxcode.xlsx',index=False) # 현재 위치에 엑셀파일로 저장
 df2
