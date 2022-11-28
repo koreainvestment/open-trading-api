@@ -154,7 +154,7 @@ def stocksigningnotice_futsoptn(data, key, iv):
                 
         elif pValue[5] == '2': # 취소 접수 통보 (정정구분이 2일 경우)
             print("#### 지수선물옵션 취소 접수 통보 ####")
-            menulist_cancel = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|정정수량|정정단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건|주문그룹ID|주문그룹SEQ|주문가격"
+            menulist_cancel = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|취소수량|주문단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건|주문그룹ID|주문그룹SEQ|주문가격"
             menustr = menulist_cancel.split('|')
             i = 0
             for menu in menustr:
