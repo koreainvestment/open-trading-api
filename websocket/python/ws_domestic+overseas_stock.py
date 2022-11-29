@@ -45,7 +45,9 @@ def get_approval(key, secret):
     return approval_key
 
 
-# 주식체결 출력라이브러리
+### 1. 국내주식 ###
+
+# 주식호가 출력라이브러리
 def stockhoka_domestic(data):
     """ 넘겨받는데이터가 정상인지 확인
     print("stockhoka[%s]"%(data))
@@ -94,8 +96,43 @@ def stockhoka_domestic(data):
     print("누적거래량             [%s]" % (recvvalue[53]))
     print("주식매매 구분코드      [%s]" % (recvvalue[58]))
 
+    
+# 국내주식체결처리 출력라이브러리
+def stockspurchase_domestic(data_cnt, data):
+    print("============================================")
+    menulist = "유가증권단축종목코드|주식체결시간|주식현재가|전일대비부호|전일대비|전일대비율|가중평균주식가격|주식시가|주식최고가|주식최저가|매도호가1|매수호가1|체결거래량|누적거래량|누적거래대금|매도체결건수|매수체결건수|순매수체결건수|체결강도|총매도수량|총매수수량|체결구분|매수비율|전일거래량대비등락율|시가시간|시가대비구분|시가대비|최고가시간|고가대비구분|고가대비|최저가시간|저가대비구분|저가대비|영업일자|신장운영구분코드|거래정지여부|매도호가잔량|매수호가잔량|총매도호가잔량|총매수호가잔량|거래량회전율|전일동시간누적거래량|전일동시간누적거래량비율|시간구분코드|임의종료구분코드|정적VI발동기준가"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1
 
-# 해외주식체결 출력라이브러리
+
+# 국내주식체결통보 출력라이브러리
+def stocksigningnotice_domestic(data, key, iv):
+    menulist = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|주문조건|주식단축종목코드|체결수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|신용구분|신용대출일자|체결종목명40|주문가격"
+    menustr1 = menulist.split('|')
+
+    # AES256 처리 단계
+    aes_dec_str = aes_cbc_base64_dec(key, iv, data)
+    pValue = aes_dec_str.split('^')
+
+    if pValue[12] == '2': # 체결통보
+        print("#### 국내주식 체결 통보 ####")
+    else:
+        print("#### 국내주식 주문·정정·취소·거부 접수 통보 ####")
+    
+    i = 0
+    for menu in menustr1:
+        print("%s  [%s]" % (menu, pValue[i]))
+        i += 1
+
+### 2. 해외주식 ###
+            
+# 해외주식호가 출력라이브러리
 def stockhoka_overseas(data):
     """ 넘겨받는데이터가 정상인지 확인
     print("stockhoka[%s]"%(data))
@@ -118,19 +155,6 @@ def stockhoka_overseas(data):
     print("매수잔량대비        [%s]" % (recvvalue[15]))
     print("매도잔량대비        [%s]" % (recvvalue[16]))
 
-    
-# 국내주식체결처리 출력라이브러리
-def stockspurchase_domestic(data_cnt, data):
-    print("============================================")
-    menulist = "유가증권단축종목코드|주식체결시간|주식현재가|전일대비부호|전일대비|전일대비율|가중평균주식가격|주식시가|주식최고가|주식최저가|매도호가1|매수호가1|체결거래량|누적거래량|누적거래대금|매도체결건수|매수체결건수|순매수체결건수|체결강도|총매도수량|총매수수량|체결구분|매수비율|전일거래량대비등락율|시가시간|시가대비구분|시가대비|최고가시간|고가대비구분|고가대비|최저가시간|저가대비구분|저가대비|영업일자|신장운영구분코드|거래정지여부|매도호가잔량|매수호가잔량|총매도호가잔량|총매수호가잔량|거래량회전율|전일동시간누적거래량|전일동시간누적거래량비율|시간구분코드|임의종료구분코드|정적VI발동기준가"
-    menustr = menulist.split('|')
-    pValue = data.split('^')
-    i = 0
-    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
-        print("### [%d / %d]" % (cnt + 1, data_cnt))
-        for menu in menustr:
-            print("%-13s[%s]" % (menu, pValue[i]))
-            i += 1
 
 # 해외주식체결처리 출력라이브러리
 def stockspurchase_overseas(data_cnt, data):
@@ -145,29 +169,21 @@ def stockspurchase_overseas(data_cnt, data):
             print("%-13s[%s]" % (menu, pValue[i]))
             i += 1
 
-# 국내주식체결통보 출력라이브러리
-def stocksigningnotice_domestic(data, key, iv):
-    menulist = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|주문조건|주식단축종목코드|체결수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|신용구분|신용대출일자|체결종목명40|주문가격"
-    menustr1 = menulist.split('|')
 
-    # AES256 처리 단계
-    aes_dec_str = aes_cbc_base64_dec(key, iv, data)
-    pValue = aes_dec_str.split('^')
-
-    i = 0
-    for menu in menustr1:
-        print("%s  [%s]" % (menu, pValue[i]))
-        i += 1
-            
 # 해외주식체결통보 출력라이브러리
 def stocksigningnotice_overseas(data, key, iv):
-    menulist = "고객 ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류2|주식단축종목코드|체결 수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|해외종목구분|담보유형코드|담보대출일자"
+    menulist = "고객 ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류2|단축종목코드|주문수량|체결단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|해외종목구분|담보유형코드|담보대출일자"
     menustr1 = menulist.split('|')
 
     # AES256 처리 단계
     aes_dec_str = aes_cbc_base64_dec(key, iv, data)
     pValue = aes_dec_str.split('^')
 
+    if pValue[12] == '2': # 체결통보
+        print("#### 해외주식 체결 통보 ####")
+    else:
+        print("#### 해외주식 주문·정정·취소·거부 접수 통보 ####")
+    
     i = 0
     for menu in menustr1:
         print("%s  [%s]" % (menu, pValue[i]))
@@ -242,11 +258,9 @@ async def connect():
                         trid0 = recvstr[1]
 
                         if trid0 == "K0STCNI0" or trid0 == "K0STCNI9" or trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
-                            print("#### 주식체결통보 ####")
                             stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
 
                         elif trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9" or trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9":  # 해외주실체결 통보 처리
-                            print("#### 해외주식체결통보 ####")
                             stocksigningnotice_overseas(recvstr[3], aes_key, aes_iv)
 
                     else:

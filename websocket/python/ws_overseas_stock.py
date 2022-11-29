@@ -83,13 +83,18 @@ def stockspurchase(data_cnt, data):
 
 # 해외주식체결통보 출력라이브러리
 def stocksigningnotice(data, key, iv):
-    menulist = "고객 ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류2|주식단축종목코드|체결 수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|해외종목구분|담보유형코드|담보대출일자"
+    menulist = "고객 ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류2|단축종목코드|주문수량|체결단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|해외종목구분|담보유형코드|담보대출일자"
     menustr1 = menulist.split('|')
 
     # AES256 처리 단계
     aes_dec_str = aes_cbc_base64_dec(key, iv, data)
     pValue = aes_dec_str.split('^')
 
+    if pValue[12] == '2': # 체결통보
+        print("#### 해외주식 체결 통보 ####")
+    else:
+        print("#### 해외주식 주문·정정·취소·거부 접수 통보 ####")
+    
     i = 0
     for menu in menustr1:
         print("%s  [%s]" % (menu, pValue[i]))
@@ -101,7 +106,7 @@ async def connect():
     ## 시세데이터를 받기위한 데이터를 미리 할당해서 사용한다.
 
     g_appkey = '앱키를 입력하세요'
-    g_appsceret = '앱시크리트를 입력하세요'
+    g_appsceret = '앱 시크릿키를 입력하세요'
 
     stockcode = '종목코드입력하세요'  #  D+시장구분(3자리)+종목코드
                                    # 예) DNASAAPL : D+NAS(나스닥)+AAPL(애플)
@@ -192,7 +197,6 @@ async def connect():
                         recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                         trid0 = recvstr[1]
                         if trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9" or trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9":  # 해외주실체결 통보 처리
-                            print("#### 해외주식체결통보 ####")
                             stocksigningnotice(recvstr[3], aes_key, aes_iv)
                             await websocket.send(senddata)
 

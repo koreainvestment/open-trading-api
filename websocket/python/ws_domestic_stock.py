@@ -116,6 +116,11 @@ def stocksigningnotice(data, key, iv):
     aes_dec_str = aes_cbc_base64_dec(key, iv, data)
     pValue = aes_dec_str.split('^')
 
+    if pValue[12] == '2': # 체결통보
+        print("#### 국내주식 체결 통보 ####")
+    else:
+        print("#### 국내주식 주문·정정·취소·거부 접수 통보 ####")
+    
     i = 0
     for menu in menustr1:
         print("%s  [%s]" % (menu, pValue[i]))
@@ -127,7 +132,7 @@ async def connect():
     ## 시세데이터를 받기위한 데이터를 미리 할당해서 사용한다.
 
     g_appkey = '앱키를 입력하세요'
-    g_appsceret = '앱시크리트를 입력하세요'
+    g_appsceret = '앱 시크릿키를 입력하세요'
 
     stockcode = '종목코드입력하세요'  # 테스트용 임시 종목 설정, 삼성전자
     htsid = 'HTS ID를 입력하세요'  # 체결통보용 htsid 입력
@@ -217,7 +222,6 @@ async def connect():
                         recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                         trid0 = recvstr[1]
                         if trid0 == "K0STCNI0" or trid0 == "K0STCNI9" or trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
-                            print("#### 주식체결통보 ####")
                             stocksigningnotice(recvstr[3], aes_key, aes_iv)
                             await websocket.send(senddata)
 

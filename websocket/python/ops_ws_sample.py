@@ -102,6 +102,7 @@ def stockspurchase(data_cnt, data):
             print("%-13s[%s]" % (menu, pValue[i]))
             i += 1
 
+            
 # 주식체결통보 출력라이브러리
 def stocksigningnotice(data, key, iv):
     menulist = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|주문조건|주식단축종목코드|체결수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|신용구분|신용대출일자|체결종목명40|주문가격"
@@ -111,11 +112,17 @@ def stocksigningnotice(data, key, iv):
     aes_dec_str = aes_cbc_base64_dec(key, iv, data)
     pValue = aes_dec_str.split('^')
 
+    if pValue[12] == '2': # 체결통보
+        print("#### 국내주식 체결 통보 ####")
+    else:
+        print("#### 국내주식 주문·정정·취소·거부 접수 통보 ####")
+    
     i = 0
     for menu in menustr1:
         print("%s  [%s]" % (menu, pValue[i]))
         i += 1
-
+        
+        
 async def connect():
     # 웹 소켓에 접속.( 주석은 koreainvest test server for websocket)
     ## 시세데이터를 받기위한 데이터를 미리 할당해서 사용한다.
@@ -210,7 +217,6 @@ async def connect():
                         recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                         trid0 = recvstr[1]
                         if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
-                            print("#### 주식체결통보 ####")
                             stocksigningnotice(recvstr[3], aes_key, aes_iv)
                             await websocket.send(senddata)
 
