@@ -119,7 +119,7 @@ def stocksigningnotice_domestic(data, key, iv):
     aes_dec_str = aes_cbc_base64_dec(key, iv, data)
     pValue = aes_dec_str.split('^')
 
-    if pValue[12] == '2': # 체결통보
+    if pValue[13] == '2': # 체결통보
         print("#### 국내주식 체결 통보 ####")
     else:
         print("#### 국내주식 주문·정정·취소·거부 접수 통보 ####")
