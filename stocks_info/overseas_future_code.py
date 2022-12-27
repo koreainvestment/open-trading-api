@@ -1,4 +1,4 @@
-'''해외주식종목코드 정제 파이썬 파일 : ffcode.mst'''
+'''해외선물옵션종목코드 정제 파이썬 파일 : ffcode.mst'''
 
 import pandas as pd
 import urllib.request
