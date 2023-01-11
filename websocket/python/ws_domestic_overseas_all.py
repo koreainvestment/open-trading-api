@@ -409,13 +409,13 @@ async def connect():
     ### 4. 해외선물옵션 호가, 체결가, 체결통보 ###
     # code_list = [['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'], # 해외선물 체결가, 호가
     #              ['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'], # 해외옵션 체결가, 호가
-    #              ['1','HDFFF1C0','HTS ID를 입력하세요']] # 해외선물옵션 체결통보
+    #              ['1','HDFFF2C0','HTS ID를 입력하세요']] # 해외선물옵션 체결통보
     
     ### 1+2+3+4. 국내주식, 해외주식(미국), 국내선물옵션, 해외선물옵션 호가, 체결가, 체결통보 ###
     code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1','H0STCNI0','HTS ID를 입력하세요'],
                  ['1','HDFSASP1','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요'],
                  ['1','H0IFASP0','101S12'],['1','H0IFCNT0','101S12'],['1','H0IOASP0','201S12315'],['1','H0IOCNT0','201S12322'], ['1','H0IFCNI0','HTS ID를 입력하세요'],
-                 ['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'],['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'],['1','HDFFF1C0','HTS ID를 입력하세요']]
+                 ['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'],['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'],['1','HDFFF2C0','HTS ID를 입력하세요']]
     
     senddata_list=[]
     
@@ -508,7 +508,7 @@ async def connect():
                         elif trid0 == "H0IFCNI0":  # 지수선물옵션체결 통보 처리
                             stocksigningnotice_futsoptn(recvstr[3], aes_key, aes_iv)
                         
-                        elif trid0 == "HDFFF1C0":  # 해외선물옵션체결 통보 처리
+                        elif trid0 == "HDFFF2C0":  # 해외선물옵션체결 통보 처리
                             stocksigningnotice_overseafut(recvstr[3], aes_key, aes_iv)
                             
                     else:
@@ -544,7 +544,7 @@ async def connect():
                                     aes_iv = jsonObject["body"]["output"]["iv"]
                                     print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
 
-                                elif trid == "HDFFF1C0": # 해외선물옵션
+                                elif trid == "HDFFF2C0": # 해외선물옵션
                                     aes_key = jsonObject["body"]["output"]["key"]
                                     aes_iv = jsonObject["body"]["output"]["iv"]
                                     print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))  

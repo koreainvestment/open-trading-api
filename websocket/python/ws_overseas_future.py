@@ -85,7 +85,7 @@ def stockspurchase_overseafut(data_cnt, data):
             i += 1
 
 
-# 해외선물옵션 주문내역통보 출력라이브러리
+# 해외선물옵션 체결통보 출력라이브러리
 def stocksigningnotice_overseafut(data, key, iv):
     menulist = "유저ID|계좌번호|주문일자|주문번호|원주문일자|원주문번호|종목명|정정취소구분코드|매도매수구분코드|복합주문구분코드|가격구분코드|FM거래소접수구분코드|주문수량|FMLIMIT가격|FMSTOP주문가격|총체결수량|총체결단가|잔량|FM주문그룹일자|주문그룹번호|주문상세일시|조작상세일시|주문자|통화코드|청산여부|청산LIMIT가격|청산STOP가격|체결조건코드|기간주문유효상세일시|계좌청산유형구분코드|행사예약주문여부|선물옵션종목구분코드|자동주문전략구분"
     menustr1 = menulist.split('|')
@@ -95,7 +95,7 @@ def stocksigningnotice_overseafut(data, key, iv):
     print(aes_dec_str)
     pValue = aes_dec_str.split('^')
     print(pValue)
-    print("#### 해외선물옵션 주문내역통보 처리 ####")
+    print("#### 해외선물옵션 체결통보 처리 ####")
 
     i = 0
     for menu in menustr1:
@@ -121,8 +121,8 @@ async def connect():
     # code_list = [['1','HDFFF010','FCAZ22']] # 해외선물호가
     # code_list = [['1','HDFFF020','OESH23 C3900']] # 해외옵션체결
     # code_list = [['1','HDFFF010','OESH23 C3900']] # 해외옵션호가
-    # code_list = [['1','HDFFF1C0','HTS ID를 입력하세요']] # 해외선물옵션주문내역통보
-    code_list = [['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'],['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'],['1','HDFFF1C0','HTS ID를 입력하세요']]
+    # code_list = [['1','HDFFF2C0','HTS ID를 입력하세요']] # 해외선물옵션체결통보
+    code_list = [['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'],['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'],['1','HDFFF2C0','HTS ID를 입력하세요']]
     
     senddata_list=[]
     
@@ -166,7 +166,7 @@ async def connect():
                         recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                         trid0 = recvstr[1]
                         
-                        if trid0 == "HDFFF1C0":  # 해외선물옵션 주문내역통보 처리
+                        if trid0 == "HDFFF2C0":  # 해외선물옵션체결 통보 처리
                             stocksigningnotice_overseafut(recvstr[3], aes_key, aes_iv)
                             
                     else:
@@ -186,8 +186,8 @@ async def connect():
                             elif rt_cd == '0':  # 정상일 경우 처리
                                 print("### RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
 
-                                # 주문내역통보 처리를 위한 AES256 KEY, IV 처리 단계
-                                if trid == "HDFFF1C0": # 해외선물옵션
+                                # 체결통보 처리를 위한 AES256 KEY, IV 처리 단계
+                                if trid == "HDFFF2C0": # 해외선물옵션
                                     aes_key = jsonObject["body"]["output"]["key"]
                                     aes_iv = jsonObject["body"]["output"]["iv"]
                                     print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))  
