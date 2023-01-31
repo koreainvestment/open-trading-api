@@ -398,8 +398,11 @@ async def connect():
     ### 1. 국내주식 호가, 체결가, 체결통보 ###
     # code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1','H0STCNI0','HTS ID를 입력하세요']]
     
-    ### 2. 해외주식(미국) 호가, 체결가, 체결통보 ###
-    # code_list = [['1','HDFSASP1','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요']]
+    ### 2-1. 해외주식(미국) 호가, 체결가, 체결통보 ###
+    # code_list = [['1','HDFSASP0','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요']]
+    
+    ### 2-2.해외주식(아시아) 호가, 체결가, 체결통보 ###
+    # code_list = [['1','HDFSASP1','DHKS00003'],['1','HDFSCNT0','DHKS00003'],['1','H0GSCNI0','HTS ID를 입력하세요']]
     
     ### 3. 국내선물옵션 호가, 체결가, 체결통보 ###
     # code_list = [['1','H0IFASP0','101S12'],['1','H0IFCNT0','101S12'], # 선물호가, 체결가
@@ -411,9 +414,10 @@ async def connect():
     #              ['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'], # 해외옵션 체결가, 호가
     #              ['1','HDFFF2C0','HTS ID를 입력하세요']] # 해외선물옵션 체결통보
     
-    ### 1+2+3+4. 국내주식, 해외주식(미국), 국내선물옵션, 해외선물옵션 호가, 체결가, 체결통보 ###
+    ### 1+2+3+4. 국내주식, 해외주식(미국), 해외주식(아시아), 국내선물옵션, 해외선물옵션 호가, 체결가, 체결통보 ###
     code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1','H0STCNI0','HTS ID를 입력하세요'],
-                 ['1','HDFSASP1','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요'],
+                 ['1','HDFSASP0','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요'],
+                 ['1','HDFSASP1','DHKS00003'],['1','HDFSCNT0','DHKS00003'],['1','H0GSCNI0','HTS ID를 입력하세요'],
                  ['1','H0IFASP0','101S12'],['1','H0IFCNT0','101S12'],['1','H0IOASP0','201S12315'],['1','H0IOCNT0','201S12322'], ['1','H0IFCNI0','HTS ID를 입력하세요'],
                  ['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'],['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'],['1','HDFFF2C0','HTS ID를 입력하세요']]
     
@@ -454,8 +458,13 @@ async def connect():
                             data_cnt = int(recvstr[2])  # 체결데이터 개수
                             stockspurchase_domestic(data_cnt, recvstr[3])
 
+                        elif trid0 == "HDFSASP0":  # 해외주식호가tr 일경우의 처리 단계
+                            print("#### 해외(미국)주식호가 ####")
+                            stockhoka_overseas(recvstr[3])
+                            time.sleep(1)
+                            
                         elif trid0 == "HDFSASP1":  # 해외주식호가tr 일경우의 처리 단계
-                            print("#### 해외주식호가 ####")
+                            print("#### 해외(아시아)주식호가 ####")
                             stockhoka_overseas(recvstr[3])
                             time.sleep(1)
 
