@@ -35,8 +35,8 @@ def get_overseas_index_master_dataframe(base_dir):
                 rf1 = row[0:len(row) - 14]
                 rf_1 = rf1[0:1]
                 rf1_2 = rf1[1:11]
-                rf1_3 = rf1[11:40]
-                rf1_4 = rf1[40:80].strip()
+                rf1_3 = rf1[11:40].replace(",","")
+                rf1_4 = rf1[40:80].replace(",","").strip()
                 wf1.write(rf1_1 + ',' + rf1_2 + ',' + rf1_3 + ',' + rf1_4 + '\n')
                 rf2 = row[-15:]
                 wf2.write(rf2+'\n')
@@ -44,8 +44,8 @@ def get_overseas_index_master_dataframe(base_dir):
             rf1 = row[0:len(row) - 14]
             rf1_1 = rf1[0:1]
             rf1_2 = rf1[1:11]
-            rf1_3 = rf1[11:50]
-            rf1_4 = row[50:75].strip()
+            rf1_3 = rf1[11:50].replace(",","")
+            rf1_4 = row[50:75].replace(",","").strip()
             wf1.write(rf1_1 + ',' + rf1_2 + ',' + rf1_3 + ',' + rf1_4 + '\n')
             rf2 = row[-15:]
             wf2.write(rf2+'\n')
