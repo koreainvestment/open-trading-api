@@ -511,7 +511,7 @@ async def connect():
                         if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
                             stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
 
-                        elif trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9":  # 해외주실체결 통보 처리
+                        elif trid0 == "H0GSCNI0":  # 해외주실체결 통보 처리
                             stocksigningnotice_overseas(recvstr[3], aes_key, aes_iv)
                         
                         elif trid0 == "H0IFCNI0":  # 지수선물옵션체결 통보 처리
