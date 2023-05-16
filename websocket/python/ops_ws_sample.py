@@ -218,7 +218,6 @@ async def connect():
                         trid0 = recvstr[1]
                         if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
                             stocksigningnotice(recvstr[3], aes_key, aes_iv)
-                            await websocket.send(senddata)
 
                     # clearConsole()
                     # break;
@@ -241,7 +240,6 @@ async def connect():
 
                     elif trid == "PINGPONG":
                         print("### RECV [PINGPONG] [%s]" % (data))
-                        await websocket.send(data)
                         print("### SEND [PINGPONG] [%s]" % (data))
 
 # 비동기로 서버에 접속한다.
