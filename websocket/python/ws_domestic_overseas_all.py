@@ -451,57 +451,58 @@ async def connect():
                         if trid0 == "H0STASP0":  # 주식호가tr 일경우의 처리 단계
                             print("#### 주식호가 ####")
                             stockhoka_domestic(recvstr[3])
-                            time.sleep(1)
+                            time.sleep(0.2)
 
                         elif trid0 == "H0STCNT0":  # 주식체결 데이터 처리
                             print("#### 주식체결 ####")
-                            data_cnt = int(recvstr[2])  # 체결데이터 개수
                             stockspurchase_domestic(data_cnt, recvstr[3])
+                            time.sleep(0.2)
 
                         elif trid0 == "HDFSASP0":  # 해외주식호가tr 일경우의 처리 단계
                             print("#### 해외(미국)주식호가 ####")
                             stockhoka_overseas(recvstr[3])
-                            time.sleep(1)
+                            time.sleep(0.2)
                             
                         elif trid0 == "HDFSASP1":  # 해외주식호가tr 일경우의 처리 단계
                             print("#### 해외(아시아)주식호가 ####")
                             stockhoka_overseas(recvstr[3])
-                            time.sleep(1)
+                            time.sleep(0.2)
 
                         elif trid0 == "HDFSCNT0":  # 해외주식체결 데이터 처리
                             print("#### 해외주식체결 ####")
-                            data_cnt = int(recvstr[2])  # 해외체결데이터 개수
                             stockspurchase_overseas(data_cnt, recvstr[3])
+                            time.sleep(0.2)
                         
                         elif trid0 == "H0IFASP0":  # 지수선물호가 tr 일경우의 처리 단계
                             print("#### 지수선물호가 ####")
                             stockhoka_futs(recvstr[3])
-                            time.sleep(1)
+                            time.sleep(0.2)
 
                         elif trid0 == "H0IFCNT0":  # 지수선물체결 데이터 처리
                             print("#### 지수선물체결 ####")
-                            data_cnt = int(recvstr[2])  # 체결데이터 개수
-                            stockspurchase_futs(data_cnt, recvstr[3])    
+                            stockspurchase_futs(data_cnt, recvstr[3])
+                            time.sleep(0.2)
                             
                         elif trid0 == "H0IOASP0":  # 지수옵션호가 tr 일경우의 처리 단계
                             print("#### 지수옵션호가 ####")
                             stockhoka_optn(recvstr[3])
-                            time.sleep(1)
+                            time.sleep(0.2)
 
                         elif trid0 == "H0IOCNT0":  # 지수옵션체결 데이터 처리
                             print("#### 지수옵션체결 ####")
-                            data_cnt = int(recvstr[2])  # 체결데이터 개수
                             stockspurchase_optn(data_cnt, recvstr[3])
+                            time.sleep(0.2)
                                                     
                         elif trid0 == "HDFFF010":  # 해외선물옵션호가 tr 일경우의 처리 단계
                             print("#### 해외선물옵션호가 ####")
                             stockhoka_overseafut(recvstr[3])
-                            time.sleep(1)
+                            time.sleep(0.2)
 
                         elif trid0 == "HDFFF020":  # 해외선물옵션체결 데이터 처리
                             print("#### 해외선물옵션체결 ####")
                             data_cnt = int(recvstr[2])  # 체결데이터 개수
-                            stockspurchase_overseafut(data_cnt, recvstr[3])                            
+                            stockspurchase_overseafut(data_cnt, recvstr[3])
+                            time.sleep(0.2)
 
                     elif data[0] == '1':
                         
@@ -510,15 +511,19 @@ async def connect():
                         
                         if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
                             stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
+                            time.sleep(0.2)
 
                         elif trid0 == "H0GSCNI0":  # 해외주실체결 통보 처리
                             stocksigningnotice_overseas(recvstr[3], aes_key, aes_iv)
+                            time.sleep(0.2)
                         
                         elif trid0 == "H0IFCNI0":  # 지수선물옵션체결 통보 처리
                             stocksigningnotice_futsoptn(recvstr[3], aes_key, aes_iv)
+                            time.sleep(0.2)
                         
                         elif trid0 == "HDFFF2C0":  # 해외선물옵션체결 통보 처리
                             stocksigningnotice_overseafut(recvstr[3], aes_key, aes_iv)
+                            time.sleep(0.2)
                             
                     else:
 
