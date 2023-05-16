@@ -3,7 +3,8 @@
 		"_postman_id": "dedc7a79-22f5-41b3-a0d0-f185affd7853",
 		"name": "모의투자(모의Env)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "22257223"
+		"_exporter_id": "22257223",
+		"_collection_link": "https://truefriend-openapi.postman.co/workspace/%25ED%2595%259C%25EA%25B5%25AD%25ED%2588%25AC%25EC%259E%2590API%25EC%2583%2598%25ED%2594%258C%25EC%25BD%2594%25EB%2593%259C~aab926d5-6bb3-49c2-b407-6eb42ca083b0/collection/22257223-dedc7a79-22f5-41b3-a0d0-f185affd7853?action=share&creator=22257223&source=collection_link"
 	},
 	"item": [
 		{
@@ -2982,13 +2983,14 @@
 										"key": "tr_id",
 										"value": "VTTT1002U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT1002U : 미국 매수 주문\nJTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3085,13 +3087,14 @@
 										"key": "tr_id",
 										"value": "VTTS0308U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT1002U : 미국 매수 주문\nJTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3188,13 +3191,14 @@
 										"key": "tr_id",
 										"value": "VTTS0202U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT1002U : 미국 매수 주문\nJTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3291,13 +3295,14 @@
 										"key": "tr_id",
 										"value": "VTTS1002U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT1002U : 미국 매수 주문\nJTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3394,13 +3399,14 @@
 										"key": "tr_id",
 										"value": "VTTS0305U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT1002U : 미국 매수 주문\nJTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3497,13 +3503,14 @@
 										"key": "tr_id",
 										"value": "VTTS0311U ",
 										"type": "text",
-										"description": "[실전투자]\nJTTT1002U : 미국 매수 주문\nJTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3600,13 +3607,14 @@
 										"key": "tr_id",
 										"value": "VTTS0309U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT1004U : 미국 정정 취소 주문\nTTTS1003U : 홍콩 정정 취소 주문\nTTTS0309U : 일본 정정 취소 주문\nTTTS0302U : 상해 취소 주문\nTTTS0306U : 심천 취소 주문\nTTTS0312U : 베트남 취소 주문\n\n[모의투자]\nVTTT1004U : 미국 정정 취소 주문\nVTTS1003U : 홍콩 정정 취소 주문\nVTTS0309U : 일본 정정 취소 주문\nVTTS0302U : 상해 취소 주문\nVTTS0306U : 심천 취소 주문\nVTTS0312U : 베트남 취소 주문"
+										"description": "[실전투자]\nTTTT1004U : 미국 정정 취소 주문\nTTTS1003U : 홍콩 정정 취소 주문\nTTTS0309U : 일본 정정 취소 주문\nTTTS0302U : 상해 취소 주문\nTTTS0306U : 심천 취소 주문\nTTTS0312U : 베트남 취소 주문\n\n[모의투자]\nVTTT1004U : 미국 정정 취소 주문\nVTTS1003U : 홍콩 정정 취소 주문\nVTTS0309U : 일본 정정 취소 주문\nVTTS0302U : 상해 취소 주문\nVTTS0306U : 심천 취소 주문\nVTTS0312U : 베트남 취소 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3703,13 +3711,14 @@
 										"key": "tr_id",
 										"value": "VTTS0309U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT1004U : 미국 정정 취소 주문\nTTTS1003U : 홍콩 정정 취소 주문\nTTTS0309U : 일본 정정 취소 주문\nTTTS0302U : 상해 취소 주문\nTTTS0306U : 심천 취소 주문\nTTTS0312U : 베트남 취소 주문\n\n[모의투자]\nVTTT1004U : 미국 정정 취소 주문\nVTTS1003U : 홍콩 정정 취소 주문\nVTTS0309U : 일본 정정 취소 주문\nVTTS0302U : 상해 취소 주문\nVTTS0306U : 심천 취소 주문\nVTTS0312U : 베트남 취소 주문"
+										"description": "[실전투자]\nTTTT1004U : 미국 정정 취소 주문\nTTTS1003U : 홍콩 정정 취소 주문\nTTTS0309U : 일본 정정 취소 주문\nTTTS0302U : 상해 취소 주문\nTTTS0306U : 심천 취소 주문\nTTTS0312U : 베트남 취소 주문\n\n[모의투자]\nVTTT1004U : 미국 정정 취소 주문\nVTTS1003U : 홍콩 정정 취소 주문\nVTTS0309U : 일본 정정 취소 주문\nVTTS0302U : 상해 취소 주문\nVTTS0306U : 심천 취소 주문\nVTTS0312U : 베트남 취소 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3806,13 +3815,14 @@
 										"key": "tr_id",
 										"value": "VTTT3014U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT3016U : 미국 매도 예약 주문\nJTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -3909,13 +3919,14 @@
 										"key": "tr_id",
 										"value": "VTTS3013U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT3016U : 미국 매도 예약 주문\nJTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -4012,13 +4023,14 @@
 										"key": "tr_id",
 										"value": "VTTS3013U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT3016U : 미국 매도 예약 주문\nJTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -4115,13 +4127,14 @@
 										"key": "tr_id",
 										"value": "VTTS3013U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT3016U : 미국 매도 예약 주문\nJTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -4218,13 +4231,14 @@
 										"key": "tr_id",
 										"value": "VTTS3013U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT3016U : 미국 매도 예약 주문\nJTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -4322,13 +4336,14 @@
 										"key": "tr_id",
 										"value": "VTTS3013U",
 										"type": "text",
-										"description": "[실전투자]\nJTTT3016U : 미국 매도 예약 주문\nJTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
 									},
 									{
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -4431,7 +4446,8 @@
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
@@ -4506,7 +4522,7 @@
 										"key": "tr_id",
 										"value": "VTTS3018R",
 										"type": "text",
-										"description": "※ PSBL_YN(주야간 원장 구분) 값으로 tr_id 구분해서 API 호출\n- 해외주식주문 > 해외주식 주야간원장구분조회 API문서 참조\n- url : /uapi/overseas-stock/v1/trading/dayornight\n\n[실전투자]\nJTTT3018R : PSBL_YN(주야간 원장 구분) = 'Y' (야간용)\n(통상 23:30~06:00 / 썸머타임 적용시 22:30~05:00 에 'Y'로 조회됨)\nTTTS3018R : PSBL_YN(주야간 원장 구분) = 'N' (주간용)\n\n[모의투자]\nVTTT3018R : PSBL_YN(주야간 원장 구분) = 'Y' (야간용)\n(통상 23:30~06:00 / 썸머타임 적용시 22:30~05:00 에 'Y'로 조회됨)\nVTTS3018R : PSBL_YN(주야간 원장 구분) = 'N' (주간용)"
+										"description": "[실전투자]\nTTTS3018R\n\n[모의투자]\nVTTS3018R"
 									}
 								],
 								"body": {
@@ -4608,7 +4624,7 @@
 										"key": "tr_id",
 										"value": "VTTS3012R",
 										"type": "text",
-										"description": "※ PSBL_YN(주야간 원장 구분) 값으로 tr_id 구분해서 API 호출\n- 해외주식주문 > 해외주식 주야간원장구분조회 API문서 참조\n- url : /uapi/overseas-stock/v1/trading/dayornight\n\n[실전투자]\nJTTT3012R : PSBL_YN(주야간 원장 구분) = 'Y' (야간용)\n(통상 23:30~06:00 / 썸머타임 적용시 22:30~05:00 에 'Y'로 조회됨)\nTTTS3012R : PSBL_YN(주야간 원장 구분) = 'N' (주간용)\n\n[모의투자]\nVTTT3012R : PSBL_YN(주야간 원장 구분) = 'Y' (야간용)\n(통상 23:30~06:00 / 썸머타임 적용시 22:30~05:00 에 'Y'로 조회됨)\nVTTS3012R : PSBL_YN(주야간 원장 구분) = 'N' (주간용)"
+										"description": "[실전투자]\nTTTS3012R\n\n[모의투자]\nVTTS3012R"
 									}
 								],
 								"body": {
@@ -4710,7 +4726,7 @@
 										"key": "tr_id",
 										"value": "VTTS3035R",
 										"type": "text",
-										"description": "※ PSBL_YN(주야간 원장 구분) 값으로 tr_id 구분해서 API 호출\n- 해외주식주문 > 해외주식 주야간원장구분조회 API문서 참조\n- url : /uapi/overseas-stock/v1/trading/dayornight\n\n[실전투자]\nJTTT3001R : PSBL_YN(주야간 원장 구분) = 'Y' (야간용)\n(통상 23:30~06:00 / 썸머타임 적용시 22:30~05:00 에 'Y'로 조회됨)\nTTTS3035R : PSBL_YN(주야간 원장 구분) = 'N' (주간용)\n\n[모의투자]\nVTTT3001R : PSBL_YN(주야간 원장 구분) = 'Y' (야간용)\n(통상 23:30~06:00 / 썸머타임 적용시 22:30~05:00 에 'Y'로 조회됨)\nVTTS3035R : PSBL_YN(주야간 원장 구분) = 'N' (주간용)"
+										"description": "[실전투자]\nTTTS3035R\n\n[모의투자]\nVTTS3035R"
 									}
 								],
 								"body": {
@@ -4902,73 +4918,6 @@
 											"value": "00",
 											"description": "조회구분코드\n00 : 전체\n01 : 일반해외주식\n02 : 미니스탁"
 										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "V_해외주식 주야간원장구분조회",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "content-type",
-										"value": "application/json",
-										"type": "text",
-										"description": "application/json; charset=utf-8"
-									},
-									{
-										"key": "authorization",
-										"value": "Bearer {{VTS_TOKEN}}",
-										"type": "text",
-										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
-									},
-									{
-										"key": "appkey",
-										"value": "{{VTS_APPKEY}}",
-										"type": "text",
-										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
-									},
-									{
-										"key": "appsecret",
-										"value": "{{VTS_APPSECRET}}",
-										"type": "text",
-										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
-									},
-									{
-										"key": "tr_id",
-										"value": "JTTT3010R",
-										"type": "text",
-										"description": "[실전투자/모의투자]\nJTTT3010R"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/dayornight",
-									"host": [
-										"{{VTS}}"
-									],
-									"path": [
-										"uapi",
-										"overseas-stock",
-										"v1",
-										"trading",
-										"dayornight"
 									]
 								}
 							},
