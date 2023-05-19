@@ -212,90 +212,89 @@ async def connect():
         temp = '{"header":{"approval_key": "%s","custtype":"P","tr_type":"%s","content-type":"utf-8"},"body":{"input":{"tr_id":"%s","tr_key":"%s"}}}'%(g_approval_key,i,j,k)
         senddata_list.append(temp)
         
-    while True:
         
-        async with websockets.connect(url, ping_interval=30) as websocket:
+    async with websockets.connect(url, ping_interval=30) as websocket:
 
-            for senddata in senddata_list:
-                await websocket.send(senddata)
+        for senddata in senddata_list:
+            await websocket.send(senddata)
+            time.sleep(0.5)
+            print(f"Input Command is :{senddata}")
+
+        while True:
+
+            try:
+
+                data = await websocket.recv()
                 time.sleep(0.5)
-                print(f"Input Command is :{senddata}")
+                # print(f"Recev Command is :{data}")
 
-            while True:
-                
-                try:
+                if data[0] == '0':
+                    recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
+                    trid0 = recvstr[1]
 
-                    data = await websocket.recv()
-                    time.sleep(0.5)
-                    # print(f"Recev Command is :{data}")
+                    if trid0 == "H0STASP0":  # 주식호가tr 일경우의 처리 단계
+                        print("#### 주식호가 ####")
+                        stockhoka_domestic(recvstr[3])
+                        time.sleep(1)
 
-                    if data[0] == '0':
-                        recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
-                        trid0 = recvstr[1]
+                    elif trid0 == "H0STCNT0":  # 주식체결 데이터 처리
+                        print("#### 주식체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stockspurchase_domestic(data_cnt, recvstr[3])
 
-                        if trid0 == "H0STASP0":  # 주식호가tr 일경우의 처리 단계
-                            print("#### 주식호가 ####")
-                            stockhoka_domestic(recvstr[3])
-                            time.sleep(1)
+                    elif trid0 == "HDFSASP1":  # 해외주식호가tr 일경우의 처리 단계
+                        print("#### 해외주식호가 ####")
+                        stockhoka_overseas(recvstr[3])
+                        time.sleep(1)
 
-                        elif trid0 == "H0STCNT0":  # 주식체결 데이터 처리
-                            print("#### 주식체결 ####")
-                            data_cnt = int(recvstr[2])  # 체결데이터 개수
-                            stockspurchase_domestic(data_cnt, recvstr[3])
+                    elif trid0 == "HDFSCNT0":  # 주식체결 데이터 처리
+                        print("#### 해외주식체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stockspurchase_overseas(data_cnt, recvstr[3])
 
-                        elif trid0 == "HDFSASP1":  # 해외주식호가tr 일경우의 처리 단계
-                            print("#### 해외주식호가 ####")
-                            stockhoka_overseas(recvstr[3])
-                            time.sleep(1)
+                elif data[0] == '1':
+                    recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
+                    trid0 = recvstr[1]
 
-                        elif trid0 == "HDFSCNT0":  # 주식체결 데이터 처리
-                            print("#### 해외주식체결 ####")
-                            data_cnt = int(recvstr[2])  # 체결데이터 개수
-                            stockspurchase_overseas(data_cnt, recvstr[3])
+                    if trid0 == "K0STCNI0" or trid0 == "K0STCNI9" or trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
+                        stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
 
-                    elif data[0] == '1':
-                        recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
-                        trid0 = recvstr[1]
+                    elif trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9" or trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9":  # 해외주실체결 통보 처리
+                        stocksigningnotice_overseas(recvstr[3], aes_key, aes_iv)
 
-                        if trid0 == "K0STCNI0" or trid0 == "K0STCNI9" or trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
-                            stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
+                else:
 
-                        elif trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9" or trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9":  # 해외주실체결 통보 처리
-                            stocksigningnotice_overseas(recvstr[3], aes_key, aes_iv)
+                    jsonObject = json.loads(data)
+                    trid = jsonObject["header"]["tr_id"]
 
-                    else:
+                    if trid != "PINGPONG":
+                        rt_cd = jsonObject["body"]["rt_cd"]
 
-                        jsonObject = json.loads(data)
-                        trid = jsonObject["header"]["tr_id"]
+                        if rt_cd == '1':  # 에러일 경우 처리
+                            if jsonObject["body"]["msg1"] != 'ALREADY IN SUBSCRIBE':
+                                print("### ERROR RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
+                            break
 
-                        if trid != "PINGPONG":
-                            rt_cd = jsonObject["body"]["rt_cd"]
+                        elif rt_cd == '0':  # 정상일 경우 처리
+                            print("### RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
 
-                            if rt_cd == '1':  # 에러일 경우 처리
-                                if jsonObject["body"]["msg1"] != 'ALREADY IN SUBSCRIBE':
-                                    print("### ERROR RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
-                                break
+                            # 체결통보 처리를 위한 AES256 KEY, IV 처리 단계
+                            if trid == "K0STCNI0" or trid == "K0STCNI9" or trid == "H0STCNI0" or trid == "H0STCNI9":
+                                aes_key = jsonObject["body"]["output"]["key"]
+                                aes_iv = jsonObject["body"]["output"]["iv"]
+                                print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
 
-                            elif rt_cd == '0':  # 정상일 경우 처리
-                                print("### RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
+                            elif trid == "H0GSCNI0" or trid == "H0GSCNI9" or trid == "H0GSCNI0" or trid == "H0GSCNI9":
+                                aes_key = jsonObject["body"]["output"]["key"]
+                                aes_iv = jsonObject["body"]["output"]["iv"]
+                                print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
 
-                                # 체결통보 처리를 위한 AES256 KEY, IV 처리 단계
-                                if trid == "K0STCNI0" or trid == "K0STCNI9" or trid == "H0STCNI0" or trid == "H0STCNI9":
-                                    aes_key = jsonObject["body"]["output"]["key"]
-                                    aes_iv = jsonObject["body"]["output"]["iv"]
-                                    print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
+                    elif trid == "PINGPONG":
+                        print("### RECV [PINGPONG] [%s]" % (data))
+                        print("### SEND [PINGPONG] [%s]" % (data))
 
-                                elif trid == "H0GSCNI0" or trid == "H0GSCNI9" or trid == "H0GSCNI0" or trid == "H0GSCNI9":
-                                    aes_key = jsonObject["body"]["output"]["key"]
-                                    aes_iv = jsonObject["body"]["output"]["iv"]
-                                    print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
-
-                        elif trid == "PINGPONG":
-                            print("### RECV [PINGPONG] [%s]" % (data))
-                            print("### SEND [PINGPONG] [%s]" % (data))
-                            
-                except websockets.ConnectionClosed:
-                    continue
+            except websockets.ConnectionClosed:
+                continue
                     
                     
 # 비동기로 서버에 접속한다.

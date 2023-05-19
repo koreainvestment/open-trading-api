@@ -40,7 +40,7 @@ def get_approval(key, secret):
 
 g_appkey = "Appkey값셋팅하세요"
 g_appsecret = "Appsecret값셋팅하세요"
-g_approval_key = get_approval(g_appkey, g_appsceret)    
+g_approval_key = get_approval(g_appkey, g_appsecret) 
     
     
 h = {

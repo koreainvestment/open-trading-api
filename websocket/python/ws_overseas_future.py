@@ -130,74 +130,72 @@ async def connect():
         temp = '{"header":{"approval_key": "%s","custtype":"P","tr_type":"%s","content-type":"utf-8"},"body":{"input":{"tr_id":"%s","tr_key":"%s"}}}'%(g_approval_key,i,j,k)
         senddata_list.append(temp)
         
-    while True:
-        
-        async with websockets.connect(url, ping_interval=30) as websocket:
+    async with websockets.connect(url, ping_interval=30) as websocket:
 
-            for senddata in senddata_list:
-                await websocket.send(senddata)
+        for senddata in senddata_list:
+            await websocket.send(senddata)
+            time.sleep(0.5)
+            print(f"Input Command is :{senddata}")
+
+        while True:
+
+            try:
+
+                data = await websocket.recv()
                 time.sleep(0.5)
-                print(f"Input Command is :{senddata}")
+                # print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
 
-            while True:
-                
-                try:
+                if data[0] == '0':
+                    recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
+                    trid0 = recvstr[1]
 
-                    data = await websocket.recv()
-                    time.sleep(0.5)
-                    # print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
+                    if trid0 == "HDFFF010":  # 해외선물옵션호가 tr 일경우의 처리 단계
+                        print("#### 해외선물옵션호가 ####")
+                        stockhoka_overseafut(recvstr[3])
+                        time.sleep(1)
 
-                    if data[0] == '0':
-                        recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
-                        trid0 = recvstr[1]
-                        
-                        if trid0 == "HDFFF010":  # 해외선물옵션호가 tr 일경우의 처리 단계
-                            print("#### 해외선물옵션호가 ####")
-                            stockhoka_overseafut(recvstr[3])
-                            time.sleep(1)
+                    elif trid0 == "HDFFF020":  # 해외선물옵션체결 데이터 처리
+                        print("#### 해외선물옵션체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stockspurchase_overseafut(data_cnt, recvstr[3])                            
 
-                        elif trid0 == "HDFFF020":  # 해외선물옵션체결 데이터 처리
-                            print("#### 해외선물옵션체결 ####")
-                            data_cnt = int(recvstr[2])  # 체결데이터 개수
-                            stockspurchase_overseafut(data_cnt, recvstr[3])                            
+                elif data[0] == '1':
 
-                    elif data[0] == '1':
-                        
-                        recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
-                        trid0 = recvstr[1]
-                        
-                        if trid0 == "HDFFF2C0":  # 해외선물옵션체결 통보 처리
-                            stocksigningnotice_overseafut(recvstr[3], aes_key, aes_iv)
-                            
-                    else:
+                    recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
+                    trid0 = recvstr[1]
 
-                        jsonObject = json.loads(data)
-                        trid = jsonObject["header"]["tr_id"]
+                    if trid0 == "HDFFF2C0":  # 해외선물옵션체결 통보 처리
+                        stocksigningnotice_overseafut(recvstr[3], aes_key, aes_iv)
 
-                        if trid != "PINGPONG":
-                            rt_cd = jsonObject["body"]["rt_cd"]
+                else:
 
-                            if rt_cd == '1':  # 에러일 경우 처리
-                                
-                                if jsonObject["body"]["msg1"] != 'ALREADY IN SUBSCRIBE':
-                                    print("### ERROR RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
-                                break
+                    jsonObject = json.loads(data)
+                    trid = jsonObject["header"]["tr_id"]
 
-                            elif rt_cd == '0':  # 정상일 경우 처리
-                                print("### RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
+                    if trid != "PINGPONG":
+                        rt_cd = jsonObject["body"]["rt_cd"]
 
-                                # 체결통보 처리를 위한 AES256 KEY, IV 처리 단계
-                                if trid == "HDFFF2C0": # 해외선물옵션
-                                    aes_key = jsonObject["body"]["output"]["key"]
-                                    aes_iv = jsonObject["body"]["output"]["iv"]
-                                    print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))  
+                        if rt_cd == '1':  # 에러일 경우 처리
 
-                        elif trid == "PINGPONG":
-                            print("### RECV [PINGPONG] [%s]" % (data))
-                            print("### SEND [PINGPONG] [%s]" % (data))
-                            
-                except websockets.ConnectionClosed:
-                    continue
+                            if jsonObject["body"]["msg1"] != 'ALREADY IN SUBSCRIBE':
+                                print("### ERROR RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
+                            break
+
+                        elif rt_cd == '0':  # 정상일 경우 처리
+                            print("### RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
+
+                            # 체결통보 처리를 위한 AES256 KEY, IV 처리 단계
+                            if trid == "HDFFF2C0": # 해외선물옵션
+                                aes_key = jsonObject["body"]["output"]["key"]
+                                aes_iv = jsonObject["body"]["output"]["iv"]
+                                print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))  
+
+                    elif trid == "PINGPONG":
+                        print("### RECV [PINGPONG] [%s]" % (data))
+                        print("### SEND [PINGPONG] [%s]" % (data))
+
+            except websockets.ConnectionClosed:
+                continue
                     
                     
 # 비동기로 서버에 접속한다.
