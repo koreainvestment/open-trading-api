@@ -112,8 +112,8 @@ def stockspurchase_domestic(data_cnt, data):
 
 # 국내주식체결통보 출력라이브러리
 def stocksigningnotice_domestic(data, key, iv):
-    # menulist = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|주문조건|주식단축종목코드|체결수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|신용구분|신용대출일자|체결종목명40|주문가격"
-    # menustr1 = menulist.split('|')
+    menulist = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|주문조건|주식단축종목코드|체결수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|신용구분|신용대출일자|체결종목명40|주문가격"
+    menustr1 = menulist.split('|')
 
     # AES256 처리 단계
     aes_dec_str = aes_cbc_base64_dec(key, iv, data)
@@ -399,7 +399,7 @@ async def connect():
     
     # 원하는 호출을 [tr_type, tr_id, tr_key] 순서대로 리스트 만들기
     
-    ### 1. 국내주식 호가, 체결가, 체결통보 ###
+    ### 1. 국내주식 호가, 체결가, 체결통보 ### # 모의투자 국내주식 체결통보: H0STCNI9
     # code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1','H0STCNI0','HTS ID를 입력하세요']]
     
     ### 2-1. 해외주식(미국) 호가, 체결가, 체결통보 ###
@@ -435,7 +435,7 @@ async def connect():
 
         for senddata in senddata_list:
             await websocket.send(senddata)
-            time.sleep(0.5)
+            await asyncio.sleep(0.5)
             print(f"Input Command is :{senddata}")
 
         while True:
@@ -443,7 +443,7 @@ async def connect():
             try:
 
                 data = await websocket.recv()
-                time.sleep(0.5)
+                await asyncio.sleep(0.5)
                 # print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
 
                 if data[0] == '0':
@@ -453,58 +453,62 @@ async def connect():
                     if trid0 == "H0STASP0":  # 주식호가tr 일경우의 처리 단계
                         print("#### 주식호가 ####")
                         stockhoka_domestic(recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "H0STCNT0":  # 주식체결 데이터 처리
                         print("#### 주식체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_domestic(data_cnt, recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "HDFSASP0":  # 해외주식호가tr 일경우의 처리 단계
                         print("#### 해외(미국)주식호가 ####")
                         stockhoka_overseas(recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "HDFSASP1":  # 해외주식호가tr 일경우의 처리 단계
                         print("#### 해외(아시아)주식호가 ####")
                         stockhoka_overseas(recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "HDFSCNT0":  # 해외주식체결 데이터 처리
                         print("#### 해외주식체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_overseas(data_cnt, recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "H0IFASP0":  # 지수선물호가 tr 일경우의 처리 단계
                         print("#### 지수선물호가 ####")
                         stockhoka_futs(recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "H0IFCNT0":  # 지수선물체결 데이터 처리
                         print("#### 지수선물체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_futs(data_cnt, recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "H0IOASP0":  # 지수옵션호가 tr 일경우의 처리 단계
                         print("#### 지수옵션호가 ####")
                         stockhoka_optn(recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "H0IOCNT0":  # 지수옵션체결 데이터 처리
                         print("#### 지수옵션체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_optn(data_cnt, recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "HDFFF010":  # 해외선물옵션호가 tr 일경우의 처리 단계
                         print("#### 해외선물옵션호가 ####")
                         stockhoka_overseafut(recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "HDFFF020":  # 해외선물옵션체결 데이터 처리
                         print("#### 해외선물옵션체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_overseafut(data_cnt, recvstr[3])
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                 elif data[0] == '1':
 
@@ -513,19 +517,19 @@ async def connect():
 
                     if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
                         stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "H0GSCNI0":  # 해외주실체결 통보 처리
                         stocksigningnotice_overseas(recvstr[3], aes_key, aes_iv)
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "H0IFCNI0":  # 지수선물옵션체결 통보 처리
                         stocksigningnotice_futsoptn(recvstr[3], aes_key, aes_iv)
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                     elif trid0 == "HDFFF2C0":  # 해외선물옵션체결 통보 처리
                         stocksigningnotice_overseafut(recvstr[3], aes_key, aes_iv)
-                        time.sleep(0.2)
+                        await asyncio.sleep(0.2)
 
                 else:
 
@@ -567,6 +571,7 @@ async def connect():
 
                     elif trid == "PINGPONG":
                         print("### RECV [PINGPONG] [%s]" % (data))
+                        await websocket.pong(data)
                         print("### SEND [PINGPONG] [%s]" % (data))
 
             except websockets.ConnectionClosed:

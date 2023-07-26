@@ -138,7 +138,7 @@ g_approval_key = get_approval(g_appkey, g_appsceret)
 
         for senddata in senddata_list:
             await websocket.send(senddata)
-            time.sleep(0.5)
+            await asyncio.sleep(0.5)
             print(f"Input Command is :{senddata}")
 
         while True:
@@ -146,7 +146,7 @@ g_approval_key = get_approval(g_appkey, g_appsceret)
             try:
 
                 data = await websocket.recv()
-                time.sleep(0.5)
+                await asyncio.sleep(0.5)
                 # print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
 
                 if data[0] == '0':
@@ -156,16 +156,18 @@ g_approval_key = get_approval(g_appkey, g_appsceret)
                     if trid0 == "HDFSASP0":  # 해외주식호가tr 일경우의 처리 단계
                         print("#### 해외(미국)주식호가 ####")
                         stockhoka_overseas(recvstr[3])
-                        time.sleep(1)
+                        await asyncio.sleep(0.5)
 
                     elif trid0 == "HDFSASP1":  # 해외주식호가tr 일경우의 처리 단계
                         print("#### 해외(아시아)주식호가 ####")
                         stockhoka_overseas(recvstr[3])
-                        time.sleep(1)
+                        await asyncio.sleep(0.5)
 
                     elif trid0 == "HDFSCNT0":  # 해외주식체결 데이터 처리
                         print("#### 해외주식체결 ####")
-                        stockspurchase_overseas(data_cnt, recvstr[3])                        
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stockspurchase_overseas(data_cnt, recvstr[3])
+                        await asyncio.sleep(0.5)
 
                 elif data[0] == '1':
 
@@ -200,6 +202,7 @@ g_approval_key = get_approval(g_appkey, g_appsceret)
 
                     elif trid == "PINGPONG":
                         print("### RECV [PINGPONG] [%s]" % (data))
+                        await websocket.pong(data)
                         print("### SEND [PINGPONG] [%s]" % (data))
 
             except websockets.ConnectionClosed:

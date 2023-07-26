@@ -134,7 +134,7 @@ async def connect():
 
         for senddata in senddata_list:
             await websocket.send(senddata)
-            time.sleep(0.5)
+            await asyncio.sleep(0.5)
             print(f"Input Command is :{senddata}")
 
         while True:
@@ -142,7 +142,7 @@ async def connect():
             try:
 
                 data = await websocket.recv()
-                time.sleep(0.5)
+                await asyncio.sleep(0.5)
                 # print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
 
                 if data[0] == '0':
@@ -152,12 +152,13 @@ async def connect():
                     if trid0 == "HDFFF010":  # 해외선물옵션호가 tr 일경우의 처리 단계
                         print("#### 해외선물옵션호가 ####")
                         stockhoka_overseafut(recvstr[3])
-                        time.sleep(1)
+                        await asyncio.sleep(0.5)
 
                     elif trid0 == "HDFFF020":  # 해외선물옵션체결 데이터 처리
                         print("#### 해외선물옵션체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
-                        stockspurchase_overseafut(data_cnt, recvstr[3])                            
+                        stockspurchase_overseafut(data_cnt, recvstr[3])
+                        await asyncio.sleep(0.5)
 
                 elif data[0] == '1':
 
@@ -192,6 +193,7 @@ async def connect():
 
                     elif trid == "PINGPONG":
                         print("### RECV [PINGPONG] [%s]" % (data))
+                        await websocket.pong(data)
                         print("### SEND [PINGPONG] [%s]" % (data))
 
             except websockets.ConnectionClosed:

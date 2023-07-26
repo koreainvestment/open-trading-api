@@ -100,7 +100,11 @@ def on_open(ws):
     ws.send(json.dumps(b2), websocket.ABNF.OPCODE_TEXT) #종목코드 2
     ws.send(json.dumps(b3), websocket.ABNF.OPCODE_TEXT)  # 종목코드 3
 
-ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:21000/tryitout/H0STCNT0",
+# 모의투자
+# ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:31000",
+#                             on_open=on_open, on_message=on_message, on_error=on_error)    
+    
+ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:21000",
                             on_open=on_open, on_message=on_message, on_error=on_error)
 
 ws.run_forever()

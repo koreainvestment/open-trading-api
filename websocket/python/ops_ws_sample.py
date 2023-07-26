@@ -127,14 +127,16 @@ async def connect():
     # 웹 소켓에 접속.( 주석은 koreainvest test server for websocket)
     ## 시세데이터를 받기위한 데이터를 미리 할당해서 사용한다.
     
-    g_appkey = 'PS4yX5YqpL5bDeAExo5KGkKMQ8LTBhY400DA'
-    g_appsceret = 'nVixJIVll+Ro8TPPHDVssdCX5Y2zA5fsjhclkjBKgHiHYmNoc3aq36pj61GKMqD2XmEExcXd6siqzJM6w0CmkY9UUwSmmFItBjhQh5EdufRZhCRq80Ld0LeMXqTxZZpcOgkghjp26oDQm4TpSIPzY5LH3ObQH0DTgCPjdS8aNzs88KkUKUk='
-    g_personalsecKey = 's8w9coyUrF/4NjCrj2LKM5jPCqpXRbyC4LlayKaDxRLILyZZd8e81BDxQOtTlWq4F23HFN838PZ3IHxbv2CkAA0mZ6JZDiAplWGGG/JAdx5VtbiXFe3GDPL/2rWraUXvmWpXlqsgLgoRR1D9nxirn4DihMdJJKMo2Kp55/cqncfkJEt5ECk='
+    g_appkey = '앱키를 입력하세요'
+    g_appsceret = '앱 시크릿키를 입력하세요'
+    g_personalsecKey = '퍼스널셋키를 입력하세요'    # 법인만 해당
     
     stockcode = '005930'    # 테스트용 임시 종목 설정, 삼성전자
-    htsid = '101334'    # 체결통보용 htsid 입력
+    htsid = 'HTS ID를 입력하세요'    # 체결통보용 htsid 입력
     custtype = 'P'      # customer type, 개인:'P' 법인 'B'
-    url = 'ws://ops.koreainvestment.com:21000'
+    
+    # url = 'ws://ops.koreainvestment.com:31000' # 모의투자계좌
+    url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
     
     g_approval_key = get_approval(g_appkey, g_appsceret)
     print("approval_key [%s]" % (g_approval_key))
@@ -205,7 +207,7 @@ async def connect():
                     if trid0 == "H0STASP0":  # 주식호가tr 일경우의 처리 단계
                         print("#### 주식호가 ####")
                         stockhoka(recvstr[3])
-                        time.sleep(1)
+                        await asyncio.sleep(1)
 
                     elif trid0 == "H0STCNT0":  # 주식체결 데이터 처리
                         print("#### 주식체결 ####")
@@ -239,6 +241,7 @@ async def connect():
 
                 elif trid == "PINGPONG":
                     print("### RECV [PINGPONG] [%s]" % (data))
+                    await websocket.pong(data)
                     print("### SEND [PINGPONG] [%s]" % (data))
 
 # 비동기로 서버에 접속한다.

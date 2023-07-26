@@ -134,10 +134,12 @@ async def connect():
     g_appkey = '앱키를 입력하세요'
     g_appsceret = '앱 시크릿키를 입력하세요'
 
-    stockcode = '종목코드입력하세요'  # 테스트용 임시 종목 설정, 삼성전자
+    stockcode = '005930'  # 테스트용 임시 종목 설정, 삼성전자
     htsid = 'HTS ID를 입력하세요'  # 체결통보용 htsid 입력
     custtype = 'P'  # customer type, 개인:'P' 법인 'B'
-    url = 'ws://ops.koreainvestment.com:21000'
+    
+    # url = 'ws://ops.koreainvestment.com:31000' # 모의투자계좌
+    url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
     
     g_approval_key = get_approval(g_appkey, g_appsceret)
     print("approval_key [%s]" % (g_approval_key))
@@ -195,12 +197,12 @@ async def connect():
         print('Input Command is :', senddata)
 
         await websocket.send(senddata)
-        time.sleep(0.5)
+        await asyncio.sleep(0.5)
 
         # 데이터가 오기만 기다린다.
         while True:
             data = await websocket.recv()
-            time.sleep(0.5)
+            await asyncio.sleep(0.5)
             print("Recev Command is :", data)
             if data[0] == '0' or data[0] == '1':  # 실시간 데이터일 경우
                 trid = jsonObject["header"]["tr_id"]
@@ -211,12 +213,13 @@ async def connect():
                     if trid0 == "H0STASP0":  # 주식호가tr 일경우의 처리 단계
                         print("#### 주식호가 ####")
                         stockhoka(recvstr[3])
-                        time.sleep(1)
+                        await asyncio.sleep(0.5)
 
                     elif trid0 == "H0STCNT0":  # 주식체결 데이터 처리
                         print("#### 주식체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase(data_cnt, recvstr[3])
+                        await asyncio.sleep(0.5)
 
                 elif data[0] == '1':
                     recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
@@ -245,6 +248,7 @@ async def connect():
 
                 elif trid == "PINGPONG":
                     print("### RECV [PINGPONG] [%s]" % (data))
+                    await websocket.pong(data)
                     print("### SEND [PINGPONG] [%s]" % (data))
 
 

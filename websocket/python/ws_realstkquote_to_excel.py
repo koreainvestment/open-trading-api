@@ -57,8 +57,8 @@ b = {
     "body":
         {
             "input": {
-                "tr_id": "H0STASP0",
-                "tr_key": "011700"
+                "tr_id": "H0STASP0", # API명
+                "tr_key": "011700"   # 종목번호
             }
     }
 }
@@ -141,7 +141,12 @@ def on_open(ws):
 
 # websocket.enableTrace(True)
 
-ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:21000/tryitout/H0STCNT0",
+# 모의투자
+# ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:31000",
+#                             on_open=on_open, on_message=on_message, on_error=on_error)
+
+
+ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:21000",
                             on_open=on_open, on_message=on_message, on_error=on_error)
 
 ws.run_forever()

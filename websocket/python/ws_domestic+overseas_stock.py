@@ -202,7 +202,7 @@ async def connect():
     # url = 'ws://ops.koreainvestment.com:31000' # 모의투자계좌
     url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
 
-    # 원하는 호출을 [tr_type, tr_id, tr_key] 순서대로 리스트 만들기
+    # 원하는 호출을 [tr_type, tr_id, tr_key] 순서대로 리스트 만들기 # 모의투자 국내주식 체결통보: H0STCNI9 
     code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1','H0STCNI0','HTS ID를 입력하세요'],
                  ['1','H0STASP0','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요']]
     
@@ -217,7 +217,7 @@ async def connect():
 
         for senddata in senddata_list:
             await websocket.send(senddata)
-            time.sleep(0.5)
+            await asyncio.sleep(0.5)
             print(f"Input Command is :{senddata}")
 
         while True:
@@ -225,7 +225,7 @@ async def connect():
             try:
 
                 data = await websocket.recv()
-                time.sleep(0.5)
+                await asyncio.sleep(0.5)
                 # print(f"Recev Command is :{data}")
 
                 if data[0] == '0':
@@ -235,22 +235,24 @@ async def connect():
                     if trid0 == "H0STASP0":  # 주식호가tr 일경우의 처리 단계
                         print("#### 주식호가 ####")
                         stockhoka_domestic(recvstr[3])
-                        time.sleep(1)
+                        await asyncio.sleep(0.5)
 
                     elif trid0 == "H0STCNT0":  # 주식체결 데이터 처리
                         print("#### 주식체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_domestic(data_cnt, recvstr[3])
+                        await asyncio.sleep(0.5)
 
                     elif trid0 == "HDFSASP1":  # 해외주식호가tr 일경우의 처리 단계
                         print("#### 해외주식호가 ####")
                         stockhoka_overseas(recvstr[3])
-                        time.sleep(1)
+                        await asyncio.sleep(0.5)
 
                     elif trid0 == "HDFSCNT0":  # 주식체결 데이터 처리
                         print("#### 해외주식체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_overseas(data_cnt, recvstr[3])
+                        await asyncio.sleep(0.5)
 
                 elif data[0] == '1':
                     recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
@@ -291,6 +293,7 @@ async def connect():
 
                     elif trid == "PINGPONG":
                         print("### RECV [PINGPONG] [%s]" % (data))
+                        await websocket.pong(data)
                         print("### SEND [PINGPONG] [%s]" % (data))
 
             except websockets.ConnectionClosed:
