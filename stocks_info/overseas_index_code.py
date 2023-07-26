@@ -59,7 +59,7 @@ def get_overseas_index_master_dataframe(base_dir):
     field_specs = [4, 1, 1, 1, 4, 3]
     part2_columns = ['종목업종코드','다우30 편입종목여부','나스닥100 편입종목여부',
                      'S&P 500 편입종목여부','거래소코드','국가구분코드']
-    df2 = pd.read_fwf(tmp_fil2, widths=field_specs, names=part2_columns)
+    df2 = pd.read_fwf(tmp_fil2, widths=field_specs, names=part2_columns, encoding='cp949')
     
     df2['종목업종코드'] = df2['종목업종코드'].str.replace(pat=r'[^A-Z]', repl= r'', regex=True) # 종목업종코드는 잘못 기입되어 있을 수 있으니 참고할 때 반드시 mst 파일과 비교 참고
     df2['다우30 편입종목여부'] = df2['다우30 편입종목여부'].str.replace(pat=r'[^0-1]+', repl= r'', regex=True) # 한글명 길이가 길어서 생긴 오타들 제거
