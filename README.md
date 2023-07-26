@@ -35,7 +35,7 @@ KIS Developers 서비스 신청 페이지까지 2가지 경로로 접속 가능�
 * 다만 기존 가입내역이 있으며 HTS ID 변경 후 Open API 서비스 사용에 어려움을 겪으실 경우, KIS Developers 홈페이지 Q&A 게시판에 문의 남겨주시면 조치해 드리겠습니다.
 
 ### 2.3. 유의사항 확인
-![](https://wikidocs.net/images/page/159301/kis_restapi_2.png)
+![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/9413332d-105c-47aa-89de-7d419714a0fb)
 
 다음으로는 유의사항확인입니다. 서비스 사용에 관한 유의사항을 정독하여 충분하게 숙지하신 뒤, 동의를 진행합니다. 개인정보 수집·이용 동의서, 고객 이용약관 및 이용약관 개정 알림에 대해 미동의 시, 서비스 이용이 불가합니다.
 
