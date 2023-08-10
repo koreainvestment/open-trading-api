@@ -11,6 +11,56 @@
 			"name": "OAuth",
 			"item": [
 				{
+					"name": "J_웹소켓접속키발급",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"console.log(jsonData)\r",
+									"\r",
+									"if (jsonData) { \r",
+									"    pm.environment.set(\"APPROVAL_KEY\", jsonData.approval_key); \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grant_type\": \"client_credentials\",\r\n    \"appkey\": \"{{PROD_APPKEY}}\",\r\n    \"secretkey\": \"{{PROD_APPSECRET}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PROD}}/oauth2/Approval",
+							"host": [
+								"{{PROD}}"
+							],
+							"path": [
+								"oauth2",
+								"Approval"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "J_토큰발급",
 					"event": [
 						{
@@ -8450,6 +8500,225 @@
 											"key": "SYMB",
 											"value": "AAPL",
 											"description": "종목코드"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "J_해외주식분봉조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{PROD_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{PROD_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{PROD_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFS76950200",
+										"type": "text",
+										"description": "[실전투자]\nHHDFS76950200"
+									},
+									{
+										"key": "custtype",
+										"value": "P",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{PROD}}/uapi/overseas-price/v1/quotations/inquire-time-itemchartprice?AUTH=&EXCD=NAS&SYMB=TSLA&NMIN=5&PINC=1&NEXT=&NREC=120&FILL=&KEYB=",
+									"host": [
+										"{{PROD}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-price",
+										"v1",
+										"quotations",
+										"inquire-time-itemchartprice"
+									],
+									"query": [
+										{
+											"key": "AUTH",
+											"value": "",
+											"description": "사용자권한정보 \"\" (Null 값 설정)"
+										},
+										{
+											"key": "EXCD",
+											"value": "NAS",
+											"description": "거래소코드 \nNYS : 뉴욕, NAS : 나스닥,  AMS : 아멕스\nHKS : 홍콩, SHS : 상해 , \nSZS : 심천 HSX : 호치민, \nHNX : 하노이 TSE : 도쿄"
+										},
+										{
+											"key": "SYMB",
+											"value": "TSLA",
+											"description": "종목코드(ex. TSLA)"
+										},
+										{
+											"key": "NMIN",
+											"value": "5",
+											"description": "분갭(1: 1분봉, 2: 2분봉, ...)"
+										},
+										{
+											"key": "PINC",
+											"value": "1",
+											"description": "전일포함여부(0:당일 1:전일포함)"
+										},
+										{
+											"key": "NEXT",
+											"value": "",
+											"description": "다음여부 \"\"(Null 값 설정)"
+										},
+										{
+											"key": "NREC",
+											"value": "120",
+											"description": "레코드요청갯수(최대 120)"
+										},
+										{
+											"key": "FILL",
+											"value": "",
+											"description": "미체결채움구분 \"\"(Null 값 설정)"
+										},
+										{
+											"key": "KEYB",
+											"value": "",
+											"description": "NEXT KEY BUFF \"\"(Null 값 설정)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "J_해외지수분봉조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{PROD_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{PROD_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{PROD_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST03030200",
+										"type": "text",
+										"description": "[실전투자]\nFHKST03030200"
+									},
+									{
+										"key": "custtype",
+										"value": "P",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{PROD}}/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice?FID_COND_MRKT_DIV_CODE=N&FID_INPUT_ISCD=SPX&FID_HOUR_CLS_CODE=0&FID_PW_DATA_INCU_YN=Y",
+									"host": [
+										"{{PROD}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-price",
+										"v1",
+										"quotations",
+										"inquire-time-indexchartprice"
+									],
+									"query": [
+										{
+											"key": "FID_COND_MRKT_DIV_CODE",
+											"value": "N",
+											"description": "시장분류코드(N:해외지수 X:환율 KX:원화환율)"
+										},
+										{
+											"key": "FID_INPUT_ISCD",
+											"value": "SPX",
+											"description": "종목코드(ex. SPX)"
+										},
+										{
+											"key": "FID_HOUR_CLS_CODE",
+											"value": "0",
+											"description": "시간구분코드(0:정규장 1:시간외)"
+										},
+										{
+											"key": "FID_PW_DATA_INCU_YN",
+											"value": "Y",
+											"description": "과거데이터포함여부(Y/N)"
 										}
 									]
 								}

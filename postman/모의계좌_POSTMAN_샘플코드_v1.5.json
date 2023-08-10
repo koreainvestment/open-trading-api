@@ -11,6 +11,56 @@
 			"name": "OAuth",
 			"item": [
 				{
+					"name": "V_웹소켓접속키발급",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"console.log(jsonData)\r",
+									"\r",
+									"if (jsonData) { \r",
+									"    pm.environment.set(\"V_APPROVAL_KEY\", jsonData.approval_key); \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grant_type\": \"client_credentials\",\r\n    \"appkey\": \"{{VTS_APPKEY}}\",\r\n    \"secretkey\": \"{{VTS_APPSECRET}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VTS}}/oauth2/Approval",
+							"host": [
+								"{{VTS}}"
+							],
+							"path": [
+								"oauth2",
+								"Approval"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "V_토큰발급",
 					"event": [
 						{
