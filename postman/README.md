@@ -19,9 +19,9 @@ Postman 실행 후 아래 4개의 json 파일들을 Import 해주세요. Import�
 
 |순번 |파일명 |파일 상세 |
 |--|--|--|
-|1|모의계좌_POSTMAN_샘플코드_v1.4.json|postman collections json file(모의계좌용)|
+|1|모의계좌_POSTMAN_샘플코드_v1.5.json|postman collections json file(모의계좌용)|
 |2|모의계좌_POSTMAN_환경변수.json|postman environments json file(모의계좌용)|
-|3|실전계좌_POSTMAN_샘플코드_v1.6.json|postman collections json file(실전계좌용)|
+|3|실전계좌_POSTMAN_샘플코드_v1.7.json|postman collections json file(실전계좌용)|
 |4|실전계좌_POSTMAN_환경변수.json|postman environments json file(실전계좌용)|
 
 ![image](https://user-images.githubusercontent.com/87407853/200476672-c9d15708-5476-4703-89c9-29046ca00d37.png)
@@ -75,6 +75,7 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 
 |구분 |API명 |모의투자 제공 여부 |실전투자 제공 여부 |
 |--|--|--|--|
+|OAuth인증|웹소켓접속키발급|⭕|⭕|
 |OAuth인증|접근토큰발급|⭕|⭕|
 |OAuth인증|접근토큰폐기|⭕|⭕|
 |OAuth인증|Hashkey|⭕|⭕|
@@ -138,6 +139,8 @@ Import가 완료되면 환경변수 설정을 해줍니다. 모의계좌를 활�
 |해외주식현재가|해외주식 조건검색|⭕|⭕|
 |해외주식현재가|해외결제일자조회| |⭕|
 |해외주식현재가|해외주식 현재가상세| |⭕|
+|해외주식현재가|해외주식분봉조회| |⭕|
+|해외주식현재가|해외지수분봉조회| |⭕|
 |해외선물옵션주문|해외선물옵션 주문| |⭕|
 |해외선물옵션주문|해외선물옵션 정정취소주문| |⭕|
 |해외선물옵션주문|해외선물옵션 당일주문내역조회| |⭕|
