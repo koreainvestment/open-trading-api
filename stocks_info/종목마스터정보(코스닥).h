@@ -78,7 +78,7 @@ typedef struct
     char    sale_account[9];                    /* 매출액                                       */
     char    bsop_prfi[9];                       /* 영업이익                                     */
     char    op_prfi[9];                         /* 경상이익                                     */
-    char    thtr_ntin[5];                       /* 단기순이익                                   */
+    char    thtr_ntin[5];                       /* 당기순이익                                   */
     char    roe[9];                             /* ROE(자기자본이익률)                          */
     char    base_date[8];                       /* 기준년월                                     */
     char    prdy_avls_scal[9];                  /* 전일기준 시가총액 (억)                       */
