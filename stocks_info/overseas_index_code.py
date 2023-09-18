@@ -1,5 +1,9 @@
-'''해외주식지수정보(frgn_code.mst) 정제 파이썬 파일'''
-'''정제완료된 엑셀파일 : frgn_code.xlsx'''
+'''
+* 해외주식지수정보(frgn_code.mst) 정제 파이썬 파일
+* 정제완료된 엑셀파일 : frgn_code.xlsx
+* overseas_index_code.py(frgn_code.mst)은 해외지수 정보 제공용으로 개발된 파일로
+  해외주식 정보에 대해 얻고자 할 경우 overseas_stock_code.py(ex. nasmst.cod) 이용하시기 바랍니다.
+'''
 
 import pandas as pd
 import urllib.request
