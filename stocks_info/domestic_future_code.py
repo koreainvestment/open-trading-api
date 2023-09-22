@@ -1,4 +1,4 @@
-'''선물옵션 종목코드(fo_idx_code_mts.mst) 정제 파이썬 파일'''
+'''지수선물옵션 종목코드(fo_idx_code_mts.mst) 정제 파이썬 파일'''
 
 import pandas as pd
 import urllib.request
