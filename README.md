@@ -27,7 +27,7 @@ KIS Developers 서비스 신청 페이지까지 2가지 경로로 접속 가능�
 
 서비스 신청 화면에 접속하면 홈페이지 인증서 로그인 화면이 뜨고, 인증을 완료하면 아래와 같이 KIS Developers 서비스 신청하기의 첫 화면인 휴대폰 인증 화면이 뜨게 됩니다.
 
-![](https://wikidocs.net/images/page/159301/kis_restapi_1.png)
+![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/18cd03fd-753d-44e5-bc3a-4fdbf58e0c81)
 
 해당 화면에서 등록하신 휴대폰 인증을 통해 본인 인증을 완료합니다.
 
