@@ -46,13 +46,13 @@ def get_approval(key, secret):
     return approval_key
 
 
-# 지수선물호가 출력라이브러리
-def stockhoka_futs(data):
+# 상품선물호가 출력라이브러리
+def stockhoka_productfuts(data):
 
     # print(data)
     recvvalue = data.split('^')  # 수신데이터를 split '^'
-
-    print("지수선물  ["+recvvalue[ 0]+"]")
+ 
+    print("상품선물  ["+recvvalue[ 0]+"]")
     print("영업시간  ["+recvvalue[ 1]+"]")
     print("====================================")
     print("선물매도호가1	["+recvvalue[ 2]+"]"+",    매도호가건수1	["+recvvalue[12]+"]"+",    매도호가잔량1	["+recvvalue[22]+"]")
@@ -63,38 +63,15 @@ def stockhoka_futs(data):
     print("선물매수호가1	["+recvvalue[ 7]+"]"+",    매수호가건수1	["+recvvalue[17]+"]"+",    매수호가잔량1	["+recvvalue[27]+"]")
     print("선물매수호가2	["+recvvalue[ 8]+"]"+",    매수호가건수2	["+recvvalue[18]+"]"+",    매수호가잔량2	["+recvvalue[28]+"]")
     print("선물매수호가3	["+recvvalue[ 9]+"]"+",    매수호가건수3	["+recvvalue[19]+"]"+",    매수호가잔량3	["+recvvalue[29]+"]")
-    print("선물매수호가4	["+recvvalue[10 ]+"]"+",   매수호가건수4	["+recvvalue[20]+"]"+",    매수호가잔량4	["+recvvalue[30]+"]")
+    print("선물매수호가4	["+recvvalue[10 ]+"]"+",    매수호가건수4	["+recvvalue[20]+"]"+",    매수호가잔량4	["+recvvalue[30]+"]")
     print("선물매수호가5	["+recvvalue[11]+"]"+",    매수호가건수5	["+recvvalue[21]+"]"+",    매수호가잔량5	["+recvvalue[31]+"]")
     print("====================================")
     print("총매도호가건수	["+recvvalue[32]+"]"+",    총매도호가잔량	["+recvvalue[34]+"]"+",    총매도호가잔량증감	["+recvvalue[36]+"]")
     print("총매수호가건수	["+recvvalue[33]+"]"+",    총매수호가잔량	["+recvvalue[35]+"]"+",    총매수호가잔량증감	["+recvvalue[37]+"]") 
     
     
-# 지수옵션호가 출력라이브러리
-def stockhoka_optn(data):
-    # print(data)
-    recvvalue = data.split('^')  # 수신데이터를 split '^'
-    
-    print("지수옵션  ["+recvvalue[ 0]+"]")
-    print("영업시간  ["+recvvalue[ 1]+"]")
-    print("====================================")
-    print("옵션매도호가1	["+recvvalue[ 2]+"]"+",    매도호가건수1	["+recvvalue[12]+"]"+",    매도호가잔량1	["+recvvalue[22]+"]")
-    print("옵션매도호가2	["+recvvalue[ 3]+"]"+",    매도호가건수2	["+recvvalue[13]+"]"+",    매도호가잔량2	["+recvvalue[23]+"]")
-    print("옵션매도호가3	["+recvvalue[ 4]+"]"+",    매도호가건수3	["+recvvalue[14]+"]"+",    매도호가잔량3	["+recvvalue[24]+"]")
-    print("옵션매도호가4	["+recvvalue[ 5]+"]"+",    매도호가건수4	["+recvvalue[15]+"]"+",    매도호가잔량4	["+recvvalue[25]+"]")
-    print("옵션매도호가5	["+recvvalue[ 6]+"]"+",    매도호가건수5	["+recvvalue[16]+"]"+",    매도호가잔량5	["+recvvalue[26]+"]")
-    print("옵션매수호가1	["+recvvalue[ 7]+"]"+",    매수호가건수1	["+recvvalue[17]+"]"+",    매수호가잔량1	["+recvvalue[27]+"]")
-    print("옵션매수호가2	["+recvvalue[ 8]+"]"+",    매수호가건수2	["+recvvalue[18]+"]"+",    매수호가잔량2	["+recvvalue[28]+"]")
-    print("옵션매수호가3	["+recvvalue[ 9]+"]"+",    매수호가건수3	["+recvvalue[19]+"]"+",    매수호가잔량3	["+recvvalue[29]+"]")
-    print("옵션매수호가4	["+recvvalue[10 ]+"]"+",   매수호가건수4	["+recvvalue[20]+"]"+",    매수호가잔량4	["+recvvalue[30]+"]")
-    print("옵션매수호가5	["+recvvalue[11]+"]"+",    매수호가건수5	["+recvvalue[21]+"]"+",    매수호가잔량5	["+recvvalue[31]+"]")
-    print("====================================")
-    print("총매도호가건수	["+recvvalue[32]+"]"+",    총매도호가잔량	["+recvvalue[34]+"]"+",    총매도호가잔량증감	["+recvvalue[36]+"]")
-    print("총매수호가건수	["+recvvalue[33]+"]"+",    총매수호가잔량	["+recvvalue[35]+"]"+",    총매수호가잔량증감	["+recvvalue[37]+"]") 
-    
-
-# 지수선물체결처리 출력라이브러리
-def stockspurchase_futs(data_cnt, data):
+# 상품선물체결처리 출력라이브러리
+def stockspurchase_productfuts(data_cnt, data):
     print("============================================")
     # print(data)
     menulist = "선물단축종목코드|영업시간|선물전일대비|전일대비부호|선물전일대비율|선물현재가|선물시가|선물최고가|선물최저가|최종거래량|누적거래량|누적거래대금|HTS이론가|시장베이시스|괴리율|근월물약정가|원월물약정가|스프레드|미결제약정수량|미결제약정수량증감|시가시간|시가대비현재가부호|시가대비지수현재가|최고가시간|최고가대비현재가부호|최고가대비지수현재가|최저가시간|최저가대비현재가부호|최저가대비지수현재가|매수비율|체결강도|괴리도|미결제약정직전수량증감|이론베이시스|선물매도호가|선물매수호가|매도호가잔량|매수호가잔량|매도체결건수|매수체결건수|순매수체결건수|총매도수량|총매수수량|총매도호가잔량|총매수호가잔량|전일거래량대비등락율|협의대량거래량|실시간상한가|실시간하한가|실시간가격제한구분"
@@ -106,23 +83,7 @@ def stockspurchase_futs(data_cnt, data):
         for menu in menustr:
             print("%-13s[%s]" % (menu, pValue[i]))
             i += 1
-            
-            
-# 지수옵션체결처리 출력라이브러리
-def stockspurchase_optn(data_cnt, data):
-    print("============================================")
-    # print(data)
-    menulist = "옵션단축종목코드|영업시간|옵션현재가|전일대비부호|옵션전일대비|전일대비율|옵션시가|옵션최고가|옵션최저가|최종거래량|누적거래량|누적거래대금|HTS이론가|HTS미결제약정수량|미결제약정수량증감|시가시간|시가대비현재가부호|시가대비지수현재가|최고가시간|최고가대비현재가부호|최고가대비지수현재가|최저가시간|최저가대비현재가부호|최저가대비지수현재가|매수2비율|프리미엄값|내재가치값|시간가치값|델타|감마|베가|세타|로우|HTS내재변동성|괴리도|미결제약정직전수량증감|이론베이시스|역사적변동성|체결강도|괴리율|시장베이시스|옵션매도호가1|옵션매수호가1|매도호가잔량1|매수호가잔량1|매도체결건수|매수체결건수|순매수체결건수|총매도수량|총매수수량|총매도호가잔량|총매수호가잔량|전일거래량대비등락율|평균변동성|협의대량누적거래량|실시간상한가|실시간하한가|실시간가격제한구분"  
-    menustr = menulist.split('|')
-    pValue = data.split('^')
-    i = 0
-    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
-        print("### [%d / %d]" % (cnt + 1, data_cnt))
-        for menu in menustr:
-            print("%-13s[%s]" % (menu, pValue[i]))
-            i += 1
 
-            
 # 선물옵션 체결통보 출력라이브러리
 def stocksigningnotice_futsoptn(data, key, iv):
     
@@ -185,7 +146,7 @@ def stocksigningnotice_futsoptn(data, key, iv):
 async def connect():
 
     g_appkey = "앱키를 입력하세요"
-    g_appsceret = "앱 시크릿키를 입력하세요"
+    g_appsceret = "앱 시크릿키를 입력하세요" 
     
     g_approval_key = get_approval(g_appkey, g_appsceret)
     print("approval_key [%s]" % (g_approval_key))
@@ -194,15 +155,15 @@ async def connect():
     url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
     
     # 원하는 호출을 [tr_type, tr_id, tr_key] 순서대로 리스트 만들기
-    code_list = [['1','H0IFASP0','101T12'],['1','H0IFCNT0','101T12'], # 지수선물호가, 체결가
-                 ['1','H0IOASP0','201T11317'],['1','H0IOCNT0','201T11317'], # 지수옵션호가, 체결가
+    code_list = [['1','H0CFASP0','175T11'],['1','H0CFCNT0','175T11'], # 상품선물호가, 체결가
                  ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
-    
+
     senddata_list=[]
     
     for i,j,k in code_list:
         temp = '{"header":{"approval_key": "%s","custtype":"P","tr_type":"%s","content-type":"utf-8"},"body":{"input":{"tr_id":"%s","tr_key":"%s"}}}'%(g_approval_key,i,j,k)         
         senddata_list.append(temp)
+
         
     async with websockets.connect(url, ping_interval=30) as websocket:
 
@@ -223,34 +184,22 @@ async def connect():
                     recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                     trid0 = recvstr[1]
 
-                    if trid0 == "H0IFASP0":  # 지수선물호가 tr 일경우의 처리 단계
-                        print("#### 지수선물호가 ####")
-                        stockhoka_futs(recvstr[3])
-                        await asyncio.sleep(0.5)
+                    if trid0 == "H0CFASP0":  # 상품선물호가 tr 일경우의 처리 단계
+                        print("#### 상품선물호가 ####")
+                        stockhoka_productfuts(recvstr[3])
 
-                    elif trid0 == "H0IFCNT0":  # 지수선물체결 데이터 처리
-                        print("#### 지수선물체결 ####")
+                    elif trid0 == "H0CFCNT0":  # 상품선물체결 데이터 처리
+                        print("#### 상품선물체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
-                        stockspurchase_futs(data_cnt, recvstr[3])   
-                        await asyncio.sleep(0.5)
-
-                    elif trid0 == "H0IOASP0":  # 지수옵션호가 tr 일경우의 처리 단계
-                        print("#### 지수옵션호가 ####")
-                        stockhoka_optn(recvstr[3])
-                        await asyncio.sleep(0.5)
-
-                    elif trid0 == "H0IOCNT0":  # 지수옵션체결 데이터 처리
-                        print("#### 지수옵션체결 ####")
-                        data_cnt = int(recvstr[2])  # 체결데이터 개수
-                        stockspurchase_optn(data_cnt, recvstr[3])
-                        await asyncio.sleep(0.5)
+                        stockspurchase_productfuts(data_cnt, recvstr[3])          
 
                 elif data[0] == '1':
 
                     recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                     trid0 = recvstr[1]
 
-                    if trid0 == "H0IFCNI0":  # 지수선물옵션체결 통보 처리
+                    if trid0 == "H0IFCNI0":  # 선물옵션체결 통보 처리
+                        print("#### 선물옵션 통보 처리 ####")
                         stocksigningnotice_futsoptn(recvstr[3], aes_key, aes_iv)
 
                 else:
