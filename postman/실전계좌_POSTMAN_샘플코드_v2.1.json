@@ -4673,7 +4673,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-ccnl?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&STRT_ORD_DT=20220124&END_ORD_DT=20220129&SLL_BUY_DVSN_CD=00&CCLD_NCCS_DVSN=00&SORT_SQN=&STRT_ODNO=&PDNO=&MKET_ID_CD=&FUOP_DVSN_CD&SCRN_DVSN&CTX_AREA_FK200=&CTX_AREA_NK200=",
+									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-ngt-ccnl?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&STRT_ORD_DT=20220124&END_ORD_DT=20220129&SLL_BUY_DVSN_CD=00&CCLD_NCCS_DVSN=00&SORT_SQN=&STRT_ODNO=&PDNO=&MKET_ID_CD=&FUOP_DVSN_CD&SCRN_DVSN&CTX_AREA_FK200=&CTX_AREA_NK200=",
 									"host": [
 										"{{PROD}}"
 									],
@@ -4682,7 +4682,7 @@
 										"domestic-futureoption",
 										"v1",
 										"trading",
-										"inquire-ccnl"
+										"inquire-ngt-ccnl"
 									],
 									"query": [
 										{
@@ -4835,7 +4835,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-balance?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&ACNT_PWD=&MGNA_DVSN=01&EXCC_STAT_CD=1&CTX_AREA_FK200=&CTX_AREA_NK200=",
+									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-ngt-balance?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&ACNT_PWD=&MGNA_DVSN=01&EXCC_STAT_CD=1&CTX_AREA_FK200=&CTX_AREA_NK200=",
 									"host": [
 										"{{PROD}}"
 									],
@@ -4844,7 +4844,7 @@
 										"domestic-futureoption",
 										"v1",
 										"trading",
-										"inquire-balance"
+										"inquire-ngt-balance"
 									],
 									"query": [
 										{
@@ -4962,7 +4962,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-psbl-order?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&PDNO=101T03&PRDT_TYPE_CD=301&SLL_BUY_DVSN_CD=02&UNIT_PRICE=322&ORD_DVSN_CD=01",
+									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-psbl-ngt-order?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&PDNO=101T03&PRDT_TYPE_CD=301&SLL_BUY_DVSN_CD=02&UNIT_PRICE=322&ORD_DVSN_CD=01",
 									"host": [
 										"{{PROD}}"
 									],
@@ -4971,7 +4971,7 @@
 										"domestic-futureoption",
 										"v1",
 										"trading",
-										"inquire-psbl-order"
+										"inquire-psbl-ngt-order"
 									],
 									"query": [
 										{
@@ -5088,7 +5088,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-balance?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&INQR_DT=20230906&CTX_AREA_FK200=&CTX_AREA_NK200=",
+									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-balance-settlement-pl?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&INQR_DT=20230906&CTX_AREA_FK200=&CTX_AREA_NK200=",
 									"host": [
 										"{{PROD}}"
 									],
@@ -5097,7 +5097,7 @@
 										"domestic-futureoption",
 										"v1",
 										"trading",
-										"inquire-balance"
+										"inquire-balance-settlement-pl"
 									],
 									"query": [
 										{
@@ -5204,7 +5204,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-balance?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03",
+									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-deposit?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03",
 									"host": [
 										"{{PROD}}"
 									],
@@ -5213,7 +5213,7 @@
 										"domestic-futureoption",
 										"v1",
 										"trading",
-										"inquire-balance"
+										"inquire-deposit"
 									],
 									"query": [
 										{
@@ -5305,7 +5305,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-balance?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&MGNA_DVSN=02&EXCC_STAT_CD=1&CTX_AREA_FK200=&CTX_AREA_NK200=",
+									"raw": "{{PROD}}/uapi/domestic-futureoption/v1/trading/inquire-balance-valuation-pl?CANO={{CANO_REAL_T}}&ACNT_PRDT_CD=03&MGNA_DVSN=02&EXCC_STAT_CD=1&CTX_AREA_FK200=&CTX_AREA_NK200=",
 									"host": [
 										"{{PROD}}"
 									],
@@ -5314,7 +5314,7 @@
 										"domestic-futureoption",
 										"v1",
 										"trading",
-										"inquire-balance"
+										"inquire-balance-valuation-pl"
 									],
 									"query": [
 										{
