@@ -21,7 +21,7 @@ Postman 실행 후 아래 4개의 json 파일들을 Import 해주세요. Import�
 |--|--|--|
 |1|모의계좌_POSTMAN_샘플코드_v1.5.json|postman collections json file(모의계좌용)|
 |2|모의계좌_POSTMAN_환경변수.json|postman environments json file(모의계좌용)|
-|3|실전계좌_POSTMAN_샘플코드_v2.0.json|postman collections json file(실전계좌용)|
+|3|실전계좌_POSTMAN_샘플코드_v2.1.json|postman collections json file(실전계좌용)|
 |4|실전계좌_POSTMAN_환경변수.json|postman environments json file(실전계좌용)|
 
 ![image](https://user-images.githubusercontent.com/87407853/200476672-c9d15708-5476-4703-89c9-29046ca00d37.png)
