@@ -113,23 +113,25 @@ def stockspurchase_domestic(data_cnt, data):
 
 # 국내주식체결통보 출력라이브러리
 def stocksigningnotice_domestic(data, key, iv):
-    menulist = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|주문조건|주식단축종목코드|체결수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|신용구분|신용대출일자|체결종목명40|주문가격"
-    menustr1 = menulist.split('|')
-
+    
     # AES256 처리 단계
     aes_dec_str = aes_cbc_base64_dec(key, iv, data)
     pValue = aes_dec_str.split('^')
 
-    if pValue[12] == '2': # 체결통보
+    if pValue[13] == '2': # 체결통보
         print("#### 국내주식 체결 통보 ####")
+        menulist = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|주문조건|주식단축종목코드|체결수량|체결단가|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|신용구분|신용대출일자|체결종목명40|주문가격"
+        menustr1 = menulist.split('|')
     else:
         print("#### 국내주식 주문·정정·취소·거부 접수 통보 ####")
+        menulist = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|주문조건|주식단축종목코드|주문수량|주문가격|주식체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|주문종목명|신용구분|신용대출일자|체결종목명40|체결단가"
+        menustr1 = menulist.split('|')
     
     i = 0
     for menu in menustr1:
         print("%s  [%s]" % (menu, pValue[i]))
         i += 1
-
+        
 ### 2. 해외주식 ###
             
 # 해외주식호가 출력라이브러리
