@@ -150,12 +150,10 @@ async def connect():
         cmd = input()
 
         # 입력값 체크 step
-        if cmd < '0' or cmd > '9':
+        if cmd < '0' or cmd > '8':
             print("> Wrong Input Data", cmd)
-            continue
         elif cmd == '0':
             print("Exit!!")
-            break
 
         # 입력값에 따라 전송 데이터셋 구분 처리
         if cmd == '1':  # 주식호가 등록
