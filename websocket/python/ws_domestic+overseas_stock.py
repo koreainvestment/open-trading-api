@@ -260,10 +260,10 @@ async def connect():
                     recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                     trid0 = recvstr[1]
 
-                    if trid0 == "K0STCNI0" or trid0 == "K0STCNI9" or trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
+                    if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
                         stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
 
-                    elif trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9" or trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9":  # 해외주실체결 통보 처리
+                    elif trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9":  # 해외주실체결 통보 처리
                         stocksigningnotice_overseas(recvstr[3], aes_key, aes_iv)
 
                 else:
@@ -283,12 +283,12 @@ async def connect():
                             print("### RETURN CODE [ %s ][ %s ] MSG [ %s ]" % (jsonObject["header"]["tr_key"], rt_cd, jsonObject["body"]["msg1"]))
 
                             # 체결통보 처리를 위한 AES256 KEY, IV 처리 단계
-                            if trid == "K0STCNI0" or trid == "K0STCNI9" or trid == "H0STCNI0" or trid == "H0STCNI9":
+                            if trid == "H0STCNI0" or trid == "H0STCNI9":
                                 aes_key = jsonObject["body"]["output"]["key"]
                                 aes_iv = jsonObject["body"]["output"]["iv"]
                                 print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
 
-                            elif trid == "H0GSCNI0" or trid == "H0GSCNI9" or trid == "H0GSCNI0" or trid == "H0GSCNI9":
+                            elif trid == "H0GSCNI0" or trid == "H0GSCNI9":
                                 aes_key = jsonObject["body"]["output"]["key"]
                                 aes_iv = jsonObject["body"]["output"]["iv"]
                                 print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
