@@ -20,11 +20,11 @@
 
 ② prompt 창에서 아래 명령어를 순서대로 입력
 
-** - (가상환경 생성 명령어) conda create –n koreainvest python=3.8**
+**- (가상환경 생성 명령어) conda create –n koreainvest python=3.8**
 
-** - (가상환경 실행 명령어) conda activate koreainvest**
+**- (가상환경 실행 명령어) conda activate koreainvest**
 
-** - (모듈 설치 명령어) pip install websockets pycryptodome requests pyyaml**
+**- (모듈 설치 명령어) pip install websockets pycryptodome requests pyyaml**
    
 ![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/2a6651cf-25be-45fd-bd7e-5634cf3866fe)
 
