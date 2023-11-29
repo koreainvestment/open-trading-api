@@ -42,11 +42,11 @@ Pycharm은 파이썬 개발에 가장 널리 사용되는 통합 개발 환경�
 
 ① New Project 클릭 > 하단에 Previously configured Interpreter 클릭 > 우측의 Add Interpreter – Add Local Interpreter 클릭 
 
-![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/046d073d-43ab-489b-b2b2-cf8ec04bfac5)
+![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/2e90ce4b-c7d8-4b41-a2f2-9fce45660a83)
 
 ② 새 창이 뜨면 좌측의 Conda Environment 클릭 > Use existing environment - koreainvest 선택 > OK 클릭 > Create 클릭
 
-![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/490fe9ae-eb6b-4527-ac36-074501073ed6)
+![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/4bbf7777-6d23-46ed-8914-ba294bd708c7)
 
 ### **1.5. (option) Postman 설치 및 사용하기**
 
