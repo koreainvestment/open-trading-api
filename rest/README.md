@@ -24,7 +24,10 @@
  - (가상환경 실행 명령어) conda activate koreainvest
  - (모듈 설치 명령어) pip install websockets pycryptodome requests pyyaml
    
-![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/014ac6f5-e689-4a7d-833b-f8d1d6ff46f4)
+![image](https://github.com/koreainvestment/open-trading-api/assets/87407853/2a6651cf-25be-45fd-bd7e-5634cf3866fe)
+
+- python websocket 사용을 위해 websockets 라이브러리를 설치하며, 주식체결통보 AES256 복호화 사용을 위한 pycrypodome 를 설치합니다.
+- REST api 호출을 위해 requests 라이브러리를 설치하며, 개인정보(appkey, appsecret 등) 파일을 읽어들이기 위해 pyyaml 라이브러리를 설치합니다.
 
 ### **1.3. Pycharm 설치**
 
