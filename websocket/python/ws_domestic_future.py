@@ -204,7 +204,7 @@ async def connect():
         temp = '{"header":{"approval_key": "%s","custtype":"P","tr_type":"%s","content-type":"utf-8"},"body":{"input":{"tr_id":"%s","tr_key":"%s"}}}'%(g_approval_key,i,j,k)         
         senddata_list.append(temp)
         
-    async with websockets.connect(url, ping_interval=30) as websocket:
+    async with websockets.connect(url, ping_interval=None) as websocket:
 
         for senddata in senddata_list:
             await websocket.send(senddata)

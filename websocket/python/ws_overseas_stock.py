@@ -134,7 +134,7 @@ g_approval_key = get_approval(g_appkey, g_appsceret)
         senddata_list.append(temp)
         
         
-    async with websockets.connect(url, ping_interval=30) as websocket:
+    async with websockets.connect(url, ping_interval=None) as websocket:
 
         for senddata in senddata_list:
             await websocket.send(senddata)
