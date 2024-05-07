@@ -1,6 +1,9 @@
+#### 0. **당사에서 제공하는 샘플코드에 대한 유의사항** ####
+- 샘플 코드는 한국투자증권 오픈API(KIS Develpers)를 연동하는 예시입니다. 고객님의 개발부담을 줄이고자 참고용으로 제공되고 있습니다.
+- 샘플 코드는 별도의 공지 없이 지속적으로 업데이트될 수 있습니다.
+- 샘플 코드를 활용하여 제작한 고객님의 프로그램으로 인한 손해에 대해서는 당사에서 책임지지 않습니다.
+
 ![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=300&section=header&text=한국투자증권%20KIS%20Developers&fontSize=50&animation=fadeIn&fontAlignY=38&desc=Open%20Trading%20API%20Docs&descAlignY=51&descAlign=62)
-
-
 
 ## 1. KIS Developers 개발자 센터 소개
 [KIS Developers](https://apiportal.koreainvestment.com/)는 한국투자증권의 트레이딩 서비스를 오픈API로 제공하여 개발자들이 다양한 금융서비스를 만들 수 있도록 지원하는 개발자 센터입니다. KIS Developers에서는 개발자의 금융 서비스 개발을 지원하기 위해 API 문서 메뉴 내 API에 대한 상세한 설명과 예제를 제공합니다. 전문 개발자가 아닌 일반인들도 쉽게 금융 서비스를 만들 수 있습니다.
