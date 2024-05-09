@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "dedc7a79-22f5-41b3-a0d0-f185affd7853",
+		"_postman_id": "2645f167-29d0-4a00-aedc-04b7e47eae13",
 		"name": "모의투자(모의Env)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "22257223",
-		"_collection_link": "https://truefriend-openapi.postman.co/workspace/%25ED%2595%259C%25EA%25B5%25AD%25ED%2588%25AC%25EC%259E%2590API%25EC%2583%2598%25ED%2594%258C%25EC%25BD%2594%25EB%2593%259C~aab926d5-6bb3-49c2-b407-6eb42ca083b0/collection/22257223-dedc7a79-22f5-41b3-a0d0-f185affd7853?action=share&creator=22257223&source=collection_link"
+		"_collection_link": "https://truefriend-openapi.postman.co/workspace/%ED%95%9C%ED%88%ACAPI_TEST~de90589e-fb42-46d5-b9c4-ced0d1b7d0df/collection/22257223-2645f167-29d0-4a00-aedc-04b7e47eae13?action=share&source=collection_link&creator=22257223"
 	},
 	"item": [
 		{
@@ -398,7 +398,7 @@
 			"name": "국내주식",
 			"item": [
 				{
-					"name": "국내주식시세",
+					"name": "[국내주식] 기본시세",
 					"item": [
 						{
 							"name": "V_주식현재가 시세",
@@ -1482,7 +1482,7 @@
 					]
 				},
 				{
-					"name": "국내주식주문",
+					"name": "[국내주식] 주문/계좌",
 					"item": [
 						{
 							"name": "V_주식주문(현금)",
@@ -1559,12 +1559,13 @@
 										"key": "hashkey",
 										"value": "{{VTS_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"PDNO\": \"005930\",\r\n    \"ORD_DVSN\": \"00\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"ORD_UNPR\": \"55000\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"PDNO\": \"005930\",\r\n    \"ORD_DVSN\": \"00\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"ORD_UNPR\": \"55000\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1667,7 +1668,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"KRX_FWDG_ORD_ORGNO\": \"00950\",\r\n    \"ORGN_ODNO\": \"6635\",\r\n    \"ORD_DVSN\": \"00\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"ORD_UNPR\": \"55000\",\r\n    \"QTY_ALL_ORD_YN\": \"Y\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"KRX_FWDG_ORD_ORGNO\": \"00950\",\r\n    \"ORGN_ODNO\": \"6635\",\r\n    \"ORD_DVSN\": \"00\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"ORD_UNPR\": \"55000\",\r\n    \"QTY_ALL_ORD_YN\": \"Y\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2116,7 +2117,7 @@
 			"name": "국내선물옵션",
 			"item": [
 				{
-					"name": "국내선물옵션주문",
+					"name": "[국내선물옵션] 주문/계좌",
 					"item": [
 						{
 							"name": "V_선물옵션 주문",
@@ -2193,12 +2194,13 @@
 										"key": "hashkey",
 										"value": "{{VTT_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"ORD_PRCS_DVSN_CD\": \"02\",\r\n    \"CANO\": \"※여기에 본인의 실전계좌번호(선물옵션)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"03\",\r\n    \"SLL_BUY_DVSN_CD\": \"02\",\r\n    \"SHTN_PDNO\": \"101S09\",\r\n    \"ORD_QTY\": \"10\",\r\n    \"UNIT_PRICE\": \"300\",\r\n    \"NMPR_TYPE_CD\": \"01\",\r\n    \"KRX_NMPR_CNDT_CD\": \"0\",\r\n    \"ORD_DVSN_CD\": \"01\"\r\n}",
+									"raw": "{\r\n    \"ORD_PRCS_DVSN_CD\": \"02\",\r\n    \"CANO\": \"{{CANO_T}}\",\r\n    \"ACNT_PRDT_CD\": \"03\",\r\n    \"SLL_BUY_DVSN_CD\": \"02\",\r\n    \"SHTN_PDNO\": \"101S09\",\r\n    \"ORD_QTY\": \"10\",\r\n    \"UNIT_PRICE\": \"300\",\r\n    \"NMPR_TYPE_CD\": \"01\",\r\n    \"KRX_NMPR_CNDT_CD\": \"0\",\r\n    \"ORD_DVSN_CD\": \"01\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2296,12 +2298,13 @@
 										"key": "hashkey",
 										"value": "{{VTT_HASH}}",
 										"type": "default",
-										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"ORD_PRCS_DVSN_CD\": \"02\",\r\n    \"CANO\": \"※여기에 본인의 실전계좌번호(선물옵션)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"03\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORGN_ODNO\": \"0000004018\",\r\n    \"ORD_QTY\": \"10\",\r\n    \"UNIT_PRICE\": \"300\",\r\n    \"NMPR_TYPE_CD\": \"01\",\r\n    \"KRX_NMPR_CNDT_CD\": \"0\",\r\n    \"RMN_QTY_YN\": \"Y\",\r\n    \"ORD_DVSN_CD\": \"01\"\r\n}",
+									"raw": "{\r\n    \"ORD_PRCS_DVSN_CD\": \"02\",\r\n    \"CANO\": \"{{CANO_T}}\",\r\n    \"ACNT_PRDT_CD\": \"03\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORGN_ODNO\": \"0000004018\",\r\n    \"ORD_QTY\": \"10\",\r\n    \"UNIT_PRICE\": \"300\",\r\n    \"NMPR_TYPE_CD\": \"01\",\r\n    \"KRX_NMPR_CNDT_CD\": \"0\",\r\n    \"RMN_QTY_YN\": \"Y\",\r\n    \"ORD_DVSN_CD\": \"01\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2705,7 +2708,7 @@
 					]
 				},
 				{
-					"name": "국내선물옵션시세",
+					"name": "[국내선물옵션] 기본시세",
 					"item": [
 						{
 							"name": "V_선물옵션 시세",
@@ -2962,7 +2965,7 @@
 			"name": "해외주식",
 			"item": [
 				{
-					"name": "해외주식주문",
+					"name": "[해외주식] 주문/계좌",
 					"item": [
 						{
 							"name": "V_해외주식 주문(미국)",
@@ -3045,7 +3048,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"NASD\",\r\n    \"PDNO\": \"TSLA\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"OVRS_ORD_UNPR\": \"900.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"NASD\",\r\n    \"PDNO\": \"TSLA\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"OVRS_ORD_UNPR\": \"900.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3149,7 +3152,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3253,7 +3256,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SHAA\",\r\n    \"PDNO\": \"601360\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"7.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SHAA\",\r\n    \"PDNO\": \"601360\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"7.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3357,7 +3360,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SEHK\",\r\n    \"PDNO\": \"08495\",\r\n    \"ORD_QTY\": \"4000\",\r\n    \"OVRS_ORD_UNPR\": \"1.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SEHK\",\r\n    \"PDNO\": \"08495\",\r\n    \"ORD_QTY\": \"4000\",\r\n    \"OVRS_ORD_UNPR\": \"1.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3461,7 +3464,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SZAA\",\r\n    \"PDNO\": \"002051\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"8.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SZAA\",\r\n    \"PDNO\": \"002051\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"8.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3565,7 +3568,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"VND\",\r\n    \"PDNO\": \"HPG\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"23000.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"VND\",\r\n    \"PDNO\": \"HPG\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"23000.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3669,7 +3672,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORGN_ODNO\": \"0000006616\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"01\",\r\n    \"ORD_QTY\": \"200\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORGN_ODNO\": \"0000006616\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"01\",\r\n    \"ORD_QTY\": \"200\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3773,7 +3776,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORGN_ODNO\": \"0000006616\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORD_QTY\": \"200\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORGN_ODNO\": \"0000006616\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORD_QTY\": \"200\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3877,7 +3880,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"PDNO\": \"TSLA\",\r\n    \"OVRS_EXCG_CD\": \"NASD\",\r\n    \"FT_ORD_QTY\": \"1\",\r\n    \"FT_ORD_UNPR3\": \"900.0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"PDNO\": \"TSLA\",\r\n    \"OVRS_EXCG_CD\": \"NASD\",\r\n    \"FT_ORD_QTY\": \"1\",\r\n    \"FT_ORD_UNPR3\": \"900.0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3981,7 +3984,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"4689\",\r\n    \"PRDT_TYPE_CD\": \"515\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"450.0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"4689\",\r\n    \"PRDT_TYPE_CD\": \"515\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"450.0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -4085,7 +4088,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"08495\",\r\n    \"PRDT_TYPE_CD\": \"501\",\r\n    \"OVRS_EXCG_CD\": \"SEHK\",\r\n    \"FT_ORD_QTY\": \"4000\",\r\n    \"FT_ORD_UNPR3\": \"1.0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"08495\",\r\n    \"PRDT_TYPE_CD\": \"501\",\r\n    \"OVRS_EXCG_CD\": \"SEHK\",\r\n    \"FT_ORD_QTY\": \"4000\",\r\n    \"FT_ORD_UNPR3\": \"1.0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -4189,7 +4192,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"601360\",\r\n    \"PRDT_TYPE_CD\": \"551\",\r\n    \"OVRS_EXCG_CD\": \"SHAA\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"7.0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"601360\",\r\n    \"PRDT_TYPE_CD\": \"551\",\r\n    \"OVRS_EXCG_CD\": \"SHAA\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"7.0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -4293,7 +4296,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"002051\",\r\n    \"PRDT_TYPE_CD\": \"552\",\r\n    \"OVRS_EXCG_CD\": \"SZAA\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"8.0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"002051\",\r\n    \"PRDT_TYPE_CD\": \"552\",\r\n    \"OVRS_EXCG_CD\": \"SZAA\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"8.0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -4398,7 +4401,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"HPG\",\r\n    \"PRDT_TYPE_CD\": \"508\",\r\n    \"OVRS_EXCG_CD\": \"HASE\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"23000.0\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"HPG\",\r\n    \"PRDT_TYPE_CD\": \"508\",\r\n    \"OVRS_EXCG_CD\": \"HASE\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"23000.0\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -4502,7 +4505,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"CANO\": \"※여기에 본인의 모의계좌번호(주식)를 넣으세요※\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RSVN_ORD_RCIT_DT\": \"20220816\",\r\n    \"OVRS_RSVN_ODNO\": \"41\"\r\n}",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RSVN_ORD_RCIT_DT\": \"20220816\",\r\n    \"OVRS_RSVN_ODNO\": \"41\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -4976,7 +4979,7 @@
 					]
 				},
 				{
-					"name": "해외주식현재가",
+					"name": "[해외주식] 기본시세",
 					"item": [
 						{
 							"name": "V_해외주식 현재체결가",
@@ -5319,7 +5322,7 @@
 									"raw": ""
 								},
 								"url": {
-									"raw": "{{VTS}}/uapi/overseas-price/v1/quotations/inquire-search?AUTH=&EXCD=NAS&CO_YN_PRICECUR=1&CO_ST_PRICECUR=160&CO_EN_PRICECUR=170&CO_YN_RATE&CO_ST_RATE&CO_EN_RATE&CO_YN_VALX&CO_ST_VALX&CO_EN_VALX&CO_YN_SHAR&CO_ST_SHAR&CO_EN_SHAR&CO_YN_VOLUME&CO_ST_VOLUME&CO_EN_VOLUME&CO_YN_AMT&CO_ST_AMT&CO_EN_AMT&CO_YN_EPS&CO_ST_EPS&CO_EN_EPS&CO_YN_PER&CO_ST_PER&CO_EN_PER",
+									"raw": "{{VTS}}/uapi/overseas-price/v1/quotations/inquire-search?AUTH=&EXCD=NAS&CO_YN_PRICECUR=1&CO_ST_PRICECUR=160&CO_EN_PRICECUR=170&CO_YN_RATE=&CO_ST_RATE=&CO_EN_RATE=&CO_YN_VALX=&CO_ST_VALX=&CO_EN_VALX=&CO_YN_SHAR=&CO_ST_SHAR=&CO_EN_SHAR=&CO_YN_VOLUME=&CO_ST_VOLUME=&CO_EN_VOLUME=&CO_YN_AMT=&CO_ST_AMT=&CO_EN_AMT=&CO_YN_EPS=&CO_ST_EPS=&CO_EN_EPS=&CO_YN_PER=&CO_ST_PER=&CO_EN_PER=",
 									"host": [
 										"{{VTS}}"
 									],
@@ -5474,7 +5477,7 @@
 			"name": "해외선물옵션",
 			"item": [
 				{
-					"name": "해외선물옵션시세",
+					"name": "[해외선물옵션] 기본시세",
 					"item": [
 						{
 							"name": "V_해외선물종목상세",
