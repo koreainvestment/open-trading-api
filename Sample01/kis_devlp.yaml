@@ -49,7 +49,7 @@ my_sec: "앱시크리트"
 
 
 #계좌번호 앞 8자리
-my_acct: "81036965"
+my_acct: "계좌번호 8자리"
 my_acct_stock: "증권계좌 8자리"
 my_acct_future: "선물옵션계좌 8자리"
 #계좌번호 뒤 2자리
