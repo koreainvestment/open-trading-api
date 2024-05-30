@@ -264,6 +264,21 @@ def stockoverhoka_domestic(data):
     print("예상체결 전일대비율    [%s]" % (recvvalue[52]))
     print("누적거래량             [%s]" % (recvvalue[53]))
 
+    
+# 국내ETF NAV추이 출력라이브러리
+def etfnavtrend_domestic(data_cnt, data):
+    print("============================================")
+    menulist = "유가증권단축종목코드|NAV|NAV전일대비부호|NAV전일대비|NAV전일대비율|NAV시가|NAV고가|NAV저가"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1    
+    
+    
 ### 1-2. 국내지수 ###
 
 # 국내지수체결 출력라이브러리
@@ -363,6 +378,21 @@ def elwpurchase_domestic(data_cnt, data):
         for menu in menustr:
             print("%-13s[%s]" % (menu, pValue[i]))
             i += 1
+
+            
+# ELW예상체결처리 출력라이브러리
+def elwexppurchase_domestic(data_cnt, data):
+    print("============================================")
+    menulist = "유가증권단축종목코드|주식체결시간|주식현재가|전일대비부호|전일대비|전일대비율|가중평균주식가격|주식시가2|주식최고가|주식최저가|매도호가1|매수호가1|체결거래량|누적거래량|누적거래대금|매도체결건수|매수체결건수|순매수체결건수|체결강도|총매도수량|총매수수량|체결구분코드|매수2비율|전일거래량대비등락율|시가시간|시가2대비현재가부호|시가2대비현재가|최고가시간|최고가대비현재가부호|최고가대비현재가|최저가시간|최저가대비현재가부호|최저가대비현재가|영업일자|신장운영구분코드|거래정지여부|매도호가잔량1|매수호가잔량1|총매도호가잔량|총매수호가잔량|시간가치값|패리티|프리미엄값|기어링|손익분기비율|내재가치값|프리미엄비율|자본지지점|레버리지값|델타|감마|베가|세타|로우|HTS내재변동성|HTS이론가|거래량회전율|LP보유량|LP보유비율"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1
+            
             
             
 ### 2. 해외주식 ###
@@ -621,6 +651,21 @@ def stockspurchase_stockfuts(data_cnt, data):
             i += 1
 
             
+# 주식선물예상체결처리 출력라이브러리
+def stocksexppurchase_stockfuts(data_cnt, data):
+    print("============================================")
+    print(data)
+    menulist = "선물단축종목코드|영업시간|예상체결가|예상체결대비|예상체결대비부호|예상체결전일대비율|예상장운영구분코드"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1    
+            
+            
 # 주식옵션호가 출력라이브러리
 def stockhoka_stockoptn(data):
 
@@ -658,6 +703,107 @@ def stockspurchase_stockoptn(data_cnt, data):
         for menu in menustr:
             print("%-13s[%s]" % (menu, pValue[i]))
             i += 1                       
+
+# 주식옵션예상체결처리 출력라이브러리
+def stocksexppurchase_stockoptn(data_cnt, data):
+    print("============================================")
+    print(data)
+    menulist = "옵션단축종목코드|영업시간|예상체결가|예상체결대비|예상체결대비부호|예상체결전일대비율|예상장운영구분코드"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1                     
+            
+# 야간선물(CME)체결처리 출력라이브러리
+def stockspurchase_cmefuts(data_cnt, data):
+    print("============================================")
+    print(data)
+    menulist = "선물단축종목코드|영업시간|선물전일대비|전일대비부호|선물전일대비율|선물현재가|선물시가2|선물최고가|선물최저가|최종거래량|누적거래량|누적거래대금|HTS이론가|시장베이시스|괴리율|근월물약정가|원월물약정가|스프레드1|HTS미결제약정수량|미결제약정수량증감|시가시간|시가2대비현재가부호|시가대비지수현재가|최고가시간|최고가대비현재가부호|최고가대비지수현재가|최저가시간|최저가대비현재가부호|최저가대비지수현재가|매수2비율|체결강도|괴리도|미결제약정직전수량증감|이론베이시스|선물매도호가1|선물매수호가1|매도호가잔량1|매수호가잔량1|매도체결건수|매수체결건수|순매수체결건수|총매도수량|총매수수량|총매도호가잔량|총매수호가잔량|전일거래량대비등락율"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1
+            
+# 야간선물(CME)호가 출력라이브러리
+def stockhoka_cmefuts(data):
+    # print(data)
+    recvvalue = data.split('^')  # 수신데이터를 split '^'
+
+    print("야간선물(CME)  ["+recvvalue[ 0]+"]")
+    print("영업시간  ["+recvvalue[ 1]+"]")
+    print("====================================")
+    print("선물매도호가1	["+recvvalue[ 2]+"]"+",    매도호가건수1	["+recvvalue[12]+"]"+",    매도호가잔량1	["+recvvalue[22]+"]")
+    print("선물매도호가2	["+recvvalue[ 3]+"]"+",    매도호가건수2	["+recvvalue[13]+"]"+",    매도호가잔량2	["+recvvalue[23]+"]")
+    print("선물매도호가3	["+recvvalue[ 4]+"]"+",    매도호가건수3	["+recvvalue[14]+"]"+",    매도호가잔량3	["+recvvalue[24]+"]")
+    print("선물매도호가4	["+recvvalue[ 5]+"]"+",    매도호가건수4	["+recvvalue[15]+"]"+",    매도호가잔량4	["+recvvalue[25]+"]")
+    print("선물매도호가5	["+recvvalue[ 6]+"]"+",    매도호가건수5	["+recvvalue[16]+"]"+",    매도호가잔량5	["+recvvalue[26]+"]")
+    print("선물매수호가1	["+recvvalue[ 7]+"]"+",    매수호가건수1	["+recvvalue[17]+"]"+",    매수호가잔량1	["+recvvalue[27]+"]")
+    print("선물매수호가2	["+recvvalue[ 8]+"]"+",    매수호가건수2	["+recvvalue[18]+"]"+",    매수호가잔량2	["+recvvalue[28]+"]")
+    print("선물매수호가3	["+recvvalue[ 9]+"]"+",    매수호가건수3	["+recvvalue[19]+"]"+",    매수호가잔량3	["+recvvalue[29]+"]")
+    print("선물매수호가4	["+recvvalue[10 ]+"]"+",   매수호가건수4	["+recvvalue[20]+"]"+",    매수호가잔량4	["+recvvalue[30]+"]")
+    print("선물매수호가5	["+recvvalue[11]+"]"+",    매수호가건수5	["+recvvalue[21]+"]"+",    매수호가잔량5	["+recvvalue[31]+"]")
+    print("====================================")
+    print("총매도호가건수	["+recvvalue[32]+"]"+",    총매도호가잔량	["+recvvalue[34]+"]"+",    총매도호가잔량증감	["+recvvalue[36]+"]")
+    print("총매수호가건수	["+recvvalue[33]+"]"+",    총매수호가잔량	["+recvvalue[35]+"]"+",    총매수호가잔량증감	["+recvvalue[37]+"]")             
+            
+            
+# 야간옵션(EUREX)체결처리 출력라이브러리
+def stockspurchase_eurexoptn(data_cnt, data):
+    print("============================================")
+    print(data)
+    menulist = "옵션단축종목코드|영업시간|옵션현재가|전일대비부호|옵션전일대비|전일대비율|옵션시가2|옵션최고가|옵션최저가|최종거래량|누적거래량|누적거래대금|HTS이론가|HTS미결제약정수량|미결제약정수량증감|시가시간|시가2대비현재가부호|시가대비지수현재가|최고가시간|최고가대비현재가부호|최고가대비지수현재가|최저가시간|최저가대비현재가부호|최저가대비지수현재가|매수2비율|프리미엄값|내재가치값|시간가치값|델타|감마|베가|세타|로우|HTS내재변동성|괴리도|미결제약정직전수량증감|이론베이시스|역사적변동성|체결강도|괴리율|시장베이시스|옵션매도호가1|옵션매수호가1|매도호가잔량1|매수호가잔량1|매도체결건수|매수체결건수|순매수체결건수|총매도수량|총매수수량|총매도호가잔량|총매수호가잔량|전일거래량대비등락율"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1
+            
+# 야간옵션(EUREX)호가 출력라이브러리
+def stockhoka_eurexoptn(data):
+    # print(data)
+    recvvalue = data.split('^')  # 수신데이터를 split '^'
+
+    print("야간옵션(EUREX)  ["+recvvalue[ 0]+"]")
+    print("영업시간  ["+recvvalue[ 1]+"]")
+    print("====================================")
+    print("옵션매도호가1	["+recvvalue[ 2]+"]"+",    매도호가건수1	["+recvvalue[12]+"]"+",    매도호가잔량1	["+recvvalue[22]+"]")
+    print("옵션매도호가2	["+recvvalue[ 3]+"]"+",    매도호가건수2	["+recvvalue[13]+"]"+",    매도호가잔량2	["+recvvalue[23]+"]")
+    print("옵션매도호가3	["+recvvalue[ 4]+"]"+",    매도호가건수3	["+recvvalue[14]+"]"+",    매도호가잔량3	["+recvvalue[24]+"]")
+    print("옵션매도호가4	["+recvvalue[ 5]+"]"+",    매도호가건수4	["+recvvalue[15]+"]"+",    매도호가잔량4	["+recvvalue[25]+"]")
+    print("옵션매도호가5	["+recvvalue[ 6]+"]"+",    매도호가건수5	["+recvvalue[16]+"]"+",    매도호가잔량5	["+recvvalue[26]+"]")
+    print("옵션매수호가1	["+recvvalue[ 7]+"]"+",    매수호가건수1	["+recvvalue[17]+"]"+",    매수호가잔량1	["+recvvalue[27]+"]")
+    print("옵션매수호가2	["+recvvalue[ 8]+"]"+",    매수호가건수2	["+recvvalue[18]+"]"+",    매수호가잔량2	["+recvvalue[28]+"]")
+    print("옵션매수호가3	["+recvvalue[ 9]+"]"+",    매수호가건수3	["+recvvalue[19]+"]"+",    매수호가잔량3	["+recvvalue[29]+"]")
+    print("옵션매수호가4	["+recvvalue[10 ]+"]"+",   매수호가건수4	["+recvvalue[20]+"]"+",    매수호가잔량4	["+recvvalue[30]+"]")
+    print("옵션매수호가5	["+recvvalue[11]+"]"+",    매수호가건수5	["+recvvalue[21]+"]"+",    매수호가잔량5	["+recvvalue[31]+"]")
+    print("====================================")
+    print("총매도호가건수	["+recvvalue[32]+"]"+",    총매도호가잔량	["+recvvalue[34]+"]"+",    총매도호가잔량증감	["+recvvalue[36]+"]")
+    print("총매수호가건수	["+recvvalue[33]+"]"+",    총매수호가잔량	["+recvvalue[35]+"]"+",    총매수호가잔량증감	["+recvvalue[37]+"]") 
+    
+# 야간옵션(EUREX)예상체결처리 출력라이브러리
+def stocksexppurchase_eurexoptn(data_cnt, data):
+    print("============================================")
+    print(data)
+    menulist = "옵션단축종목코드|영업시간|예상체결가|예상체결대비|예상체결대비부호|예상체결전일대비율|예상장운영구분코드"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1                
             
             
 # 선물옵션 체결통보 출력라이브러리
@@ -670,7 +816,7 @@ def stocksigningnotice_futsoptn(data, key, iv):
     # print(pValue)
 
     if pValue[6] == '0': # 체결통보
-        print("#### 지수선물옵션 체결 통보 ####")
+        print("#### 국내선물옵션 체결 통보 ####")
         menulist_sign = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|체결수량|체결단가|체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|주문조건|주문그룹ID|주문그룹SEQ|주문가격"
         menustr = menulist_sign.split('|')
         i = 0
@@ -681,7 +827,7 @@ def stocksigningnotice_futsoptn(data, key, iv):
     else: # pValue[6] == 'L', 주문·정정·취소·거부 접수 통보
         
         if pValue[5] == '1': # 정정 접수 통보 (정정구분이 1일 경우)
-            print("#### 지수선물옵션 정정 접수 통보 ####")
+            print("#### 국내선물옵션 정정 접수 통보 ####")
             menulist_revise = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|정정수량|정정단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건|주문그룹ID|주문그룹SEQ|주문가격"
             menustr = menulist_revise.split('|')
             i = 0
@@ -690,7 +836,7 @@ def stocksigningnotice_futsoptn(data, key, iv):
                 i += 1
                 
         elif pValue[5] == '2': # 취소 접수 통보 (정정구분이 2일 경우)
-            print("#### 지수선물옵션 취소 접수 통보 ####")
+            print("#### 국내선물옵션 취소 접수 통보 ####")
             menulist_cancel = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|취소수량|주문단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건|주문그룹ID|주문그룹SEQ|주문가격"
             menustr = menulist_cancel.split('|')
             i = 0
@@ -699,7 +845,7 @@ def stocksigningnotice_futsoptn(data, key, iv):
                 i += 1
         
         elif pValue[11] == '1': # 거부 접수 통보 (거부여부가 1일 경우)
-            print("#### 지수선물옵션 거부 접수 통보 ####")
+            print("#### 국내선물옵션 거부 접수 통보 ####")
             menulist_refuse = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|주문수량|주문단가|주문시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건|주문그룹ID|주문그룹SEQ|주문가격"
             menustr = menulist_refuse.split('|')
             i = 0
@@ -708,7 +854,7 @@ def stocksigningnotice_futsoptn(data, key, iv):
                 i += 1
         
         else: # 주문 접수 통보 
-            print("#### 지수선물옵션 주문 접수 통보 ####")
+            print("#### 국내선물옵션 주문 접수 통보 ####")
             menulist_order = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|주문수량|체결단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건|주문그룹ID|주문그룹SEQ|주문가격"
             menustr = menulist_order.split('|')
             i = 0
@@ -716,6 +862,63 @@ def stocksigningnotice_futsoptn(data, key, iv):
                 print("%s  [%s]" % (menu, pValue[i]))
                 i += 1
 
+# 야간선물옵션 체결통보 출력라이브러리
+def stocksigningnotice_ngtfutsoptn(data, key, iv):
+    
+    # AES256 처리 단계
+    aes_dec_str = aes_cbc_base64_dec(key, iv, data)
+    # print(aes_dec_str)
+    pValue = aes_dec_str.split('^')
+    # print(pValue)
+
+    if pValue[6] == '0': # 체결통보
+        print("#### 야간선물옵션 체결 통보 ####")
+        menulist_sign = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|체결수량|체결단가|체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|주문조건"
+        menustr = menulist_sign.split('|')
+        i = 0
+        for menu in menustr:
+            print("%s  [%s]" % (menu, pValue[i]))
+            i += 1
+
+    else: # pValue[6] == 'L', 주문·정정·취소·거부 접수 통보
+        
+        if pValue[5] == '1': # 정정 접수 통보 (정정구분이 1일 경우)
+            print("#### 야간선물옵션 정정 접수 통보 ####")
+            menulist_revise = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|정정수량|정정단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건"
+            menustr = menulist_revise.split('|')
+            i = 0
+            for menu in menustr:
+                print("%s  [%s]" % (menu, pValue[i]))
+                i += 1
+                
+        elif pValue[5] == '2': # 취소 접수 통보 (정정구분이 2일 경우)
+            print("#### 야간선물옵션 취소 접수 통보 ####")
+            menulist_cancel = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|취소수량|주문단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건"
+            menustr = menulist_cancel.split('|')
+            i = 0
+            for menu in menustr:
+                print("%s  [%s]" % (menu, pValue[i]))
+                i += 1
+        
+        elif pValue[11] == '1': # 거부 접수 통보 (거부여부가 1일 경우)
+            print("#### 야간선물옵션 거부 접수 통보 ####")
+            menulist_refuse = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|주문수량|주문단가|주문시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건"
+            menustr = menulist_refuse.split('|')
+            i = 0
+            for menu in menustr:
+                print("%s  [%s]" % (menu, pValue[i]))
+                i += 1
+        
+        else: # 주문 접수 통보 
+            print("#### 국내선물옵션 주문 접수 통보 ####")
+            menulist_order = "고객ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류|단축종목코드|주문수량|체결단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|주문조건"
+            menustr = menulist_order.split('|')
+            i = 0
+            for menu in menustr:
+                print("%s  [%s]" % (menu, pValue[i]))
+                i += 1                
+                
+                
 ### 4. 해외선물옵션 ###                
                 
 # 해외선물옵션호가 출력라이브러리
@@ -774,6 +977,61 @@ def stocksigningnotice_overseafut(data, key, iv):
         print("%s  [%s]" % (menu, pValue[i]))
         i += 1
 
+### 5. 장내채권(일반채권) / 채권지수   ###
+            
+# 장내채권호가 출력라이브러리(일반채권)
+def bondhoka_domestic(data):
+
+    # print(data)
+    recvvalue = data.split('^')  # 수신데이터를 split '^'
+ 
+    print("채권종목코드  ["+recvvalue[ 0]+"]")
+    print("영업시간  ["+recvvalue[ 1]+"]")
+    print("====================================")
+    print("채권매도호가1	["+recvvalue[ 4]+"]"+",    매도호가수익률1	["+recvvalue[2]+"]"+",    매도호가잔량1	["+recvvalue[6]+"]")
+    print("채권매도호가2	["+recvvalue[ 10]+"]"+",    매도호가수익률2	["+recvvalue[8]+"]"+",    매도호가잔량2	["+recvvalue[12]+"]")
+    print("채권매도호가3	["+recvvalue[ 16]+"]"+",    매도호가수익률3	["+recvvalue[14]+"]"+",    매도호가잔량3	["+recvvalue[18]+"]")
+    print("채권매도호가4	["+recvvalue[ 22]+"]"+",    매도호가수익률4	["+recvvalue[20]+"]"+",    매도호가잔량4	["+recvvalue[24]+"]")
+    print("채권매도호가5	["+recvvalue[ 28]+"]"+",    매도호가수익률5	["+recvvalue[26]+"]"+",    매도호가잔량5	["+recvvalue[30]+"]")
+    print("채권매수호가1	["+recvvalue[ 5]+"]"+",    매수호가수익률1	["+recvvalue[3]+"]"+",    매수호가잔량1	["+recvvalue[7]+"]")
+    print("채권매수호가2	["+recvvalue[ 11]+"]"+",    매수호가수익률2	["+recvvalue[9]+"]"+",    매수호가잔량2	["+recvvalue[13]+"]")
+    print("채권매수호가3	["+recvvalue[ 17]+"]"+",    매수호가수익률3	["+recvvalue[15]+"]"+",    매수호가잔량3	["+recvvalue[19]+"]")
+    print("채권매수호가4	["+recvvalue[23]+"]"+",   매수호가수익률4	["+recvvalue[21]+"]"+",    매수호가잔량4	["+recvvalue[25]+"]")
+    print("채권매수호가5	["+recvvalue[29]+"]"+",    매수호가수익률5	["+recvvalue[27]+"]"+",    매수호가잔량5	["+recvvalue[31]+"]")
+    print("====================================")
+    print("총매도호가잔량	["+recvvalue[32]+"]")
+    print("총매수호가잔량	["+recvvalue[33]+"]")
+    
+
+# 장내채권체결처리 출력라이브러리(일반채권)
+def bondpurchase_domestic(data_cnt, data):
+    print("============================================")
+    # print(data)
+    menulist = "표준종목코드|채권종목명|주식체결시간|전일대비부호|전일대비|전일대비율|현재가|체결거래량|시가|고가|저가|전일종가|현재수익률|시가수익률|고가수익률|저가수익률|누적거래량|전일거래량|체결유형코드"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1
+            
+# 채권지수 체결처리 출력라이브러리
+def bondindexpurchase_domestic(data_cnt, data):
+    print("============================================")
+    # print(data)
+    menulist = "지수ID|기준일자1|전송시간|총수익지수시가지수|총수익지수최고가|총수익지수최저가|총수익지수|전일총수익지수|총수익지수전일대비|총수익지수전일대비부호|총수익지수전일대비율|순가격지수|시장가격지수|Call재투자지수|Zero재투자지수|선물이론가격|평균듀레이션|평균컨벡서티|평균YTM|평균선도YTM"
+    menustr = menulist.split('|')
+    pValue = data.split('^')
+    i = 0
+    for cnt in range(data_cnt):  # 넘겨받은 체결데이터 개수만큼 print 한다
+        print("### [%d / %d]" % (cnt + 1, data_cnt))
+        for menu in menustr:
+            print("%-13s[%s]" % (menu, pValue[i]))
+            i += 1
+
+        
 ### 앱키 정의 ###
 
 async def connect():
@@ -801,16 +1059,19 @@ async def connect():
     ### 1-4. 국내지수 체결, 예상체결, 실시간프로그램매매 ###
     # code_list = [['1', 'H0UPCNT0', '0001'], ['1', 'H0UPANC0', '0001'], ['1', 'H0UPPGM0', '0001']]
     
-    ### 1-5. ELW 호가, 체결가 ###
-    # code_list = [['1', 'H0EWASP0', '58J297'],['1', 'H0EWCNT0', '58J297']]
+    ### 1-5. ELW 호가, 체결가, 예상체결 ###
+    # code_list = [['1', 'H0EWASP0', '58J297'],['1', 'H0EWCNT0', '58J297'],['1', 'H0EWANC0', '58J297']]
     
-    ### 2-1. 해외주식(미국) 호가, 체결가, 체결통보 ###
+    ### 1-6. 국내ETF NAV 추이 ###
+    # code_list = [['1', 'H0STNAV0', '069500']]
+    
+    ### 2-1. 해외주식(미국) 호가, 체결가, 체결통보 ### # 모의투자 해외주식 체결통보: H0GSCNI9
     # code_list = [['1','HDFSASP0','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요']]
     
     ### 2-2.해외주식(아시아) 호가, 체결가, 체결통보 ###
     # code_list = [['1','HDFSASP1','DHKS00003'],['1','HDFSCNT0','DHKS00003'],['1','H0GSCNI0','HTS ID를 입력하세요']]
     
-    ### 3-1. 국내 지수선물옵션 호가, 체결가, 체결통보 ###
+    ### 3-1. 국내 지수선물옵션 호가, 체결가, 체결통보 ### # 모의투자 선물옵션 체결통보: H0IFCNI9
     # code_list = [['1','H0IFASP0','101T12'],['1','H0IFCNT0','101T12'], # 지수선물호가, 체결가
     #              ['1','H0IOASP0','201T11317'],['1','H0IOCNT0','201T11317'], # 지수옵션호가, 체결가
     #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
@@ -820,14 +1081,24 @@ async def connect():
     #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
     
     ### 3-3. 국내 주식선물옵션 호가, 체결가, 체결통보 ###
-    # code_list = [['1', 'H0ZFCNT0', '111V06'], ['1', 'H0ZFASP0', '111V06'], # 주식선물호가, 체결가
-    #              ['1', 'H0ZOCNT0', '211V05059'], ['1', 'H0ZOASP0', '211V05059'], # 주식옵션호가, 체결가
+    # code_list = [['1', 'H0ZFCNT0', '111V06'], ['1', 'H0ZFASP0', '111V06'],['1', 'H0ZFANC0', '111V06'], # 주식선물호가, 체결가, 예상체결
+    #              ['1', 'H0ZOCNT0', '211V05059'], ['1', 'H0ZOASP0', '211V05059'], ['1', 'H0ZOANC0', '211V05059'], # 주식옵션호가, 체결가, 예상체결
     #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
-        
+    
+    ### 3-4. 국내 야간옵션(EUREX) 호가, 체결가, 예상체결, 체결통보 ###
+    # code_list = [['1', 'H0EUCNT0', '101V06'], ['1', 'H0EUASP0', '101V06'], ['1', 'H0EUANC0', '101V06'], ['1', 'H0EUCNI0', 'HTS ID를 입력하세요']]
+    
+    ### 3-5. 국내 야간선물(CME) 호가, 체결가, 체결통보 ###
+    # code_list = [['1', 'H0MFCNT0', '101V06'], ['1', 'H0MFASP0', '101V06'], ['1', 'H0MFCNI0', 'HTS ID를 입력하세요']]
+    
     ### 4. 해외선물옵션 호가, 체결가, 체결통보 ###
     # code_list = [['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'], # 해외선물 체결가, 호가
     #              ['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'], # 해외옵션 체결가, 호가
     #              ['1','HDFFF2C0','HTS ID를 입력하세요']] # 해외선물옵션 체결통보
+    
+    ### 5. 장내채권(일반채권) 호가, 체결가 / 채권지수 체결가 ###
+    # code_list = [['1','H0BJASP0','KR2033022D33'],['1','H0BJCNT0','KR2033022D33'], # 일반채권 체결가, 호가
+    #              ['1','H0BICNT0','KBPR01']] # 채권지수 체결가
     
     ### 1+2+3+4. 국내주식, 해외주식(미국), 해외주식(아시아), 국내 지수선물옵션, 국내 상품선물, 국내 주식선물옵션, 해외선물옵션 호가, 체결가, 체결통보 ###
     code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1', 'H0STANC0', '005930'],['1','H0STCNI0','HTS ID를 입력하세요'],
@@ -835,7 +1106,6 @@ async def connect():
                  ['1','HDFSASP1','DHKS00003'],['1','HDFSCNT0','DHKS00003'],['1','H0GSCNI0','HTS ID를 입력하세요'],
                  ['1','H0IFASP0','101T12'],['1','H0IFCNT0','101T12'],['1','H0IOASP0','201T11317'],['1','H0IOCNT0','201T11317'], ['1','H0CFASP0','175T11'],['1','H0CFCNT0','175T11'],['1', 'H0ZFCNT0', '111V06'], ['1', 'H0ZFASP0', '111V06'],['1', 'H0ZOCNT0', '211V05059'], ['1', 'H0ZOASP0', '211V05059'],['1','H0IFCNI0','HTS ID를 입력하세요'],
                  ['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'],['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'],['1','HDFFF2C0','HTS ID를 입력하세요']]
-    
 
     senddata_list=[]
     
@@ -856,7 +1126,7 @@ async def connect():
 
                 data = await websocket.recv()
                 # await asyncio.sleep(0.5)
-                # print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
+                print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
 
                 if data[0] == '0':
                     recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
@@ -911,7 +1181,12 @@ async def connect():
                         print("#### 국내주식 장운영정보 ####")
                         data_cnt = int(recvstr[2])  # 데이터 개수
                         stocksmarketinfo_domestic(data_cnt, recvstr[3])  
-                        
+                    
+                    elif trid0 == "H0STNAV0":  # 국내주식 장운영정보 데이터 처리
+                        print("#### 국내ETF NAV추이 ####")
+                        data_cnt = int(recvstr[2])  # 데이터 개수
+                        etfnavtrend_domestic(data_cnt, recvstr[3])
+                    
                     elif trid0 == "H0UPCNT0":  # 국내지수 체결 데이터 처리
                         print("#### 국내지수 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -924,22 +1199,28 @@ async def connect():
                         indexexppurchase_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2) 
                         
-                    elif trid0 == "H0UPPGM0":  # 국내지수 예상체결 데이터 처리
+                    elif trid0 == "H0UPPGM0":  # 국내지수 실시간프로그램매매 데이터 처리
                         print("#### 국내지수 실시간프로그램매매 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         indexprogramtrade_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)    
                     
-                    elif trid0 == "H0EWCNT0":  # 주식옵션 체결 데이터 처리
+                    elif trid0 == "H0EWCNT0":  # ELW 체결 데이터 처리
                         print("#### ELW 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         elwpurchase_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2) 
 
-                    elif trid0 == "H0EWASP0":  # 주식옵션 호가 데이터 처리
+                    elif trid0 == "H0EWASP0":  # ELW 호가 데이터 처리
                         print("#### ELW 호가 ####")
                         elwhoka_domestic(recvstr[3])
-                        # await asyncio.sleep(0.2)   
+                        # await asyncio.sleep(0.2) 
+                        
+                    elif trid0 == "H0EWANC0":  # ELW 예상체결 데이터 처리
+                        print("#### ELW 예상체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        elwexppurchase_domestic(data_cnt, recvstr[3])
+                        # await asyncio.sleep(0.2)
 
                     elif trid0 == "HDFSASP0":  # 해외주식호가tr 일경우의 처리 단계
                         print("#### 해외(미국)주식호가 ####")
@@ -1001,6 +1282,11 @@ async def connect():
                         stockhoka_stockfuts(recvstr[3])
                         # await asyncio.sleep(0.2)
                         
+                    elif trid0 == "H0ZFANC0":  # 주식선물 예상체결 데이터 처리
+                        print("#### 주식선물 예상체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stocksexppurchase_stockfuts(data_cnt, recvstr[3])
+                        
                     elif trid0 == "H0ZOCNT0":  # 주식옵션 체결 데이터 처리
                         print("#### 주식옵션 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1010,7 +1296,40 @@ async def connect():
                     elif trid0 == "H0ZOASP0":  # 주식옵션 호가 데이터 처리
                         print("#### 주식옵션 호가 ####")
                         stockhoka_stockoptn(recvstr[3])
-                        # await asyncio.sleep(0.2)     
+                        # await asyncio.sleep(0.2)
+                    
+                    elif trid0 == "H0ZOANC0":  # 주식옵션 예상체결 데이터 처리
+                        print("#### 주식옵션 예상체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stocksexppurchase_stockoptn(data_cnt, recvstr[3])
+                        
+                        
+                    elif trid0 == "H0MFCNT0":  # 야간선물(CME) 체결 데이터 처리
+                        print("#### 야간선물(CME) 체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stockspurchase_cmefuts(data_cnt, recvstr[3])
+                        # await asyncio.sleep(0.2) 
+
+                    elif trid0 == "H0MFASP0":  # 야간선물(CME) 호가 데이터 처리
+                        print("#### 야간선물(CME) 호가 ####")
+                        stockhoka_cmefuts(recvstr[3])
+                        # await asyncio.sleep(0.2)
+                                        
+                    elif trid0 == "H0EUCNT0":  # 야간옵션(EUREX) 체결 데이터 처리
+                        print("#### 야간옵션(EUREX) 체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stockspurchase_eurexoptn(data_cnt, recvstr[3])
+                        # await asyncio.sleep(0.2) 
+
+                    elif trid0 == "H0EUASP0":  # 야간옵션(EUREX) 호가 데이터 처리
+                        print("#### 야간옵션(EUREX) 호가 ####")
+                        stockhoka_eurexoptn(recvstr[3])
+                        # await asyncio.sleep(0.2)                        
+                        
+                    elif trid0 == "H0EUANC0":  # 야간옵션(EUREX) 예상체결 데이터 처리
+                        print("#### 야간옵션(EUREX) 예상체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stocksexppurchase_eurexoptn(data_cnt, recvstr[3])
 
                     elif trid0 == "HDFFF010":  # 해외선물옵션호가 tr 일경우의 처리 단계
                         print("#### 해외선물옵션호가 ####")
@@ -1022,22 +1341,44 @@ async def connect():
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_overseafut(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)
+                        
+                    elif trid0 == "H0BJCNT0":  
+                        # 장내채권 체결 데이터 처리(일반채권)
+                        print("#### 장내채권 체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        bondpurchase_domestic(data_cnt, recvstr[3])
+                        # await asyncio.sleep(0.2) 
+
+                    elif trid0 == "H0BJASP0":  
+                        # 장내채권 호가 데이터 처리(일반채권)
+                        print("#### 장내채권 호가 ####")
+                        bondhoka_domestic(recvstr[3])
+                        # await asyncio.sleep(0.2)                        
+                        
+                    elif trid0 == "H0BICNT0":  # 채권지수 예상체결 데이터 처리
+                        print("#### 채권지수 체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        bondindexpurchase_domestic(data_cnt, recvstr[3])
 
                 elif data[0] == '1':
 
                     recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                     trid0 = recvstr[1]
 
-                    if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
+                    if trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주식체결 통보 처리
                         stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
                         # await asyncio.sleep(0.2)
 
-                    elif trid0 == "H0GSCNI0":  # 해외주실체결 통보 처리
+                    elif trid0 == "H0GSCNI0" or trid0 == "H0GSCNI9":  # 해외주식체결 통보 처리
                         stocksigningnotice_overseas(recvstr[3], aes_key, aes_iv)
                         # await asyncio.sleep(0.2)
 
-                    elif trid0 == "H0IFCNI0":  # 지수/상품/주식 선물옵션체결 통보 처리
+                    elif trid0 == "H0IFCNI0" or trid0 == "H0IFCNI9":  # 지수/상품/주식 선물옵션체결 통보 처리
                         stocksigningnotice_futsoptn(recvstr[3], aes_key, aes_iv)
+                        # await asyncio.sleep(0.2)
+                        
+                    elif trid0 == "H0MFCNI0" or trid0 == "H0EUCNI0":  # 야간선물옵션(CME, EUREX) 체결 통보 처리
+                        stocksigningnotice_ngtfutsoptn(recvstr[3], aes_key, aes_iv)
                         # await asyncio.sleep(0.2)
 
                     elif trid0 == "HDFFF2C0":  # 해외선물옵션체결 통보 처리
@@ -1072,7 +1413,7 @@ async def connect():
                                 aes_iv = jsonObject["body"]["output"]["iv"]
                                 print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
 
-                            elif trid == "H0IFCNI0": # 지수/상품 선물옵션
+                            elif trid == "H0IFCNI0" or trid == "H0MFCNI0" or trid == "H0EUCNI0": # 지수/상품/주식 선물옵션 & 야간선물옵션
                                 aes_key = jsonObject["body"]["output"]["key"]
                                 aes_iv = jsonObject["body"]["output"]["iv"]
                                 print("### TRID [%s] KEY[%s] IV[%s]" % (trid, aes_key, aes_iv))
