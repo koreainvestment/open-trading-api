@@ -1320,3 +1320,31 @@ def get_quotations_nav_comparison_trend(output_dv="1", div_code="J", itm_no="", 
     return dataframe
 
 
+
+##############################################################################################
+# [국내주식] 업종/기타 > 국내휴장일조회
+# 국내휴장일조회 API입니다.
+# 영업일, 거래일, 개장일, 결제일 여부를 조회할 수 있습니다.
+# 주문을 넣을 수 있는지 확인하고자 하실 경우 개장일여부(opnd_yn)을 사용하시면 됩니다.
+##############################################################################################
+def get_quotations_ch_holiday(dt="", tr_cont="", FK100="", NK100="", dataframe=None):
+    url = '/uapi/domestic-stock/v1/quotations/chk-holiday'
+    tr_id = "CTCA0903R"  # 국내휴장일조회
+
+    params = {
+        "BASS_DT": dt, # 시장 분류 코드 	J : 주식/ETF/ETN, W: ELW
+        "CTX_AREA_FK": FK100,  # 공란 : 최초 조회시 이전 조회 Output CTX_AREA_FK100 값 : 다음페이지 조회시(2번째부터)
+        "CTX_AREA_NK": NK100  # 공란 : 최초 조회시 이전 조회 Output CTX_AREA_NK100 값 : 다음페이지 조회시(2번째부터)
+    }
+    res = kis._url_fetch(url, tr_id, tr_cont, params)
+
+    # print(res.getBody())  # 오류 원인 확인 필요시 사용
+    # Assuming 'output' is a dictionary that you want to convert to a DataFrame
+    current_data = pd.DataFrame(res.getBody().output)
+
+    dataframe = current_data
+
+    # 첫 번째 값만 선택하여 반환
+    first_value = current_data.iloc[0] if not current_data.empty else None
+
+    return first_value
