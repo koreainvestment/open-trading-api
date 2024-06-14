@@ -164,4 +164,7 @@ rt_data = kb.get_quotations_inquire_price(itm_no="071050")
 rt_data = kb.get_quotations_nav_comparison_trend(itm_no="071050")   # ETF 종목 정보
 rt_data = kb.get_quotations_nav_comparison_trend(output_dv="2", itm_no="071050") # ETF NAV 정보
 
+# [국내주식] 업종/기타 > 국내휴장일조회
+rt_data = kb.get_quotations_ch_holiday(dt="20240302")
+
 print(rt_data)
