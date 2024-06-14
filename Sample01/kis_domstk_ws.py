@@ -380,7 +380,7 @@ def _dparse(data):
             # print(rt_data.KRX_FWDG_ORD_ORGNO + "+" + rt_data.ODNO + "+" + rt_data.ORD_TMD) # 주문접수조직번호+주문접수번호+주문시각
             print("매수/매도 조건 주문 : " + val1)
 
-            ###########################################################
+            #########################################################
 
         elif tr_id == KIS_WSReq.NOTICE:  # 체결통보의 경우, 일단 executed_df 에만 저장해 둠
             if __DEBUG__: print(dp_.to_string(header=False, index=False))
