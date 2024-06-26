@@ -59,7 +59,7 @@ if cmd =='1': # 1. 해외종목코드전체 코드를 다운로드
     DF.to_excel('overseas_stock_code(all).xlsx',index=False)  # 전체 통합파일
     print("Done")
 
-elif cmd =='2': # 2. 해외종목코드 전체 코드를 다운로드
+elif cmd =='2': # 2. 해외종목코드 1개의 시장 코드를 다운로드
     
     while True:
         cmd2 = input("다운로드하시고자 하는 시장의 코드를 입력하여 주세요. \nnas:나스닥, nys:뉴욕, ams:아멕스, shs:상해, shi:상해지수, szs:심천, szi:심천지수, tse:도쿄, hks:홍콩, hnx:하노이, hsx:호치민\n")
