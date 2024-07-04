@@ -477,17 +477,20 @@ def stockspurchase_overseas(data_cnt, data):
 
 # 해외주식체결통보 출력라이브러리
 def stocksigningnotice_overseas(data, key, iv):
-    menulist = "고객 ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류2|단축종목코드|주문수량|체결단가|체결시간|거부여부|체결여부|접수여부|지점번호|체결수량|계좌명|체결종목명|해외종목구분|담보유형코드|담보대출일자"
-    menustr1 = menulist.split('|')
-
+    
     # AES256 처리 단계
     aes_dec_str = aes_cbc_base64_dec(key, iv, data)
     pValue = aes_dec_str.split('^')
 
     if pValue[12] == '2': # 체결통보
         print("#### 해외주식 체결 통보 ####")
+        menulist = "고객 ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류2|단축종목코드|체결수량|체결단가|체결시간|거부여부|체결여부|접수여부|지점번호|주문수량|계좌명|체결종목명|해외종목구분|담보유형코드|담보대출일자"
+        menustr1 = menulist.split('|')
+        
     else:
         print("#### 해외주식 주문·정정·취소·거부 접수 통보 ####")
+        menulist = "고객 ID|계좌번호|주문번호|원주문번호|매도매수구분|정정구분|주문종류2|단축종목코드|주문수량|주문단가|체결시간|거부여부|체결여부|접수여부|지점번호|주문수량_미출력|계좌명|체결종목명|해외종목구분|담보유형코드|담보대출일자"
+        menustr1 = menulist.split('|')
     
     i = 0
     for menu in menustr1:
