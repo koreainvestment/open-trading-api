@@ -144,6 +144,8 @@ def changeTREnv(token_key, svr='prod', product=_cfg['my_prod']):
         cfg['my_acct'] = _cfg['my_acct_stock']
     elif svr == 'prod' and product == '03':  # 실전투자 선물옵션(파생)
         cfg['my_acct'] = _cfg['my_acct_future']
+    elif svr == 'prod' and product == '08':  # 실전투자 해외선물옵션(파생)
+        cfg['my_acct'] = _cfg['my_acct_future']
     elif svr == 'vps' and product == '01':  # 모의투자 주식투자, 위탁계좌, 투자계좌
         cfg['my_acct'] = _cfg['my_paper_stock']
     elif svr == 'vps' and product == '03':  # 모의투자 선물옵션(파생)
