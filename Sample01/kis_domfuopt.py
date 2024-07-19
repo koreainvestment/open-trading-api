@@ -246,6 +246,7 @@ def get_domfuopt_inquire_ngt_ccnl_lst(inqr_strt_dt=None, inqr_end_dt=None, sll_b
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         tr_cont = "N"  # 다음조회
         return get_domfuopt_inquire_ngt_ccnl_lst(inqr_strt_dt, inqr_end_dt, sll_buy_dvsn_cd, "N", FK100, NK100, dataframe)
 
@@ -322,6 +323,7 @@ def get_domfuopt_inquire_ngt_balance_lst(tr_cont="", FK100="", NK100="", datafra
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_domfuopt_inquire_ngt_balance_lst("N", FK100, NK100, dataframe)
 
 
