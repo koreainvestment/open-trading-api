@@ -172,6 +172,7 @@ def get_inquire_psbl_rvsecncl_lst(tr_cont="", FK100="", NK100="", dataframe=None
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_inquire_psbl_rvsecncl_lst("N", FK100, NK100, dataframe)
 
 
@@ -276,6 +277,7 @@ def get_inquire_daily_ccld_lst(dv="01", inqr_strt_dt="", inqr_end_dt="", tr_cont
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_inquire_daily_ccld_lst(dv, inqr_strt_dt, inqr_end_dt, "N", FK100, NK100, dataframe)
 
 
@@ -354,6 +356,7 @@ def get_inquire_balance_lst(tr_cont="", FK100="", NK100="", dataframe=None):  # 
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_inquire_balance_lst("N", FK100, NK100, dataframe)
 
 ##############################################################################################
@@ -613,6 +616,7 @@ def get_order_resv_ccnl(inqr_strt_dt=None, inqr_end_dt=None, ord_seq=0, tr_cont=
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_order_resv_ccnl(inqr_strt_dt, inqr_end_dt, ord_seq, "N", FK100, NK100, dataframe)
 
 ##############################################################################################
@@ -690,6 +694,7 @@ def get_inquire_balance_rlz_pl_lst(tr_cont="", FK100="", NK100="", dataframe=Non
         return dataframe
     elif tr_cont == "F" or tr_cont == "M":  # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_inquire_balance_rlz_pl_lst("N", FK100, NK100, dataframe)
 
 
@@ -800,6 +805,7 @@ def get_inquire_period_trade_profit_lst(inqr_strt_dt=None, inqr_end_dt=None, tr_
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_inquire_period_trade_profit_lst(inqr_strt_dt, inqr_end_dt, "N", FK100, NK100, dataframe)
 
 
@@ -881,6 +887,7 @@ def get_inquire_period_profit_lst(inqr_strt_dt=None, inqr_end_dt=None, tr_cont="
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_inquire_period_profit_lst(inqr_strt_dt, inqr_end_dt, "N", FK100, NK100, dataframe)
 
 #====|  [국내주식] 기본시세  |============================================================================================================================
