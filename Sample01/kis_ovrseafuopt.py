@@ -201,6 +201,7 @@ def get_overseasfuopt_order_allcncl(excg_cd="", itm_no="", tr_cont="", FK100="",
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseasfuopt_order_allcncl(excg_cd, itm_no, "N", FK100, NK100, dataframe)
 
 
@@ -262,6 +263,7 @@ def get_overseasfuopt_inquire_ccld(ccld_dv="01", ord_dv="%%", fuop_dvsn="00", tr
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseasfuopt_inquire_ccld(ccld_dv, ord_dv, fuop_dvsn, "N", FK100, NK100, dataframe)
 
 
@@ -321,6 +323,7 @@ def get_overseasfuopt_inquire_unpd(fuop_dvsn="00", tr_cont="", FK100="", NK100="
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseasfuopt_inquire_unpd(fuop_dvsn, "N", FK100, NK100, dataframe)
 
 ##############################################################################################
@@ -425,6 +428,7 @@ def get_overseasfuopt_inquire_period_ccld(inqr_dvsn="", fr_dt="", to_dt="", crcy
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseasfuopt_inquire_period_ccld(fr_dt, to_dt, crcy, fuop_dvsn, "N", FK100, NK100, dataframe)
 
 
@@ -495,6 +499,7 @@ def get_overseasfuopt_inquire_daily_ccld(fr_dt="", to_dt="", fuop_dvsn="00", crc
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseasfuopt_inquire_daily_ccld(fr_dt, to_dt, fuop_dvsn, crcy, dvsn, "N", FK100, NK100, dataframe)
 
 
@@ -599,6 +604,7 @@ def get_overseasfuopt_inquire_daily_order(fr_dt="", to_dt="", ccld_dvsn="01", dv
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseasfuopt_inquire_daily_order(fr_dt, to_dt, ccld_dvsn, dvsn, fuop_dvsn, "N", FK100, NK100, dataframe)
 
 
@@ -667,6 +673,7 @@ def get_overseasfuopt_inquire_period_trans(fr_dt="", to_dt="", trtype="1", crcy=
         return dataframe
     elif tr_cont == "F" or tr_cont == "M": # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseasfuopt_inquire_period_trans(fr_dt, to_dt, trtype, crcy, "N", FK100, NK100, dataframe)
 
 ##############################################################################################
@@ -834,7 +841,7 @@ def get_overseas_fuopt_inquire_time_futurechartprice(itm_no="", exch="", st_dt="
 
     if date1 >= date2 and date1 <= date3:  # 조회시작일자 ~ 조회종료일자 까지 다음페이지 조회
         print('Call Next ( ' + idx[:8] + ' )')
-        time.sleep(0.05)
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseas_fuopt_inquire_time_futurechartprice(itm_no, exch, st_dt, ed_dt, "P", cnt, gap, idx, tr_cont, dataframe)
     else:  # 조회시작일자 ~ 조회종료일자 이외 날자인경우 종료 처리
         #print("The End")
@@ -884,7 +891,7 @@ def get_overseas_fuopt_weekly_ccnl(itm_no="", exch="", st_dt="", ed_dt="", dvsn=
 
     if date1 >= date2 and date1 <= date3:  # 조회시작일자 ~ 조회종료일자 까지 다음페이지 조회
         print('Call Next ( ' + idx[:8] + ' )')
-        time.sleep(0.05)
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseas_fuopt_weekly_ccnl(itm_no, exch, st_dt, ed_dt, "P", cnt, gap, idx, tr_cont, dataframe)
     else:  # 조회시작일자 ~ 조회종료일자 이외 날자인경우 종료 처리
         #print("The End")
@@ -1165,6 +1172,7 @@ def get_overseas_fuopt_market_time(clas="", excg="CME", opt="%", tr_cont="", FK1
         return dataframe
     elif tr_cont == "F" or tr_cont == "M":  # 다음 페이지 존재하는 경우 자기 호출 처리
         print('Call Next')
+        time.sleep(0.1)  # 시스템 안정적 운영을 위하여 반드시 지연 time 필요
         return get_overseas_fuopt_market_time(clas, excg, opt, "N", FK100, NK100, dataframe)
 
 
