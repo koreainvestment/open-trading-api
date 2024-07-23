@@ -257,6 +257,7 @@ def get_approval():
             "secretkey": ka.getTREnv().my_sec}
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
+    time.sleep(0.05)
     res = requests.post(URL, headers=headers, data=json.dumps(body))
     approval_key = res.json()["approval_key"]
     return approval_key

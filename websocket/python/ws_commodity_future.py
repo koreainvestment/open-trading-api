@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 ### 모듈 임포트 ###
-import websockets
-import json
-import requests
 import os
-import asyncio
+import sys
+import json
 import time
+import requests
+import asyncio
+import traceback
+import websockets
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
@@ -41,6 +43,7 @@ def get_approval(key, secret):
             "secretkey": secret}
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
+    time.sleep(0.05)
     res = requests.post(URL, headers=headers, data=json.dumps(body))
     approval_key = res.json()["approval_key"]
     return approval_key
@@ -144,40 +147,38 @@ def stocksigningnotice_futsoptn(data, key, iv):
 ### 앱키 정의 ###
 
 async def connect():
-
-    g_appkey = "앱키를 입력하세요"
-    g_appsceret = "앱 시크릿키를 입력하세요" 
     
-    g_approval_key = get_approval(g_appkey, g_appsceret)
-    print("approval_key [%s]" % (g_approval_key))
+    try:
+        g_appkey = "앱키를 입력하세요"
+        g_appsecret = "앱 시크릿키를 입력하세요" 
 
-    # url = 'ws://ops.koreainvestment.com:31000' # 모의투자계좌
-    url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
-    
-    # 원하는 호출을 [tr_type, tr_id, tr_key] 순서대로 리스트 만들기
-    code_list = [['1','H0CFASP0','175T11'],['1','H0CFCNT0','175T11'], # 상품선물호가, 체결가
-                 ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
+        g_approval_key = get_approval(g_appkey, g_appsecret)
+        print("approval_key [%s]" % (g_approval_key))
 
-    senddata_list=[]
-    
-    for i,j,k in code_list:
-        temp = '{"header":{"approval_key": "%s","custtype":"P","tr_type":"%s","content-type":"utf-8"},"body":{"input":{"tr_id":"%s","tr_key":"%s"}}}'%(g_approval_key,i,j,k)         
-        senddata_list.append(temp)
+        # url = 'ws://ops.koreainvestment.com:31000' # 모의투자계좌
+        url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
 
-        
-    async with websockets.connect(url, ping_interval=None) as websocket:
+        # 원하는 호출을 [tr_type, tr_id, tr_key] 순서대로 리스트 만들기
+        code_list = [['1','H0CFASP0','175V08'],['1','H0CFCNT0','175T11'], # 상품선물호가, 체결가
+                     ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
 
-        for senddata in senddata_list:
-            await websocket.send(senddata)
-            await asyncio.sleep(0.5)
-            print(f"Input Command is :{senddata}")
+        senddata_list=[]
 
-        while True:
+        for i,j,k in code_list:
+            temp = '{"header":{"approval_key": "%s","custtype":"P","tr_type":"%s","content-type":"utf-8"},"body":{"input":{"tr_id":"%s","tr_key":"%s"}}}'%(g_approval_key,i,j,k)         
+            senddata_list.append(temp)
 
-            try:
 
-                data = await websocket.recv()
+        async with websockets.connect(url, ping_interval=None) as websocket:
+
+            for senddata in senddata_list:
+                await websocket.send(senddata)
                 await asyncio.sleep(0.5)
+                print(f"Input Command is :{senddata}")
+
+            while True:
+                data = await websocket.recv()
+                # await asyncio.sleep(0.5)
                 # print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
 
                 if data[0] == '0':
@@ -230,10 +231,53 @@ async def connect():
                         await websocket.pong(data)
                         print("### SEND [PINGPONG] [%s]" % (data))
 
-            except websockets.ConnectionClosed:
-                continue
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception as e:
+        print('Exception Raised!')
+        print(e)
+        print('Connect Again!')
+        time.sleep(0.1)
+
+        # 웹소켓 다시 시작
+        await connect()     
                     
                     
-# 비동기로 서버에 접속한다.
-asyncio.get_event_loop().run_until_complete(connect())
-asyncio.get_event_loop().close()
+# # 비동기로 서버에 접속한다.
+# asyncio.get_event_loop().run_until_complete(connect())
+# asyncio.get_event_loop().close()
+
+# -----------------------------------------------------------------------------
+# - Name : main
+# - Desc : 메인
+# -----------------------------------------------------------------------------
+async def main():
+    try:
+        # 웹소켓 시작
+        await connect()
+
+    except Exception as e:
+        print('Exception Raised!')
+        print(e)
+
+        
+if __name__ == "__main__":
+
+    # noinspection PyBroadException
+    try:
+        # ---------------------------------------------------------------------
+        # Logic Start!
+        # ---------------------------------------------------------------------
+        # 웹소켓 시작
+        asyncio.run(main())
+
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt Exception 발생!")
+        print(traceback.format_exc())
+        sys.exit(-100)
+
+    except Exception:
+        print("Exception 발생!")
+        print(traceback.format_exc())
+        sys.exit(-200)

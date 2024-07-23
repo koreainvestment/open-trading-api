@@ -7,6 +7,7 @@
 #엑셀파일 실시간.xlsx 띄우고 프로그램 실행하세요
 import os
 import json
+import time
 import requests
 import pandas as pd
 
@@ -34,6 +35,7 @@ def get_approval(key, secret):
             "secretkey": secret}
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
+    time.sleep(0.05)
     res = requests.post(URL, headers=headers, data=json.dumps(body))
     approval_key = res.json()["approval_key"]
     return approval_key    

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #웹소켓 실시간 WEBSOCKET 주식현재가_실시간주식체결가[실시간-003] 엑셀연동 샘플
 #Method : POST
 #실전 Domain : https://openapi.koreainvestment.com:9443
@@ -5,10 +6,14 @@
 #URL: /tryitout/H0STASP0
 #Content-Type : text/plain
 #엑셀파일 실시간.xlsx 띄우고 프로그램 실행하세요
+
+### 모듈 임포트 ###
 import os
 import json
+import time
 import requests
 import pandas as pd
+import openpyxl
 
 try:
     import xlwings as xw
@@ -34,6 +39,7 @@ def get_approval(key, secret):
             "secretkey": secret}
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
+    time.sleep(0.05)
     res = requests.post(URL, headers=headers, data=json.dumps(body))
     approval_key = res.json()["approval_key"]
     return approval_key    
@@ -58,10 +64,17 @@ b = {
         {
             "input": {
                 "tr_id": "H0STASP0", # API명
-                "tr_key": "011700"   # 종목번호
+                "tr_key": "005930"   # 종목번호
             }
     }
 }
+
+if not os.path.exists('실시간.xlsx'):
+    filename = '실시간.xlsx'
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    workbook.save(filename)
+    print(f"{filename} 파일이 생성되었습니다.")
 
 wb = xw.Book('실시간.xlsx')
 wsheet = wb.sheets[0]
@@ -145,8 +158,6 @@ def on_open(ws):
 # ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:31000",
 #                             on_open=on_open, on_message=on_message, on_error=on_error)
 
-
-ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:21000",
-                            on_open=on_open, on_message=on_message, on_error=on_error)
+ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:21000", on_open=on_open,on_message=on_message, on_error=on_error)
 
 ws.run_forever()

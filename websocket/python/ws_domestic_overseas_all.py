@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 ### 모듈 임포트 ###
-import websockets
-import json
-import requests
 import os
-import asyncio
+import sys
+import json
 import time
+import requests
+import asyncio
+import traceback
+import websockets
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
@@ -40,6 +42,7 @@ def get_approval(key, secret):
             "secretkey": secret}
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
+    time.sleep(0.05)
     res = requests.post(URL, headers=headers, data=json.dumps(body))
     approval_key = res.json()["approval_key"]
     return approval_key
@@ -1038,95 +1041,98 @@ def bondindexpurchase_domestic(data_cnt, data):
 ### 앱키 정의 ###
 
 async def connect():
+    try:
 
-    g_appkey = "앱키를 입력하세요"
-    g_appsceret = "앱 시크릿키를 입력하세요"
-    
-    g_approval_key = get_approval(g_appkey, g_appsceret)
-    print("approval_key [%s]" % (g_approval_key))
+        g_appkey = "앱키를 입력하세요"
+        g_appsecret = "앱 시크릿키를 입력하세요"
 
-    # url = 'ws://ops.koreainvestment.com:31000' # 모의투자계좌
-    url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
-    
-    # 원하는 호출을 [tr_type, tr_id, tr_key] 순서대로 리스트 만들기
-    
-    ### 1-1. 국내주식 호가, 체결가, 예상체결, 체결통보 ### # 모의투자 국내주식 체결통보: H0STCNI9
-    # code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1', 'H0STANC0', '005930'],['1','H0STCNI0','HTS ID를 입력하세요']]
-    
-    ### 1-2. 국내주식 실시간회원사, 실시간프로그램매매, 장운영정보 ###
-    # code_list = [['1', 'H0STMBC0', '005930'], ['1', 'H0STPGM0', '005930'], ['1', 'H0STMKO0', '005930']]
-    
-    ### 1-3. 국내주식 시간외 호가, 체결가, 예상체결 ###
-    # code_list = [['1','H0STOAA0','005930'],['1','H0STOUP0','005930'],['1', 'H0STOAC0', '005930']]
-    
-    ### 1-4. 국내지수 체결, 예상체결, 실시간프로그램매매 ###
-    # code_list = [['1', 'H0UPCNT0', '0001'], ['1', 'H0UPANC0', '0001'], ['1', 'H0UPPGM0', '0001']]
-    
-    ### 1-5. ELW 호가, 체결가, 예상체결 ###
-    # code_list = [['1', 'H0EWASP0', '58J297'],['1', 'H0EWCNT0', '58J297'],['1', 'H0EWANC0', '58J297']]
-    
-    ### 1-6. 국내ETF NAV 추이 ###
-    # code_list = [['1', 'H0STNAV0', '069500']]
-    
-    ### 2-1. 해외주식(미국) 호가, 체결가, 체결통보 ### # 모의투자 해외주식 체결통보: H0GSCNI9
-    # code_list = [['1','HDFSASP0','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요']]
-    
-    ### 2-2.해외주식(아시아) 호가, 체결가, 체결통보 ###
-    # code_list = [['1','HDFSASP1','DHKS00003'],['1','HDFSCNT0','DHKS00003'],['1','H0GSCNI0','HTS ID를 입력하세요']]
-    
-    ### 3-1. 국내 지수선물옵션 호가, 체결가, 체결통보 ### # 모의투자 선물옵션 체결통보: H0IFCNI9
-    # code_list = [['1','H0IFASP0','101T12'],['1','H0IFCNT0','101T12'], # 지수선물호가, 체결가
-    #              ['1','H0IOASP0','201T11317'],['1','H0IOCNT0','201T11317'], # 지수옵션호가, 체결가
-    #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
-    
-    ### 3-2. 국내 상품선물 호가, 체결가, 체결통보 ###
-    # code_list = [['1','H0CFASP0','175T11'],['1','H0CFCNT0','175T11'], # 상품선물호가, 체결가
-    #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
-    
-    ### 3-3. 국내 주식선물옵션 호가, 체결가, 체결통보 ###
-    # code_list = [['1', 'H0ZFCNT0', '111V06'], ['1', 'H0ZFASP0', '111V06'],['1', 'H0ZFANC0', '111V06'], # 주식선물호가, 체결가, 예상체결
-    #              ['1', 'H0ZOCNT0', '211V05059'], ['1', 'H0ZOASP0', '211V05059'], ['1', 'H0ZOANC0', '211V05059'], # 주식옵션호가, 체결가, 예상체결
-    #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
-    
-    ### 3-4. 국내 야간옵션(EUREX) 호가, 체결가, 예상체결, 체결통보 ###
-    # code_list = [['1', 'H0EUCNT0', '101V06'], ['1', 'H0EUASP0', '101V06'], ['1', 'H0EUANC0', '101V06'], ['1', 'H0EUCNI0', 'HTS ID를 입력하세요']]
-    
-    ### 3-5. 국내 야간선물(CME) 호가, 체결가, 체결통보 ###
-    # code_list = [['1', 'H0MFCNT0', '101V06'], ['1', 'H0MFASP0', '101V06'], ['1', 'H0MFCNI0', 'HTS ID를 입력하세요']]
-    
-    ### 4. 해외선물옵션 호가, 체결가, 체결통보 ###
-    # code_list = [['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'], # 해외선물 체결가, 호가
-    #              ['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'], # 해외옵션 체결가, 호가
-    #              ['1','HDFFF2C0','HTS ID를 입력하세요']] # 해외선물옵션 체결통보
-    
-    ### 5. 장내채권(일반채권) 호가, 체결가 / 채권지수 체결가 ###
-    # code_list = [['1','H0BJASP0','KR2033022D33'],['1','H0BJCNT0','KR2033022D33'], # 일반채권 체결가, 호가
-    #              ['1','H0BICNT0','KBPR01']] # 채권지수 체결가
-    
-    ### 1+2+3+4. 국내주식, 해외주식(미국), 해외주식(아시아), 국내 지수선물옵션, 국내 상품선물, 국내 주식선물옵션, 해외선물옵션 호가, 체결가, 체결통보 ###
-    code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1', 'H0STANC0', '005930'],['1','H0STCNI0','HTS ID를 입력하세요'],
-                 ['1','HDFSASP0','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],
-                 ['1','HDFSASP1','DHKS00003'],['1','HDFSCNT0','DHKS00003'],['1','H0GSCNI0','HTS ID를 입력하세요'],
-                 ['1','H0IFASP0','101T12'],['1','H0IFCNT0','101T12'],['1','H0IOASP0','201T11317'],['1','H0IOCNT0','201T11317'], ['1','H0CFASP0','175T11'],['1','H0CFCNT0','175T11'],['1', 'H0ZFCNT0', '111V06'], ['1', 'H0ZFASP0', '111V06'],['1', 'H0ZOCNT0', '211V05059'], ['1', 'H0ZOASP0', '211V05059'],['1','H0IFCNI0','HTS ID를 입력하세요'],
-                 ['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'],['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'],['1','HDFFF2C0','HTS ID를 입력하세요']]
+        g_approval_key = get_approval(g_appkey, g_appsecret)
+        print("approval_key [%s]" % (g_approval_key))
 
-    senddata_list=[]
-    
-    for i,j,k in code_list:
-        temp = '{"header":{"approval_key": "%s","custtype":"P","tr_type":"%s","content-type":"utf-8"},"body":{"input":{"tr_id":"%s","tr_key":"%s"}}}'%(g_approval_key,i,j,k)
-        senddata_list.append(temp)
-        
-    async with websockets.connect(url, ping_interval=None) as websocket:
+        # url = 'ws://ops.koreainvestment.com:31000' # 모의투자계좌
+        url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
 
-        for senddata in senddata_list:
-            await websocket.send(senddata)
-            await asyncio.sleep(0.5)
-            print(f"Input Command is :{senddata}")
+        # 원하는 호출을 [tr_type, tr_id, tr_key] 순서대로 리스트 만들기
 
-        while True:
+        ### 1-1. 국내주식 호가, 체결가, 예상체결, 체결통보 ### # 모의투자 국내주식 체결통보: H0STCNI9
+        # code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1', 'H0STANC0', '005930'],['1','H0STCNI0','HTS ID를 입력하세요']]
 
-            try:
+        ### 1-2. 국내주식 실시간회원사, 실시간프로그램매매, 장운영정보 ###
+        # code_list = [['1', 'H0STMBC0', '005930'], ['1', 'H0STPGM0', '005930'], ['1', 'H0STMKO0', '005930']]
 
+        ### 1-3. 국내주식 시간외 호가, 체결가, 예상체결 ###
+        # code_list = [['1','H0STOAA0','005930'],['1','H0STOUP0','005930'],['1', 'H0STOAC0', '005930']]
+
+        ### 1-4. 국내지수 체결, 예상체결, 실시간프로그램매매 ###
+        # code_list = [['1', 'H0UPCNT0', '0001'], ['1', 'H0UPANC0', '0001'], ['1', 'H0UPPGM0', '0001']]
+
+        ### 1-5. ELW 호가, 체결가, 예상체결 ###
+        # code_list = [['1', 'H0EWASP0', '58J297'],['1', 'H0EWCNT0', '58J297'],['1', 'H0EWANC0', '58J297']]
+
+        ### 1-6. 국내ETF NAV 추이 ###
+        # code_list = [['1', 'H0STNAV0', '069500']]
+
+        ### 2-1. 해외주식(미국) 호가, 체결가, 체결통보 ### # 모의투자 해외주식 체결통보: H0GSCNI9
+        # code_list = [['1','HDFSASP0','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요']]
+
+        ### 2-2. 해외주식(미국-주간) 호가, 체결가, 체결통보 ### # 모의투자 해외주식 체결통보: H0GSCNI9
+        # code_list = [['1','HDFSASP0','RBAQAAPL'],['1','HDFSCNT0','RBAQAAPL'],['1','H0GSCNI0','HTS ID를 입력하세요']]
+
+        ### 2-3. 해외주식(아시아) 호가, 체결가, 체결통보 ###
+        # code_list = [['1','HDFSASP1','DHKS00003'],['1','HDFSCNT0','DHKS00003'],['1','H0GSCNI0','HTS ID를 입력하세요']]
+
+        ### 3-1. 국내 지수선물옵션 호가, 체결가, 체결통보 ### # 모의투자 선물옵션 체결통보: H0IFCNI9
+        # code_list = [['1','H0IFASP0','101T12'],['1','H0IFCNT0','101T12'], # 지수선물호가, 체결가
+        #              ['1','H0IOASP0','201T11317'],['1','H0IOCNT0','201T11317'], # 지수옵션호가, 체결가
+        #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
+
+        ### 3-2. 국내 상품선물 호가, 체결가, 체결통보 ###
+        # code_list = [['1','H0CFASP0','175T11'],['1','H0CFCNT0','175T11'], # 상품선물호가, 체결가
+        #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
+
+        ### 3-3. 국내 주식선물옵션 호가, 체결가, 체결통보 ###
+        # code_list = [['1', 'H0ZFCNT0', '111V06'], ['1', 'H0ZFASP0', '111V06'],['1', 'H0ZFANC0', '111V06'], # 주식선물호가, 체결가, 예상체결
+        #              ['1', 'H0ZOCNT0', '211V05059'], ['1', 'H0ZOASP0', '211V05059'], ['1', 'H0ZOANC0', '211V05059'], # 주식옵션호가, 체결가, 예상체결
+        #              ['1','H0IFCNI0','HTS ID를 입력하세요']] # 선물옵션체결통보
+
+        ### 3-4. 국내 야간옵션(EUREX) 호가, 체결가, 예상체결, 체결통보 ###
+        # code_list = [['1', 'H0EUCNT0', '101V06'], ['1', 'H0EUASP0', '101V06'], ['1', 'H0EUANC0', '101V06'], ['1', 'H0EUCNI0', 'HTS ID를 입력하세요']]
+
+        ### 3-5. 국내 야간선물(CME) 호가, 체결가, 체결통보 ###
+        # code_list = [['1', 'H0MFCNT0', '101V06'], ['1', 'H0MFASP0', '101V06'], ['1', 'H0MFCNI0', 'HTS ID를 입력하세요']]
+
+        ### 4. 해외선물옵션 호가, 체결가, 체결통보 ###
+        # code_list = [['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'], # 해외선물 체결가, 호가
+        #              ['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'], # 해외옵션 체결가, 호가
+        #              ['1','HDFFF2C0','HTS ID를 입력하세요']] # 해외선물옵션 체결통보
+
+        ### 5. 장내채권(일반채권) 호가, 체결가 / 채권지수 체결가 ###
+        # code_list = [['1','H0BJASP0','KR2033022D33'],['1','H0BJCNT0','KR2033022D33'], # 일반채권 체결가, 호가
+        #              ['1','H0BICNT0','KBPR01']] # 채권지수 체결가
+
+        ### 1+2+3+4. 국내주식, 해외주식(미국), 해외주식(아시아), 국내 지수선물옵션, 국내 상품선물, 국내 주식선물옵션, 해외선물옵션 호가, 체결가, 체결통보 ###
+        code_list = [['1','H0STASP0','005930'],['1','H0STCNT0','005930'],['1', 'H0STANC0', '005930'],['1','H0STCNI0','HTS ID를 입력하세요'],
+                     ['1','HDFSASP0','DNASAAPL'],['1','HDFSCNT0','DNASAAPL'],
+                     ['1','HDFSASP1','DHKS00003'],['1','HDFSCNT0','DHKS00003'],['1','H0GSCNI0','HTS ID를 입력하세요'],
+                     ['1','H0IFASP0','101T12'],['1','H0IFCNT0','101T12'],['1','H0IOASP0','201T11317'],['1','H0IOCNT0','201T11317'], ['1','H0CFASP0','175T11'],['1','H0CFCNT0','175T11'],['1', 'H0ZFCNT0', '111V06'], ['1', 'H0ZFASP0', '111V06'],['1', 'H0ZOCNT0', '211V05059'], ['1', 'H0ZOASP0', '211V05059'],['1','H0IFCNI0','HTS ID를 입력하세요'],
+                     ['1','HDFFF020','FCAZ22'],['1','HDFFF010','FCAZ22'],['1','HDFFF020','OESH23 C3900'],['1','HDFFF010','OESH23 C3900'],['1','HDFFF2C0','HTS ID를 입력하세요']]
+
+        senddata_list=[]
+
+        print("url : ", url)
+
+        for i,j,k in code_list:
+            temp = '{"header":{"approval_key": "%s","custtype":"P","tr_type":"%s","content-type":"utf-8"},"body":{"input":{"tr_id":"%s","tr_key":"%s"}}}'%(g_approval_key,i,j,k)
+            senddata_list.append(temp)
+
+        async with websockets.connect(url, ping_interval=None) as websocket:
+
+            for senddata in senddata_list:
+                await websocket.send(senddata)
+                await asyncio.sleep(0.5)
+                print(f"Input Command is :{senddata}")
+
+            while True:
                 data = await websocket.recv()
                 # await asyncio.sleep(0.5)
                 print(f"Recev Command is :{data}")  # 정제되지 않은 Request / Response 출력
@@ -1145,13 +1151,13 @@ async def connect():
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)
-                    
+
                     elif trid0 == "H0STANC0":  # 국내주식 예상체결 데이터 처리
                         print("#### 국내주식 예상체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockexppurchase_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)  
-                    
+
                     elif trid0 == "H0STOUP0":  # 국내주식 시간외체결 데이터 처리
                         print("#### 국내주식 시간외체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1162,12 +1168,12 @@ async def connect():
                         print("#### 국내주식 시간외호가 ####")
                         stockoverhoka_domestic(recvstr[3])
                         # await asyncio.sleep(0.2)                        
-                        
+
                     elif trid0 == "H0STOAC0":  # 국내주식 시간외예상체결데이터 처리
                         print("#### 국내주식 시간외예상체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockoverexppurchase_domestic(data_cnt, recvstr[3])
-                        
+
                     elif trid0 == "H0STMBC0":  # 국내주식 실시간회원사 데이터 처리
                         print("#### 국내주식 실시간회원사 ####")
                         data_cnt = int(recvstr[2])  # 데이터 개수
@@ -1179,35 +1185,35 @@ async def connect():
                         data_cnt = int(recvstr[2])  # 데이터 개수
                         stocksprogramtrade_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)                        
-                        
+
                     elif trid0 == "H0STMKO0":  # 국내주식 장운영정보 데이터 처리
                         print("#### 국내주식 장운영정보 ####")
                         data_cnt = int(recvstr[2])  # 데이터 개수
                         stocksmarketinfo_domestic(data_cnt, recvstr[3])  
-                    
+
                     elif trid0 == "H0STNAV0":  # 국내주식 장운영정보 데이터 처리
                         print("#### 국내ETF NAV추이 ####")
                         data_cnt = int(recvstr[2])  # 데이터 개수
                         etfnavtrend_domestic(data_cnt, recvstr[3])
-                    
+
                     elif trid0 == "H0UPCNT0":  # 국내지수 체결 데이터 처리
                         print("#### 국내지수 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         indexpurchase_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2) 
-                        
+
                     elif trid0 == "H0UPANC0":  # 국내지수 예상체결 데이터 처리
                         print("#### 국내지수 예상체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         indexexppurchase_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2) 
-                        
+
                     elif trid0 == "H0UPPGM0":  # 국내지수 실시간프로그램매매 데이터 처리
                         print("#### 국내지수 실시간프로그램매매 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         indexprogramtrade_domestic(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)    
-                    
+
                     elif trid0 == "H0EWCNT0":  # ELW 체결 데이터 처리
                         print("#### ELW 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1218,7 +1224,7 @@ async def connect():
                         print("#### ELW 호가 ####")
                         elwhoka_domestic(recvstr[3])
                         # await asyncio.sleep(0.2) 
-                        
+
                     elif trid0 == "H0EWANC0":  # ELW 예상체결 데이터 처리
                         print("#### ELW 예상체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1262,7 +1268,7 @@ async def connect():
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_optn(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)
-                    
+
                     elif trid0 == "H0CFASP0":  # 상품선물호가 tr 일경우의 처리 단계
                         print("#### 상품선물호가 ####")
                         stockhoka_productfuts(recvstr[3])
@@ -1273,7 +1279,7 @@ async def connect():
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_productfuts(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)
-                        
+
                     elif trid0 == "H0ZFCNT0":  # 주식선물 체결 데이터 처리
                         print("#### 주식선물 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1284,12 +1290,12 @@ async def connect():
                         print("#### 주식선물 호가 ####")
                         stockhoka_stockfuts(recvstr[3])
                         # await asyncio.sleep(0.2)
-                        
+
                     elif trid0 == "H0ZFANC0":  # 주식선물 예상체결 데이터 처리
                         print("#### 주식선물 예상체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stocksexppurchase_stockfuts(data_cnt, recvstr[3])
-                        
+
                     elif trid0 == "H0ZOCNT0":  # 주식옵션 체결 데이터 처리
                         print("#### 주식옵션 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1300,13 +1306,13 @@ async def connect():
                         print("#### 주식옵션 호가 ####")
                         stockhoka_stockoptn(recvstr[3])
                         # await asyncio.sleep(0.2)
-                    
+
                     elif trid0 == "H0ZOANC0":  # 주식옵션 예상체결 데이터 처리
                         print("#### 주식옵션 예상체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stocksexppurchase_stockoptn(data_cnt, recvstr[3])
-                        
-                        
+
+
                     elif trid0 == "H0MFCNT0":  # 야간선물(CME) 체결 데이터 처리
                         print("#### 야간선물(CME) 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1317,7 +1323,7 @@ async def connect():
                         print("#### 야간선물(CME) 호가 ####")
                         stockhoka_cmefuts(recvstr[3])
                         # await asyncio.sleep(0.2)
-                                        
+
                     elif trid0 == "H0EUCNT0":  # 야간옵션(EUREX) 체결 데이터 처리
                         print("#### 야간옵션(EUREX) 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1328,7 +1334,7 @@ async def connect():
                         print("#### 야간옵션(EUREX) 호가 ####")
                         stockhoka_eurexoptn(recvstr[3])
                         # await asyncio.sleep(0.2)                        
-                        
+
                     elif trid0 == "H0EUANC0":  # 야간옵션(EUREX) 예상체결 데이터 처리
                         print("#### 야간옵션(EUREX) 예상체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1344,7 +1350,7 @@ async def connect():
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
                         stockspurchase_overseafut(data_cnt, recvstr[3])
                         # await asyncio.sleep(0.2)
-                        
+
                     elif trid0 == "H0BJCNT0":  
                         # 장내채권 체결 데이터 처리(일반채권)
                         print("#### 장내채권 체결 ####")
@@ -1357,7 +1363,7 @@ async def connect():
                         print("#### 장내채권 호가 ####")
                         bondhoka_domestic(recvstr[3])
                         # await asyncio.sleep(0.2)                        
-                        
+
                     elif trid0 == "H0BICNT0":  # 채권지수 예상체결 데이터 처리
                         print("#### 채권지수 체결 ####")
                         data_cnt = int(recvstr[2])  # 체결데이터 개수
@@ -1379,7 +1385,7 @@ async def connect():
                     elif trid0 == "H0IFCNI0" or trid0 == "H0IFCNI9":  # 지수/상품/주식 선물옵션체결 통보 처리
                         stocksigningnotice_futsoptn(recvstr[3], aes_key, aes_iv)
                         # await asyncio.sleep(0.2)
-                        
+
                     elif trid0 == "H0MFCNI0" or trid0 == "H0EUCNI0":  # 야간선물옵션(CME, EUREX) 체결 통보 처리
                         stocksigningnotice_ngtfutsoptn(recvstr[3], aes_key, aes_iv)
                         # await asyncio.sleep(0.2)
@@ -1431,10 +1437,53 @@ async def connect():
                         await websocket.pong(data)
                         print("### SEND [PINGPONG] [%s]" % (data))
 
-            except websockets.ConnectionClosed:
-                continue
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception as e:
+        print('Exception Raised!')
+        print(e)
+        print('Connect Again!')
+        time.sleep(0.1)
+
+        # 웹소켓 다시 시작
+        await connect()     
                     
                     
-# 비동기로 서버에 접속한다.
-asyncio.get_event_loop().run_until_complete(connect())
-asyncio.get_event_loop().close()
+# # 비동기로 서버에 접속한다.
+# asyncio.get_event_loop().run_until_complete(connect())
+# asyncio.get_event_loop().close()
+
+# -----------------------------------------------------------------------------
+# - Name : main
+# - Desc : 메인
+# -----------------------------------------------------------------------------
+async def main():
+    try:
+        # 웹소켓 시작
+        await connect()
+
+    except Exception as e:
+        print('Exception Raised!')
+        print(e)
+
+        
+if __name__ == "__main__":
+
+    # noinspection PyBroadException
+    try:
+        # ---------------------------------------------------------------------
+        # Logic Start!
+        # ---------------------------------------------------------------------
+        # 웹소켓 시작
+        asyncio.run(main())
+
+    except KeyboardInterrupt:
+        print("KeyboardInterrupt Exception 발생!")
+        print(traceback.format_exc())
+        sys.exit(-100)
+
+    except Exception:
+        print("Exception 발생!")
+        print(traceback.format_exc())
+        sys.exit(-200)

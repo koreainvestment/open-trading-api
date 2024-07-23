@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+### 모듈 임포트 ###
 import os
 import json
 import requests
 import pandas as pd
+import time
 
 try:
     import websocket
@@ -20,6 +23,7 @@ def get_approval(key, secret):
             "secretkey": secret}
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
+    time.sleep(0.05)
     res = requests.post(URL, headers=headers, data=json.dumps(body))
     approval_key = res.json()["approval_key"]
     return approval_key    
@@ -27,7 +31,6 @@ def get_approval(key, secret):
 i_stock = ["005930","011700","000270"]
 i_appkey    = "API신청시 발급 앱키"
 i_appsecret = "API신청시 발급 앱시크리트"
-
 i_approval_key = get_approval(i_appkey, i_appsecret)
 print("approval_key [%s]" % (i_approval_key))
 
@@ -55,12 +58,11 @@ b3 = {
 
 # Pandas DataFrame 이용
 def pdbind(result):
-
-     if i_stock[0] == result[0]:
+    if i_stock[0] == result[0]:
         print("종목코드1:",result[0], " 체결시간:", result[1], " 현재가:", result[2])
-     if i_stock[1] == result[0]:
+    if i_stock[1] == result[0]:
         print("종목코드2:",result[0], " 체결시간:", result[1], " 현재가:", result[2])
-     if i_stock[2] == result[0]:
+    if i_stock[2] == result[0]:
         print("종목코드3:",result[0], " 체결시간:", result[1], " 현재가:", result[2])
 
 def on_message(ws, data):
