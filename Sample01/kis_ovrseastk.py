@@ -1128,8 +1128,8 @@ def get_overseas_inquire_paymt_stdr_balance(dv="03", dt="", dvsn="01", inqr_dvsn
 ##############################################################################################
 # [해외주식] 기본시세 > 해외주식 현재체결가
 ##############################################################################################
-def get_overseas_price_quot_search_info(excd="", itm_no="", tr_cont="", dataframe=None):
-    url = '/uapi/overseas-price/v1/quotations/search-info'
+def get_overseas_price_quot_price(excd="", itm_no="", tr_cont="", dataframe=None):
+    url = '/uapi/overseas-price/v1/quotations/price'
     tr_id = "HHDFS00000300" # 해외주식 현재체결가
 
     params = {
