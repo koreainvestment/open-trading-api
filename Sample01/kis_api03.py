@@ -16,24 +16,24 @@ ka.auth()
 
 #====|  [해외주식] 주문/계좌  |============================================================================================================================
 
-# [해외주식] 주문/계좌 > 주문 (매수매도구분 buy,sell + 종목번호 6자리 + 주문수량 + 주문단가)
+# [해외주식] 주문/계좌 > 주문 (매수매도구분 buy,sell + 종목코드6자리 + 주문수량 + 주문단가)
 # 지정가 기준이며 시장가 옵션(주문구분코드)을 사용하는 경우 kis_ovrseastk.py get_overseas_order 수정요망!
 #rt_data = kb.get_overseas_order(ord_dv="buy", excg_cd="NASD", itm_no="TSLA", qty=1, unpr=170)
 #rt_data = kb.get_overseas_order(ord_dv="buy", excg_cd="NASD", itm_no="AAPL", qty=1, unpr=216.75)
 rt_data = kb.get_overseas_order(ord_dv="buy", excg_cd="NASD", itm_no="NVDA", qty=1, unpr=123.3)
 print(rt_data.KRX_FWDG_ORD_ORGNO + "+" + rt_data.ODNO + "+" + rt_data.ORD_TMD) # 주문접수조직번호+주문접수번호+주문시각
 
-# [해외주식] 주문/계좌 > 주문 (매수매도구분 buy,sell + 종목번호 6자리 + 주문수량 + 주문단가)
+# [해외주식] 주문/계좌 > 정정취소주문 (해외거래소코드excg_cd + 종목코드itm_no + 주문번호orgn_odno + 정정취소구분rvse_cncl_dvsn_cd + 수량qty + 주문단가unpr)
 # 지정가 기준이며 시장가 옵션(주문구분코드)을 사용하는 경우 kis_ovrseastk.py get_overseas_order 수정요망!
 rt_data = kb.get_overseas_order_rvsecncl(excg_cd="NASD", itm_no="TSLA", orgn_odno="0030089601", rvse_cncl_dvsn_cd="02", qty=1, unpr=0)
 print(rt_data) # 주문접수조직번호+주문접수번호+주문시각
 
-# [해외주식] 주문/계좌 > 해외주식 미체결내역
+# [해외주식] 주문/계좌 > 해외주식 미체결내역 (해외거래소코드)
 # 해외거래소코드 NASD:나스닥,NYSE:뉴욕,AMEX:아멕스,SEHK:홍콩,SHAA:중국상해,SZAA:중국심천,TKSE:일본,HASE:베트남하노이,VNSE:호치민
 rt_data = kb.get_overseas_inquire_nccs(excg_cd="NASD")
 print(rt_data)
 
-# [해외주식] 주문/계좌 > 해외주식 미체결전량취소주문 (검증진행중)
+# [해외주식] 주문/계좌 > 해외주식 미체결전량취소주문 (해외거래소코드excg_cd + 종목코드itm_no)
 # 해외거래소코드 NASD:나스닥,NYSE:뉴욕,AMEX:아멕스,SEHK:홍콩,SHAA:중국상해,SZAA:중국심천,TKSE:일본,HASE:베트남하노이,VNSE:호치민
 rt_data = kb.get_overseas_order_allcncl(excg_cd="NASD", itm_no="")
 print(rt_data)
@@ -64,14 +64,14 @@ print(rt_data)
 rt_data = kb.get_overseas_inquire_present_balance(dv="02", dvsn="01", natn="000", mkt="00", inqr_dvsn="00")
 print(rt_data)
 
-# [해외주식] 주문/계좌 > 주문 (매수매도구분 buy,sell + 종목번호 + 주문수량 + 주문단가)
+# [해외주식] 주문/계좌 > 미국주간주문 (매수매도구분 buy,sell + 종목번호 + 주문수량 + 주문단가)
 # 지정가 기준이며 시장가 옵션(주문구분코드)을 사용하는 경우 kis_ovrseastk.py get_overseas_order 수정요망!
 #rt_data = kb.get_overseas_daytime_order(ord_dv="buy", excg_cd="NASD", itm_no="TSLA", qty=1, unpr=251)
 #rt_data = kb.get_overseas_daytime_order(ord_dv="buy", excg_cd="NASD", itm_no="AAPL", qty=1, unpr=216.75)
 rt_data = kb.get_overseas_daytime_order(ord_dv="buy", excg_cd="NASD", itm_no="NVDA", qty=1, unpr=123.3)
 print(rt_data.KRX_FWDG_ORD_ORGNO + "+" + rt_data.ODNO + "+" + rt_data.ORD_TMD) # 주문접수조직번호+주문접수번호+주문시각
 
-# [해외주식] 주문/계좌 > 주문 (매수매도구분 buy,sell + 종목번호 + 주문수량 + 주문단가)
+# [해외주식] 주문/계좌 > 미국주간정정취소 (해외거래소코드excg_cd + 종목코드itm_no + 주문번호orgn_odno + 정정취소구분rvse_cncl_dvsn_cd + 수량qty + 주문단가unpr)
 # 지정가 기준이며 시장가 옵션(주문구분코드)을 사용하는 경우 kis_ovrseastk.py get_overseas_order 수정요망!
 rt_data = kb.get_overseas_daytime_order_rvsecncl(excg_cd="NASD", itm_no="TSLA", orgn_odno="0030089601", rvse_cncl_dvsn_cd="02", qty=1, unpr=0)
 print(rt_data) # 주문접수조직번호+주문접수번호+주문시각
