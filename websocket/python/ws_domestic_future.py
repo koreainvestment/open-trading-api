@@ -496,9 +496,9 @@ async def connect():
                         # await asyncio.sleep(0.2)
 
                     elif trid0 == "H0ZFANC0":  # 주식선물 예상체결 데이터 처리
-                            print("#### 주식선물 예상체결 ####")
-                            data_cnt = int(recvstr[2])  # 체결데이터 개수
-                            stocksexppurchase_stockfuts(data_cnt, recvstr[3])
+                        print("#### 주식선물 예상체결 ####")
+                        data_cnt = int(recvstr[2])  # 체결데이터 개수
+                        stocksexppurchase_stockfuts(data_cnt, recvstr[3])
 
                     elif trid0 == "H0ZOCNT0":  # 주식옵션 체결 데이터 처리
                         print("#### 주식옵션 체결 ####")
