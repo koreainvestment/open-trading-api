@@ -86,7 +86,7 @@ ka.auth()
 
 __DEBUG__ = False  # True
 
-# 실시간 국내주식 계좌체결통보 복호화를 위한 부분 - start
+# 실시간 국내주식 계좌체결통보 복호화를 위한 부분-start
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from base64 import b64decode
