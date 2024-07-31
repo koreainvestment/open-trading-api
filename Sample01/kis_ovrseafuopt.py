@@ -440,7 +440,7 @@ def get_overseasfuopt_inquire_daily_ccld(fr_dt="", to_dt="", fuop_dvsn="00", crc
 # 해외선물옵션 예수금현황 List를 DataFrame 으로 반환
 # Input: None (Option) 상세 Input값 변경이 필요한 경우 API문서 참조
 # Output: DataFrame (Option) output API 문서 참조 등
-def get_overseasfuopt_inquire_psamount(crcy="TUS", inqr_dt="", tr_cont="", FK100="", NK100="", dataframe=None):
+def get_overseasfuopt_inquire_deposit(crcy="TUS", inqr_dt="", tr_cont="", FK100="", NK100="", dataframe=None):
     url = '/uapi/overseas-futureoption/v1/trading/inquire-deposit'
     tr_id = "OTFM1411R"
 
