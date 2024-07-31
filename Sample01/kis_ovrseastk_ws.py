@@ -511,7 +511,7 @@ def on_open(ws):
     # unsubscribe(ws, KIS_WSReq.BID_USA, _connect_key, "RBAQAAPL")    #실시간 호가(미국) 연결해제
     # subscribe(ws, KIS_WSReq.BID_USA, _connect_key, "RBAQAAPL")      #실시간 호가(미국) 연결등록
     # 실시간 계좌체결발생통보를 등록한다. 계좌체결발생통보 결과는 executed_df 에 저장된다.
-    subscribe(ws, KIS_WSReq.NOTICE, _connect_key, "jkonlee7") # HTS ID 입력 계좌체결발생통보
+    subscribe(ws, KIS_WSReq.NOTICE, _connect_key, "HTS ID 입력") # HTS ID 입력 계좌체결발생통보
 
 
 ws = websocket.WebSocketApp("ws://ops.koreainvestment.com:21000/tryitout",
