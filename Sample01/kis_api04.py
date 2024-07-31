@@ -55,7 +55,7 @@ rt_data = kb.get_overseasfuopt_inquire_daily_ccld(fr_dt="", to_dt="", fuop_dvsn=
 print(rt_data)
 
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 예수금현황 (통화코드crcy + 조회일자inqr_dt)
-rt_data = kb.get_overseasfuopt_inquire_psamount(crcy="%%%", inqr_dt="")
+rt_data = kb.get_overseasfuopt_inquire_deposit(crcy="%%%", inqr_dt="")
 print(rt_data)
 
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 일별 주문내역 (조회시작일자fr_dt + 조회종료일자to_dt + 체결미체결구분ccld_dvsn + 매수매도구분dvsn + 선물옵션구분fuop_dvsn)
