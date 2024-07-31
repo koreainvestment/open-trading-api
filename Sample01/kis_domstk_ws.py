@@ -339,7 +339,7 @@ def _dparse(data):
         if tr_id in (KIS_WSReq.CONTRACT, KIS_WSReq.BID_ASK):  # 실시간체결, 실시간호가
             dp_ = pd.read_csv(StringIO(d1[3]), header=None, sep='^', names=hcols, dtype=object)  # 수신데이터 parsing
 
-            # print(dp_)  # 실시간체결, 실시간호가 수신 데이터 파싱 결과 확인
+            print(dp_)  # 실시간체결, 실시간호가 수신 데이터 파싱 결과 확인
 
             dp_['TICK_HOUR'] = _today__ + dp_['TICK_HOUR']    # 수신시간
             dp_['TICK_HOUR'] = pd.to_datetime(dp_['TICK_HOUR'], format='%Y%m%d%H%M%S', errors='coerce')
@@ -347,7 +347,7 @@ def _dparse(data):
             dp_ = pd.read_csv(StringIO(aes_cbc_base64_dec(_ekey, _iv, d1[3])), header=None, sep='^', names=hcols,  # 수신데이터 parsing 및 복호화
                               dtype=object)
 
-            # print(dp_)  # 실시간 계좌체결발생통보 수신 파싱 결과 확인
+            print(dp_)  # 실시간 계좌체결발생통보 수신 파싱 결과 확인
 
             if __DEBUG__: print(f'***EXECUTED NOTICE [{dp_.to_string(header=False, index=False)}]')
 
