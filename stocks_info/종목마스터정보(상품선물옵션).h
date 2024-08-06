@@ -7,9 +7,9 @@ typedef struct
 									/* 1:금리 2:통화 3:상품                     */
     char    info_type[1];           /* 1:선물 2:SP선물                          */
 									/* 5:콜옵션 6:풋옵션                        */
-    char    shrn_iscd[SZ_SHRNCODE]; /* 단축코드                                 */
-    char    stnd_iscd[SZ_STNDCODE]; /* 표준코드                                 */
-    char    kor_name[SZ_KORNAME];   /* 한글종목명                               */
+    char    shrn_iscd[SZ_SHRNCODE]; /* 단축코드  (SZ_SHRNCODE=9)                */
+    char    stnd_iscd[SZ_STNDCODE]; /* 표준코드  (SZ_STNDCODE=12)                */
+    char    kor_name[SZ_KORNAME];   /* 한글종목명 (SZ_KORNAME=40)                */
 	char	atm_cls_code[ 1];		/* ATM구분(1:ATM,2:ITM,3:OTM)               */
     char    acpr[8];                /* 행사가                                   */
 	char	mmsc_cls_code[1];       /* 월물구분코드 (0:연결선물, 1:최근월물     */
@@ -22,5 +22,5 @@ typedef struct
 									/* EUR : 유로          GLD : 금             */
 									/* LHG : 돈육          CMU : CME미국달러    */
 									/* RFR : 3개월무위험금리                    */
-	char	prod_name[SZ_KORNAME];  /* 기초자산 명                              */
+	char	prod_name[SZ_KORNAME];  /* 기초자산 명 (SZ_KORNAME=40)               */
 } ST_FO_COM_CODE;
