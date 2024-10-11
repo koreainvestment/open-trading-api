@@ -139,7 +139,7 @@ namespace KIS_Oversea
                 { "ORD_SVR_DVSN_CD", "0" }                      // 주문서버구분코드l
             };
 
-            var res = Common.UrlFetch(paramsDict, url, trID, trCont);
+            var res = Common.UrlFetch(paramsDict, url, trID, trCont, null, false);
 
             var jsonResponse = res.Result.Content.ReadAsStringAsync();
             JObject jobj = JsonConvert.DeserializeObject<JObject>(jsonResponse.Result);
@@ -159,7 +159,7 @@ namespace KIS_Oversea
 
         }
  
-        public static DataTable GetOverseasOrderRvseCncl(string excg_cd = "", string itm_no = "", string? orgn_odno = "", string rvse_cncl_dvsn_cd = "", int qty = 0, double unpr = 0, string trCont = "")
+        public static DataTable GetOverseasOrderRvseCncl(string excg_cd = "", string itm_no = "", string? orgn_odno = "", string rvse_cncl_dvsn_cd = "", double qty = 0, double unpr = 0, string trCont = "")
         {
 
             string url = "/uapi/overseas-stock/v1/trading/order-rvsecncl";
@@ -206,12 +206,6 @@ namespace KIS_Oversea
                 return null;
             }
 
-            if (rvse_cncl_dvsn_cd == "01" && unpr == 0)
-            {
-                Console.WriteLine("주문단가 확인요망!!!");
-                return null;
-            }
-
             var paramsDict = new Dictionary<string, object>
             {
                 { "CANO", Common.GetTREnv().my_acct },     // 종합계좌번호 8자리
@@ -220,8 +214,8 @@ namespace KIS_Oversea
                 { "PDNO", itm_no },                     // 종목번호(상품번호)
                 { "ORGN_ODNO", orgn_odno },             // 원주문번호 정정 또는 취소할 원주문번호 (해외주식_주문 API ouput ODNO or 해외주식 미체결내역 API output ODNO 참고)
                 { "RVSE_CNCL_DVSN_CD", rvse_cncl_dvsn_cd }, // 정정 : 01, 취소 : 02
-                { "ORD_QTY", qty },           // 주문수량	[잔량전부 취소/정정주문] "0" 설정 ( QTY_ALL_ORD_YN=Y 설정 ) [잔량일부 취소/정정주문] 취소/정정 수량
-                { "OVRS_ORD_UNPR", unpr },    // 주문단가 	[정정] 정정주문 1주당 가격 [취소] "0" 설정
+                { "ORD_QTY", qty.ToString() },           // 주문수량	[잔량전부 취소/정정주문] "0" 설정 ( QTY_ALL_ORD_YN=Y 설정 ) [잔량일부 취소/정정주문] 취소/정정 수량
+                { "OVRS_ORD_UNPR", unpr.ToString() },    // 주문단가 	[정정] 정정주문 1주당 가격 [취소] "0" 설정
                 { "MGCO_APTM_ODNO", "" },               // 운용사지정주문번호
                 { "ORD_SVR_DVSN_CD", "0" }              // 주문서버구분코드
             };
@@ -1187,7 +1181,7 @@ namespace KIS_Oversea
                 { "SYMB", itmNo } // 종목번호
             };
 
-            var res = Common.UrlFetch(paramsDict, url, trId, trCont);
+            var res = Common.UrlFetch(paramsDict, url, trId, trCont, null, false);
             var jsonResponse = res.Result.Content.ReadAsStringAsync();
             JObject jobj = JsonConvert.DeserializeObject<JObject>(jsonResponse.Result);
 
@@ -1225,7 +1219,7 @@ namespace KIS_Oversea
                 { "KEYB", "" } // (사용안함) NEXT KEY BUFF
             };
 
-            var res = Common.UrlFetch(paramsDict, url, trId, trCont);
+            var res = Common.UrlFetch(paramsDict, url, trId, trCont, null, false);
             var jsonResponse = res.Result.Content.ReadAsStringAsync();
             JObject jobj = JsonConvert.DeserializeObject<JObject>(jsonResponse.Result);
 
@@ -1360,7 +1354,7 @@ namespace KIS_Oversea
                 { "KEYB", "" } // (사용안함)NEXT KEY BUFF
             };
 
-            var res = Common.UrlFetch(paramsDict, url, trId, trCont);
+            var res = Common.UrlFetch(paramsDict, url, trId, trCont, null, false);
             var jsonResponse = res.Result.Content.ReadAsStringAsync();
             JObject jobj = JsonConvert.DeserializeObject<JObject>(jsonResponse.Result); 
 
@@ -1447,7 +1441,7 @@ namespace KIS_Oversea
                 { "SYMB", itmNo } // 종목번호
             };
 
-            var res = Common.UrlFetch(paramsDict, url, trId, trCont);
+            var res = Common.UrlFetch(paramsDict, url, trId, trCont, null, false);
             var jsonResponse = res.Result.Content.ReadAsStringAsync();
             JObject jobj = JsonConvert.DeserializeObject<JObject>(jsonResponse.Result); 
 
@@ -1539,7 +1533,7 @@ namespace KIS_Oversea
                 { "PRDT_TYPE_CD", prdtTypeCd } // 종목유형
             };
 
-            var res = Common.UrlFetch(paramsDict, url, trId, trCont);
+            var res = Common.UrlFetch(paramsDict, url, trId, trCont, null, false);
             var jsonResponse = res.Result.Content.ReadAsStringAsync();
             JObject jobj = JsonConvert.DeserializeObject<JObject>(jsonResponse.Result); 
 

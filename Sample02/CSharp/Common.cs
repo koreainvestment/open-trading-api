@@ -29,9 +29,6 @@ namespace KIS_Common {
         public static string _errCode;
         public static string _errMessage;
 
-
-        // [공통] 토큰 발급 처리
-        // configRoot 에서 설정되어 있는 kis_devlp.yaml 파일에서 정보값을 읽어와 계좌 세팅 → 토큰 발급 순 진행
         public static async Task doAuth(String mode)
         {
             if (!File.Exists(tokenTmp)){
@@ -65,7 +62,6 @@ namespace KIS_Common {
             }
         }
 
-        // [공통] 발급된 토큰을 파일로 저장
         private static void SaveToken(string myToken, string myExpired, string mode)
         {
 
@@ -79,7 +75,6 @@ namespace KIS_Common {
             }
         }
 
-        // [공통] 토큰 읽어와 만료일 등 계산
         private static string? ReadToken()
         {
             try
@@ -105,7 +100,6 @@ namespace KIS_Common {
             }
         }
 
-        //[공통] 기본 헤더값 설정
         private static Dictionary<string, string> GetBaseHeader()
         {
             DateTime n2 = DateTime.Now;
@@ -341,8 +335,13 @@ namespace KIS_Common {
 
             DataTable dataTable = new DataTable();
             JArray jArray = new JArray();
-            Console.WriteLine("Return Type : " + data.Type.ToString());
-
+            if (data is null) {
+                Console.WriteLine("조회 값 없음");
+                return null;
+            }
+            else {
+                Console.WriteLine("Return Type : " + data.Type.ToString());
+            }
             if (data.Type.ToString().Equals("Array")) {
                 jArray = (JArray) data;
             }
