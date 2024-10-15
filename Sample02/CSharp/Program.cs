@@ -9,11 +9,11 @@ public class Program {
     public static void Main(String [] args) {
         
         Program p = new Program();
-        p.CallAPI();
+        p.CallForeignStock();
 
     }
 
-    public async void CallAPI() {
+    public async void CallForeignStock() {
 
         // 파이썬에서 Dataframe 으로 처리하던 방식을 DataTable, DataRow 사용방식으로 변경
         DataTable rt_data  = new DataTable(); 
@@ -28,7 +28,7 @@ public class Program {
         // 지정가 기준이며 시장가 옵션(주문구분코드)을 사용하는 경우 KIS_OvrseaStk.cs GetOverseasOrder 수정요망!
         // rt_data = KIS_OverseaStk.get_overseas_order(ord_dv="buy", excg_cd="NASD", itm_no="TSLA", qty=1, unpr=170)
         // rt_data = KIS_OverseaStk.get_overseas_order(ord_dv="buy", excg_cd="NASD", itm_no="AAPL", qty=1, unpr=216.75)
-        rt_data = KIS_OverseaStk.GetOverseasOrder ("buy", "NASD", "NVDA", 1, 123.3);
+        rt_data = KIS_OverseaStk.GetOverseasOrder ("buy", "AMEX", "SGOV", "00", 1, 4335);
         if (rt_data is not null && rt_data.Rows.Count > 0 ) Common.PrintDataTable(rt_data); // # 주문접수조직번호+주문접수번호+주문시각
 
         // [해외주식] 주문/계좌 > 정정취소주문 (해외거래소코드excg_cd + 종목코드itm_no + 주문번호orgn_odno + 정정취소구분rvse_cncl_dvsn_cd + 수량qty + 주문단가unpr)
@@ -38,7 +38,7 @@ public class Program {
 
         // [해외주식] 주문/계좌 > 해외주식 미체결내역 (해외거래소코드)
         // 해외거래소코드 NASD:나스닥,NYSE:뉴욕,AMEX:아멕스,SEHK:홍콩,SHAA:중국상해,SZAA:중국심천,TKSE:일본,HASE:베트남하노이,VNSE:호치민
-        rt_data = KIS_OverseaStk.GetOverseasInquireNccs("NASD");
+        rt_data = KIS_OverseaStk.GetOverseasInquireNccs("NYSE");
         if (rt_data is not null && rt_data.Rows.Count > 0 ) Common.PrintDataTable(rt_data);
 
         // [해외주식] 주문/계좌 > 해외주식 미체결전량취소주문 (해외거래소코드excg_cd + 종목코드itm_no)
@@ -159,5 +159,8 @@ public class Program {
         rt_data = KIS_OverseaStk.GetOverseasPriceInquireAskingPrice("02", "NAS", "AAPL");
         if (rt_data is not null && rt_data.Rows.Count > 0 ) Common.PrintDataTable(rt_data);
 
+
+
     }
+
 }

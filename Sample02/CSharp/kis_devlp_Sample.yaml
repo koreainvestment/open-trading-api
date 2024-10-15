@@ -1,0 +1,34 @@
+#====|  사용자 환경 샘플 아래 참고하시기 바랍니다.  |======================
+#====|  본 샘플은 토큰 발급 후 파일 저장 방식이므로 보안강화를 위해 메모리 방식 등 사용자 원하시는 방식으로 구현하시기 바랍니다. |=====
+#====|  Common.cs에서 환경파일 위치를 사용자가 정하시기 바랍니다. . 2024.05.16 KIS Developers Team  |======================
+
+######################################################################################################
+
+#홈페이지에서 API서비스 신청시 받은 Appkey, Appsecret 값 설정
+#실전투자
+my_app: "실전앱키"
+my_sec: "실전앱시크릿"
+
+#모의투자 
+paper_app: "모의앱키"
+paper_sec: "모의앱시크릿"
+
+#계좌번호 앞 8자리
+my_acct: "실전계좌"
+paper_acct: "모의계좌"                                                                               
+
+my_acct_stock: "실전계좌(주식계좌)"
+my_acct_future: "실전계좌(선물옵션계좌)"
+#계좌번호 뒤 2자리
+my_prod: "01" # 01 : 국내/해외주식, 03 : 국내선물/옵션, 08 : 해외선물/옵션
+#my_prod: "03"
+
+#실전투자
+prod: "https://openapi.koreainvestment.com:9443"
+#모의투자
+vps: "https://openapivts.koreainvestment.com:29443"
+
+#디스코드 웹훅 URL
+DISCORD_WEBHOOK_URL: ""
+
+my_agent : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"

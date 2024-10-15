@@ -35,7 +35,7 @@ namespace KIS_Oversea
         # Output: dataTable (Option) output API 문서 참조 등
         */     
         // ord_dv="", excg_cd="", itm_no="", qty=0, unpr=0, trCont="", FK100="", NK100="", dataTable=None  
-        public static DataTable GetOverseasOrder(string ord_dv="", string excg_cd="", string itm_no="", double qty=0, double unpr=0, string trCont="", string FK100="", string NK100="",  DataTable? dataTable = null)
+        public static DataTable GetOverseasOrder(string ord_dv="", string excg_cd="", string itm_no="", string ord_dvsn = "00", double qty=0, double unpr=0, string trCont="", DataTable? dataTable = null)
         {
             string url = "/uapi/overseas-stock/v1/trading/order";
             string trID;
@@ -132,14 +132,16 @@ namespace KIS_Oversea
                 { "ACNT_PRDT_CD", Common.GetTREnv().my_prod },  // 계좌상품코드 2자리
                 { "OVRS_EXCG_CD", excg_cd },                    // 해외거래소코드
                 { "PDNO", itm_no },                             // 종목코드
-                { "ORD_DVSN", "00" },                           // 주문구분 00:지정가, 01:시장가, 02:조건부지정가  나머지주문구분 API 문서 참조
+                { "ORD_DVSN", ord_dvsn },                       // 주문구분 00:지정가, 01:시장가, 02:조건부지정가  나머지주문구분 API 문서 참조
                 { "ORD_QTY", qty.ToString() },                  // 주문주식수
                 { "OVRS_ORD_UNPR", unpr.ToString() },           // 해외주문단가
+                { "CTAC_TLNO", "" },
+                { "MGCO_APTM_ODNO", "" },
                 { "SLL_TYPE", sll_type },                       // 판매유형
-                { "ORD_SVR_DVSN_CD", "0" }                      // 주문서버구분코드l
+                { "ORD_SVR_DVSN_CD", "0" }                      // 주문서버구분코드
             };
 
-            var res = Common.UrlFetch(paramsDict, url, trID, trCont, null, false);
+            var res = Common.UrlFetch(paramsDict, url, trID, trCont);
 
             var jsonResponse = res.Result.Content.ReadAsStringAsync();
             JObject jobj = JsonConvert.DeserializeObject<JObject>(jsonResponse.Result);
