@@ -47,6 +47,40 @@ def get_approval(key, secret):
     approval_key = res.json()["approval_key"]
     return approval_key
 
+# [필수] 유료 시세 수신을 위한 access_token 발급 함수
+# 해외주식/해외선물 유료 시세 수신 전 반드시 이 함수를 호출해 access_token을 발급받아야 함
+#
+# === 해외 유료 시세 수신 안내 ===
+# ▒ 해외주식 (HDFSASP0, HDFSASP1, HDFSCNT0: 미국, 중국, 일본, 베트남, 홍콩)
+#  - 무료 시세: 별도 신청 없이 수신 가능
+#  - 유료 시세: HTS 또는 MTS에서 신청 후 access_token 발급 필요
+#    > HTS(eFriend Plus/Force): [7781] 시세신청(실시간)
+#    > MTS(한국투자 앱): 고객지원 > 거래서비스 신청 > 해외증권 > 해외 실시간 시세 신청
+#
+# ▒ 해외선물 (HDFFF020, HDFFF010: CME, SGX / 기타 거래소는 무료 시세 제공)
+#  - CME, SGX: 무료 시세 없음 → 유료 시세 신청 필수
+#  - 유료 시세: HTS에서 신청 후 access_token 발급 필요
+#    > HTS(eFriend Plus/Force): [7936] 해외선물옵션 실시간 시세신청/조회
+#
+# ▒ 유료 시세 수신 절차
+# 1. HTS 또는 MTS에서 유료 시세 신청
+# 2. get_access_token()으로 access_token 발급 (※ 신청 후에 발급해야 유효)
+# 3. 토큰 발급 시점 기준 최대 2시간 이내에 유료 권한 자동 반영
+# 4. 이후 웹소켓 연결 → 유료 시세 수신 가능
+def get_access_token(key, secret):
+    # url = https://openapivts.koreainvestment.com:29443' # 모의투자계좌
+    url = 'https://openapi.koreainvestment.com:9443' # 실전투자계좌
+    headers = {"content-type": "application/json"}
+    body = {"grant_type": "client_credentials",
+            "appkey": key,
+            "appsecret": secret}
+    PATH = "oauth2/tokenP"
+    URL = f"{url}/{PATH}"
+    time.sleep(0.05)
+    res = requests.post(URL, headers=headers, data=json.dumps(body))
+    access_token = res.json()["access_token"]
+    return access_token
+
 ### 4. 해외선물옵션 ###                
                 
 # 해외선물옵션호가 출력라이브러리
@@ -112,6 +146,9 @@ async def connect():
 
         g_appkey = "앱키를 입력하세요"
         g_appsecret = "앱 시크릿키를 입력하세요"
+
+        # 해외주식/해외선물(CME, SGX) 유료시세 사용 시 필수(2시간 이내 유료신청정보 동기화)
+        # access_token = get_access_token(appkey, appsecret)
 
         g_approval_key = get_approval(g_appkey, g_appsecret)
         print("approval_key [%s]" % (g_approval_key))
