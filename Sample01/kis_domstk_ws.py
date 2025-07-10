@@ -240,7 +240,10 @@ notice_cols = ['CUST_ID',  # HTS ID
                'BRNC_NO',  # 지점
                'ODER_QTY',  # 주문수량
                'ACNT_NAME',  # 계좌명
-               'CNTG_ISNM',  # 체결종목명
+               'ORD_COND_PRC',  # 호가조건가격 (스톱지정가 시 표시)
+               'ORD_EXG_GB',  # 주문거래소 구분 (1:KRX, 2:NXT, 3:SOR-KRX, 4:SOR-NXT)
+               'POPUP_YN',  # 실시간체결창 표시여부 (Y/N)
+               'FILLER',  # 필러
                'CRDT_CLS',  # 신용구분
                'CRDT_LOAN_DATE',  # 신용대출일자
                'CNTG_ISNM40',  # 체결종목명40
