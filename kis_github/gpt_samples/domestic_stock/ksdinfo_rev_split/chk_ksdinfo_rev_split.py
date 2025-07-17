@@ -55,24 +55,15 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 예탁원정보(액면교체일정) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        sht_cd = ""  # 종목코드
-        cts = ""  # CTS
-        f_dt = "20250101"  # 조회일자From
-        t_dt = "20250131"  # 조회일자To
-        market_gb = "0"  # 시장구분
-        
-        # API 호출
-        logger.info("API 호출 시작: 예탁원정보(액면교체일정)")
+        logger.info("토큰 발급 완료")      
+          
+        # API 호출        
         result = ksdinfo_rev_split(
-            sht_cd=sht_cd,  # 종목코드
-            cts=cts,  # CTS
-            f_dt=f_dt,  # 조회일자From
-            t_dt=t_dt,  # 조회일자To
-            market_gb=market_gb,  # 시장구분
+            sht_cd="",  # 종목코드
+            cts="",  # CTS
+            f_dt="20250101",  # 조회일자From
+            t_dt="20250131",  # 조회일자To
+            market_gb="0",  # 시장구분
         )
         
         if result is None or result.empty:

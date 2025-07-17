@@ -19,6 +19,10 @@ from inquire_balance import inquire_balance
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 잔고조회 [CTSC8407R]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'pdno': '상품번호',
     'buy_dt': '매수일자',
@@ -68,26 +72,16 @@ def main():
         # kis_auth 모듈에서 계좌 정보 가져오기
         trenv = ka.getTREnv()
 
-        # 장내채권 잔고조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct      # 종합계좌번호
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        inqr_cndt = "00"  # 조회조건
-        pdno = ""  # 상품번호
-        buy_dt = ""  # 매수일자
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-        ctx_area_nk200 = ""  # 연속조회키200
-        
         # API 호출
         logger.info("API 호출 시작: 장내채권 잔고조회")
         result = inquire_balance(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            inqr_cndt=inqr_cndt,  # 조회조건
-            pdno=pdno,  # 상품번호
-            buy_dt=buy_dt,  # 매수일자
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            inqr_cndt="00",  # 조회조건
+            pdno="",  # 상품번호
+            buy_dt="",  # 매수일자
+            ctx_area_fk200="",  # 연속조회검색조건200
+            ctx_area_nk200="",  # 연속조회키200
         )
         
         if result is None or result.empty:

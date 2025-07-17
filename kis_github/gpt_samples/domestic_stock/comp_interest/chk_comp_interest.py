@@ -65,22 +65,13 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 금리 종합(국내채권_금리) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "I"  # 조건시장분류코드
-        fid_cond_scr_div_code = "20702"  # 조건화면분류코드
-        fid_div_cls_code = "1"  # 분류구분코드
-        fid_div_cls_code1 = ""  # 분류구분코드
-
         
-        # API 호출
-        logger.info("API 호출 시작: 금리 종합(국내채권_금리)")
+        # API 호출     
         result1, result2 = comp_interest(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_div_cls_code=fid_div_cls_code,  # 분류구분코드
-            fid_div_cls_code1=fid_div_cls_code1,  # 분류구분코드
+            fid_cond_mrkt_div_code="I",  # 조건시장분류코드
+            fid_cond_scr_div_code="20702",  # 조건화면분류코드
+            fid_div_cls_code="1",  # 분류구분코드
+            fid_div_cls_code1="",  # 분류구분코드
         )
         
         # 결과 확인

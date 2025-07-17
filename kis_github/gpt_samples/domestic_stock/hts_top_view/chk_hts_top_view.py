@@ -50,15 +50,9 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # HTS조회상위20종목 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-
-        
         # API 호출
         logger.info("API 호출 시작: HTS조회상위20종목")
-        result = hts_top_view(
-
-        )
+        result = hts_top_view( )
         
         if result is None or result.empty:
             logger.warning("조회된 데이터가 없습니다.")

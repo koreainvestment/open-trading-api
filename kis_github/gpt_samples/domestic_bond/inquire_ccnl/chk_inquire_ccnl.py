@@ -19,6 +19,10 @@ from inquire_ccnl import inquire_ccnl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 체결내역 [FHKBJ773403C0]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'output1': '응답상세',
     'stck_cntg_hour': '주식 체결 시간',
@@ -57,16 +61,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 장내채권현재가(체결) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "B"  # 조건시장분류코드
-        fid_input_iscd = "KR103502GA34"  # 입력종목코드
-        
         # API 호출
         logger.info("API 호출 시작: 장내채권현재가(체결)")
         result = inquire_ccnl(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
+            fid_cond_mrkt_div_code="B",  # 조건시장분류코드
+            fid_input_iscd="KR103502GA34",  # 입력종목코드
         )
         
         if result is None or result.empty:

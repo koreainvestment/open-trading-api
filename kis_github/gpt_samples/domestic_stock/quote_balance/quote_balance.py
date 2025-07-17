@@ -3,12 +3,23 @@
 import sys
 import time
 from typing import Optional
+import logging
 
 import pandas as pd
 
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 호가잔량 순위[국내주식-089]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ranking/quote-balance"
 
 def quote_balance(
         fid_vol_cnt: str,  # 거래량 수
@@ -77,7 +88,7 @@ def quote_balance(
     if fid_trgt_exls_cls_code != "0":
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
-    url = "/uapi/domestic-stock/v1/ranking/quote-balance"
+
     tr_id = "FHPST01720000"
 
     params = {
@@ -94,7 +105,7 @@ def quote_balance(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -133,5 +144,5 @@ def quote_balance(
             return dataframe
     else:
         # 오류 출력
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

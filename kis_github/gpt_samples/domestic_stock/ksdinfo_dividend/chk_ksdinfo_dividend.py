@@ -18,6 +18,11 @@ from ksdinfo_dividend import ksdinfo_dividend
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기타정보 > KSD종목정보(배당) [HHKDB669102C0]
+##############################################################################################
+
+# 통합 컬럼 매핑
 COLUMN_MAPPING = {
     'record_date': '기준일',
     'sht_cd': '종목코드',
@@ -64,25 +69,15 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 예탁원정보(배당일정) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cts = ""  # CTS
-        gb1 = "0"  # 조회구분
-        f_dt = "20250101"  # 조회일자From
-        t_dt = "20250131"  # 조회일자To
-        sht_cd = ""  # 종목코드
-        high_gb = ""  # 고배당여부
-
-        # API 호출
-        logger.info("API 호출 시작: 예탁원정보(배당일정)")
+        
+        # API 호출        
         result = ksdinfo_dividend(
-            cts=cts,  # CTS
-            gb1=gb1,  # 조회구분
-            f_dt=f_dt,  # 조회일자From
-            t_dt=t_dt,  # 조회일자To
-            sht_cd=sht_cd,  # 종목코드
-            high_gb=high_gb,  # 고배당여부
+            cts="",  # CTS
+            gb1="0",  # 조회구분
+            f_dt="20250101",  # 조회일자From
+            t_dt="20250131",  # 조회일자To
+            sht_cd="",  # 종목코드
+            high_gb="",  # 고배당여부
         )
 
         if result is None or result.empty:

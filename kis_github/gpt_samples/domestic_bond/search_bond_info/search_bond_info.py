@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 검색조건 [CTPF1114R]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-bond/v1/quotations/search-bond-info"
 
 def search_bond_info(
         pdno: str,  # 상품번호
@@ -67,7 +73,6 @@ def search_bond_info(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-bond/v1/quotations/search-bond-info"
     tr_id = "CTPF1114R"
 
     params = {
@@ -76,7 +81,7 @@ def search_bond_info(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -107,5 +112,5 @@ def search_bond_info(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

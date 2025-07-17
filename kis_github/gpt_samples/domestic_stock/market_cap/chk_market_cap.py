@@ -1,3 +1,4 @@
+import logging
 import sys
 
 import pandas as pd
@@ -5,6 +6,14 @@ import pandas as pd
 sys.path.extend(['../..', '.']) # kis_auth 파일 경로 추가
 import kis_auth as ka
 from market_cap import market_cap
+
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 조건검색 > 국내주식 시가총액 상위 [FHPST01740000]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'mksc_shrn_iscd': '유가증권 단축 종목코드',
@@ -49,30 +58,18 @@ def main():
     pd.set_option('display.max_rows', None)  # 모든 행 표시
 
     # 토큰 발급
-    ka.auth()
-
-    # 국내주식 시가총액 상위 파라미터 설정
-    fid_input_price_2 = "1000000"  # 입력 가격2
-    fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-    fid_cond_scr_div_code = "20174"  # 조건 화면 분류 코드
-    fid_div_cls_code = "0"  # 분류 구분 코드
-    fid_input_iscd = "0000"  # 입력 종목코드
-    fid_trgt_cls_code = "0"  # 대상 구분 코드
-    fid_trgt_exls_cls_code = "0"  # 대상 제외 구분 코드
-    fid_input_price_1 = "50000"  # 입력 가격1
-    fid_vol_cnt = "1000"  # 거래량 수
-    
+    ka.auth()    
     # API 호출
     result = market_cap(
-        fid_input_price_2=fid_input_price_2,
-        fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,
-        fid_cond_scr_div_code=fid_cond_scr_div_code,
-        fid_div_cls_code=fid_div_cls_code,
-        fid_input_iscd=fid_input_iscd,
-        fid_trgt_cls_code=fid_trgt_cls_code,
-        fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,
-        fid_input_price_1=fid_input_price_1,
-        fid_vol_cnt=fid_vol_cnt
+        fid_input_price_2="1000000",  # 입력 가격2,
+        fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드,
+        fid_cond_scr_div_code="20174",  # 조건 화면 분류 코드,
+        fid_div_cls_code="0",  # 분류 구분 코드,
+        fid_input_iscd="0000",  # 입력 종목코드,
+        fid_trgt_cls_code="0",  # 대상 구분 코드,
+        fid_trgt_exls_cls_code="0",  # 대상 제외 구분 코드,
+        fid_input_price_1="50000",  # 입력 가격1,
+        fid_vol_cnt="1000",  # 거래량 수
     )
     
     # 컬럼명 출력

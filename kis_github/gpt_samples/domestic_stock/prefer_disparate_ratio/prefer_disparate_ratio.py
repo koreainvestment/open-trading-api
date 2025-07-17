@@ -15,6 +15,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 우선주_괴리율 상위[v1_국내주식-094]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio"
 
 def prefer_disparate_ratio(
         fid_vol_cnt: str,  # 거래량 수
@@ -93,7 +99,7 @@ def prefer_disparate_ratio(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio"
+
     tr_id = "FHPST01770000"
 
     params = {
@@ -109,7 +115,7 @@ def prefer_disparate_ratio(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -146,5 +152,5 @@ def prefer_disparate_ratio(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

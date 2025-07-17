@@ -8,9 +8,9 @@ Created on 2025-06-16
 """
 
 import logging
+import sys
 import time
 from typing import Optional
-import sys
 
 import pandas as pd
 
@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 조건검색 > 국내주식 공매도 상위종목 [FHPST04820000]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ranking/short-sale"
 
 def short_sale(
         fid_aply_rang_vol: str,  # FID 적용 범위 거래량
@@ -99,7 +105,6 @@ def short_sale(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-stock/v1/ranking/short-sale"
     tr_id = "FHPST04820000"
 
     params = {
@@ -116,7 +121,7 @@ def short_sale(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -152,5 +157,5 @@ def short_sale(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

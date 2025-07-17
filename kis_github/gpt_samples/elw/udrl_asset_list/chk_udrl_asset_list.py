@@ -18,6 +18,10 @@ from udrl_asset_list import udrl_asset_list
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 기초자산 목록조회[국내주식-185]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'unas_shrn_iscd': '기초자산단축종목코드',
     'unas_isnm': '기초자산종목명',
@@ -26,6 +30,10 @@ COLUMN_MAPPING = {
     'unas_prdy_vrss_sign': '기초자산전일대비부호',
     'unas_prdy_ctrt': '기초자산전일대비율'
 }
+
+NUMERIC_COLUMNS = [
+    '기초자산현재가', '기초자산전일대비', '기초자산전일대비율'
+]
 
 def main():
     """
@@ -55,18 +63,12 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 기초자산 목록조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_scr_div_code = "11541"  # 조건화면분류코드
-        fid_rank_sort_cls_code = "0"  # 순위정렬구분코드
-        fid_input_iscd = "00000"  # 입력종목코드
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 기초자산 목록조회")
+        logger.info("API 호출")
         result = udrl_asset_list(
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # 순위정렬구분코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
+            fid_cond_scr_div_code="11541",  # 조건화면분류코드
+            fid_rank_sort_cls_code="0",  # 순위정렬구분코드
+            fid_input_iscd="00000",  # 입력종목코드
         )
         
         if result is None or result.empty:
@@ -79,6 +81,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 기초자산 목록조회 결과 ===")

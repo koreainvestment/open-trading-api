@@ -13,6 +13,10 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 실시간정보 > 일반채권 실시간호가 [H0BJCNT0]
+##############################################################################################
+
 def bond_asking_price(
         tr_type: str,
         tr_key: str,

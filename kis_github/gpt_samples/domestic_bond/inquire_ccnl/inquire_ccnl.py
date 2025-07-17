@@ -22,6 +22,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 체결내역 [FHKBJ773403C0]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-bond/v1/quotations/inquire-ccnl"
 
 def inquire_ccnl(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -65,7 +71,6 @@ def inquire_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-bond/v1/quotations/inquire-ccnl"
     tr_id = "FHKBJ773403C0"
 
     # API 요청 파라미터 설정
@@ -75,7 +80,7 @@ def inquire_ccnl(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -109,5 +114,5 @@ def inquire_ccnl(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

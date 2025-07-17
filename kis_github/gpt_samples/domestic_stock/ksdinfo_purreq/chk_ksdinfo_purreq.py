@@ -18,6 +18,11 @@ from ksdinfo_purreq import ksdinfo_purreq
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기타정보 > KSD종목정보(매수청구권) [HHKDB669103C0]
+##############################################################################################
+
+# 통합 컬럼 매핑
 COLUMN_MAPPING = {
     'record_date': '기준일',
     'sht_cd': '종목코드',
@@ -56,22 +61,14 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 예탁원정보(주식매수청구일정) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        sht_cd = ""  # 종목코드
-        t_dt = "20250131"  # 조회일자To
-        f_dt = "20250101"  # 조회일자From
-        cts = ""  # CTS
+        logger.info("토큰 발급 완료")        
         
-        # API 호출
-        logger.info("API 호출 시작: 예탁원정보(주식매수청구일정)")
+        # API 호출        
         result = ksdinfo_purreq(
-            sht_cd=sht_cd,  # 종목코드
-            t_dt=t_dt,  # 조회일자To
-            f_dt=f_dt,  # 조회일자From
-            cts=cts,  # CTS
+            sht_cd="",  # 종목코드
+            t_dt="20250131",  # 조회일자To
+            f_dt="20250101",  # 조회일자From
+            cts="",  # CTS
         )
         
         if result is None or result.empty:

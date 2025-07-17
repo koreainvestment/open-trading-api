@@ -16,6 +16,10 @@ from overtime_ccnl_krx import overtime_ccnl_krx
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간 > 국내주식 시간외 실시간체결가 (KRX) [H0STOUP0]
+##############################################################################################
+
 
 def main():
     """

@@ -13,6 +13,10 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간정보 > 주식체결통보 [H0STCNI0]
+##############################################################################################
+
 def ccnl_notice(
         tr_type: str,
         tr_key: str,

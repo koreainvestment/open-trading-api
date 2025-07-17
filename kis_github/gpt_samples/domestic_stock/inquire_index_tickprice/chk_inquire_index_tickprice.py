@@ -54,18 +54,11 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 국내업종 시간별지수(초) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_input_iscd = "0001"  # 입력 종목코드
-        fid_cond_mrkt_div_code = "U"  # 시장 분류 코드
-        
-        # API 호출
-        logger.info("API 호출 시작: 국내업종 시간별지수(초)")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = inquire_index_tickprice(
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 시장 분류 코드
+            fid_input_iscd="0001",  # 입력 종목코드
+            fid_cond_mrkt_div_code="U",  # 시장 분류 코드
         )
         
         if result is None or result.empty:

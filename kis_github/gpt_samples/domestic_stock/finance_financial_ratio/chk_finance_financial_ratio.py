@@ -57,20 +57,12 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 국내주식 재무비율 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_div_cls_code = "0"  # 분류 구분 코드
-        fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-        fid_input_iscd = "000660"  # 입력 종목코드
-        
-        # API 호출
-        logger.info("API 호출 시작: 국내주식 재무비율")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = finance_financial_ratio(
-            fid_div_cls_code=fid_div_cls_code,  # 분류 구분 코드
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
+            fid_div_cls_code="0",  # 분류 구분 코드
+            fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드
+            fid_input_iscd="000660",  # 입력 종목코드
         )
         
         if result is None or result.empty:

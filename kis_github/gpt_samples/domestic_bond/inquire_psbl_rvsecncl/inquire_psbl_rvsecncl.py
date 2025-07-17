@@ -21,6 +21,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 정정취소가능주문조회 [CTSC8035R]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-bond/v1/trading/inquire-psbl-rvsecncl"
+
 def inquire_psbl_rvsecncl(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -78,7 +85,6 @@ def inquire_psbl_rvsecncl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/domestic-bond/v1/trading/inquire-psbl-rvsecncl"
     tr_id = "CTSC8035R"
 
     params = {
@@ -90,7 +96,7 @@ def inquire_psbl_rvsecncl(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -125,5 +131,5 @@ def inquire_psbl_rvsecncl(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

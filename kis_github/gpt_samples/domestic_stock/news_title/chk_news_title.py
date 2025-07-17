@@ -5,8 +5,8 @@ Created on 2025-06-17
 @author: LaivData jjlee with cursor
 """
 
-import sys
 import logging
+import sys
 
 import pandas as pd
 
@@ -17,6 +17,10 @@ from news_title import news_title
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 종목정보 > 종합 시황/공시(제목) [FHKST01011800]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'output1': '응답상세',
@@ -65,30 +69,17 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 종합 시황_공시(제목) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_news_ofer_entp_code = ""  # 뉴스 제공 업체 코드
-        fid_cond_mrkt_cls_code = ""  # 조건 시장 구분 코드
-        fid_input_iscd = ""  # 입력 종목코드
-        fid_titl_cntt = ""  # 제목 내용
-        fid_input_date_1 = ""  # 입력 날짜
-        fid_input_hour_1 = ""  # 입력 시간
-        fid_rank_sort_cls_code = ""  # 순위 정렬 구분 코드
-        fid_input_srno = ""  # 입력 일련번호
-        
-        # API 호출
-        logger.info("API 호출 시작: 종합 시황_공시(제목)")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = news_title(
-            fid_news_ofer_entp_code=fid_news_ofer_entp_code,  # 뉴스 제공 업체 코드
-            fid_cond_mrkt_cls_code=fid_cond_mrkt_cls_code,  # 조건 시장 구분 코드
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
-            fid_titl_cntt=fid_titl_cntt,  # 제목 내용
-            fid_input_date_1=fid_input_date_1,  # 입력 날짜
-            fid_input_hour_1=fid_input_hour_1,  # 입력 시간
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # 순위 정렬 구분 코드
-            fid_input_srno=fid_input_srno,  # 입력 일련번호
+            fid_news_ofer_entp_code="",  # 뉴스 제공 업체 코드
+            fid_cond_mrkt_cls_code="",  # 조건 시장 구분 코드
+            fid_input_iscd="",  # 입력 종목코드
+            fid_titl_cntt="",  # 제목 내용
+            fid_input_date_1="",  # 입력 날짜
+            fid_input_hour_1="",  # 입력 시간
+            fid_rank_sort_cls_code="",  # 순위 정렬 구분 코드
+            fid_input_srno="",  # 입력 일련번호
         )
         
         if result is None or result.empty:

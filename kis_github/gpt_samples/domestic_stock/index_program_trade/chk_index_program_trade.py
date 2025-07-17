@@ -16,6 +16,10 @@ from index_program_trade import index_program_trade
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간정보 > 국내주식 지수프로그램매매 [H0UPPGM0]
+##############################################################################################
+
 # 컬럼명 매핑
 COLUMN_MAP = {
     "bstp_cls_code": "업종 구분 코드",

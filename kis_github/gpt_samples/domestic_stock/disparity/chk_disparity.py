@@ -69,35 +69,21 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 국내주식 이격도 순위 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_input_price_2 = ""  # 입력 가격2
-        fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-        fid_cond_scr_div_code = "20178"  # 조건 화면 분류 코드
-        fid_div_cls_code = "0"  # 분류 구분 코드
-        fid_rank_sort_cls_code = "0"  # 순위 정렬 구분 코드
-        fid_hour_cls_code = "5"  # 시간 구분 코드
-        fid_input_iscd = "0000"  # 입력 종목코드
-        fid_trgt_cls_code = "0"  # 대상 구분 코드
-        fid_trgt_exls_cls_code = "0"  # 대상 제외 구분 코드
-        fid_input_price_1 = ""  # 입력 가격1
-        fid_vol_cnt = ""  # 거래량 수
-        
+    
         # API 호출
         logger.info("API 호출 시작: 국내주식 이격도 순위")
         result = disparity(
-            fid_input_price_2=fid_input_price_2,  # 입력 가격2
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건 화면 분류 코드
-            fid_div_cls_code=fid_div_cls_code,  # 분류 구분 코드
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # 순위 정렬 구분 코드
-            fid_hour_cls_code=fid_hour_cls_code,  # 시간 구분 코드
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
-            fid_trgt_cls_code=fid_trgt_cls_code,  # 대상 구분 코드
-            fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,  # 대상 제외 구분 코드
-            fid_input_price_1=fid_input_price_1,  # 입력 가격1
-            fid_vol_cnt=fid_vol_cnt,  # 거래량 수
+            fid_input_price_2="",  # 입력 가격2
+            fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드
+            fid_cond_scr_div_code="20178",  # 조건 화면 분류 코드
+            fid_div_cls_code="0",  # 분류 구분 코드
+            fid_rank_sort_cls_code="0",  # 순위 정렬 구분 코드
+            fid_hour_cls_code="5",  # 시간 구분 코드
+            fid_input_iscd="0000",  # 입력 종목코드
+            fid_trgt_cls_code="0",  # 대상 구분 코드
+            fid_trgt_exls_cls_code="0",  # 대상 제외 구분 코드
+            fid_input_price_1="",  # 입력 가격1
+            fid_vol_cnt=""  # 거래량 수
         )
         
         if result is None or result.empty:

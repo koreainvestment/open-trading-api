@@ -19,6 +19,11 @@ from frgnmem_trade_trend import frgnmem_trade_trend
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 외국인기관매매동향 [FHKST644200C0]
+##############################################################################################
+
+# 통합 컬럼 매핑
 COLUMN_MAPPING = {
     'total_seln_qty': '총매도수량',
     'total_shnu_qty': '총매수2수량',
@@ -64,26 +69,15 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 회원사 실 시간 매매동향(틱) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_scr_div_code = "20432"  # 화면분류코드
-        fid_cond_mrkt_div_code = "J"  # 조건시장구분코드
-        fid_input_iscd = "005930"  # 종목코드
-        fid_input_iscd_2 = "99999"  # 회원사코드
-        fid_mrkt_cls_code = "A"  # 시장구분코드
-        fid_vol_cnt = ""  # 거래량
-
         
-        # API 호출
-        logger.info("API 호출 시작: 회원사 실 시간 매매동향(틱)")
+        # API 호출        
         result1, result2 = frgnmem_trade_trend(
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 화면분류코드
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장구분코드
-            fid_input_iscd=fid_input_iscd,  # 종목코드
-            fid_input_iscd_2=fid_input_iscd_2,  # 회원사코드
-            fid_mrkt_cls_code=fid_mrkt_cls_code,  # 시장구분코드
-            fid_vol_cnt=fid_vol_cnt,  # 거래량
+            fid_cond_scr_div_code="20432",  # 화면분류코드
+            fid_cond_mrkt_div_code="J",  # 조건시장구분코드
+            fid_input_iscd="005930",  # 종목코드
+            fid_input_iscd_2="99999",  # 회원사코드
+            fid_mrkt_cls_code="A",  # 시장구분코드
+            fid_vol_cnt="",  # 거래량
         )
         
         # 결과 확인

@@ -52,24 +52,15 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 국내주식 당사 신용가능종목 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_rank_sort_cls_code = "0"  # 순위 정렬 구분 코드
-        fid_slct_yn = "0"  # 선택 여부
-        fid_input_iscd = "0000"  # 입력 종목코드
-        fid_cond_scr_div_code = "20477"  # 조건 화면 분류 코드
-        fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
+        logger.info("토큰 발급 완료")        
         
-        # API 호출
-        logger.info("API 호출 시작: 국내주식 당사 신용가능종목")
+        # API 호출        
         result = credit_by_company(
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # 순위 정렬 구분 코드
-            fid_slct_yn=fid_slct_yn,  # 선택 여부
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건 화면 분류 코드
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
+            fid_rank_sort_cls_code="0",  # 순위 정렬 구분 코드
+            fid_slct_yn="0",  # 선택 여부
+            fid_input_iscd="0000",  # 입력 종목코드
+            fid_cond_scr_div_code="20477",  # 조건 화면 분류 코드
+            fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드
         )
         
         if result is None or result.empty:

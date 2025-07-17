@@ -16,6 +16,10 @@ from bond_index_ccnl import bond_index_ccnl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 실시간정보 > 채권지수 실시간체결가 [H0BICNT0]
+##############################################################################################
+
 
 def main():
     """

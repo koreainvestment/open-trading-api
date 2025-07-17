@@ -18,6 +18,10 @@ from issue_info import issue_info
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 발행정보 [CTPF1101R]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'pdno': '상품번호',
     'prdt_type_cd': '상품유형코드',
@@ -135,16 +139,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 장내채권 발행정보 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        pdno = "KR6449111CB8"  # 사용자권한정보
-        prdt_type_cd = "302"  # 거래소코드
-
         # API 호출
         logger.info("API 호출 시작: 장내채권 발행정보")
         result = issue_info(
-            pdno=pdno,  # 사용자권한정보
-            prdt_type_cd=prdt_type_cd,  # 거래소코드
+            pdno="KR6449111CB8",  # 사용자권한정보
+            prdt_type_cd="302",  # 거래소코드
         )
 
         if result is None or result.empty:

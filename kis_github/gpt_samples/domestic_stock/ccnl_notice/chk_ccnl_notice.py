@@ -16,6 +16,10 @@ from ccnl_notice import ccnl_notice
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간정보 > 주식체결통보 [H0STCNI0]
+##############################################################################################
+
 
 def main():
     """

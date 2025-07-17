@@ -18,6 +18,10 @@ from indicator_trend_ccnl import indicator_trend_ccnl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 투자지표추이(체결)[국내주식-172]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stck_cntg_hour': '주식체결시간',
     'elw_prpr': 'ELW현재가',
@@ -32,6 +36,11 @@ COLUMN_MAPPING = {
     'prit': '패리티',
     'apprch_rate': '접근도'
 }
+
+NUMERIC_COLUMNS = [
+    'ELW현재가', '전일대비', '전일대비율', '누적거래량', '레버리지값', 
+    '기어링', '시간가치값', '내재가치값', '패리티', '접근도'
+]
 
 def main():
     """
@@ -60,16 +69,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 투자지표추이(체결) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_input_iscd = "57LA50"  # 입력종목코드
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 투자지표추이(체결)")
+        logger.info("API 호출")
         result = indicator_trend_ccnl(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_input_iscd="57LA50",  # 입력종목코드
         )
         
         if result is None or result.empty:
@@ -82,6 +86,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 투자지표추이(체결) 결과 ===")

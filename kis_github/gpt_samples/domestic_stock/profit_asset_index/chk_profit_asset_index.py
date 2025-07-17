@@ -1,3 +1,4 @@
+import logging
 import sys
 
 import pandas as pd
@@ -5,6 +6,14 @@ import pandas as pd
 sys.path.extend(['../..', '.']) # kis_auth 파일 경로 추가
 import kis_auth as ka
 from profit_asset_index import profit_asset_index
+
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 조건검색 > 국내주식 수익자산지표 순위 [FHPST01730000]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'data_rank': '데이터 순위',
@@ -60,38 +69,23 @@ def main():
     pd.set_option('display.max_rows', None)  # 모든 행 표시
 
     # 토큰 발급
-    ka.auth()
-
-    # 국내주식 수익자산지표 순위 파라미터 설정
-    fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-    fid_trgt_cls_code = "0"  # 대상 구분 코드
-    fid_cond_scr_div_code = "20173"  # 조건 화면 분류 코드
-    fid_input_iscd = "0000"  # 입력 종목코드
-    fid_div_cls_code = "0"  # 분류 구분 코드
-    fid_input_price_1 = ""  # 입력 가격1
-    fid_input_price_2 = ""  # 입력 가격2
-    fid_vol_cnt = ""  # 거래량 수
-    fid_input_option_1 = "2023"  # 입력 옵션1
-    fid_input_option_2 = "0"  # 입력 옵션2
-    fid_rank_sort_cls_code = "0"  # 순위 정렬 구분 코드
-    fid_blng_cls_code = "0"  # 소속 구분 코드
-    fid_trgt_exls_cls_code = "0"  # 대상 제외 구분 코드
+    ka.auth()    
     
     # API 호출
     result = profit_asset_index(
-        fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,
-        fid_trgt_cls_code=fid_trgt_cls_code,
-        fid_cond_scr_div_code=fid_cond_scr_div_code,
-        fid_input_iscd=fid_input_iscd,
-        fid_div_cls_code=fid_div_cls_code,
-        fid_input_price_1=fid_input_price_1,
-        fid_input_price_2=fid_input_price_2,
-        fid_vol_cnt=fid_vol_cnt,
-        fid_input_option_1=fid_input_option_1,
-        fid_input_option_2=fid_input_option_2,
-        fid_rank_sort_cls_code=fid_rank_sort_cls_code,
-        fid_blng_cls_code=fid_blng_cls_code,
-        fid_trgt_exls_cls_code=fid_trgt_exls_cls_code
+        fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드,
+        fid_trgt_cls_code="0",  # 대상 구분 코드,
+        fid_cond_scr_div_code="20173",  # 조건 화면 분류 코드,
+        fid_input_iscd="0000",  # 입력 종목코드,
+        fid_div_cls_code="0",  # 분류 구분 코드,
+        fid_input_price_1="",  # 입력 가격1,
+        fid_input_price_2="",  # 입력 가격2,
+        fid_vol_cnt="",  # 거래량 수,
+        fid_input_option_1="2023",  # 입력 옵션1,
+        fid_input_option_2="0",  # 입력 옵션2,
+        fid_rank_sort_cls_code="0",  # 순위 정렬 구분 코드,
+        fid_blng_cls_code="0",  # 소속 구분 코드,
+        fid_trgt_exls_cls_code="0",  # 대상 제외 구분 코드
     )
     
     # 컬럼명 출력

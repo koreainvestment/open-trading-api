@@ -18,6 +18,10 @@ from search_bond_info import search_bond_info
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 검색조건 [CTPF1114R]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'pdno': '상품번호',
     'prdt_type_cd': '상품유형코드',
@@ -130,16 +134,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 장내채권 기본조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        pdno = "KR103502GA34"  # 상품번호
-        prdt_type_cd = "302"  # 상품유형코드
-
         # API 호출
         logger.info("API 호출 시작: 장내채권 기본조회")
         result = search_bond_info(
-            pdno=pdno,  # 상품번호
-            prdt_type_cd=prdt_type_cd,  # 상품유형코드
+            pdno="KR103502GA34",  # 상품번호
+            prdt_type_cd="302",  # 상품유형코드
         )
 
         if result is None or result.empty:

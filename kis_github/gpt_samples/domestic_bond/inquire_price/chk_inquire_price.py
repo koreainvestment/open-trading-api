@@ -18,6 +18,10 @@ from inquire_price import inquire_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권현재가(시세) [FHKBJ773400C0]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stnd_iscd': '표준종목코드',
     'hts_kor_isnm': 'HTS한글종목명',
@@ -66,16 +70,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 장내채권현재가(시세) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "B"  # 조건시장분류코드
-        fid_input_iscd = "KR2033022D33"  # 입력종목코드
-
         # API 호출
         logger.info("API 호출 시작: 장내채권현재가(시세)")
         result = inquire_price(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
+            fid_cond_mrkt_div_code="B",  # 조건시장분류코드
+            fid_input_iscd="KR2033022D33",  # 입력종목코드
         )
 
         if result is None or result.empty:

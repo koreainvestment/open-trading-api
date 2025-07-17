@@ -16,6 +16,10 @@ from member_krx import member_krx
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간 > 국내주식 실시간 회원사 (KRX) [H0STMBC0]
+##############################################################################################
+
 # 컬럼명 매핑
 COLUMN_MAP = {
     "mksc_shrn_iscd": "유가증권단축종목코드",

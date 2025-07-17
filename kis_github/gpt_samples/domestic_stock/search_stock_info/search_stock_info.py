@@ -8,9 +8,9 @@ Created on 2025-06-17
 """
 
 import logging
+import sys
 import time
 from typing import Optional
-import sys
 
 import pandas as pd
 
@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 주식기본조회 [CTPF1002R]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/quotations/search-stock-info"
 
 def search_stock_info(
         prdt_type_cd: str,  # 상품유형코드
@@ -67,7 +73,6 @@ def search_stock_info(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-stock/v1/quotations/search-stock-info"
     tr_id = "CTPF1002R"
 
     params = {
@@ -76,7 +81,7 @@ def search_stock_info(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -109,5 +114,5 @@ def search_stock_info(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

@@ -69,34 +69,19 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 국내주식 예상체결 상승_하락상위 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_rank_sort_cls_code = "0"  # 순위 정렬 구분 코드
-        fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-        fid_cond_scr_div_code = "20182"  # 조건 화면 분류 코드
-        fid_input_iscd = "0000"  # 입력 종목코드
-        fid_div_cls_code = "0"  # 분류 구분 코드
-        fid_aply_rang_prc_1 = ""  # 적용 범위 가격1
-        fid_vol_cnt = ""  # 거래량 수
-        fid_pbmn = ""  # 거래대금
-        fid_blng_cls_code = "0"  # 소속 구분 코드
-        fid_mkop_cls_code = "0"  # 장운영 구분 코드
-        
-        # API 호출
-        logger.info("API 호출 시작: 국내주식 예상체결 상승_하락상위")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = exp_trans_updown(
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # 순위 정렬 구분 코드
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건 화면 분류 코드
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
-            fid_div_cls_code=fid_div_cls_code,  # 분류 구분 코드
-            fid_aply_rang_prc_1=fid_aply_rang_prc_1,  # 적용 범위 가격1
-            fid_vol_cnt=fid_vol_cnt,  # 거래량 수
-            fid_pbmn=fid_pbmn,  # 거래대금
-            fid_blng_cls_code=fid_blng_cls_code,  # 소속 구분 코드
-            fid_mkop_cls_code=fid_mkop_cls_code,  # 장운영 구분 코드
+            fid_rank_sort_cls_code="0",  # 순위 정렬 구분 코드
+            fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드
+            fid_cond_scr_div_code="20182",  # 조건 화면 분류 코드
+            fid_input_iscd="0000",  # 입력 종목코드
+            fid_div_cls_code="0",  # 분류 구분 코드
+            fid_aply_rang_prc_1="",  # 적용 범위 가격1
+            fid_vol_cnt="",  # 거래량 수
+            fid_pbmn="",  # 거래대금
+            fid_blng_cls_code="0",  # 소속 구분 코드
+            fid_mkop_cls_code="0",  # 장운영 구분 코드
         )
         
         if result is None or result.empty:

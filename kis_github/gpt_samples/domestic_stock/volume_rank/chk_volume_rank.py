@@ -1,11 +1,21 @@
 import sys
 
 import pandas as pd
+import logging
 
 sys.path.extend(['../..', '.']) # kis_auth 파일 경로 추가
 import kis_auth as ka
 from volume_rank import volume_rank
 
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 거래량순위 [FHPST01710000]
+##############################################################################################
+
+# 통합 컬럼 매핑
 COLUMN_MAPPING = {
                 'hts_kor_isnm': 'HTS 한글 종목명',
                 'mksc_shrn_iscd': '가중권 단축 종목코드',
@@ -64,33 +74,19 @@ def main():
     # 토큰 발급
     ka.auth()
 
-    # 거래량순위 조회 파라미터 설정
-    fid_cond_mrkt_div_code = "J"
-    fid_cond_scr_div_code = "20171"
-    fid_input_iscd = "0002"
-    fid_div_cls_code = "0"
-    fid_blng_cls_code = "0"
-    fid_trgt_cls_code = "111111111"
-    fid_trgt_exls_cls_code = "000000"
-    fid_input_price_1 = "0"
-    fid_input_price_2 = "0"
-    fid_vol_cnt = "0"
-    fid_input_date_1 = "0"
-    
     # API 호출
     result = volume_rank(
-        fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,
-        fid_cond_scr_div_code=fid_cond_scr_div_code,
-        fid_input_iscd=fid_input_iscd,
-        fid_div_cls_code=fid_div_cls_code,
-        fid_blng_cls_code=fid_blng_cls_code,
-        fid_trgt_cls_code=fid_trgt_cls_code,
-        fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,
-        fid_input_price_1=fid_input_price_1,
-        fid_input_price_2=fid_input_price_2,
-        fid_vol_cnt=fid_vol_cnt,
-        fid_input_date_1=fid_input_date_1,
-
+        fid_cond_mrkt_div_code="J",
+        fid_cond_scr_div_code="20171",
+        fid_input_iscd="0002",
+        fid_div_cls_code="0",
+        fid_blng_cls_code="0",
+        fid_trgt_cls_code="111111111",
+        fid_trgt_exls_cls_code="000000",
+        fid_input_price_1="0",
+        fid_input_price_2="0",
+        fid_vol_cnt="0",
+        fid_input_date_1="0",
     )
     # 컬럼명 출력
     print("\n=== 사용 가능한 컬럼 목록 ===")

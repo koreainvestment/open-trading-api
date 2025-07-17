@@ -8,9 +8,9 @@ Created on 2025-06-17
 """
 
 import logging
+import sys
 import time
 from typing import Optional, Tuple
-import sys
 
 import pandas as pd
 
@@ -20,6 +20,13 @@ import kis_auth as ka
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 종목정보 > 당사 대주가능 종목 [국내주식-195]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/quotations/lendable-by-company"
 
 def lendable_by_company(
     excg_dvsn_cd: str,  # 거래소구분코드
@@ -81,7 +88,6 @@ def lendable_by_company(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/domestic-stock/v1/quotations/lendable-by-company"
     tr_id = "CTSC2702R"
 
     params = {
@@ -93,7 +99,7 @@ def lendable_by_company(
         "CTX_AREA_NK100": ctx_area_nk100,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -157,5 +163,5 @@ def lendable_by_company(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

@@ -16,6 +16,10 @@ from ccnl_krx import ccnl_krx
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간정보 > 국내주식 체결가(KRX) [H0STCNT0]
+##############################################################################################
+
 
 def main():
     """

@@ -18,12 +18,20 @@ from volatility_trend_tick import volatility_trend_tick
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 변동성 추이(틱)[국내주식-180]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'bsop_date': '주식영업일자',
     'stck_cntg_hour': 'ELW현재가',
     'elw_prpr': '전일대비',
     'hts_ints_vltl': '전일대비부호'
 }
+
+NUMERIC_COLUMNS = [
+    'ELW현재가', '전일대비'
+]
 
 def main():
     """
@@ -52,16 +60,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 변동성 추이(틱) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_input_iscd = "57LA50"  # 입력종목코드
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 변동성 추이(틱)")
+        logger.info("API 호출")
         result = volatility_trend_tick(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_input_iscd="57LA50",  # 입력종목코드
         )
         
         if result is None or result.empty:
@@ -74,6 +77,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 변동성 추이(틱) 결과 ===")

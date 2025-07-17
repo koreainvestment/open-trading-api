@@ -18,6 +18,10 @@ from inquire_daily_itemchartprice import inquire_daily_itemchartprice
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 분/일별차트가격 [FHKBJ773701C0]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stck_bsop_date': '주식영업일자',
     'bond_oprc': '채권시가2',
@@ -54,16 +58,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 장내채권 기간별시세(일) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "B"  # 조건 시장 구분 코드
-        fid_input_iscd = "KR103502GA34"  # 입력 종목코드
-        
         # API 호출
         logger.info("API 호출 시작: 장내채권 기간별시세(일)")
         result = inquire_daily_itemchartprice(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 구분 코드
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
+            fid_cond_mrkt_div_code="B",  # 조건 시장 구분 코드
+            fid_input_iscd="KR103502GA34",  # 입력 종목코드
         )
         
         if result is None or result.empty:

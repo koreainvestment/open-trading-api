@@ -5,8 +5,8 @@ Created on 2025-06-17
 @author: LaivData jjlee with cursor
 """
 
-import sys
 import logging
+import sys
 
 import pandas as pd
 
@@ -17,6 +17,10 @@ from search_info import search_info
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 종목정보 > 상품기본조회 [CTPF1604R]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'pdno': '상품번호',
@@ -58,18 +62,11 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 상품기본조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        pdno = "000660"  # pdno = "AAPL"
-        prdt_type_cd = "300"  # prdt_type_cd = "512"
-        
-        # API 호출
-        logger.info("API 호출 시작: 상품기본조회")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = search_info(
-            pdno=pdno,  # 상품번호
-            prdt_type_cd=prdt_type_cd,  # 상품유형코드
+            pdno="000660",  # pdno = "AAPL",  # 상품번호
+            prdt_type_cd="300",  # prdt_type_cd = "512",  # 상품유형코드
         )
         
         if result is None or result.empty:

@@ -16,6 +16,10 @@ from program_trade_nxt import program_trade_nxt
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간 > 국내주식 실시간프로그램매매 (NXT) [H0NXPGM0]
+##############################################################################################
+
 
 def main():
     """

@@ -82,24 +82,14 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 국내업종 구분별전체시세 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "U"  # FID 조건 시장 분류 코드
-        fid_input_iscd = "0001"  # FID 입력 종목코드
-        fid_cond_scr_div_code = "20214"  # FID 조건 화면 분류 코드
-        fid_mrkt_cls_code = "K"  # FID 시장 구분 코드
-        fid_blng_cls_code = "0"  # FID 소속 구분 코드
-
         
-        # API 호출
-        logger.info("API 호출 시작: 국내업종 구분별전체시세")
+        # API 호출        
         result1, result2 = inquire_index_category_price(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # FID 조건 시장 분류 코드
-            fid_input_iscd=fid_input_iscd,  # FID 입력 종목코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # FID 조건 화면 분류 코드
-            fid_mrkt_cls_code=fid_mrkt_cls_code,  # FID 시장 구분 코드
-            fid_blng_cls_code=fid_blng_cls_code,  # FID 소속 구분 코드
+            fid_cond_mrkt_div_code="U",  # FID 조건 시장 분류 코드
+            fid_input_iscd="0001",  # FID 입력 종목코드
+            fid_cond_scr_div_code="20214",  # FID 조건 화면 분류 코드
+            fid_mrkt_cls_code="K",  # FID 시장 구분 코드
+            fid_blng_cls_code="0",  # FID 소속 구분 코드
         )
         
         # 결과 확인

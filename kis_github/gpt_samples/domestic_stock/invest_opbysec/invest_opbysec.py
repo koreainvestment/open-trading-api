@@ -8,9 +8,9 @@ Created on 2025-06-17
 """
 
 import logging
+import sys
 import time
 from typing import Optional
-import sys
 
 import pandas as pd
 
@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 국국내주식 증권사별 투자의견[국내주식-189]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/quotations/invest-opbysec"
 
 def invest_opbysec(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -99,7 +105,7 @@ def invest_opbysec(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    url = "/uapi/domestic-stock/v1/quotations/invest-opbysec"
+
     tr_id = "FHKST663400C0"
 
     # API 요청 파라미터 설정
@@ -113,7 +119,7 @@ def invest_opbysec(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -149,5 +155,5 @@ def invest_opbysec(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

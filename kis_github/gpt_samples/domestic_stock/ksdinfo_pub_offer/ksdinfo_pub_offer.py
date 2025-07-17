@@ -21,6 +21,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기타정보 > 예탁원정보(공모주청약일정)[국내주식-151]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ksdinfo/pub-offer"
+
 def ksdinfo_pub_offer(
     sht_cd: str,  # 종목코드
     cts: str,  # CTS
@@ -67,7 +74,7 @@ def ksdinfo_pub_offer(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/domestic-stock/v1/ksdinfo/pub-offer"
+
     tr_id = "HHKDB669108C0"
 
     params = {
@@ -78,7 +85,7 @@ def ksdinfo_pub_offer(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -111,5 +118,5 @@ def ksdinfo_pub_offer(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

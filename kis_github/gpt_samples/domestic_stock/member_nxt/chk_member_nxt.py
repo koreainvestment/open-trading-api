@@ -16,6 +16,10 @@ from member_nxt import member_nxt
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간 > 국내주식 실시간회원사 (NXT) [H0NXMBC0]
+##############################################################################################
+
 
 def main():
     """

@@ -18,6 +18,10 @@ from updown_rate import updown_rate
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 상승률순위[국내주식-167]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'hts_kor_isnm': 'HTS한글종목명',
     'elw_shrn_iscd': 'ELW단축종목코드',
@@ -55,6 +59,13 @@ COLUMN_MAPPING = {
     'hts_ints_vltl': 'HTS내재변동성',
     'lvrg_val': '레버리지값'
 }
+
+NUMERIC_COLUMNS = [
+    'ELW현재가', '전일대비', '전일대비율', '누적거래량', '주식기준가', '기준가대비현재가', '기준가대비현재가비율',
+    '주식시가2', '시가2대비현재가', '시가2대비현재가비율', '주식최고가', '주식최저가', '기간등락', '기간등락비율',
+    '주식전환비율', 'HTS잔존일수', '행사가', 'LP보유비율', '패리티', '손익분기주가가격', '델타값', '세타', '손익분기비율',
+    'HTS내재변동성', '레버리지값'
+]
 
 def main():
     """
@@ -95,40 +106,23 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 상승률순위 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 사용자권한정보
-        fid_cond_scr_div_code = "20277"  # 거래소코드
-        fid_unas_input_iscd = "000000"  # 상승율/하락율 구분
-        fid_input_iscd = "00000"  # N일자값
-        fid_input_rmnn_dynu_1 = "0"  # 거래량조건
-        fid_div_cls_code = "0"  # NEXT KEY BUFF
-        fid_input_price_1 = ""  # 사용자권한정보
-        fid_input_price_2 = ""  # 거래소코드
-        fid_input_vol_1 = ""  # 상승율/하락율 구분
-        fid_input_vol_2 = ""  # N일자값
-        fid_input_date_1 = "1"  # 거래량조건
-        fid_rank_sort_cls_code = "0"  # NEXT KEY BUFF
-        fid_blng_cls_code = "0"  # 사용자권한정보
-        fid_input_date_2 = ""  # 거래소코드
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 상승률순위")
+        logger.info("API 호출")
         result = updown_rate(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 사용자권한정보
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 거래소코드
-            fid_unas_input_iscd=fid_unas_input_iscd,  # 상승율/하락율 구분
-            fid_input_iscd=fid_input_iscd,  # N일자값
-            fid_input_rmnn_dynu_1=fid_input_rmnn_dynu_1,  # 거래량조건
-            fid_div_cls_code=fid_div_cls_code,  # NEXT KEY BUFF
-            fid_input_price_1=fid_input_price_1,  # 사용자권한정보
-            fid_input_price_2=fid_input_price_2,  # 거래소코드
-            fid_input_vol_1=fid_input_vol_1,  # 상승율/하락율 구분
-            fid_input_vol_2=fid_input_vol_2,  # N일자값
-            fid_input_date_1=fid_input_date_1,  # 거래량조건
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # NEXT KEY BUFF
-            fid_blng_cls_code=fid_blng_cls_code,  # 사용자권한정보
-            fid_input_date_2=fid_input_date_2,  # 거래소코드
+            fid_cond_mrkt_div_code="W",  # 사용자권한정보
+            fid_cond_scr_div_code="20277",  # 거래소코드
+            fid_unas_input_iscd="000000",  # 상승율/하락율 구분
+            fid_input_iscd="00000",  # N일자값
+            fid_input_rmnn_dynu_1="0",  # 거래량조건
+            fid_div_cls_code="0",  # NEXT KEY BUFF
+            fid_input_price_1="",  # 사용자권한정보
+            fid_input_price_2="",  # 거래소코드
+            fid_input_vol_1="",  # 상승율/하락율 구분
+            fid_input_vol_2="",  # N일자값
+            fid_input_date_1="1",  # 거래량조건
+            fid_rank_sort_cls_code="0",  # NEXT KEY BUFF
+            fid_blng_cls_code="0",  # 사용자권한정보
+            fid_input_date_2="",  # 거래소코드
         )
         
         if result is None or result.empty:
@@ -141,6 +135,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 상승률순위 결과 ===")

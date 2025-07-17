@@ -21,6 +21,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기타정보 > 예탁원정보(주주총회일정)[국내주식-154]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ksdinfo/sharehld-meet"
+
 def ksdinfo_sharehld_meet(
     cts: str,  # CTS
     f_dt: str,  # 조회일자From
@@ -71,7 +78,7 @@ def ksdinfo_sharehld_meet(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/domestic-stock/v1/ksdinfo/sharehld-meet"
+
     tr_id = "HHKDB669111C0"
 
     params = {
@@ -82,7 +89,7 @@ def ksdinfo_sharehld_meet(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -112,5 +119,5 @@ def ksdinfo_sharehld_meet(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

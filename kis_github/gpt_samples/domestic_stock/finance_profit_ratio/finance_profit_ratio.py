@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 수익성비율[v1_국내주식-081]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/finance/profit-ratio"
 
 def finance_profit_ratio(
         fid_input_iscd: str,  # 입력 종목코드
@@ -73,7 +79,7 @@ def finance_profit_ratio(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-stock/v1/finance/profit-ratio"
+
     tr_id = "FHKST66430400"
 
     params = {
@@ -83,7 +89,7 @@ def finance_profit_ratio(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -119,5 +125,5 @@ def finance_profit_ratio(
     else:
         # API 호출 실패 시 에러 로그
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

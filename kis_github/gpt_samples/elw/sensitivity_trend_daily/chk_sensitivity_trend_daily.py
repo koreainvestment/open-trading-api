@@ -18,6 +18,10 @@ from sensitivity_trend_daily import sensitivity_trend_daily
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 민감도 추이(일별)[국내주식-176]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stck_bsop_date': '주식영업일자',
     'elw_prpr': 'ELW현재가',
@@ -31,6 +35,11 @@ COLUMN_MAPPING = {
     'vega': '베가',
     'rho': '로우'
 }
+
+NUMERIC_COLUMNS = [
+    'ELW현재가', '전일대비', '전일대비율', 'HTS이론가', '델타값', 
+    '감마', '세타', '베가', '로우'
+]
 
 def main():
     """
@@ -59,16 +68,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 민감도 추이(일별) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_input_iscd = "58J438"  # 입력종목코드
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 민감도 추이(일별)")
+        logger.info("API 호출")
         result = sensitivity_trend_daily(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_input_iscd="58J438",  # 입력종목코드
         )
         
         if result is None or result.empty:
@@ -81,6 +85,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 민감도 추이(일별) 결과 ===")

@@ -9,10 +9,13 @@ import sys
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
-
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] ELW시세 - ELW 실시간호가[H0EWASP0]
+##############################################################################################
 
 def elw_asking_price(
         tr_type: str,

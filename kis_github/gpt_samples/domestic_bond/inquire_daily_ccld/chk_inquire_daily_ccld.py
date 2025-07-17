@@ -18,6 +18,10 @@ from inquire_daily_ccld import inquire_daily_ccld
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 일별체결조회 [CTSC8013R]
+##############################################################################################
+
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
 COLUMN_MAPPING = {
     'tot_ord_qty': '총주문수량',
@@ -87,32 +91,19 @@ def main():
         # kis_auth 모듈에서 계좌 정보 가져오기
         trenv = ka.getTREnv()
 
-        # 장내채권 주문체결내역 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 종합계좌번호
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        inqr_strt_dt = "20250601"  # 조회시작일자
-        inqr_end_dt = "20250630"  # 조회종료일자
-        sll_buy_dvsn_cd = "%"  # 매도매수구분코드
-        sort_sqn_dvsn = "01"  # 정렬순서구분
-        pdno = ""  # 상품번호
-        nccs_yn = "N"  # 미체결여부
-        ctx_area_nk200 = ""  # 연속조회키200
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-
         # API 호출
         logger.info("API 호출 시작: 장내채권 주문체결내역")
         result1, result2 = inquire_daily_ccld(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            inqr_strt_dt=inqr_strt_dt,  # 조회시작일자
-            inqr_end_dt=inqr_end_dt,  # 조회종료일자
-            sll_buy_dvsn_cd=sll_buy_dvsn_cd,  # 매도매수구분코드
-            sort_sqn_dvsn=sort_sqn_dvsn,  # 정렬순서구분
-            pdno=pdno,  # 상품번호
-            nccs_yn=nccs_yn,  # 미체결여부
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            inqr_strt_dt="20250601",  # 조회시작일자
+            inqr_end_dt="20250630",  # 조회종료일자
+            sll_buy_dvsn_cd="%",  # 매도매수구분코드
+            sort_sqn_dvsn="01",  # 정렬순서구분
+            pdno="",  # 상품번호
+            nccs_yn="N",  # 미체결여부
+            ctx_area_nk200="",  # 연속조회키200
+            ctx_area_fk200="",  # 연속조회검색조건200
         )
 
         # 결과 확인

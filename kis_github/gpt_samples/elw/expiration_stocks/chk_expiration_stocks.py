@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-06-19
 
@@ -17,6 +16,10 @@ from expiration_stocks import expiration_stocks
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] ELW시세 - ELW 만기예정/만기종목[국내주식-184]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'elw_shrn_iscd': 'ELW단축종목코드',
@@ -41,6 +44,11 @@ COLUMN_MAPPING = {
     'stnd_iscd': '표준종목코드',
     'rdmp_ask_amt': '상환청구금액'
 }
+
+NUMERIC_COLUMNS = [
+    '기초자산현재가', '행사가', '주식전환비율', 'ELW현재가', '총상환금액', '상환금액', 
+    '상장주수', 'LP보유량', '확정지급2가격', '만기평가금액', '발행가격', '상환청구금액'
+]
 
 def main():
     """
@@ -77,32 +85,19 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 만기예정_만기종목 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_cond_scr_div_code = "11547"  # 조건화면분류코드
-        fid_input_date_1 = "20250101"  # 입력날짜1
-        fid_input_date_2 = "20250930"  # 입력날짜2
-        fid_div_cls_code = "2"  # 분류구분코드
-        fid_etc_cls_code = ""  # 기타구분코드
-        fid_unas_input_iscd = "000000"  # 기초자산입력종목코드
-        fid_input_iscd_2 = "00000"  # 발행회사코드
-        fid_blng_cls_code = "0"  # 결제방법
-        fid_input_option_1 = ""  # 입력옵션1
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 만기예정_만기종목")
+        logger.info("API 호출")
         result = expiration_stocks(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_input_date_1=fid_input_date_1,  # 입력날짜1
-            fid_input_date_2=fid_input_date_2,  # 입력날짜2
-            fid_div_cls_code=fid_div_cls_code,  # 분류구분코드
-            fid_etc_cls_code=fid_etc_cls_code,  # 기타구분코드
-            fid_unas_input_iscd=fid_unas_input_iscd,  # 기초자산입력종목코드
-            fid_input_iscd_2=fid_input_iscd_2,  # 발행회사코드
-            fid_blng_cls_code=fid_blng_cls_code,  # 결제방법
-            fid_input_option_1=fid_input_option_1,  # 입력옵션1
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_cond_scr_div_code="11547",  # 조건화면분류코드
+            fid_input_date_1="20250101",  # 입력날짜1
+            fid_input_date_2="20250930",  # 입력날짜2
+            fid_div_cls_code="2",  # 분류구분코드
+            fid_etc_cls_code="",  # 기타구분코드
+            fid_unas_input_iscd="000000",  # 기초자산입력종목코드
+            fid_input_iscd_2="00000",  # 발행회사코드
+            fid_blng_cls_code="0",  # 결제방법
+            fid_input_option_1="",  # 입력옵션1
         )
         
         if result is None or result.empty:
@@ -115,6 +110,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 만기예정_만기종목 결과 ===")

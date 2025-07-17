@@ -18,6 +18,10 @@ from indicator import indicator
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 지표순위[국내주식-169]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'elw_shrn_iscd': 'ELW단축종목코드',
     'elw_kor_isnm': 'ELW한글종목명',
@@ -33,6 +37,11 @@ COLUMN_MAPPING = {
     'invl_val': '내재가치값',
     'elw_ko_barrier': '조기종료발생기준가격'
 }
+
+NUMERIC_COLUMNS = [
+    'ELW현재가', '전일대비', '전일대비율', '누적거래량', '주식전환비율', 
+    '레버리지값', '행사가', '시간가치값', '내재가치값', '조기종료발생기준가격'
+]
 
 def main():
     """
@@ -70,34 +79,20 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 지표순위 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_cond_scr_div_code = "20279"  # 조건화면분류코드
-        fid_unas_input_iscd = "000000"  # 기초자산입력종목코드
-        fid_input_iscd = "00000"  # 발행사
-        fid_div_cls_code = "0"  # 콜풋구분코드
-        fid_input_price_1 = ""  # 가격(이상)
-        fid_input_price_2 = ""  # 가격(이하)
-        fid_input_vol_1 = ""  # 거래량(이상)
-        fid_input_vol_2 = ""  # 거래량(이하)
-        fid_rank_sort_cls_code = "0"  # 순위정렬구분코드
-        fid_blng_cls_code = "0"  # 결재방법
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 지표순위")
+        logger.info("API 호출")
         result = indicator(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_unas_input_iscd=fid_unas_input_iscd,  # 기초자산입력종목코드
-            fid_input_iscd=fid_input_iscd,  # 발행사
-            fid_div_cls_code=fid_div_cls_code,  # 콜풋구분코드
-            fid_input_price_1=fid_input_price_1,  # 가격(이상)
-            fid_input_price_2=fid_input_price_2,  # 가격(이하)
-            fid_input_vol_1=fid_input_vol_1,  # 거래량(이상)
-            fid_input_vol_2=fid_input_vol_2,  # 거래량(이하)
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # 순위정렬구분코드
-            fid_blng_cls_code=fid_blng_cls_code,  # 결재방법
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_cond_scr_div_code="20279",  # 조건화면분류코드
+            fid_unas_input_iscd="000000",  # 기초자산입력종목코드
+            fid_input_iscd="00000",  # 발행사
+            fid_div_cls_code="0",  # 콜풋구분코드
+            fid_input_price_1="",  # 가격(이상)
+            fid_input_price_2="",  # 가격(이하)
+            fid_input_vol_1="",  # 거래량(이상)
+            fid_input_vol_2="",  # 거래량(이하)
+            fid_rank_sort_cls_code="0",  # 순위정렬구분코드
+            fid_blng_cls_code="0",  # 결재방법
         )
         
         if result is None or result.empty:
@@ -110,6 +105,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 지표순위 결과 ===")

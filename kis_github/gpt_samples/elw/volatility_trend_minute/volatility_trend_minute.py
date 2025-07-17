@@ -21,6 +21,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 변동성추이(분별)[국내주식-179]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/elw/v1/quotations/volatility-trend-minute"
+
 def volatility_trend_minute(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
     fid_input_iscd: str,  # 입력종목코드
@@ -84,7 +91,7 @@ def volatility_trend_minute(
         return dataframe if dataframe is not None else pd.DataFrame()
     
     # API 호출 URL 및 거래 ID 설정
-    url = "/uapi/elw/v1/quotations/volatility-trend-minute"
+    url = API_URL
     tr_id = "FHPEW02840300"
 
     # 요청 파라미터 설정

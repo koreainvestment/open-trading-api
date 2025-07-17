@@ -18,6 +18,10 @@ from cond_search import cond_search
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 종목검색[국내주식-166]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'bond_shrn_iscd': '채권단축종목코드',
     'hts_kor_isnm': 'HTS한글종목명',
@@ -63,6 +67,13 @@ COLUMN_MAPPING = {
     'prls_qryr_stpr_prc': '손익분기주가가격',
     'lp_hvol': 'LP보유량'
 }
+
+NUMERIC_COLUMNS = [
+    'elw_prpr', 'prdy_ctrt', 'acml_vol', 'acpr', 'stck_cnvr_rate', 
+    'hts_rmnn_dynu', 'unas_prpr', 'unas_prdy_ctrt', 'unas_acml_vol',
+    'moneyness', 'prit', 'delta_val', 'hts_ints_vltl', 'tmvl_val', 
+    'gear', 'lvrg_val', 'prls_qryr_rate', 'cfp', 'lstn_stcn', 'pblc_co_name', 'lp_mbcr_name', 'lp_hldn_rate', 'elw_rght_form', 'elw_ko_barrier', 'apprch_rate', 'unas_shrn_iscd', 'mtrt_date', 'prmm_val', 'stck_lp_fin_date', 'tick_conv_prc', 'prls_qryr_stpr_prc', 'lp_hvol'
+]
 
 def main():
     """
@@ -133,7 +144,7 @@ def main():
         - DataFrame: ELW 종목검색 결과
     
     Example:
-        >>> df = cond_search(fid_cond_mrkt_div_code="W", fid_cond_scr_div_code="11510", fid_rank_sort_cls_code="1", fid_input_cnt_1="1", fid_rank_sort_cls_code_2="", fid_input_cnt_2="", fid_rank_sort_cls_code_3="", fid_input_cnt_3="", fid_trgt_cls_code="0", fid_input_iscd="00000", fid_unas_input_iscd="", fid_mrkt_cls_code="A", fid_input_date_1="0", fid_input_date_2="0", fid_input_iscd_2="", fid_etc_cls_code="0", fid_input_rmnn_dynu_1="", fid_input_rmnn_dynu_2="", fid_prpr_cnt1="", fid_prpr_cnt2="", fid_rsfl_rate1="", fid_rsfl_rate2="", fid_vol1="", fid_vol2="", fid_aply_rang_prc_1="", fid_aply_rang_prc_2="", fid_lvrg_val1="", fid_lvrg_val2="", fid_vol3="", fid_vol4="", fid_ints_vltl1="", fid_ints_vltl2="", fid_prmm_val1="", fid_prmm_val2="", fid_gear1="", fid_gear2="", fid_prls_qryr_rate1="", fid_prls_qryr_rate2="", fid_delta1="", fid_delta2="", fid_acpr1="", fid_acpr2="", fid_stck_cnvr_rate1="", fid_stck_cnvr_rate2="", fid_div_cls_code="0", fid_prit1="", fid_prit2="", fid_cfp1="", fid_cfp2="", fid_input_nmix_price_1="", fid_input_nmix_price_2="", fid_egea_val1="", fid_egea_val2="", fid_input_dvdn_ert="", fid_input_hist_vltl="", fid_theta1="", fid_theta2="")
+        >>> df = cond_search(fid_cond_mrkt_div_code="W", fid_cond_scr_div_code="11510", fid_rank_sort_cls_code="0", fid_input_cnt_1="100", ...)
     """
     try:
         # pandas 출력 옵션 설정
@@ -146,126 +157,66 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 종목검색 파라미터 설정 (Postman 예제 기준)
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_cond_scr_div_code = "11510"  # 조건화면분류코드
-        fid_rank_sort_cls_code = "0"  # 순위정렬구분코드
-        fid_input_cnt_1 = "1"  # 입력수1
-        fid_rank_sort_cls_code_2 = ""  # 순위정렬구분코드2
-        fid_input_cnt_2 = ""  # 입력수2
-        fid_rank_sort_cls_code_3 = ""  # 순위정렬구분코드3
-        fid_input_cnt_3 = ""  # 입력수3
-        fid_trgt_cls_code = ""  # 대상구분코드
-        fid_input_iscd = ""  # 입력종목코드
-        fid_unas_input_iscd = ""  # 기초자산입력종목코드
-        fid_mrkt_cls_code = ""  # 시장구분코드
-        fid_input_date_1 = ""  # 입력날짜1
-        fid_input_date_2 = ""  # 입력날짜2
-        fid_input_iscd_2 = ""  # 입력종목코드2
-        fid_etc_cls_code = ""  # 기타구분코드
-        fid_input_rmnn_dynu_1 = ""  # 입력잔존일수1
-        fid_input_rmnn_dynu_2 = ""  # 입력잔존일수2
-        fid_prpr_cnt1 = ""  # 현재가수1
-        fid_prpr_cnt2 = ""  # 현재가수2
-        fid_rsfl_rate1 = ""  # 등락비율1
-        fid_rsfl_rate2 = ""  # 등락비율2
-        fid_vol1 = ""  # 거래량1
-        fid_vol2 = ""  # 거래량2
-        fid_aply_rang_prc_1 = ""  # 적용범위가격1
-        fid_aply_rang_prc_2 = ""  # 적용범위가격2
-        fid_lvrg_val1 = ""  # 레버리지값1
-        fid_lvrg_val2 = ""  # 레버리지값2
-        fid_vol3 = ""  # 거래량3
-        fid_vol4 = ""  # 거래량4
-        fid_ints_vltl1 = ""  # 내재변동성1
-        fid_ints_vltl2 = ""  # 내재변동성2
-        fid_prmm_val1 = ""  # 프리미엄값1
-        fid_prmm_val2 = ""  # 프리미엄값2
-        fid_gear1 = ""  # 기어링1
-        fid_gear2 = ""  # 기어링2
-        fid_prls_qryr_rate1 = ""  # 손익분기비율1
-        fid_prls_qryr_rate2 = ""  # 손익분기비율2
-        fid_delta1 = ""  # 델타1
-        fid_delta2 = ""  # 델타2
-        fid_acpr1 = ""  # 행사가1
-        fid_acpr2 = ""  # 행사가2
-        fid_stck_cnvr_rate1 = ""  # 주식전환비율1
-        fid_stck_cnvr_rate2 = ""  # 주식전환비율2
-        fid_div_cls_code = ""  # 분류구분코드
-        fid_prit1 = ""  # 패리티1
-        fid_prit2 = ""  # 패리티2
-        fid_cfp1 = ""  # 자본지지점1
-        fid_cfp2 = ""  # 자본지지점2
-        fid_input_nmix_price_1 = ""  # 지수가격1
-        fid_input_nmix_price_2 = ""  # 지수가격2
-        fid_egea_val1 = ""  # E기어링값1
-        fid_egea_val2 = ""  # E기어링값2
-        fid_input_dvdn_ert = ""  # 배당수익율
-        fid_input_hist_vltl = ""  # 역사적변동성
-        fid_theta1 = ""  # 세타1
-        fid_theta2 = ""  # 세타2
-        
-        # API 호출
-        logger.info("API 호출 시작: ELW 종목검색")
+        # api 호출
+        logger.info("API 호출 ")
         result = cond_search(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # 순위정렬구분코드
-            fid_input_cnt_1=fid_input_cnt_1,  # 입력수1
-            fid_rank_sort_cls_code_2=fid_rank_sort_cls_code_2,  # 순위정렬구분코드2
-            fid_input_cnt_2=fid_input_cnt_2,  # 입력수2
-            fid_rank_sort_cls_code_3=fid_rank_sort_cls_code_3,  # 순위정렬구분코드3
-            fid_input_cnt_3=fid_input_cnt_3,  # 입력수3
-            fid_trgt_cls_code=fid_trgt_cls_code,  # 대상구분코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
-            fid_unas_input_iscd=fid_unas_input_iscd,  # 기초자산입력종목코드
-            fid_mrkt_cls_code=fid_mrkt_cls_code,  # 시장구분코드
-            fid_input_date_1=fid_input_date_1,  # 입력날짜1
-            fid_input_date_2=fid_input_date_2,  # 입력날짜2
-            fid_input_iscd_2=fid_input_iscd_2,  # 입력종목코드2
-            fid_etc_cls_code=fid_etc_cls_code,  # 기타구분코드
-            fid_input_rmnn_dynu_1=fid_input_rmnn_dynu_1,  # 입력잔존일수1
-            fid_input_rmnn_dynu_2=fid_input_rmnn_dynu_2,  # 입력잔존일수2
-            fid_prpr_cnt1=fid_prpr_cnt1,  # 현재가수1
-            fid_prpr_cnt2=fid_prpr_cnt2,  # 현재가수2
-            fid_rsfl_rate1=fid_rsfl_rate1,  # 등락비율1
-            fid_rsfl_rate2=fid_rsfl_rate2,  # 등락비율2
-            fid_vol1=fid_vol1,  # 거래량1
-            fid_vol2=fid_vol2,  # 거래량2
-            fid_aply_rang_prc_1=fid_aply_rang_prc_1,  # 적용범위가격1
-            fid_aply_rang_prc_2=fid_aply_rang_prc_2,  # 적용범위가격2
-            fid_lvrg_val1=fid_lvrg_val1,  # 레버리지값1
-            fid_lvrg_val2=fid_lvrg_val2,  # 레버리지값2
-            fid_vol3=fid_vol3,  # 거래량3
-            fid_vol4=fid_vol4,  # 거래량4
-            fid_ints_vltl1=fid_ints_vltl1,  # 내재변동성1
-            fid_ints_vltl2=fid_ints_vltl2,  # 내재변동성2
-            fid_prmm_val1=fid_prmm_val1,  # 프리미엄값1
-            fid_prmm_val2=fid_prmm_val2,  # 프리미엄값2
-            fid_gear1=fid_gear1,  # 기어링1
-            fid_gear2=fid_gear2,  # 기어링2
-            fid_prls_qryr_rate1=fid_prls_qryr_rate1,  # 손익분기비율1
-            fid_prls_qryr_rate2=fid_prls_qryr_rate2,  # 손익분기비율2
-            fid_delta1=fid_delta1,  # 델타1
-            fid_delta2=fid_delta2,  # 델타2
-            fid_acpr1=fid_acpr1,  # 행사가1
-            fid_acpr2=fid_acpr2,  # 행사가2
-            fid_stck_cnvr_rate1=fid_stck_cnvr_rate1,  # 주식전환비율1
-            fid_stck_cnvr_rate2=fid_stck_cnvr_rate2,  # 주식전환비율2
-            fid_div_cls_code=fid_div_cls_code,  # 분류구분코드
-            fid_prit1=fid_prit1,  # 패리티1
-            fid_prit2=fid_prit2,  # 패리티2
-            fid_cfp1=fid_cfp1,  # 자본지지점1
-            fid_cfp2=fid_cfp2,  # 자본지지점2
-            fid_input_nmix_price_1=fid_input_nmix_price_1,  # 지수가격1
-            fid_input_nmix_price_2=fid_input_nmix_price_2,  # 지수가격2
-            fid_egea_val1=fid_egea_val1,  # E기어링값1
-            fid_egea_val2=fid_egea_val2,  # E기어링값2
-            fid_input_dvdn_ert=fid_input_dvdn_ert,  # 배당수익율
-            fid_input_hist_vltl=fid_input_hist_vltl,  # 역사적변동성
-            fid_theta1=fid_theta1,  # 세타1
-            fid_theta2=fid_theta2,  # 세타2
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_cond_scr_div_code="11510",  # 조건화면분류코드
+            fid_rank_sort_cls_code="0",  # 순위정렬구분코드
+            fid_input_cnt_1="100",  # 입력수1
+            fid_rank_sort_cls_code_2="",  # 순위정렬구분코드2
+            fid_input_cnt_2="",  # 입력수2
+            fid_rank_sort_cls_code_3="",  # 순위정렬구분코드3
+            fid_input_cnt_3="",  # 입력수3
+            fid_trgt_cls_code="",  # 대상구분코드
+            fid_input_iscd="",  # 입력종목코드
+            fid_unas_input_iscd="",  # 기초자산입력종목코드
+            fid_mrkt_cls_code="",  # 시장구분코드
+            fid_input_date_1="",  # 입력날짜1
+            fid_input_date_2="",  # 입력날짜2
+            fid_input_iscd_2="",  # 입력종목코드2
+            fid_etc_cls_code="",  # 기타구분코드
+            fid_input_rmnn_dynu_1="",  # 입력잔존일수1
+            fid_input_rmnn_dynu_2="",  # 입력잔존일수2
+            fid_prpr_cnt1="",  # 현재가수1
+            fid_prpr_cnt2="",  # 현재가수2
+            fid_rsfl_rate1="",  # 등락비율1
+            fid_rsfl_rate2="",  # 등락비율2
+            fid_vol1="",  # 거래량1
+            fid_vol2="",  # 거래량2
+            fid_aply_rang_prc_1="",  # 적용범위가격1
+            fid_aply_rang_prc_2="",  # 적용범위가격2
+            fid_lvrg_val1="",  # 레버리지값1
+            fid_lvrg_val2="",  # 레버리지값2
+            fid_vol3="",  # 거래량3
+            fid_vol4="",  # 거래량4
+            fid_ints_vltl1="",  # 내재변동성1
+            fid_ints_vltl2="",  # 내재변동성2
+            fid_prmm_val1="",  # 프리미엄값1
+            fid_prmm_val2="",  # 프리미엄값2
+            fid_gear1="",  # 기어링1
+            fid_gear2="",  # 기어링2
+            fid_prls_qryr_rate1="",  # 손익분기비율1
+            fid_prls_qryr_rate2="",  # 손익분기비율2
+            fid_delta1="",  # 델타1
+            fid_delta2="",  # 델타2
+            fid_acpr1="",  # 행사가1
+            fid_acpr2="",  # 행사가2
+            fid_stck_cnvr_rate1="",  # 주식전환비율1
+            fid_stck_cnvr_rate2="",  # 주식전환비율2
+            fid_div_cls_code="",  # 분류구분코드
+            fid_prit1="",  # 패리티1
+            fid_prit2="",  # 패리티2
+            fid_cfp1="",  # 자본지지점1
+            fid_cfp2="",  # 자본지지점2
+            fid_input_nmix_price_1="",  # 지수가격1
+            fid_input_nmix_price_2="",  # 지수가격2
+            fid_egea_val1="",  # E기어링값1
+            fid_egea_val2="",  # E기어링값2
+            fid_input_dvdn_ert="",  # 배당수익율
+            fid_input_hist_vltl="",  # 역사적변동성
+            fid_theta1="",  # 세타1
+            fid_theta2="",  # 세타2
         )
         
         if result is None or result.empty:
@@ -276,9 +227,18 @@ def main():
         logger.info("사용 가능한 컬럼 목록:")
         logger.info(result.columns.tolist())
 
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+        
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
         
+        # 컬럼명 출력
+        logger.info("사용 가능한 컬럼 목록:")
+        logger.info(result.columns.tolist())
+                
         # 결과 출력
         logger.info("=== ELW 종목검색 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

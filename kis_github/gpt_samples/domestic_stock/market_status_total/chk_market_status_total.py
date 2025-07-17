@@ -16,6 +16,10 @@ from market_status_total import market_status_total
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간정보 > 국내주식 장운영정보(통합) [H0UNMKO0]
+##############################################################################################
+
 
 def main():
     """

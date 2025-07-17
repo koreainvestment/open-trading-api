@@ -18,6 +18,10 @@ from indicator_trend_daily import indicator_trend_daily
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 투자지표추이(일별)[국내주식-173]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stck_bsop_date': '주식영업일자',
     'elw_prpr': 'ELW현재가',
@@ -35,6 +39,11 @@ COLUMN_MAPPING = {
     'elw_lwpr': 'ELW최저가',
     'apprch_rate': '접근도'
 }
+
+NUMERIC_COLUMNS = [
+    'ELW현재가', '전일대비', '전일대비율', '누적거래량', '레버리지값', '기어링', 
+    '시간가치값', '내재가치값', '패리티', 'ELW시가2', 'ELW최고가', 'ELW최저가', '접근도'
+]
 
 def main():
     """
@@ -63,16 +72,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 투자지표추이(일별) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 시장 분류 코드
-        fid_input_iscd = "57K281"  # 종목코드
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 투자지표추이(일별)")
+        logger.info("API 호출")
         result = indicator_trend_daily(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 시장 분류 코드
-            fid_input_iscd=fid_input_iscd,  # 종목코드
+            fid_cond_mrkt_div_code="W",  # 시장 분류 코드
+            fid_input_iscd="57K281",  # 종목코드
         )
         
         if result is None or result.empty:
@@ -83,9 +87,14 @@ def main():
         logger.info("사용 가능한 컬럼 목록:")
         logger.info(result.columns.tolist())
 
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+        
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
         # 결과 출력
         logger.info("=== ELW 투자지표추이(일별) 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

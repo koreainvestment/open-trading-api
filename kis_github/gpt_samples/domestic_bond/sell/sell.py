@@ -20,6 +20,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 매도주문 [TTTC0958U]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-bond/v1/trading/sell"
 
 def sell(
         cano: str,
@@ -78,7 +84,6 @@ def sell(
         ... )
         >>> print(df)
     """
-    url = "/uapi/domestic-bond/v1/trading/sell"
     tr_id = "TTTC0958U"
 
     params = {
@@ -99,7 +104,7 @@ def sell(
         "CTAC_TLNO": ctac_tlno
     }
 
-    res = ka._url_fetch(api_url=url,
+    res = ka._url_fetch(api_url=API_URL,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -119,5 +124,5 @@ def sell(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

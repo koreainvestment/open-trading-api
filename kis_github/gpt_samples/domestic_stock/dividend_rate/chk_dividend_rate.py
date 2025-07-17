@@ -37,7 +37,7 @@ def main():
     
     Parameters:
         - cts_area (str): CTS_AREA (공백)
-        - gb1 (str): KOSPI (0:전체, 1:코스피,  2: 코스피200, 3: 코스닥,)
+        - gb1 (str): KOSPI (0:전체, 1:코스피,  2: 코스피200, 3: 코스닥)
         - upjong (str): 업종구분 ('코스피(0001:종합, 0002:대형주.…0027:제조업 ),  코스닥(1001:종합, …. 1041:IT부품 코스피200 (2001:KOSPI200, 2007:KOSPI100, 2008:KOSPI50)')
         - gb2 (str): 종목선택 (0:전체, 6:보통주, 7:우선주)
         - gb3 (str): 배당구분 (1:주식배당, 2: 현금배당)
@@ -60,29 +60,17 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 국내주식 배당률 상위 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cts_area = ""  # CTS_AREA
-        gb1 = "0"  # KOSPI
-        upjong = "0001"  # 업종구분
-        gb2 = "0"  # 종목선택
-        gb3 = "1"  # 배당구분
-        f_dt = "20230101"  # 기준일From
-        t_dt = "20231231"  # 기준일To
-        gb4 = "0"  # 결산/중간배당
-
-        # API 호출
-        logger.info("API 호출 시작: 국내주식 배당률 상위")
+        
+        # API 호출        
         result = dividend_rate(
-            cts_area=cts_area,  # CTS_AREA
-            gb1=gb1,  # KOSPI
-            upjong=upjong,  # 업종구분
-            gb2=gb2,  # 종목선택
-            gb3=gb3,  # 배당구분
-            f_dt=f_dt,  # 기준일From
-            t_dt=t_dt,  # 기준일To
-            gb4=gb4,  # 결산/중간배당
+            cts_area="",  # CTS_AREA
+            gb1="0",  # KOSPI
+            upjong="0001",  # 업종구분
+            gb2="0",  # 종목선택
+            gb3="1",  # 배당구분
+            f_dt="20230101",  # 기준일From
+            t_dt="20231231",  # 기준일To
+            gb4="0",  # 결산/중간배당
         )
 
         if result is None or result.empty:

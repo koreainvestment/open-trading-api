@@ -9,6 +9,10 @@ import sys
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
+##############################################################################################
+# [국내주식] 실시간시세 > 국내지수 실시간예상체결 [H0UPANC0]
+##############################################################################################
+
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)

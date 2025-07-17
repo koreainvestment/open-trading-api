@@ -5,8 +5,8 @@ Created on 2025-06-17
 @author: LaivData jjlee with cursor
 """
 
-import sys
 import logging
+import sys
 
 import pandas as pd
 
@@ -17,6 +17,10 @@ from invest_opinion import invest_opinion
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 종목정보 > 국내주식 종목투자의견 [FHKST663300C0]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'stck_bsop_date': '주식영업일자',
@@ -60,24 +64,14 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 국내주식 종목투자의견 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "J"  # 조건시장분류코드
-        fid_cond_scr_div_code = "16633"  # 조건화면분류코드
-        fid_input_iscd = "005930"  # 입력종목코드
-        fid_input_date_1 = "20250101"  # 입력날짜1
-        fid_input_date_2 = "20250617"  # 입력날짜2
-        
-        # API 호출
-        logger.info("API 호출 시작: 국내주식 종목투자의견")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = invest_opinion(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
-            fid_input_date_1=fid_input_date_1,  # 입력날짜1
-            fid_input_date_2=fid_input_date_2,  # 입력날짜2
+            fid_cond_mrkt_div_code="J",  # 조건시장분류코드
+            fid_cond_scr_div_code="16633",  # 조건화면분류코드
+            fid_input_iscd="005930",  # 입력종목코드
+            fid_input_date_1="20250101",  # 입력날짜1
+            fid_input_date_2="20250617",  # 입력날짜2
         )
         
         if result is None or result.empty:

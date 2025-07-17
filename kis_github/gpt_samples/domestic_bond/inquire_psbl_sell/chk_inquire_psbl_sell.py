@@ -18,6 +18,10 @@ from inquire_psbl_sell import inquire_psbl_sell
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 매도가능조회 [TTTC8408R]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'pdno': '상품번호',
     'buy_qty': '매수수량',
@@ -65,18 +69,12 @@ def main():
         # kis_auth 모듈에서 계좌 정보 가져오기
         trenv = ka.getTREnv()
 
-        # 매도가능수량조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 종합계좌번호
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        pdno = "005930"  # 종목번호
-
         # API 호출
         logger.info("API 호출 시작: 매도가능수량조회")
         result = inquire_psbl_sell(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            pdno=pdno,  # 종목번호
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            pdno="005930",  # 종목번호
         )
 
         if result is None or result.empty:

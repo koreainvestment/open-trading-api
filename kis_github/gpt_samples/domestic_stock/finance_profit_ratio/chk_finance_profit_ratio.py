@@ -18,6 +18,11 @@ from finance_profit_ratio import finance_profit_ratio
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 재무정보 수익성비율 [FHKST66430400]
+##############################################################################################
+
+# 통합 컬럼 매핑
 COLUMN_MAPPING = {
     'stac_yymm': '결산 년월',
     'cptl_ntin_rate': '총자본 순이익율',
@@ -52,20 +57,12 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 국내주식 수익성비율 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_input_iscd = "000660"  # 입력 종목코드
-        fid_div_cls_code = "0"  # 분류 구분 코드
-        fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-        
-        # API 호출
-        logger.info("API 호출 시작: 국내주식 수익성비율")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = finance_profit_ratio(
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
-            fid_div_cls_code=fid_div_cls_code,  # 분류 구분 코드
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
+            fid_input_iscd="000660",  # 입력 종목코드
+            fid_div_cls_code="0",  # 분류 구분 코드
+            fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드
         )
         
         if result is None or result.empty:

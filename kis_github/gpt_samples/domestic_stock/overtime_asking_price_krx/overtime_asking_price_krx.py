@@ -13,6 +13,10 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간 > 국내주식 시간외 실시간호가 (KRX) [H0STOAA0]
+##############################################################################################
+
 
 def overtime_asking_price_krx(
         tr_type: str,

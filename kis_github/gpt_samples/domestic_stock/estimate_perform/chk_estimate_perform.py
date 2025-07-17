@@ -67,15 +67,10 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 국내주식 종목추정실적 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        sht_cd = "265520"  # 종목코드
-
-        
         # API 호출
         logger.info("API 호출 시작: 국내주식 종목추정실적")
         result1, result2, result3, result4 = estimate_perform(
-            sht_cd=sht_cd,  # 종목코드
+            sht_cd="265520",  # 종목코드
         )
         
         # 결과 확인

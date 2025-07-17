@@ -53,22 +53,14 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 예탁원정보(의무예치일정) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        t_dt = "20250131"  # 조회일자To
-        sht_cd = ""  # 종목코드
-        f_dt = "20250101"  # 조회일자From
-        cts = ""  # CTS
-        
-        # API 호출
-        logger.info("API 호출 시작: 예탁원정보(의무예치일정)")
+        logger.info("토큰 발급 완료")      
+          
+        # API 호출        
         result = ksdinfo_mand_deposit(
-            t_dt=t_dt,  # 조회일자To
-            sht_cd=sht_cd,  # 종목코드
-            f_dt=f_dt,  # 조회일자From
-            cts=cts,  # CTS
+            t_dt="20250131",  # 조회일자To
+            sht_cd="",  # 종목코드
+            f_dt="20250101",  # 조회일자From
+            cts="",  # CTS
         )
         
         if result is None or result.empty:

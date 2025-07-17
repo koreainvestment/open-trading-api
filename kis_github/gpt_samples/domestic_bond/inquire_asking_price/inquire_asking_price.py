@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 호가잔량 [FHKBJ773401C0]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-bond/v1/quotations/inquire-asking-price"
 
 def inquire_asking_price(
         fid_cond_mrkt_div_code: str,  # 시장 분류 코드
@@ -64,7 +70,6 @@ def inquire_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-bond/v1/quotations/inquire-asking-price"
     tr_id = "FHKBJ773401C0"
 
     params = {
@@ -73,7 +78,7 @@ def inquire_asking_price(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -108,5 +113,5 @@ def inquire_asking_price(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

@@ -18,6 +18,10 @@ from inquire_time_indexchartprice import inquire_time_indexchartprice
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 업종분봉조회 [FHKUP03500200]
+##############################################################################################
+
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
 COLUMN_MAPPING = {
     'Output1': '응답상세',
@@ -78,24 +82,14 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 업종 분봉조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "U"  # FID 조건 시장 분류 코드
-        fid_etc_cls_code = "0"  # FID 기타 구분 코드
-        fid_input_iscd = "0001"  # FID 입력 종목코드
-        fid_input_hour_1 = "60"  # FID 입력 시간1
-        fid_pw_data_incu_yn = "Y"  # FID 과거 데이터 포함 여부
-
         
-        # API 호출
-        logger.info("API 호출 시작: 업종 분봉조회")
+        # API 호출        
         result1, result2 = inquire_time_indexchartprice(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # FID 조건 시장 분류 코드
-            fid_etc_cls_code=fid_etc_cls_code,  # FID 기타 구분 코드
-            fid_input_iscd=fid_input_iscd,  # FID 입력 종목코드
-            fid_input_hour_1=fid_input_hour_1,  # FID 입력 시간1
-            fid_pw_data_incu_yn=fid_pw_data_incu_yn,  # FID 과거 데이터 포함 여부
+            fid_cond_mrkt_div_code="U",  # FID 조건 시장 분류 코드
+            fid_etc_cls_code="0",  # FID 기타 구분 코드
+            fid_input_iscd="0001",  # FID 입력 종목코드
+            fid_input_hour_1="60",  # FID 입력 시간1
+            fid_pw_data_incu_yn="Y",  # FID 과거 데이터 포함 여부
         )
         
         # 결과 확인

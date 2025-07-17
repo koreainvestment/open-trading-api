@@ -22,6 +22,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 시간외잔량 순위[v1_국내주식-093]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ranking/after-hour-balance"
+
 def after_hour_balance(
     fid_input_price_1: str,  # 입력 가격1
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -103,7 +110,7 @@ def after_hour_balance(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    url = "/uapi/domestic-stock/v1/ranking/after-hour-balance"
+
     tr_id = "FHPST01760000"
 
     # API 요청 파라미터 설정
@@ -121,7 +128,7 @@ def after_hour_balance(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     # API 호출 성공 시 데이터 처리
     if res.isOK():
@@ -162,5 +169,5 @@ def after_hour_balance(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

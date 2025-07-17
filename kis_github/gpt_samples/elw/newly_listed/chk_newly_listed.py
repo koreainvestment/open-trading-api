@@ -18,9 +18,11 @@ from newly_listed import newly_listed
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 신규상장종목[국내주식-181]
+##############################################################################################
+
 COLUMN_MAPPING = {
-    'stck_lstn_date': '주식상장일자',
-    'elw_kor_isnm': 'ELW한글종목명',
     'elw_shrn_iscd': 'ELW단축종목코드',
     'unas_isnm': '기초자산종목명',
     'lstn_stcn': '상장주수',
@@ -28,6 +30,10 @@ COLUMN_MAPPING = {
     'stck_last_tr_date': '주식최종거래일자',
     'elw_ko_barrier': '조기종료발생기준가격'
 }
+
+NUMERIC_COLUMNS = [
+    '상장주수', '행사가'
+]
 
 def main():
     """
@@ -61,26 +67,16 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 신규상장종목 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_cond_scr_div_code = "11548"  # 조건화면분류코드
-        fid_div_cls_code = "02"  # 분류구분코드
-        fid_unas_input_iscd = "000000"  # 기초자산입력종목코드
-        fid_input_iscd_2 = "00003"  # 입력종목코드2
-        fid_input_date_1 = "20250601"  # 입력날짜1
-        fid_blng_cls_code = "0"  # 결재방법
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 신규상장종목")
+        logger.info("API 호출")
         result = newly_listed(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_div_cls_code=fid_div_cls_code,  # 분류구분코드
-            fid_unas_input_iscd=fid_unas_input_iscd,  # 기초자산입력종목코드
-            fid_input_iscd_2=fid_input_iscd_2,  # 입력종목코드2
-            fid_input_date_1=fid_input_date_1,  # 입력날짜1
-            fid_blng_cls_code=fid_blng_cls_code,  # 결재방법
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_cond_scr_div_code="11548",  # 조건화면분류코드
+            fid_div_cls_code="02",  # 분류구분코드
+            fid_unas_input_iscd="000000",  # 기초자산입력종목코드
+            fid_input_iscd_2="00003",  # 입력종목코드2
+            fid_input_date_1="20250601",  # 입력날짜1
+            fid_blng_cls_code="0",  # 결제방법
         )
         
         if result is None or result.empty:
@@ -93,6 +89,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 신규상장종목 결과 ===")

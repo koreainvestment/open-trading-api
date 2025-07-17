@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-06-18
 
@@ -18,11 +17,16 @@ from compare_stocks import compare_stocks
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 비교대상종목조회[국내주식-183]
+##############################################################################################
+
 COLUMN_MAPPING = {
-    'output1': '응답상세',
     'elw_shrn_iscd': 'ELW단축종목코드',
     'elw_kor_isnm': 'ELW한글종목명'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -51,17 +55,9 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 비교대상종목조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_scr_div_code = "11517"  # 조건화면분류코드
-        fid_input_iscd = "005930"  # 입력종목코드
-        
-        # API 호출
-        logger.info("API 호출 시작: ELW 비교대상종목조회")
-        result = compare_stocks(
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
-        )
+        # 인라인 코드로 파라미터 직접 전달
+        logger.info("API 호출 ")
+        result = compare_stocks(fid_cond_scr_div_code="11517", fid_input_iscd="005930")
         
         if result is None or result.empty:
             logger.warning("조회된 데이터가 없습니다.")
@@ -74,6 +70,11 @@ def main():
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
         
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+                
         # 결과 출력
         logger.info("=== ELW 비교대상종목조회 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

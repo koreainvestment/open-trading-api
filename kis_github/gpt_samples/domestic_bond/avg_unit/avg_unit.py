@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 평균단가조회 [국내채권-158]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-bond/v1/quotations/avg-unit"
 
 def avg_unit(
         inqr_strt_dt: str,  # 조회시작일자
@@ -100,7 +106,6 @@ def avg_unit(
             dataframe3 if dataframe3 is not None else pd.DataFrame()
         )
 
-    url = "/uapi/domestic-bond/v1/quotations/avg-unit"
     tr_id = "CTPF2005R"
 
     params = {
@@ -113,7 +118,7 @@ def avg_unit(
         "CTX_AREA_FK100": ctx_area_fk100,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # 연속조회 정보 업데이트

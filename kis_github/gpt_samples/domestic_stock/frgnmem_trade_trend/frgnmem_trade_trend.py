@@ -19,6 +19,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 외국인기관매매동향 [FHKST644200C0]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend"
 
 def frgnmem_trade_trend(
         fid_cond_scr_div_code: str,  # 화면분류코드
@@ -88,7 +94,6 @@ def frgnmem_trade_trend(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend"
     tr_id = "FHPST04320000"
 
     params = {
@@ -100,7 +105,7 @@ def frgnmem_trade_trend(
         "FID_VOL_CNT": fid_vol_cnt,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -163,5 +168,5 @@ def frgnmem_trade_trend(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

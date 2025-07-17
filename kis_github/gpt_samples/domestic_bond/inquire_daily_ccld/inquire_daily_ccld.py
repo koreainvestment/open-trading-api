@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 일별체결조회 [CTSC8013R]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-bond/v1/trading/inquire-daily-ccld"
 
 def inquire_daily_ccld(
         cano: str,  # 종합계좌번호
@@ -108,7 +114,6 @@ def inquire_daily_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-bond/v1/trading/inquire-daily-ccld"
     tr_id = "CTSC8013R"
 
     params = {
@@ -124,7 +129,7 @@ def inquire_daily_ccld(
         "CTX_AREA_FK200": ctx_area_fk200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -192,5 +197,5 @@ def inquire_daily_ccld(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

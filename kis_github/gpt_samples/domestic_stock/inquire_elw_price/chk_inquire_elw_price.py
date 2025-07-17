@@ -84,7 +84,6 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 실전/모의투자 선택 (모의투자 지원 로직)
-        env_dv = "real"  # "real": 실전투자, "demo": 모의투자
         logger.info("투자 환경: %s", "실전투자" if env_dv == "real" else "모의투자")
 
         # 토큰 발급 (모의투자 지원 로직)
@@ -93,19 +92,12 @@ def main():
             ka.auth(svr='prod')  # 실전투자용 토큰
         elif env_dv == "demo":
             ka.auth(svr='vps')   # 모의투자용 토큰
-        logger.info("토큰 발급 완료")
-
-        # ELW 현재가 시세 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # FID 조건 시장 분류 코드
-        fid_input_iscd = "57LA50"  # FID 입력 종목코드
-        
-        # API 호출
-        logger.info("API 호출 시작: ELW 현재가 시세 (%s)", "실전투자" if env_dv == "real" else "모의투자")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = inquire_elw_price(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # FID 조건 시장 분류 코드
-            fid_input_iscd=fid_input_iscd,  # FID 입력 종목코드
-            env_dv=env_dv,  #실전모의구분
+            fid_cond_mrkt_div_code="W",  # FID 조건 시장 분류 코드
+            fid_input_iscd="57LA50",  # FID 입력 종목코드
+            env_dv="real",  # "real": 실전투자, "demo": 모의투자,  #실전모의구분
         )
         
         if result is None or result.empty:

@@ -21,6 +21,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 기초자산별 종목시세[국내주식-186]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/elw/v1/quotations/udrl-asset-price"
+
 def udrl_asset_price(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
     fid_cond_scr_div_code: str,  # 조건화면분류코드
@@ -132,7 +139,6 @@ def udrl_asset_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/elw/v1/quotations/udrl-asset-price"
     tr_id = "FHKEW154101C0"
 
     params = {
@@ -155,7 +161,7 @@ def udrl_asset_price(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -200,5 +206,5 @@ def udrl_asset_price(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

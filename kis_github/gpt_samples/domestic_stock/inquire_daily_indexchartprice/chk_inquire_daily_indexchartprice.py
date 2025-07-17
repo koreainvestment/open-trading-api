@@ -18,6 +18,10 @@ from inquire_daily_indexchartprice import inquire_daily_indexchartprice
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식기간별시세(일/주/월/년) [FHKUP03500100]
+##############################################################################################
+
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
 COLUMN_MAPPING = {
     'bstp_nmix_prdy_vrss': '업종 지수 전일 대비',
@@ -75,7 +79,6 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 실전/모의투자 선택 (모의투자 지원 로직)
-        env_dv = "real"  # "real": 실전투자, "demo": 모의투자
         logger.info("투자 환경: %s", "실전투자" if env_dv == "real" else "모의투자")
 
         # 토큰 발급 (모의투자 지원 로직)
@@ -85,25 +88,15 @@ def main():
         elif env_dv == "demo":
             ka.auth(svr='vps')   # 모의투자용 토큰
         logger.info("토큰 발급 완료")
-
-        # 국내주식업종기간별시세(일_주_월_년) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "U"  # 조건 시장 분류 코드
-        fid_input_iscd = "0001"  # 업종 상세코드
-        fid_input_date_1 = "20250101"  # 조회 시작일자
-        fid_input_date_2 = "20250131"  # 조회 종료일자
-        fid_period_div_code = "D"  # 기간분류코드
-
         
-        # API 호출 (모의투자 지원 로직)
-        logger.info("API 호출 시작: 국내주식업종기간별시세(일_주_월_년) (%s)", "실전투자" if env_dv == "real" else "모의투자")
+        # API 호출 (모의투자 지원 로직)        
         result1, result2 = inquire_daily_indexchartprice(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
-            fid_input_iscd=fid_input_iscd,  # 업종 상세코드
-            fid_input_date_1=fid_input_date_1,  # 조회 시작일자
-            fid_input_date_2=fid_input_date_2,  # 조회 종료일자
-            fid_period_div_code=fid_period_div_code,  # 기간분류코드
-            env_dv=env_dv,  # [추가] 실전모의구분
+            fid_cond_mrkt_div_code="U",  # 조건 시장 분류 코드
+            fid_input_iscd="0001",  # 업종 상세코드
+            fid_input_date_1="20250101",  # 조회 시작일자
+            fid_input_date_2="20250131",  # 조회 종료일자
+            fid_period_div_code="D",  # 기간분류코드
+            env_dv="real",  # "real": 실전투자, "demo": 모의투자,  # [추가] 실전모의구분
         )
         
         # 결과 확인

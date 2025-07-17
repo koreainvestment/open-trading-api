@@ -18,6 +18,10 @@ from volatility_trend_minute import volatility_trend_minute
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 변동성 추이(분별)[국내주식-179]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stck_bsop_date': '주식 영업 일자',
     'stck_cntg_hour': '주식 체결 시간',
@@ -28,6 +32,10 @@ COLUMN_MAPPING = {
     'hts_ints_vltl': 'HTS 내재 변동성',
     'hist_vltl': '역사적 변동성'
 }
+
+NUMERIC_COLUMNS = [
+    '주식 현재가', 'ELW 시가2', 'ELW 최고가', 'ELW 최저가', 'HTS 내재 변동성', '역사적 변동성'
+]
 
 def main():
     """
@@ -58,20 +66,13 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 변동성 추이(분별) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_input_iscd = "57LA50"  # 입력종목코드
-        fid_hour_cls_code = "60"  # 시간구분코드
-        fid_pw_data_incu_yn = "N"  # 과거데이터 포함 여부
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 변동성 추이(분별)")
+        logger.info("API 호출")
         result = volatility_trend_minute(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
-            fid_hour_cls_code=fid_hour_cls_code,  # 시간구분코드
-            fid_pw_data_incu_yn=fid_pw_data_incu_yn,  # 과거데이터 포함 여부
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_input_iscd="57LA50",  # 입력종목코드
+            fid_hour_cls_code="60",  # 시간구분코드
+            fid_pw_data_incu_yn="N",  # 과거데이터 포함 여부
         )
         
         if result is None or result.empty:
@@ -84,6 +85,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 변동성 추이(분별) 결과 ===")

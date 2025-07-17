@@ -18,6 +18,10 @@ from sell import sell
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 매도주문 [TTTC0958U]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'KRX_FWDG_ORD_ORGNO': '한국거래소전송주문조직번호',
     'ODNO': '주문번호',
@@ -70,43 +74,24 @@ def main():
         # kis_auth 모듈에서 계좌 정보 가져오기
         trenv = ka.getTREnv()
 
-        # 장내채권 매도주문 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-
-        cano = trenv.my_acct  # 종합계좌번호
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        ord_dvsn = "01"  # 주문구분
-        pdno = "KR103502GA34"  # 상품번호
-        ord_qty2 = "1"  # 주문수량
-        bond_ord_unpr = "10000.0"  # 채권주문단가
-        sprx_yn = "N"  # 분리과세여부
-        buy_dt = ""  # 매수일자
-        buy_seq = ""  # 매수순번
-        samt_mket_ptci_yn = "N"  # 소액시장참여여부
-        sll_agco_opps_sll_yn = "N"  # 매도대행사반대매도여부
-        bond_rtl_mket_yn = "N"  # 채권소매시장여부
-        mgco_aptm_odno = ""  # 운용사지정주문번호
-        ord_svr_dvsn_cd = "0"  # 주문서버구분코드
-        ctac_tlno = ""  # 연락전화번호
-
         # API 호출
         logger.info("API 호출 시작: 장내채권 매도주문")
         result = sell(
-            cano=cano,
-            acnt_prdt_cd=acnt_prdt_cd,
-            ord_dvsn=ord_dvsn,
-            pdno=pdno,
-            ord_qty2=ord_qty2,
-            bond_ord_unpr=bond_ord_unpr,
-            sprx_yn=sprx_yn,
-            buy_dt=buy_dt,
-            buy_seq=buy_seq,
-            samt_mket_ptci_yn=samt_mket_ptci_yn,
-            sll_agco_opps_sll_yn=sll_agco_opps_sll_yn,
-            bond_rtl_mket_yn=bond_rtl_mket_yn,
-            mgco_aptm_odno=mgco_aptm_odno,
-            ord_svr_dvsn_cd=ord_svr_dvsn_cd,
-            ctac_tlno=ctac_tlno,
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            ord_dvsn="01",  # 주문구분
+            pdno="KR103502GA34",  # 상품번호
+            ord_qty2="1",  # 주문수량
+            bond_ord_unpr="10000.0",  # 채권주문단가
+            sprx_yn="N",  # 분리과세여부
+            buy_dt="",  # 매수일자
+            buy_seq="",  # 매수순번
+            samt_mket_ptci_yn="N",  # 소액시장참여여부
+            sll_agco_opps_sll_yn="N",  # 매도대행사반대매도여부
+            bond_rtl_mket_yn="N",  # 채권소매시장여부
+            mgco_aptm_odno="",  # 운용사지정주문번호
+            ord_svr_dvsn_cd="0",  # 주문서버구분코드
+            ctac_tlno="",  # 연락전화번호
         )
 
         if result is None or result.empty:

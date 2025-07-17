@@ -16,6 +16,10 @@ from bond_asking_price import bond_asking_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 실시간정보 > 일반채권 실시간호가 [H0BJCNT0]
+##############################################################################################
+
 
 def main():
     """

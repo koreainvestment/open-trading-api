@@ -3,11 +3,10 @@ Created on 20250112
 @author: LaivData SJPark with cursor
 """
 
-
+import logging
 import sys
 import time
 from typing import Optional
-import logging
 
 import pandas as pd
 
@@ -17,6 +16,8 @@ import kis_auth as ka
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 
+##############################################################################################
+# [국내주식] 주문/계좌 > 퇴직연금 일일체결내역조회 [TTTC2201R]
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 미체결내역[v1_국내주식-033]
 ##############################################################################################

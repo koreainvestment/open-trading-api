@@ -21,6 +21,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 시간외등락율순위 [FHPST02340000]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ranking/overtime-fluctuation"
+
 def overtime_fluctuation(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
     fid_mrkt_cls_code: str,  # 시장 구분 코드
@@ -98,7 +105,7 @@ def overtime_fluctuation(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/domestic-stock/v1/ranking/overtime-fluctuation"
+
     tr_id = "FHPST02340000"
 
     params = {
@@ -114,7 +121,7 @@ def overtime_fluctuation(
         "FID_TRGT_EXLS_CLS_CODE": fid_trgt_exls_cls_code,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -162,5 +169,5 @@ def overtime_fluctuation(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

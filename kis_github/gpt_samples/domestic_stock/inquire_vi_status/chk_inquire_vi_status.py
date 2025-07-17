@@ -67,30 +67,17 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 변동성완화장치(VI) 현황 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_div_cls_code = "0"  # FID 분류 구분 코드
-        fid_cond_scr_div_code = "20139"  # FID 조건 화면 분류 코드
-        fid_mrkt_cls_code = "0"  # FID 시장 구분 코드
-        fid_input_iscd = ""  # FID 입력 종목코드
-        fid_rank_sort_cls_code = "0"  # FID 순위 정렬 구분 코드
-        fid_input_date_1 = "20200420"  # FID 입력 날짜1
-        fid_trgt_cls_code = "0"  # FID 대상 구분 코드
-        fid_trgt_exls_cls_code = ""  # FID 대상 제외 구분 코드
-        
-        # API 호출
-        logger.info("API 호출 시작: 변동성완화장치(VI) 현황")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = inquire_vi_status(
-            fid_div_cls_code=fid_div_cls_code,  # FID 분류 구분 코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # FID 조건 화면 분류 코드
-            fid_mrkt_cls_code=fid_mrkt_cls_code,  # FID 시장 구분 코드
-            fid_input_iscd=fid_input_iscd,  # FID 입력 종목코드
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # FID 순위 정렬 구분 코드
-            fid_input_date_1=fid_input_date_1,  # FID 입력 날짜1
-            fid_trgt_cls_code=fid_trgt_cls_code,  # FID 대상 구분 코드
-            fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,  # FID 대상 제외 구분 코드
+            fid_div_cls_code="0",  # FID 분류 구분 코드
+            fid_cond_scr_div_code="20139",  # FID 조건 화면 분류 코드
+            fid_mrkt_cls_code="0",  # FID 시장 구분 코드
+            fid_input_iscd="",  # FID 입력 종목코드
+            fid_rank_sort_cls_code="0",  # FID 순위 정렬 구분 코드
+            fid_input_date_1="20200420",  # FID 입력 날짜1
+            fid_trgt_cls_code="0",  # FID 대상 구분 코드
+            fid_trgt_exls_cls_code="",  # FID 대상 제외 구분 코드
         )
         
         if result is None or result.empty:

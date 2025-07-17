@@ -69,38 +69,23 @@ def main():
     pd.set_option('display.max_rows', None)  # 모든 행 표시
 
     # 토큰 발급
-    ka.auth()
-
-    # 국내주식 재무비율 순위 파라미터 설정
-    fid_trgt_cls_code = "0"  # 대상 구분 코드
-    fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-    fid_cond_scr_div_code = "20175"  # 조건 화면 분류 코드
-    fid_input_iscd = "0000"  # 입력 종목코드
-    fid_div_cls_code = "0"  # 분류 구분 코드
-    fid_input_price_1 = ""  # 입력 가격1
-    fid_input_price_2 = ""  # 입력 가격2
-    fid_vol_cnt = ""  # 거래량 수
-    fid_input_option_1 = "2023"  # 입력 옵션1
-    fid_input_option_2 = "3"  # 입력 옵션2
-    fid_rank_sort_cls_code = "7"  # 순위 정렬 구분 코드
-    fid_blng_cls_code = "0"  # 소속 구분 코드
-    fid_trgt_exls_cls_code = "0"  # 대상 제외 구분 코드
+    ka.auth()    
     
     # API 호출
     result = finance_ratio(
-        fid_trgt_cls_code=fid_trgt_cls_code,
-        fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,
-        fid_cond_scr_div_code=fid_cond_scr_div_code,
-        fid_input_iscd=fid_input_iscd,
-        fid_div_cls_code=fid_div_cls_code,
-        fid_input_price_1=fid_input_price_1,
-        fid_input_price_2=fid_input_price_2,
-        fid_vol_cnt=fid_vol_cnt,
-        fid_input_option_1=fid_input_option_1,
-        fid_input_option_2=fid_input_option_2,
-        fid_rank_sort_cls_code=fid_rank_sort_cls_code,
-        fid_blng_cls_code=fid_blng_cls_code,
-        fid_trgt_exls_cls_code=fid_trgt_exls_cls_code
+        fid_trgt_cls_code="0",  # 대상 구분 코드,
+        fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드,
+        fid_cond_scr_div_code="20175",  # 조건 화면 분류 코드,
+        fid_input_iscd="0000",  # 입력 종목코드,
+        fid_div_cls_code="0",  # 분류 구분 코드,
+        fid_input_price_1="",  # 입력 가격1,
+        fid_input_price_2="",  # 입력 가격2,
+        fid_vol_cnt="",  # 거래량 수,
+        fid_input_option_1="2023",  # 입력 옵션1,
+        fid_input_option_2="3",  # 입력 옵션2,
+        fid_rank_sort_cls_code="7",  # 순위 정렬 구분 코드,
+        fid_blng_cls_code="0",  # 소속 구분 코드,
+        fid_trgt_exls_cls_code="0",  # 대상 제외 구분 코드
     )
     
     # 컬럼명 출력

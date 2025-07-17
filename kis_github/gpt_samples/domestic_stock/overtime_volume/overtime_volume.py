@@ -8,9 +8,9 @@ Created on 2025-06-17
 """
 
 import logging
+import sys
 import time
 from typing import Optional, Tuple
-import sys
 
 import pandas as pd
 
@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 조건검색 > 국내주식 시간외거래량순위[국내주식-139]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ranking/overtime-volume"
 
 def overtime_volume(
         fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -99,7 +105,7 @@ def overtime_volume(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
-    url = "/uapi/domestic-stock/v1/ranking/overtime-volume"
+
     tr_id = "FHPST02350000"
 
     params = {
@@ -114,7 +120,7 @@ def overtime_volume(
         "FID_TRGT_EXLS_CLS_CODE": fid_trgt_exls_cls_code,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -163,5 +169,5 @@ def overtime_volume(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

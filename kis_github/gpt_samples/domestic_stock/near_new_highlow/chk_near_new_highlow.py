@@ -5,6 +5,7 @@ Created on 2025-06-13
 @author: LaivData jjlee with cursor
 """
 
+import logging
 import sys
 
 import pandas as pd
@@ -12,6 +13,14 @@ import pandas as pd
 sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
 import kis_auth as ka
 from near_new_highlow import near_new_highlow
+
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 조건검색 > 국내주식 신고/신저근접종목 상위 [FHPST01870000]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'hts_kor_isnm': 'HTS 한글 종목명',
@@ -66,35 +75,22 @@ def main():
     # 토큰 발급
     ka.auth()
 
-    # 국내주식 신고_신저근접종목 상위 파라미터 설정
-    fid_aply_rang_vol = "100"  # 적용 범위 거래량
-    fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-    fid_cond_scr_div_code = "20187"  # 조건 화면 분류 코드
-    fid_div_cls_code = "0"  # 분류 구분 코드
-    fid_input_cnt_1 = "0"  # 입력 수1
-    fid_input_cnt_2 = "10"  # 입력 수2
-    fid_prc_cls_code = "0"  # 가격 구분 코드
-    fid_input_iscd = "0000"  # 입력 종목코드
-    fid_trgt_cls_code = "0"  # 대상 구분 코드
-    fid_trgt_exls_cls_code = "0"  # 대상 제외 구분 코드
-    fid_aply_rang_prc_1 = "10000"  # 적용 범위 가격1
-    fid_aply_rang_prc_2 = "50000"  # 적용 범위 가격2
-    
+    # 국내주식 신고_신저근접종목 상위 파라미터 설정    
     # API 호출
     result = near_new_highlow(
-        fid_aply_rang_vol=fid_aply_rang_vol,
-        fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,
-        fid_cond_scr_div_code=fid_cond_scr_div_code,
-        fid_div_cls_code=fid_div_cls_code,
-        fid_input_cnt_1=fid_input_cnt_1,
-        fid_input_cnt_2=fid_input_cnt_2,
-        fid_prc_cls_code=fid_prc_cls_code,
-        fid_input_iscd=fid_input_iscd,
-        fid_trgt_cls_code=fid_trgt_cls_code,
-        fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,
-        fid_aply_rang_prc_1=fid_aply_rang_prc_1,
-        fid_aply_rang_prc_2=fid_aply_rang_prc_2
-    )
+        fid_aply_rang_vol="100",  # 적용 범위 거래량
+        fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드 
+        fid_cond_scr_div_code="20187",  # 조건 화면 분류 코드 
+        fid_div_cls_code="0",  # 분류 구분 코드 
+        fid_input_cnt_1="0",  # 입력 수1 
+        fid_input_cnt_2="10",  # 입력 수2 
+        fid_prc_cls_code="0",  # 가격 구분 코드 
+        fid_input_iscd="0000",  # 입력 종목코드 
+        fid_trgt_cls_code="0",  # 대상 구분 코드 
+        fid_trgt_exls_cls_code="0",  # 대상 제외 구분 코드 
+        fid_aply_rang_prc_1="10000",  # 적용 범위 가격1 
+        fid_aply_rang_prc_2="50000",  # 적용 범위 가격2
+        )
     
     # 컬럼명 출력
     print("\n=== 사용 가능한 컬럼 목록 ===")

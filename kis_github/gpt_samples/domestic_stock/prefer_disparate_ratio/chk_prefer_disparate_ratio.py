@@ -18,6 +18,11 @@ from prefer_disparate_ratio import prefer_disparate_ratio
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 우선주비율 [FHPST01770000]
+##############################################################################################
+
+# 통합 컬럼 매핑
 COLUMN_MAPPING = {
     'mksc_shrn_iscd': '유가증권 단축 종목코드',
     'data_rank': '데이터 순위',
@@ -70,32 +75,18 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 국내주식 우선주_괴리율 상위 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_vol_cnt = "1000"  # 거래량 수
-        fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-        fid_cond_scr_div_code = "20177"  # 조건 화면 분류 코드
-        fid_div_cls_code = "0"  # 분류 구분 코드
-        fid_input_iscd = "0000"  # 입력 종목코드
-        fid_trgt_cls_code = "0"  # 대상 구분 코드
-        fid_trgt_exls_cls_code = "0"  # 대상 제외 구분 코드
-        fid_input_price_1 = "10000"  # 입력 가격1
-        fid_input_price_2 = "50000"  # 입력 가격2
-        
-        # API 호출
-        logger.info("API 호출 시작: 국내주식 우선주_괴리율 상위")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = prefer_disparate_ratio(
-            fid_vol_cnt=fid_vol_cnt,  # 거래량 수
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건 화면 분류 코드
-            fid_div_cls_code=fid_div_cls_code,  # 분류 구분 코드
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
-            fid_trgt_cls_code=fid_trgt_cls_code,  # 대상 구분 코드
-            fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,  # 대상 제외 구분 코드
-            fid_input_price_1=fid_input_price_1,  # 입력 가격1
-            fid_input_price_2=fid_input_price_2,  # 입력 가격2
+            fid_vol_cnt="1000",  # 거래량 수
+            fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드
+            fid_cond_scr_div_code="20177",  # 조건 화면 분류 코드
+            fid_div_cls_code="0",  # 분류 구분 코드
+            fid_input_iscd="0000",  # 입력 종목코드
+            fid_trgt_cls_code="0",  # 대상 구분 코드
+            fid_trgt_exls_cls_code="0",  # 대상 제외 구분 코드
+            fid_input_price_1="10000",  # 입력 가격1
+            fid_input_price_2="50000",  # 입력 가격2
         )
         
         if result is None or result.empty:

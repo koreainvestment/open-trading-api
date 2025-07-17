@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식업종기간별시세(일_주_월_년)[v1_국내주식-021]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice"
 
 def inquire_daily_indexchartprice(
         fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -108,7 +114,7 @@ def inquire_daily_indexchartprice(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     # API 호출 URL 설정
-    url = "/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice"
+
 
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real" or env_dv == "demo":
@@ -125,7 +131,7 @@ def inquire_daily_indexchartprice(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -173,5 +179,5 @@ def inquire_daily_indexchartprice(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

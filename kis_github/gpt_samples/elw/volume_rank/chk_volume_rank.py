@@ -18,6 +18,10 @@ from volume_rank import volume_rank
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 거래량순위[국내주식-168]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'elw_kor_isnm': 'ELW한글종목명',
     'elw_shrn_iscd': 'ELW단축종목코드',
@@ -62,6 +66,14 @@ COLUMN_MAPPING = {
     'lp_ntby_qty': 'LP순매도량'
 }
 
+NUMERIC_COLUMNS = [
+    'ELW현재가', '전일대비', '전일대비율', '상장주수', '누적거래량', 'N전일거래량', 'N전일거래량대비',
+    '거래량증가율', '거래량회전율', 'N일거래량회전율', '누적거래대금', 'N전일거래대금', 'N전일거래대금대비',
+    '총매도호가잔량', '총매수호가잔량', '순매도잔량', '순매수잔량', '매도잔량비율', '매수2잔량비율',
+    '주식전환비율', 'HTS잔존일수', '내재가치값', '시간가치값', '행사가', '전일거래량', 'LP보유비율',
+    '패리티', '손익분기주가가격', '델타값', '세타', '손익분기비율', 'HTS내재변동성', '레버리지값', 'LP순매도량'
+]
+
 def main():
     """
     [국내주식] ELW시세
@@ -102,42 +114,24 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 거래량순위 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_cond_scr_div_code = "20278"  # 조건화면분류코드
-        fid_unas_input_iscd = "000000"  # 기초자산입력종목코드
-        fid_input_iscd = "00000"  # 발행사
-        fid_input_rmnn_dynu_1 = "0"  # 입력잔존일수
-        fid_div_cls_code = "0"  # 콜풋구분코드
-        fid_input_price_1 = ""  # 가격(이상)
-        fid_input_price_2 = ""  # 가격(이하)
-        fid_input_vol_1 = ""  # 거래량(이상)
-        fid_input_vol_2 = ""  # 거래량(이하)
-        fid_input_date_1 = ""  # 조회기준일
-        fid_rank_sort_cls_code = "0"  # 순위정렬구분코드
-        fid_blng_cls_code = "0"  # 소속구분코드
-        fid_input_iscd_2 = "0000"  # LP발행사
-        fid_input_date_2 = ""  # 만기일-최종거래일조회
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 거래량순위")
+        logger.info("API 호출")
         result = volume_rank(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_unas_input_iscd=fid_unas_input_iscd,  # 기초자산입력종목코드
-            fid_input_iscd=fid_input_iscd,  # 발행사
-            fid_input_rmnn_dynu_1=fid_input_rmnn_dynu_1,  # 입력잔존일수
-            fid_div_cls_code=fid_div_cls_code,  # 콜풋구분코드
-            fid_input_price_1=fid_input_price_1,  # 가격(이상)
-            fid_input_price_2=fid_input_price_2,  # 가격(이하)
-            fid_input_vol_1=fid_input_vol_1,  # 거래량(이상)
-            fid_input_vol_2=fid_input_vol_2,  # 거래량(이하)
-            fid_input_date_1=fid_input_date_1,  # 조회기준일
-            fid_rank_sort_cls_code=fid_rank_sort_cls_code,  # 순위정렬구분코드
-            fid_blng_cls_code=fid_blng_cls_code,  # 소속구분코드
-            fid_input_iscd_2=fid_input_iscd_2,  # LP발행사
-            fid_input_date_2=fid_input_date_2,  # 만기일-최종거래일조회
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_cond_scr_div_code="20278",  # 조건화면분류코드
+            fid_unas_input_iscd="000000",  # 기초자산입력종목코드
+            fid_input_iscd="00000",  # 발행사
+            fid_input_rmnn_dynu_1="0",  # 입력잔존일수
+            fid_div_cls_code="0",  # 콜풋구분코드
+            fid_input_price_1="",  # 가격(이상)
+            fid_input_price_2="",  # 가격(이하)
+            fid_input_vol_1="",  # 거래량(이상)
+            fid_input_vol_2="",  # 거래량(이하)
+            fid_input_date_1="",  # 조회기준일
+            fid_rank_sort_cls_code="0",  # 순위정렬구분코드
+            fid_blng_cls_code="0",  # 소속구분코드
+            fid_input_iscd_2="0000",  # LP발행사
+            fid_input_date_2="",  # 만기일-최종거래일조회
         )
         
         if result is None or result.empty:
@@ -150,6 +144,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 거래량순위 결과 ===")

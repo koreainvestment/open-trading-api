@@ -14,6 +14,10 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 실시간예상체결[H0EWANC0]
+##############################################################################################
+
 def elw_exp_ccnl(
         tr_type: str,
         tr_key: str,

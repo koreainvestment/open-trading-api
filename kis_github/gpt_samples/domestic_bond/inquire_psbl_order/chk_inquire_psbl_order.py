@@ -18,6 +18,10 @@ from inquire_psbl_order import inquire_psbl_order
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 매수가능조회 [TTTC8910R]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'ord_psbl_cash': '주문가능현금',
     'ord_psbl_sbst': '주문가능대용',
@@ -61,20 +65,13 @@ def main():
         # kis_auth 모듈에서 계좌 정보 가져오기
         trenv = ka.getTREnv()
 
-        # 장내채권 매수가능조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 종합계좌번호
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        pdno = "KR2033022D33"  # 채권종목코드(ex KR2033022D33)
-        bond_ord_unpr = "1000"  # 채권주문단가
-
         # API 호출
         logger.info("API 호출 시작: 장내채권 매수가능조회")
         result = inquire_psbl_order(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            pdno=pdno,  # 상품번호
-            bond_ord_unpr=bond_ord_unpr,  # 채권주문단가
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            pdno="KR2033022D33",  # 채권종목코드(ex KR2033022D33)
+            bond_ord_unpr="1000",  # 채권주문단가
         )
 
         if result is None or result.empty:

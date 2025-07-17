@@ -61,24 +61,15 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 예탁원정보(유상증자일정) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cts = ""  # CTS
-        gb1 = "1"  # 조회구분
-        f_dt = "20230301"  # 조회일자From
-        t_dt = "20240326"  # 조회일자To
-        sht_cd = ""  # 종목코드
+        logger.info("토큰 발급 완료")        
         
-        # API 호출
-        logger.info("API 호출 시작: 예탁원정보(유상증자일정)")
+        # API 호출        
         result = ksdinfo_paidin_capin(
-            cts=cts,  # CTS
-            gb1=gb1,  # 조회구분
-            f_dt=f_dt,  # 조회일자From
-            t_dt=t_dt,  # 조회일자To
-            sht_cd=sht_cd,  # 종목코드
+            cts="",  # CTS
+            gb1="1",  # 조회구분
+            f_dt="20230301",  # 조회일자From
+            t_dt="20240326",  # 조회일자To
+            sht_cd="",  # 종목코드
         )
         
         if result is None or result.empty:

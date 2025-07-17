@@ -5,8 +5,8 @@ Created on 2025-06-16
 @author: LaivData jjlee with cursor
 """
 
-import sys
 import logging
+import sys
 
 import pandas as pd
 
@@ -17,6 +17,10 @@ from short_sale import short_sale
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 조건검색 > 국내주식 공매도 상위종목 [FHPST04820000]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'mksc_shrn_iscd': '유가증권 단축 종목코드',
@@ -69,34 +73,19 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 국내주식 공매도 상위종목 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_aply_rang_vol = ""  # FID 적용 범위 거래량
-        fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-        fid_cond_scr_div_code = "20482"  # 조건 화면 분류 코드
-        fid_input_iscd = "0000"  # 입력 종목코드
-        fid_period_div_code = "D"  # 조회구분 (일/월)
-        fid_input_cnt_1 = "0"  # 조회가간(일수
-        fid_trgt_exls_cls_code = ""  # 대상 제외 구분 코드
-        fid_trgt_cls_code = ""  # FID 대상 구분 코드
-        fid_aply_rang_prc_1 = "0"  # FID 적용 범위 가격1
-        fid_aply_rang_prc_2 = "1000000"  # FID 적용 범위 가격2
-        
-        # API 호출
-        logger.info("API 호출 시작: 국내주식 공매도 상위종목")
+        logger.info("토큰 발급 완료")        
+        # API 호출        
         result = short_sale(
-            fid_aply_rang_vol=fid_aply_rang_vol,  # FID 적용 범위 거래량
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건 화면 분류 코드
-            fid_input_iscd=fid_input_iscd,  # 입력 종목코드
-            fid_period_div_code=fid_period_div_code,  # 조회구분 (일/월)
-            fid_input_cnt_1=fid_input_cnt_1,  # 조회가간(일수
-            fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,  # 대상 제외 구분 코드
-            fid_trgt_cls_code=fid_trgt_cls_code,  # FID 대상 구분 코드
-            fid_aply_rang_prc_1=fid_aply_rang_prc_1,  # FID 적용 범위 가격1
-            fid_aply_rang_prc_2=fid_aply_rang_prc_2,  # FID 적용 범위 가격2
+            fid_aply_rang_vol="",  # FID 적용 범위 거래량
+            fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드
+            fid_cond_scr_div_code="20482",  # 조건 화면 분류 코드
+            fid_input_iscd="0000",  # 입력 종목코드
+            fid_period_div_code="D",  # 조회구분 (일/월)
+            fid_input_cnt_1="0",  # 조회가간(일수
+            fid_trgt_exls_cls_code="",  # 대상 제외 구분 코드
+            fid_trgt_cls_code="",  # FID 대상 구분 코드
+            fid_aply_rang_prc_1="0",  # FID 적용 범위 가격1
+            fid_aply_rang_prc_2="1000000",  # FID 적용 범위 가격2
         )
         
         if result is None or result.empty:

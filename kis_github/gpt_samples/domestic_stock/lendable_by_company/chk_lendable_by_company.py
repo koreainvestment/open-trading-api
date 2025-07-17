@@ -5,8 +5,8 @@ Created on 2025-06-17
 @author: LaivData jjlee with cursor
 """
 
-import sys
 import logging
+import sys
 
 import pandas as pd
 
@@ -17,6 +17,10 @@ from lendable_by_company import lendable_by_company
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 종목정보 > 당사 대주가능 종목 [CTSC2702R]
+##############################################################################################
 
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
 COLUMN_MAPPING = {
@@ -66,26 +70,15 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 당사 대주가능 종목 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        excg_dvsn_cd = "00"  # 거래소구분코드
-        pdno = ""  # 상품번호
-        thco_stln_psbl_yn = "Y"  # 당사대주가능여부
-        inqr_dvsn_1 = "0"  # 조회구분1
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-        ctx_area_nk100 = ""  # 연속조회키100
-
         
-        # API 호출
-        logger.info("API 호출 시작: 당사 대주가능 종목")
+        # API 호출        
         result1, result2 = lendable_by_company(
-            excg_dvsn_cd=excg_dvsn_cd,  # 거래소구분코드
-            pdno=pdno,  # 상품번호
-            thco_stln_psbl_yn=thco_stln_psbl_yn,  # 당사대주가능여부
-            inqr_dvsn_1=inqr_dvsn_1,  # 조회구분1
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            ctx_area_nk100=ctx_area_nk100,  # 연속조회키100
+            excg_dvsn_cd="00",  # 거래소구분코드
+            pdno="",  # 상품번호
+            thco_stln_psbl_yn="Y",  # 당사대주가능여부
+            inqr_dvsn_1="0",  # 조회구분1
+            ctx_area_fk200="",  # 연속조회검색조건200
+            ctx_area_nk100="",  # 연속조회키100
         )
         
         # 결과 확인

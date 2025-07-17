@@ -8,9 +8,9 @@ Created on 2025-06-17
 """
 
 import logging
+import sys
 import time
 from typing import Optional
-import sys
 
 import pandas as pd
 
@@ -20,6 +20,13 @@ import kis_auth as ka
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 종목정보 > 상품기본조회[v1_국내주식-029]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/quotations/search-info"
 
 def search_info(
     pdno: str,  # 상품번호
@@ -67,7 +74,7 @@ def search_info(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    url = "/uapi/domestic-stock/v1/quotations/search-info"
+
     tr_id = "CTPF1604R"
 
     # 요청 파라미터 설정
@@ -77,7 +84,7 @@ def search_info(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -111,5 +118,5 @@ def search_info(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

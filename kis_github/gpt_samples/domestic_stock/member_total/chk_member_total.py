@@ -16,6 +16,10 @@ from member_total import member_total
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간 > 국내주식 실시간회원사 (통합) [H0UNMBC0]
+##############################################################################################
+
 
 def main():
     """

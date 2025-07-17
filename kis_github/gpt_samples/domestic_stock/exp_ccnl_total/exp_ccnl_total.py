@@ -13,6 +13,10 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간정보 > 국내주식 예상체결통보(통합) [H0UNANC0]
+##############################################################################################
+
 def exp_ccnl_total(
         tr_type: str,
         tr_key: str,

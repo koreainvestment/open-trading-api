@@ -3,12 +3,24 @@
 import sys
 import time
 from typing import Optional
+import logging
 
 import pandas as pd
 
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
+# 로깅 설정
+
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 기본시세 > 거래량순위[v1_국내주식-047]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-stock/v1/ranking/volume-rank"
 
 def volume_rank(
         fid_cond_mrkt_div_code: str,  # 필수, 조건 시장 분류 코드
@@ -74,7 +86,7 @@ def volume_rank(
     # if len(fid_trgt_exls_cls_code) != 10 or not (all(c == '0' for c in fid_trgt_exls_cls_code) or all(c == '1' for c in fid_trgt_exls_cls_code)):
     #     raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
-    url = "/uapi/domestic-stock/v1/quotations/volume-rank"
+
     tr_id = "FHPST01710000"  # 거래량순위
 
     params = {
@@ -91,7 +103,7 @@ def volume_rank(
         "FID_INPUT_DATE_1": fid_input_date_1
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -119,5 +131,5 @@ def volume_rank(
             print("The End")
             return dataframe
     else:
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

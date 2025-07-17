@@ -21,6 +21,12 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 발행정보 [CTPF1101R]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/domestic-bond/v1/quotations/issue-info"
 
 def issue_info(
         pdno: str,  # 사용자권한정보
@@ -68,7 +74,6 @@ def issue_info(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    url = "/uapi/domestic-bond/v1/quotations/issue-info"
     tr_id = "CTPF1101R"
 
     # 요청 파라미터 설정
@@ -78,7 +83,7 @@ def issue_info(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     # API 호출 성공 여부 확인
     if res.isOK():
@@ -113,5 +118,5 @@ def issue_info(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

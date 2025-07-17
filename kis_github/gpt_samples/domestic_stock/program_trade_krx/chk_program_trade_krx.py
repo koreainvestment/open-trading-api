@@ -16,6 +16,10 @@ from program_trade_krx import program_trade_krx
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간 > 국내주식 실시간프로그램매매 (KRX) [H0STPGM0]
+##############################################################################################
+
 
 def main():
     """

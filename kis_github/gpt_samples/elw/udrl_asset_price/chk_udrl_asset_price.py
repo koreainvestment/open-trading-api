@@ -18,6 +18,10 @@ from udrl_asset_price import udrl_asset_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 - ELW 기초자산별 종목시세[국내주식-186]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'elw_shrn_iscd': 'ELW단축종목코드',
     'hts_kor_isnm': 'HTS한글종목명',
@@ -49,6 +53,13 @@ COLUMN_MAPPING = {
     'stck_last_tr_date': '주식최종거래일자',
     'lp_ntby_qty': 'LP순매도량'
 }
+
+NUMERIC_COLUMNS = [
+    'ELW현재가', '전일대비', '전일대비율', '누적거래량', '행사가', '손익분기주가가격', 
+    'HTS잔존일수', 'HTS내재변동성', '주식전환비율', 'LP보유량', 'LP비중', '레버리지값', 
+    '기어링', '델타값', '감마', '베가', '세타', '손익분기비율', '자본지지점', '패리티', 
+    '내재가치값', '시간가치값', 'HTS이론가', 'LP순매도량'
+]
 
 def main():
     """
@@ -91,44 +102,25 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # ELW 기초자산별 종목시세 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "W"  # 조건시장분류코드
-        fid_cond_scr_div_code = "11541"  # 조건화면분류코드
-        fid_mrkt_cls_code = "A"  # 시장구분코드
-        fid_input_iscd = "00000"  # 입력종목코드
-        fid_unas_input_iscd = "005930"  # 기초자산입력종목코드
-        fid_vol_cnt = ""  # 거래량수
-        fid_trgt_exls_cls_code = "0"  # 대상제외구분코드
-        fid_input_price_1 = ""  # 입력가격1
-        fid_input_price_2 = ""  # 입력가격2
-        fid_input_vol_1 = ""  # 입력거래량1
-        fid_input_vol_2 = ""  # 입력거래량2
-        fid_input_rmnn_dynu_1 = ""  # 입력잔존일수1
-        fid_input_rmnn_dynu_2 = ""  # 입력잔존일수2
-        fid_option = "0"  # 옵션
-        fid_input_option_1 = ""  # 입력옵션1
-        fid_input_option_2 = ""  # 입력옵션2
-        
         # API 호출
-        logger.info("API 호출 시작: ELW 기초자산별 종목시세")
+        logger.info("API 호출")
         result = udrl_asset_price(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 조건시장분류코드
-            fid_cond_scr_div_code=fid_cond_scr_div_code,  # 조건화면분류코드
-            fid_mrkt_cls_code=fid_mrkt_cls_code,  # 시장구분코드
-            fid_input_iscd=fid_input_iscd,  # 입력종목코드
-            fid_unas_input_iscd=fid_unas_input_iscd,  # 기초자산입력종목코드
-            fid_vol_cnt=fid_vol_cnt,  # 거래량수
-            fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,  # 대상제외구분코드
-            fid_input_price_1=fid_input_price_1,  # 입력가격1
-            fid_input_price_2=fid_input_price_2,  # 입력가격2
-            fid_input_vol_1=fid_input_vol_1,  # 입력거래량1
-            fid_input_vol_2=fid_input_vol_2,  # 입력거래량2
-            fid_input_rmnn_dynu_1=fid_input_rmnn_dynu_1,  # 입력잔존일수1
-            fid_input_rmnn_dynu_2=fid_input_rmnn_dynu_2,  # 입력잔존일수2
-            fid_option=fid_option,  # 옵션
-            fid_input_option_1=fid_input_option_1,  # 입력옵션1
-            fid_input_option_2=fid_input_option_2,  # 입력옵션2
+            fid_cond_mrkt_div_code="W",  # 조건시장분류코드
+            fid_cond_scr_div_code="11541",  # 조건화면분류코드
+            fid_mrkt_cls_code="A",  # 시장구분코드
+            fid_input_iscd="00000",  # 입력종목코드
+            fid_unas_input_iscd="005930",  # 기초자산입력종목코드
+            fid_vol_cnt="",  # 거래량수
+            fid_trgt_exls_cls_code="0",  # 대상제외구분코드
+            fid_input_price_1="",  # 입력가격1
+            fid_input_price_2="",  # 입력가격2
+            fid_input_vol_1="",  # 입력거래량1
+            fid_input_vol_2="",  # 입력거래량2
+            fid_input_rmnn_dynu_1="",  # 입력잔존일수1
+            fid_input_rmnn_dynu_2="",  # 입력잔존일수2
+            fid_option="0",  # 옵션
+            fid_input_option_1="",  # 입력옵션1
+            fid_input_option_2="",  # 입력옵션2
         )
         
         if result is None or result.empty:
@@ -141,6 +133,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== ELW 기초자산별 종목시세 결과 ===")

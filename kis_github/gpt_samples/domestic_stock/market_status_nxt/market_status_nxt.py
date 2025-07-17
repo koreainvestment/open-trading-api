@@ -13,6 +13,10 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간정보 > 국내주식 장운영정보(NXT) [H0NXMKO0]
+##############################################################################################
+
 def market_status_nxt(
         tr_type: str,
         tr_key: str,

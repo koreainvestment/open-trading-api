@@ -1,4 +1,5 @@
 import sys
+import logging
 
 import pandas as pd
 
@@ -6,6 +7,15 @@ sys.path.extend(['../..', '.']) # kis_auth 파일 경로 추가
 import kis_auth as ka
 from quote_balance import quote_balance
 
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [국내주식] 기본시세 > 국내주식 호가잔량순위 [FHPST01720000]
+##############################################################################################
+
+# 통합 컬럼 매핑
 COLUMN_MAPPING = {
     'mksc_shrn_iscd': '유가증권 단축 종목코드',
     'data_rank': '데이터 순위',
@@ -52,32 +62,20 @@ def main():
     pd.set_option('display.max_rows', None)  # 모든 행 표시
 
     # 토큰 발급
-    ka.auth()
-
-    # 국내주식 호가잔량 순위 파라미터 설정
-    fid_vol_cnt = "1000"  # 거래량 수
-    fid_cond_mrkt_div_code = "J"  # 조건 시장 분류 코드
-    fid_cond_scr_div_code = "20172"  # 조건 화면 분류 코드
-    fid_input_iscd = "0001"  # 입력 종목코드
-    fid_rank_sort_cls_code = "0"  # 순위 정렬 구분 코드
-    fid_div_cls_code = "0"  # 분류 구분 코드
-    fid_trgt_cls_code = "0"  # 대상 구분 코드
-    fid_trgt_exls_cls_code = "0"  # 대상 제외 구분 코드
-    fid_input_price_1 = "50000"  # 입력 가격1
-    fid_input_price_2 = "100000"  # 입력 가격2
+    ka.auth()    
     
     # API 호출
     result = quote_balance(
-        fid_vol_cnt=fid_vol_cnt,
-        fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,
-        fid_cond_scr_div_code=fid_cond_scr_div_code,
-        fid_input_iscd=fid_input_iscd,
-        fid_rank_sort_cls_code=fid_rank_sort_cls_code,
-        fid_div_cls_code=fid_div_cls_code,
-        fid_trgt_cls_code=fid_trgt_cls_code,
-        fid_trgt_exls_cls_code=fid_trgt_exls_cls_code,
-        fid_input_price_1=fid_input_price_1,
-        fid_input_price_2=fid_input_price_2
+        fid_vol_cnt="1000",  # 거래량 수,
+        fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드,
+        fid_cond_scr_div_code="20172",  # 조건 화면 분류 코드,
+        fid_input_iscd="0001",  # 입력 종목코드,
+        fid_rank_sort_cls_code="0",  # 순위 정렬 구분 코드,
+        fid_div_cls_code="0",  # 분류 구분 코드,
+        fid_trgt_cls_code="0",  # 대상 구분 코드,
+        fid_trgt_exls_cls_code="0",  # 대상 제외 구분 코드,
+        fid_input_price_1="50000",  # 입력 가격1,
+        fid_input_price_2="100000",  # 입력 가격2
     )
     
     # 컬럼명 출력

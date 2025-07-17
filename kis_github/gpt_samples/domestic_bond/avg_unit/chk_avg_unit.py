@@ -18,6 +18,11 @@ from avg_unit import avg_unit
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 평균단가조회 [국내채권-158]
+##############################################################################################
+
+
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
 COLUMN_MAPPING = {
     'evlu_dt': '평가일자',
@@ -103,26 +108,16 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 장내채권 평균단가조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        inqr_strt_dt = "20240101"  # 조회시작일자
-        inqr_end_dt = "20250630"  # 조회종료일자
-        pdno = "KR103502GA34"  # 상품번호
-        prdt_type_cd = "302"  # 상품유형코드
-        vrfc_kind_cd = "00"  # 검증종류코드
-        ctx_area_nk30 = ""  # 연속조회키30
-        ctx_area_fk100 = ""  # 연속조회검색조건100
-
         # API 호출
         logger.info("API 호출 시작: 장내채권 평균단가조회")
         result1, result2, result3 = avg_unit(
-            inqr_strt_dt=inqr_strt_dt,  # 조회시작일자
-            inqr_end_dt=inqr_end_dt,  # 조회종료일자
-            pdno=pdno,  # 상품번호
-            prdt_type_cd=prdt_type_cd,  # 상품유형코드
-            vrfc_kind_cd=vrfc_kind_cd,  # 검증종류코드
-            ctx_area_nk30=ctx_area_nk30,  # 연속조회키30
-            ctx_area_fk100=ctx_area_fk100,  # 연속조회검색조건100
+            inqr_strt_dt="20240101",  # 조회시작일자
+            inqr_end_dt="20250630",  # 조회종료일자
+            pdno="KR103502GA34",  # 상품번호
+            prdt_type_cd="302",  # 상품유형코드
+            vrfc_kind_cd="00",  # 검증종류코드
+            ctx_area_nk30="",  # 연속조회키30
+            ctx_area_fk100="",  # 연속조회검색조건100
         )
 
         # 결과 확인

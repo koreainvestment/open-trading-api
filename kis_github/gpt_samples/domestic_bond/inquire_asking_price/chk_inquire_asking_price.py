@@ -17,6 +17,10 @@ from inquire_asking_price import inquire_asking_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 기본시세 > 장내채권 호가잔량 [FHKBJ773401C0]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'aspr_acpt_hour': '호가 접수 시간',
     'bond_askp1': '채권 매도호가1',
@@ -82,16 +86,11 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 장내채권현재가(호가) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "B"  # 시장 분류 코드
-        fid_input_iscd = "KR2033022D33"  # 채권종목코드
-
         # API 호출
         logger.info("API 호출 시작: 장내채권현재가(호가)")
         result = inquire_asking_price(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # 시장 분류 코드
-            fid_input_iscd=fid_input_iscd,  # 채권종목코드
+            fid_cond_mrkt_div_code="B",  # 시장 분류 코드
+            fid_input_iscd="KR2033022D33",  # 채권종목코드
         )
 
         if result is None or result.empty:

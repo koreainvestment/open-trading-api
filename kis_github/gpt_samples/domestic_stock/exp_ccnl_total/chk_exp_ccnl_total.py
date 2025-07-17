@@ -16,6 +16,10 @@ from exp_ccnl_total import exp_ccnl_total
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간정보 > 국내주식 예상체결통보(통합) [H0UNANC0]
+##############################################################################################
+
 # 컬럼명 매핑
 COLUMN_MAP = {
     "MKSC_SHRN_ISCD": "유가증권단축종목코드",

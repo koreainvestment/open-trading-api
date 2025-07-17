@@ -18,6 +18,10 @@ from order_rvsecncl import order_rvsecncl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [장내채권] 주문/계좌 > 장내채권 정정취소주문 [TTTC0953U]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'KRX_FWDG_ORD_ORGNO': '한국거래소전송주문조직번호',
     'ODNO': '주문번호',
@@ -65,35 +69,20 @@ def main():
         # kis_auth 모듈에서 계좌 정보 가져오기
         trenv = ka.getTREnv()
 
-        # 장내채권 정정취소주문 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-
-        cano = trenv.my_acct
-        acnt_prdt_cd = "01"
-        pdno = "KR6095572D81"
-        orgn_odno = "0004357900"  # 실제 테스트 시 유효한 원주문번호로 변경해야 합니다.
-        ord_qty2 = "1"  # 정정/취소 수량
-        bond_ord_unpr = "10470"  # 정정 단가
-        qty_all_ord_yn = "Y"  # 잔량 전부 주문 여부
-        rvse_cncl_dvsn_cd = "01"  # 01: 정정, 02: 취소
-        mgco_aptm_odno = ""
-        ord_svr_dvsn_cd = "0"
-        ctac_tlno = ""
-
         # API 호출
         logger.info("API 호출 시작: 장내채권 정정취소주문")
         result = order_rvsecncl(
-            cano=cano,
-            acnt_prdt_cd=acnt_prdt_cd,
-            pdno=pdno,
-            orgn_odno=orgn_odno,
-            ord_qty2=ord_qty2,
-            bond_ord_unpr=bond_ord_unpr,
-            qty_all_ord_yn=qty_all_ord_yn,
-            rvse_cncl_dvsn_cd=rvse_cncl_dvsn_cd,
-            mgco_aptm_odno=mgco_aptm_odno,
-            ord_svr_dvsn_cd=ord_svr_dvsn_cd,
-            ctac_tlno=ctac_tlno,
+            cano=trenv.my_acct,
+            acnt_prdt_cd="01",
+            pdno="KR6095572D81",
+            orgn_odno="0004357900",  # 실제 테스트 시 유효한 원주문번호로 변경해야 합니다.
+            ord_qty2="1",  # 정정/취소 수량
+            bond_ord_unpr="10470",  # 정정 단가
+            qty_all_ord_yn="Y",  # 잔량 전부 주문 여부
+            rvse_cncl_dvsn_cd="01",  # 01: 정정, 02: 취소
+            mgco_aptm_odno="",
+            ord_svr_dvsn_cd="0",
+            ctac_tlno="",
         )
         
         if result is None or result.empty:

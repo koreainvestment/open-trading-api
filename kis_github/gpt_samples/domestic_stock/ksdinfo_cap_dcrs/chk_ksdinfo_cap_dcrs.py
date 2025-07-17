@@ -57,22 +57,14 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
-
-        # 예탁원정보(자본감소일정) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cts = ""  # CTS
-        f_dt = "20250101"  # 조회일자From
-        t_dt = "20250131"  # 조회일자To
-        sht_cd = ""  # 종목코드
-        
-        # API 호출
-        logger.info("API 호출 시작: 예탁원정보(자본감소일정)")
+        logger.info("토큰 발급 완료")       
+         
+        # API 호출        
         result = ksdinfo_cap_dcrs(
-            cts=cts,  # CTS
-            f_dt=f_dt,  # 조회일자From
-            t_dt=t_dt,  # 조회일자To
-            sht_cd=sht_cd,  # 종목코드
+            cts="",  # CTS
+            f_dt="20250101",  # 조회일자From
+            t_dt="20250131",  # 조회일자To
+            sht_cd="",  # 종목코드
         )
         
         if result is None or result.empty:
