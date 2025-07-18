@@ -47,7 +47,7 @@ def pension_inquire_present_balance(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1, output2) 데이터프레임 튜플
         
     Example:
-        >>> df1, df2 = pension_inquire_present_balance(cano="12345678", acnt_prdt_cd="29", user_dvsn_cd="00")
+        >>> df1, df2 = pension_inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, user_dvsn_cd="00")
         >>> print(df1)
         >>> print(df2)
     """

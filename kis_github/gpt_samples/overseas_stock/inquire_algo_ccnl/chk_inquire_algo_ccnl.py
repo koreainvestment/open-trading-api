@@ -59,11 +59,13 @@ def main():
     
     # 인증 토큰 발급
     ka.auth()
-    
+
+    trenv = ka.getTREnv()
+
     # API 호출
     logging.info("API 호출")
     try:
-        result, result3 = inquire_algo_ccnl(cano="81180744", acnt_prdt_cd="01")
+        result, result3 = inquire_algo_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,)
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

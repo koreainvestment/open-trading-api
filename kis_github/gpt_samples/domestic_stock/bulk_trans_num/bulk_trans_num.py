@@ -162,7 +162,7 @@ def bulk_trans_num(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return bulk_trans_num(
                 fid_aply_rang_prc_2,
                 fid_cond_mrkt_div_code,

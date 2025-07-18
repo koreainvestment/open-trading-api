@@ -69,7 +69,7 @@ def order_resv_rvsecncl(
         pd.DataFrame: 주식예약주문정정취소 결과 데이터
         
     Example:
-        >>> df = order_resv_rvsecncl(cano="81180744", acnt_prdt_cd="01", rsvn_ord_seq="88793", rsvn_ord_orgno="123", rsvn_ord_ord_dt="20250113", ord_type="cancel")
+        >>> df = order_resv_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rsvn_ord_seq="88793", rsvn_ord_orgno="123", rsvn_ord_ord_dt="20250113", ord_type="cancel")
         >>> print(df)
     """
 

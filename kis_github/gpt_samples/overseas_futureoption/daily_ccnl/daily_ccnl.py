@@ -162,7 +162,7 @@ def daily_ccnl(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return daily_ccnl(
                 srs_cd,
                 exch_cd,

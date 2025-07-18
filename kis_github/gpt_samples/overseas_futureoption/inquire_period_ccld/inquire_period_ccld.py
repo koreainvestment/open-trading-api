@@ -70,8 +70,8 @@ def inquire_period_ccld(
         >>> df1, df2 = inquire_period_ccld(
         ...     inqr_term_from_dt="20250601",
         ...     inqr_term_to_dt="20250630",
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     crcy_cd="%%%",
         ...     whol_trsl_yn="N",
         ...     fuop_dvsn="00",
@@ -172,7 +172,7 @@ def inquire_period_ccld(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_period_ccld(
                 inqr_term_from_dt,
                 inqr_term_to_dt,

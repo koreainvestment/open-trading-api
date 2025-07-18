@@ -95,7 +95,7 @@ def foreign_margin(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return foreign_margin(
                 cano,
                 acnt_prdt_cd,

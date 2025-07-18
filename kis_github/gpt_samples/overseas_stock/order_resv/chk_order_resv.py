@@ -47,11 +47,14 @@ def main():
     
     # 인증 토큰 발급
     ka.auth()
-    
+
+    trenv = ka.getTREnv()
+
     # API 호출
     logging.info("API 호출")
     try:
-        result = order_resv(env_dv="real", ord_dv="usBuy", cano="81180744", acnt_prdt_cd="01", pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
+        result = order_resv(env_dv="real", ord_dv="usBuy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
+         pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

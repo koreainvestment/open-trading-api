@@ -77,7 +77,7 @@ def main():
         - DataFrame: 해외선물옵션 일별 주문내역 결과
     
     Example:
-        >>> df = inquire_daily_order(cano=trenv.my_acct, acnt_prdt_cd="08", strt_dt="20250601", end_dt="20250703", fm_pdgr_cd="", ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
+        >>> df = inquire_daily_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_dt="20250601", end_dt="20250703", fm_pdgr_cd="", ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -95,7 +95,7 @@ def main():
         logger.info("API 호출 시작: 해외선물옵션 일별 주문내역")
         result = inquire_daily_order(
             cano=trenv.my_acct,           # 종합계좌번호 (자동 설정)
-            acnt_prdt_cd="08",            # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,            # 계좌상품코드
             strt_dt="20250601",           # 시작일자
             end_dt="20250703",            # 종료일자
             fm_pdgr_cd="",                # FM상품군코드

@@ -91,7 +91,7 @@ def main():
         - DataFrame: 해외주식 결제기준잔고 결과
     
     Example:
-        >>> df1, df2, df3 = inquire_paymt_stdr_balance(cano=trenv.my_acct, acnt_prdt_cd="01", bass_dt="20250630", wcrc_frcr_dvsn_cd="01", inqr_dvsn_cd="00")
+        >>> df1, df2, df3 = inquire_paymt_stdr_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, bass_dt="20250630", wcrc_frcr_dvsn_cd="01", inqr_dvsn_cd="00")
     """
     try:
         # pandas 출력 옵션 설정
@@ -103,25 +103,17 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
+
         trenv = ka.getTREnv()
 
-        # 해외주식 결제기준잔고 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        bass_dt = "20250630"  # 기준일자
-        wcrc_frcr_dvsn_cd = "01"  # 원화외화구분코드
-        inqr_dvsn_cd = "00"  # 조회구분코드
-
-        
         # API 호출
         logger.info("API 호출")
         result1, result2, result3 = inquire_paymt_stdr_balance(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            bass_dt=bass_dt,  # 기준일자
-            wcrc_frcr_dvsn_cd=wcrc_frcr_dvsn_cd,  # 원화외화구분코드
-            inqr_dvsn_cd=inqr_dvsn_cd,  # 조회구분코드
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
+            bass_dt="20250630",  # 기준일자
+            wcrc_frcr_dvsn_cd="01",  # 원화외화구분코드
+            inqr_dvsn_cd="00",  # 조회구분코드
         )
         
         # 결과 확인

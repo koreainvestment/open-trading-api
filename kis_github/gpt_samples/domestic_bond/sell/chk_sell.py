@@ -79,7 +79,7 @@ def main():
         logger.info("API 호출 시작: 장내채권 매도주문")
         result = sell(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             ord_dvsn="01",  # 주문구분
             pdno="KR103502GA34",  # 상품번호
             ord_qty2="1",  # 주문수량

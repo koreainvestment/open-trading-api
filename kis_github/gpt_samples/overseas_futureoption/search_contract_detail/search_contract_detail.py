@@ -102,7 +102,7 @@ def search_contract_detail(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return search_contract_detail(
                 qry_cnt, "N", dataframe, depth + 1, max_depth, **kwargs
             )

@@ -71,7 +71,7 @@ def inquire_ccnl(
         Tuple[pd.DataFrame, pd.DataFrame]: 주문체결내역 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_ccnl(env_dv="real", cano="81180744", acnt_prdt_cd="03", strt_ord_dt="20220730", end_ord_dt="20220830", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="00", sort_sqn="DS")
+        >>> df1, df2 = inquire_ccnl(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_ord_dt="20220730", end_ord_dt="20220830", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="00", sort_sqn="DS")
         >>> print(df1)
         >>> print(df2)
     """
@@ -158,7 +158,7 @@ def inquire_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ccnl(
                 env_dv, cano, acnt_prdt_cd, strt_ord_dt, end_ord_dt, 
                 sll_buy_dvsn_cd, ccld_nccs_dvsn, sort_sqn, pdno, strt_odno, 

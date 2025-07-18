@@ -77,8 +77,8 @@ def inquire_ccnl(
         
     Example:
         >>> df = inquire_ccnl(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     pdno="%",
         ...     ord_strt_dt="20211027",
         ...     ord_end_dt="20211027",
@@ -170,7 +170,7 @@ def inquire_ccnl(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_ccnl(
                 cano,
                 acnt_prdt_cd,

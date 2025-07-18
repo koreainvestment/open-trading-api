@@ -84,10 +84,12 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
-        result1, result2 = pension_inquire_balance(cano="81180744", acnt_prdt_cd="29", acca_dvsn_cd="00",
+        result1, result2 = pension_inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acca_dvsn_cd="00",
                                                    inqr_dvsn="00")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))

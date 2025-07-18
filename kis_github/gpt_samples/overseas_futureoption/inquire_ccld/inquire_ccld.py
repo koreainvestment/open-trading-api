@@ -62,8 +62,8 @@ def inquire_ccld(
         
     Example:
         >>> df = inquire_ccld(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ccld_nccs_dvsn="01",
         ...     sll_buy_dvsn_cd="01",
         ...     fuop_dvsn="00",
@@ -126,7 +126,7 @@ def inquire_ccld(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_ccld(
                 cano,
                 acnt_prdt_cd,

@@ -68,7 +68,7 @@ def period_rights(
         pd.DataFrame: 기간별계좌권리현황 데이터
         
     Example:
-        >>> df = period_rights(inqr_dvsn="03", cano="12345678", acnt_prdt_cd="01", inqr_strt_dt="20250101", inqr_end_dt="20250103")
+        >>> df = period_rights(inqr_dvsn="03", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20250101", inqr_end_dt="20250103")
         >>> print(df)
     """
 
@@ -127,7 +127,7 @@ def period_rights(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return period_rights(
                 inqr_dvsn, cano, acnt_prdt_cd, inqr_strt_dt, inqr_end_dt,
                 cust_rncno25, hmid, rght_type_cd, pdno, prdt_type_cd,

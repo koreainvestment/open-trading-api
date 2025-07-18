@@ -46,6 +46,8 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
@@ -53,8 +55,8 @@ def main():
             env_dv="real",
             ord_dv="day",
             ord_prcs_dvsn_cd="02",
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             sll_buy_dvsn_cd="02",
             shtn_pdno="167R12",
             ord_qty="1",

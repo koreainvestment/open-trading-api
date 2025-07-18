@@ -60,8 +60,8 @@ def order_rvsecncl(
         
     Example:
         >>> df = order_rvsecncl(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NYSE",
         ...     pdno="BA",
         ...     orgn_odno="30135009",

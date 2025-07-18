@@ -62,8 +62,8 @@ def inquire_psbl_rvsecncl(
         
     Example:
         >>> df = inquire_psbl_rvsecncl(
-        ...     cano='12345678',
-        ...     acnt_prdt_cd='01',
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ord_dt='20230101',
         ...     odno='0000000001',
         ...     ctx_area_fk200='조건값',
@@ -116,7 +116,7 @@ def inquire_psbl_rvsecncl(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_psbl_rvsecncl(
                 cano,
                 acnt_prdt_cd,

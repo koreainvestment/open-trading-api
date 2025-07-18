@@ -56,8 +56,8 @@ def inquire_deposit(
         
     Example:
         >>> df = inquire_deposit(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     crcy_cd="KRW",
         ...     inqr_dt="20221214"
         ... )
@@ -111,7 +111,7 @@ def inquire_deposit(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_deposit(
                 cano,
                 acnt_prdt_cd,

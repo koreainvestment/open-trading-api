@@ -136,7 +136,7 @@ def colable_by_company(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return colable_by_company(
                 pdno, natn_cd, inqr_sqn_dvsn, prdt_type_cd, inqr_strt_dt, inqr_end_dt,
                 inqr_dvsn, rt_dvsn_cd, rt, loan_psbl_yn, FK100, NK100, "N",

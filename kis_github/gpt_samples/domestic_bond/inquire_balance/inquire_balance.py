@@ -64,8 +64,8 @@ def inquire_balance(
         
     Example:
         >>> df = inquire_balance(
-        ...     cano='12345678',
-        ...     acnt_prdt_cd='01',
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     inqr_cndt='00',
         ...     pdno='',
         ...     buy_dt='',
@@ -128,7 +128,7 @@ def inquire_balance(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_balance(
                 cano,
                 acnt_prdt_cd,

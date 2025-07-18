@@ -54,7 +54,7 @@ def inquire_balance_settlement_pl(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1 데이터, output2 데이터)
         
     Example:
-        >>> df1, df2 = inquire_balance_settlement_pl(cano="81180744", acnt_prdt_cd="03", inqr_dt="20230906")
+        >>> df1, df2 = inquire_balance_settlement_pl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_dt="20230906")
         >>> print(df1)
         >>> print(df2)
     """
@@ -109,7 +109,7 @@ def inquire_balance_settlement_pl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance_settlement_pl(
                 cano, acnt_prdt_cd, inqr_dt, FK200, NK200, "N", dataframe1, dataframe2, depth + 1, max_depth
             )

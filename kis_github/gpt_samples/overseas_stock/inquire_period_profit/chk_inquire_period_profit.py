@@ -79,7 +79,7 @@ def main():
         - DataFrame: 해외주식 기간손익 결과 (output1: 기간손익 목록, output2: 기간손익 요약)
     
     Example:
-        >>> df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", natn_cd="", crcy_cd="USD", pdno="", inqr_strt_dt="20230101", inqr_end_dt="20231231", wcrc_frcr_dvsn_cd="01", FK200="", NK200="")
+        >>> df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", natn_cd="", crcy_cd="USD", pdno="", inqr_strt_dt="20230101", inqr_end_dt="20231231", wcrc_frcr_dvsn_cd="01", FK200="", NK200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -97,7 +97,7 @@ def main():
         logger.info("API 호출")
         result1, result2 = inquire_period_profit(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             ovrs_excg_cd="NASD",  # 해외거래소코드
             natn_cd="",  # 국가코드
             crcy_cd="USD",  # 통화코드

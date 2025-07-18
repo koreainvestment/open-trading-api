@@ -118,7 +118,7 @@ def opt_asking_price(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return opt_asking_price(
                 srs_cd,
                 dataframe1, dataframe2, tr_cont, depth + 1, max_depth

@@ -93,13 +93,15 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 테스트
     logging.info("=== case1 테스트 ===")
     try:
         result1, result2 = inquire_balance(
             env_dv="real",
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             afhr_flpr_yn="N",
             inqr_dvsn="01",
             unpr_dvsn="01",

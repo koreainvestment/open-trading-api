@@ -56,10 +56,12 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
-        result = inquire_psbl_order(env_dv="real", cano="81180744", acnt_prdt_cd="01", pdno="005930", ord_unpr="55000",
+        result = inquire_psbl_order(env_dv="real",cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_unpr="55000",
                                     ord_dvsn="01", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))

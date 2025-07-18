@@ -65,7 +65,7 @@ def order_rvsecncl(
         pd.DataFrame: 주식주문(정정취소) 결과 데이터
         
     Example:
-        >>> df = order_rvsecncl(env_dv="real", cano="81180744", acnt_prdt_cd="01", ...)
+        >>> df = order_rvsecncl(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ...)
         >>> print(df)
     """
 

@@ -113,7 +113,7 @@ def market_time(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return market_time(
                 fm_pdgr_cd,
                 fm_clas_cd,

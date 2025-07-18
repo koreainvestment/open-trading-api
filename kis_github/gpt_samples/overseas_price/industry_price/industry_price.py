@@ -93,7 +93,7 @@ def industry_price(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return industry_price(
                 excd, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
             )

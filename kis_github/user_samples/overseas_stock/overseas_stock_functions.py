@@ -48,7 +48,7 @@ def algo_ordno(
         pd.DataFrame: 해외주식 지정가주문번호 데이터
         
     Example:
-        >>> df = algo_ordno(cano="81180744", acnt_prdt_cd="03", trad_dt="20250619")
+        >>> df = algo_ordno(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, trad_dt="20250619")
         >>> print(df)
     """
 
@@ -94,7 +94,7 @@ def algo_ordno(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return algo_ordno(
                 cano, acnt_prdt_cd, trad_dt, FK200, NK200, "N", dataframe, depth + 1, max_depth
             )
@@ -149,8 +149,8 @@ def daytime_order(
         
     Example:
         >>> df = daytime_order(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     pdno="AAPL",
         ...     ord_qty="10",
@@ -275,8 +275,8 @@ def daytime_order_rvsecncl(
         
     Example:
         >>> df = daytime_order_rvsecncl(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     pdno="AAPL",
         ...     orgn_odno="1234567890",
@@ -434,7 +434,7 @@ def foreign_margin(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return foreign_margin(
                 cano,
                 acnt_prdt_cd,
@@ -492,7 +492,7 @@ def inquire_algo_ccnl(
         Tuple[pd.DataFrame, pd.DataFrame]: (output, output3) 체결내역 데이터
         
     Example:
-        >>> result, result3 = inquire_algo_ccnl(cano="81180744", acnt_prdt_cd="01")
+        >>> result, result3 = inquire_algo_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod)
         >>> print(result)
         >>> print(result3)
     """
@@ -546,7 +546,7 @@ def inquire_algo_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_algo_ccnl(
                 cano, acnt_prdt_cd, ord_dt, ord_gno_brno, odno, ttlz_icld_yn, 
                 NK200, FK200, "N", dataframe, dataframe3, depth + 1, max_depth
@@ -603,8 +603,8 @@ def inquire_balance(
         
     Example:
         >>> df1, df2 = inquire_balance(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     tr_crcy_cd="USD",
         ...     FK200="",
@@ -698,7 +698,7 @@ def inquire_balance(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_balance(
                 cano,
                 acnt_prdt_cd,
@@ -780,8 +780,8 @@ def inquire_ccnl(
         
     Example:
         >>> df = inquire_ccnl(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     pdno="%",
         ...     ord_strt_dt="20211027",
         ...     ord_end_dt="20211027",
@@ -873,7 +873,7 @@ def inquire_ccnl(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_ccnl(
                 cano,
                 acnt_prdt_cd,
@@ -946,8 +946,8 @@ def inquire_nccs(
         
     Example:
         >>> df = inquire_nccs(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NYSE",
         ...     sort_sqn="DS",
         ...     FK200="",
@@ -1005,7 +1005,7 @@ def inquire_nccs(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_nccs(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,
@@ -1075,8 +1075,8 @@ def inquire_paymt_stdr_balance(
         
     Example:
         >>> df1, df2, df3 = inquire_paymt_stdr_balance(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     bass_dt="20230630",
         ...     wcrc_frcr_dvsn_cd="01",
         ...     inqr_dvsn_cd="00"
@@ -1186,7 +1186,7 @@ def inquire_paymt_stdr_balance(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_paymt_stdr_balance(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,
@@ -1266,8 +1266,8 @@ def inquire_period_profit(
         
     Example:
         >>> df1, df2 = inquire_period_profit(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     natn_cd="",
         ...     crcy_cd="USD",
@@ -1376,7 +1376,7 @@ def inquire_period_profit(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_period_profit(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,
@@ -1459,8 +1459,8 @@ def inquire_period_trans(
         
     Example:
         >>> df1, df2 = inquire_period_trans(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     erlm_strt_dt="20240420",
         ...     erlm_end_dt="20240520",
         ...     ovrs_excg_cd="NAS",
@@ -1564,7 +1564,7 @@ def inquire_period_trans(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_period_trans(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,
@@ -1642,8 +1642,8 @@ def inquire_present_balance(
         
     Example:
         >>> df1, df2, df3 = inquire_present_balance(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     wcrc_frcr_dvsn_cd="01",
         ...     natn_cd="000",
         ...     tr_mket_cd="00",
@@ -1762,7 +1762,7 @@ def inquire_present_balance(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_present_balance(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,
@@ -1832,8 +1832,8 @@ def inquire_psamount(
         
     Example:
         >>> df = inquire_psamount(
-        ...     cano="81019777",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     ovrs_ord_unpr="1.4",
         ...     item_cd="QQQ"
@@ -1898,7 +1898,7 @@ def inquire_psamount(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_psamount(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,
@@ -2003,7 +2003,7 @@ def market_cap(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return market_cap(
                 excd, vol_rang, keyb, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -2120,7 +2120,7 @@ def new_highlow(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return new_highlow(
                 excd, mixn, vol_rang, gubn, gubn2, keyb, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -2177,8 +2177,8 @@ def order(
         
     Example:
         >>> df = order(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     pdno="AAPL",
         ...     ord_qty="1",
@@ -2395,7 +2395,7 @@ def order_resv(
         pd.DataFrame: 해외주식 예약주문접수 결과 데이터
         
     Example:
-        >>> df = order_resv(env_dv="real", ord_dv="usBuy", cano="12345678", acnt_prdt_cd="01", pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
+        >>> df = order_resv(env_dv="real", ord_dv="usBuy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
         >>> print(df)
     """
 
@@ -2519,7 +2519,7 @@ def order_resv_ccnl(
         pd.DataFrame: 해외주식 예약주문접수취소 결과 데이터
         
     Example:
-        >>> df = order_resv_ccnl(env_dv="real", nat_dv="us", cano="81180744", acnt_prdt_cd="01", rsyn_ord_rcit_dt="20220810", ovrs_rsvn_odno="0030008244")
+        >>> df = order_resv_ccnl(env_dv="real", nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rsyn_ord_rcit_dt="20220810", ovrs_rsvn_odno="0030008244")
         >>> print(df)
     """
 
@@ -2623,7 +2623,7 @@ def order_resv_list(
         pd.DataFrame: 해외주식 예약주문조회 데이터
         
     Example:
-        >>> df = order_resv_list(nat_dv="us", cano="12345678", acnt_prdt_cd="01", inqr_strt_dt="20250101", inqr_end_dt="20251231", inqr_dvsn_cd="00", ovrs_excg_cd="NASD")
+        >>> df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20250101", inqr_end_dt="20251231", inqr_dvsn_cd="00", ovrs_excg_cd="NASD")
         >>> print(df)
     """
     
@@ -2691,7 +2691,7 @@ def order_resv_list(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return order_resv_list(
                 nat_dv, cano, acnt_prdt_cd, inqr_strt_dt, inqr_end_dt, 
                 inqr_dvsn_cd, ovrs_excg_cd, prdt_type_cd, FK200, NK200, 
@@ -2748,8 +2748,8 @@ def order_rvsecncl(
         
     Example:
         >>> df = order_rvsecncl(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NYSE",
         ...     pdno="BA",
         ...     orgn_odno="30135009",
@@ -2929,7 +2929,7 @@ def price_fluct(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return price_fluct(
                 excd, gubn, mixn, vol_rang, keyb, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -3032,7 +3032,7 @@ def trade_growth(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_growth(
                 excd, nday, vol_rang, auth, keyb, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -3142,7 +3142,7 @@ def trade_pbmn(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_pbmn(
                 excd, nday, vol_rang, auth, keyb, prc1, prc2, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -3247,7 +3247,7 @@ def trade_turnover(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_turnover(
                 excd, nday, vol_rang, keyb, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -3357,7 +3357,7 @@ def trade_vol(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_vol(
                 excd, nday, vol_rang, keyb, auth, prc1, prc2, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -3465,7 +3465,7 @@ def updown_rate(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return updown_rate(
                 excd, nday, gubn, vol_rang, auth, keyb, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -3569,7 +3569,7 @@ def volume_power(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return volume_power(
                 excd, nday, vol_rang, auth, keyb, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -3672,7 +3672,7 @@ def volume_surge(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return volume_surge(
                 excd, mixn, vol_rang, keyb, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
             )

@@ -140,7 +140,7 @@ def finance_ratio(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_ratio(
                 fid_trgt_cls_code,
                 fid_cond_mrkt_div_code,

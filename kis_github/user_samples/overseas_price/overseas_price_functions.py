@@ -201,7 +201,7 @@ def colable_by_company(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return colable_by_company(
                 pdno, natn_cd, inqr_sqn_dvsn, prdt_type_cd, inqr_strt_dt, inqr_end_dt,
                 inqr_dvsn, rt_dvsn_cd, rt, loan_psbl_yn, FK100, NK100, "N",
@@ -296,7 +296,7 @@ def countries_holiday(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return countries_holiday(
                 trad_dt,
                 ctx_area_nk,
@@ -446,7 +446,7 @@ def dailyprice(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return dailyprice(
                 auth,
                 excd,
@@ -545,7 +545,7 @@ def industry_price(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return industry_price(
                 excd, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -647,7 +647,7 @@ def industry_theme(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return industry_theme(
                 excd, icod, vol_rang, auth, keyb, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -789,7 +789,7 @@ def inquire_asking_price(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_asking_price(
                 auth,
                 excd,
@@ -885,7 +885,7 @@ def inquire_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ccnl(
                 excd, tday, symb, auth, keyb, "N", dataframe, depth + 1, max_depth
             )
@@ -1034,7 +1034,7 @@ def inquire_daily_chartprice(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_chartprice(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1237,7 +1237,7 @@ def inquire_search(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_search(
                 auth,
                 excd,
@@ -1398,7 +1398,7 @@ def inquire_time_indexchartprice(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_time_indexchartprice(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1551,7 +1551,7 @@ def inquire_time_itemchartprice(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_time_itemchartprice(
                 auth,
                 excd,
@@ -1653,7 +1653,7 @@ def news_title(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return news_title(
                 info_gb, class_cd, nation_cd, exchange_cd, symb, data_dt, data_tm, cts, "N", dataframe, depth + 1, max_depth
             )
@@ -1762,7 +1762,7 @@ def period_rights(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return period_rights(
                 rght_type_cd, inqr_dvsn_cd, inqr_strt_dt, inqr_end_dt, 
                 pdno, prdt_type_cd, NK50, FK50, "N", dataframe, depth + 1, max_depth
@@ -1864,7 +1864,7 @@ def price(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return price(
                 auth,
                 excd,
@@ -1958,7 +1958,7 @@ def price_detail(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return price_detail(
                 auth,
                 excd,
@@ -2110,7 +2110,7 @@ def search_info(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return search_info(
                 prdt_type_cd,
                 pdno,

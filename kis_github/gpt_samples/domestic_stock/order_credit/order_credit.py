@@ -87,7 +87,7 @@ def order_credit(
         pd.DataFrame: 주식주문(신용) 결과 데이터
         
     Example:
-        >>> df = order_credit(ord_dv="buy", cano="12345678", acnt_prdt_cd="01", pdno="005930", crdt_type="21", loan_dt="20220810", ord_dvsn="00", ord_qty="1", ord_unpr="55000")
+        >>> df = order_credit(ord_dv="buy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", crdt_type="21", loan_dt="20220810", ord_dvsn="00", ord_qty="1", ord_unpr="55000")
         >>> print(df)
     """
 

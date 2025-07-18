@@ -63,7 +63,7 @@ def inquire_psbl_order(
         pd.DataFrame: 매수가능조회 데이터
         
     Example:
-        >>> df = inquire_psbl_order(env_dv="real", cano="12345678", acnt_prdt_cd="01", pdno="005930", ord_unpr="55000", ord_dvsn="01", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
+        >>> df = inquire_psbl_order(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_unpr="55000", ord_dvsn="01", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
         >>> print(df)
     """
 

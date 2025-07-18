@@ -55,12 +55,14 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
         result = inquire_credit_psamount(
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             pdno="005930",
             ord_dvsn="00",
             crdt_type="21",

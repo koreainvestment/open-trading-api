@@ -60,7 +60,7 @@ def pension_inquire_balance(
         Tuple[pd.DataFrame, pd.DataFrame]: 퇴직연금 잔고 데이터
         
     Example:
-        >>> df1, df2 = pension_inquire_balance(cano="12345678", acnt_prdt_cd="29", acca_dvsn_cd="00", inqr_dvsn="00")
+        >>> df1, df2 = pension_inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acca_dvsn_cd="00", inqr_dvsn="00")
         >>> print(df1)
         >>> print(df2)
     """
@@ -119,7 +119,7 @@ def pension_inquire_balance(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return pension_inquire_balance(
                 cano, acnt_prdt_cd, acca_dvsn_cd, inqr_dvsn, FK100, NK100, "N", dataframe1, dataframe2, depth + 1, max_depth
             )

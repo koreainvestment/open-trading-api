@@ -48,12 +48,14 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
         result = pension_inquire_psbl_order(
-            cano="81180744",
-            acnt_prdt_cd="29",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             pdno="069500",
             acca_dvsn_cd="00",
             cma_evlu_amt_icld_yn="Y",

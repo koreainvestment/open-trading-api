@@ -66,7 +66,7 @@ def order_rvsecncl(
     Example:
         >>> df = order_rvsecncl(
         ...     env_dv="real", day_dv="day", ord_prcs_dvsn_cd="02",
-        ...     cano="81180744", acnt_prdt_cd="03", rvse_cncl_dvsn_cd="02",
+        ...     cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rvse_cncl_dvsn_cd="02",
         ...     orgn_odno="0000004018", ord_qty="0", unit_price="0",
         ...     nmpr_type_cd="02", krx_nmpr_cndt_cd="0", rmn_qty_yn="Y",
         ...     ord_dvsn_cd="01"

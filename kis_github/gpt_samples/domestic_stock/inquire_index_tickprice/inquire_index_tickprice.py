@@ -99,7 +99,7 @@ def inquire_index_tickprice(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_index_tickprice(
                 fid_input_iscd,
                 fid_cond_mrkt_div_code,

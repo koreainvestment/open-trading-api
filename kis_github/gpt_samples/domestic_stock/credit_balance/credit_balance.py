@@ -147,7 +147,7 @@ def credit_balance(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return credit_balance(
                 fid_cond_scr_div_code,
                 fid_input_iscd,

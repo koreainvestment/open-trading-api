@@ -156,7 +156,7 @@ def traded_by_company(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return traded_by_company(
                 fid_trgt_exls_cls_code,
                 fid_cond_mrkt_div_code,

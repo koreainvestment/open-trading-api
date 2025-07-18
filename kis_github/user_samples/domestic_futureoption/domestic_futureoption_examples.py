@@ -68,7 +68,7 @@ print(result2)
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 잔고현황[v1_국내선물-004]
 ##############################################################################################
-result1, result2 = inquire_balance(env_dv="real", cano="81180744", acnt_prdt_cd="03", mgna_dvsn="01",
+result1, result2 = inquire_balance(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, mgna_dvsn="01",
                                            excc_stat_cd="1")
 print(result1)
 print(result2)
@@ -76,14 +76,14 @@ print(result2)
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 잔고정산손익내역[v1_국내선물-013]
 ##############################################################################################
-result1, result2 = inquire_balance_settlement_pl(cano="81180744", acnt_prdt_cd="03", inqr_dt="20230906")
+result1, result2 = inquire_balance_settlement_pl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_dt="20230906")
 print(result1)
 print(result2)
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 잔고평가손익내역[v1_국내선물-015]
 ##############################################################################################
-result1, result2 = inquire_balance_valuation_pl(cano="81180744", acnt_prdt_cd="03", mgna_dvsn="01",
+result1, result2 = inquire_balance_valuation_pl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, mgna_dvsn="01",
                                                         excc_stat_cd="1")
 print(result1)
 print(result2)
@@ -93,8 +93,8 @@ print(result2)
 ##############################################################################################
 result1, result2 = inquire_ccnl(
             env_dv="real",
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             strt_ord_dt="20220730",
             end_ord_dt="20220830",
             sll_buy_dvsn_cd="00",
@@ -108,8 +108,8 @@ print(result2)
 # [국내선물옵션] 주문/계좌 > 선물옵션 기준일체결내역[v1_국내선물-016]
 ##############################################################################################
 result1, result2 = inquire_ccnl_bstime(
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             ord_dt="20230920",
             fuop_tr_strt_tmd="000000",
             fuop_tr_end_tmd="240000"
@@ -121,8 +121,8 @@ print(result2)
 # [국내선물옵션] 주문/계좌 > 선물옵션기간약정수수료일별[v1_국내선물-017]
 ##############################################################################################
 result1, result2 = inquire_daily_amount_fee(
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             inqr_strt_day="20240401",
             inqr_end_day="20240625"
         )
@@ -146,15 +146,15 @@ print(output2)
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 총자산현황[v1_국내선물-014]
 ##############################################################################################
-result = inquire_deposit(cano="81180744", acnt_prdt_cd="03")
+result = inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod)
 print(result)
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > (야간)선물옵션 잔고현황 [국내선물-010]
 ##############################################################################################
 result1, result2 = inquire_ngt_balance(
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             mgna_dvsn="01",
             excc_stat_cd="1"
         )
@@ -164,7 +164,7 @@ print(result2)
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > (야간)선물옵션 주문체결 내역조회 [국내선물-009]
 ##############################################################################################
-result1, result2 = inquire_ngt_ccnl(cano="81180744", acnt_prdt_cd="03", strt_ord_dt="20250610",
+result1, result2 = inquire_ngt_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_ord_dt="20250610",
                                             end_ord_dt="20250613", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="00")
 print(result1)
 print(result2)
@@ -185,8 +185,8 @@ print(result3)
 # [국내선물옵션] 주문/계좌 > (야간)선물옵션 주문가능 조회 [국내선물-011]
 ##############################################################################################
 result = inquire_psbl_ngt_order(
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             pdno="101T03",
             prdt_type_cd="301",
             sll_buy_dvsn_cd="02",
@@ -200,8 +200,8 @@ print(result)
 ##############################################################################################
 result = inquire_psbl_order(
             env_dv="real",
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             pdno="101S03",
             sll_buy_dvsn_cd="02",
             unit_price="1",
@@ -227,7 +227,7 @@ print(result2)
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > (야간)선물옵션 증거금 상세 [국내선물-024]
 ##############################################################################################
-result1, result2, result3 = ngt_margin_detail(cano="81180744", acnt_prdt_cd="03", mgna_dvsn_cd="01")
+result1, result2, result3 = ngt_margin_detail(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, mgna_dvsn_cd="01")
 print(result1)
 print(result2)
 print(result3)
@@ -239,8 +239,8 @@ result = order(
             env_dv="real",
             ord_dv="day",
             ord_prcs_dvsn_cd="02",
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             sll_buy_dvsn_cd="02",
             shtn_pdno="167R12",
             ord_qty="1",
@@ -258,8 +258,8 @@ result = order_rvsecncl(
             env_dv="real",
             day_dv="day",
             ord_prcs_dvsn_cd="02",
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             rvse_cncl_dvsn_cd="02",
             orgn_odno="0000004018",
             ord_qty="0",

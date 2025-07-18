@@ -37,7 +37,7 @@ def inquire_deposit(
         pd.DataFrame: 선물옵션 총자산현황 데이터
         
     Example:
-        >>> df = inquire_deposit(cano="81180744", acnt_prdt_cd="03")
+        >>> df = inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod)
         >>> print(df)
     """
 

@@ -111,7 +111,7 @@ def ksdinfo_mand_deposit(
         # 다음 페이지 호출
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_mand_deposit(
                 t_dt,
                 sht_cd,

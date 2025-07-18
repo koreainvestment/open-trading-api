@@ -55,8 +55,7 @@ def main():
         - DataFrame: 해외선물옵션 정정취소주문 결과
     
     Example:
-        >>> df = order_rvsecncl(cano=trenv.my_acct, ord_dv="0", acnt_prdt_cd="08", orgn_ord_dt="20250630", orgn_odno="00123456", fm_limit_ord_pric="10.0", fm_stop_ord_pric="", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", fm_hdge_ord_scrn_yn="N", fm_mkpr_cvsn_yn="") # 정정
-        >>> df = order_rvsecncl(cano=trenv.my_acct, ord_dv="1", acnt_prdt_cd="08", orgn_ord_dt="20250630", orgn_odno="00123456", fm_limit_ord_pric="", fm_stop_ord_pric="", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", fm_hdge_ord_scrn_yn="N", fm_mkpr_cvsn_yn="N") # 취소
+        >>> df = order_rvsecncl(cano=trenv.my_acct, ord_dv="0", acnt_prdt_cd=trenv.my_prod, orgn_ord_dt="20250630", orgn_odno="00123456", fm_limit_ord_pric="10.0", fm_stop_ord_pric="", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", fm_hdge_ord_scrn_yn="N", fm_mkpr_cvsn_yn="") # 정정
     """
     try:
         # pandas 출력 옵션 설정
@@ -75,7 +74,7 @@ def main():
         result = order_rvsecncl(
             cano=trenv.my_acct,
             ord_dv="1",
-            acnt_prdt_cd="08",
+            acnt_prdt_cd=trenv.my_prod,
             orgn_ord_dt="20250703",
             orgn_odno="00000398",
             fm_limit_ord_pric="",

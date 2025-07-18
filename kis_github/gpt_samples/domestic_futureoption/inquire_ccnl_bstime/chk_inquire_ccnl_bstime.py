@@ -57,12 +57,14 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
         result1, result2 = inquire_ccnl_bstime(
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             ord_dt="20230920",
             fuop_tr_strt_tmd="000000",
             fuop_tr_end_tmd="240000"

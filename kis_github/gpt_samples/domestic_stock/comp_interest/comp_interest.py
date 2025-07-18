@@ -119,7 +119,7 @@ def comp_interest(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return comp_interest(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,

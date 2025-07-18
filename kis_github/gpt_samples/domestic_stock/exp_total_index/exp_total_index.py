@@ -141,7 +141,7 @@ def exp_total_index(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return exp_total_index(
                 fid_mrkt_cls_code,
                 fid_cond_mrkt_div_code,

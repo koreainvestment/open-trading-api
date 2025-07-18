@@ -204,7 +204,7 @@ def inquire_search(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_search(
                 auth,
                 excd,

@@ -58,7 +58,7 @@ def main():
         - DataFrame: 장내채권 잔고조회 결과
     
     Example:
-        >>> df = inquire_balance(cano="12345678", acnt_prdt_cd="01", inqr_cndt="00", pdno="", buy_dt="", ctx_area_fk200="", ctx_area_nk200="")
+        >>> df = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_cndt="00", pdno="", buy_dt="", ctx_area_fk200="", ctx_area_nk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -78,7 +78,7 @@ def main():
         logger.info("API 호출 시작: 장내채권 잔고조회")
         result = inquire_balance(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             inqr_cndt="00",  # 조회조건
             pdno="",  # 상품번호
             buy_dt="",  # 매수일자

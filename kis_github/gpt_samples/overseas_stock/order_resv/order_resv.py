@@ -107,7 +107,7 @@ def order_resv(
         pd.DataFrame: 해외주식 예약주문접수 결과 데이터
         
     Example:
-        >>> df = order_resv(env_dv="real", ord_dv="usBuy", cano="12345678", acnt_prdt_cd="01", pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
+        >>> df = order_resv(env_dv="real", ord_dv="usBuy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
         >>> print(df)
     """
 

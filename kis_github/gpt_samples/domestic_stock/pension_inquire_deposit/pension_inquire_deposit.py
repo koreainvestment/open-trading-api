@@ -40,7 +40,7 @@ def pension_inquire_deposit(
         pd.DataFrame: 퇴직연금 예수금 데이터
         
     Example:
-        >>> df = pension_inquire_deposit(cano="12345678", acnt_prdt_cd="29", acca_dvsn_cd="00")
+        >>> df = pension_inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acca_dvsn_cd="00")
         >>> print(df)
     """
 

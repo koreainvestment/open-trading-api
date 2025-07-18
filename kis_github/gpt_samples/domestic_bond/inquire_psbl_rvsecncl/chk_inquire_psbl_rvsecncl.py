@@ -59,7 +59,7 @@ def main():
         - DataFrame: 채권정정취소가능주문조회 결과
     
     Example:
-        >>> df = inquire_psbl_rvsecncl(cano="1234567890", acnt_prdt_cd="01", ord_dt="20250601", odno="", ctx_area_fk200="", ctx_area_nk200="")
+        >>> df = inquire_psbl_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ord_dt="20250601", odno="", ctx_area_fk200="", ctx_area_nk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -79,7 +79,7 @@ def main():
         logger.info("API 호출 시작: 채권정정취소가능주문조회")
         result = inquire_psbl_rvsecncl(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             ord_dt="",  # 주문일자
             odno="",  # 주문번호
             ctx_area_fk200="",  # 연속조회검색조건200

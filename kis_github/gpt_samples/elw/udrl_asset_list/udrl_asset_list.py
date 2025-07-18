@@ -106,7 +106,7 @@ def udrl_asset_list(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return udrl_asset_list(
                 fid_cond_scr_div_code,
                 fid_rank_sort_cls_code,

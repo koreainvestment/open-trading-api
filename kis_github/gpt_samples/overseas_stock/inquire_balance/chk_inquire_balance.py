@@ -68,7 +68,7 @@ def main():
         - DataFrame: 해외주식 잔고 결과
     
     Example:
-        >>> df = inquire_balance(cano="12345678", acnt_prdt_cd="01", ovrs_excg_cd="NASD", tr_crcy_cd="USD", ctx_area_fk200="", ctx_area_nk200="")
+        >>> df = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", tr_crcy_cd="USD", ctx_area_fk200="", ctx_area_nk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -86,7 +86,7 @@ def main():
         logger.info("API 호출")
         result1, result2 = inquire_balance(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             ovrs_excg_cd="NASD",  # 해외거래소코드
             tr_crcy_cd="USD",  # 거래통화코드
             FK200="",  # 연속조회검색조건200

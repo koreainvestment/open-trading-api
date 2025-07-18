@@ -148,7 +148,7 @@ def lendable_by_company(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return lendable_by_company(
                 excg_dvsn_cd,
                 pdno,

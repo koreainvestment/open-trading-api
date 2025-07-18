@@ -64,8 +64,8 @@ def order(
         
     Example:
         >>> df = order(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     pdno="AAPL",
         ...     ord_qty="1",

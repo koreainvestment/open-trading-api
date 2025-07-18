@@ -82,7 +82,7 @@ def main():
         - DataFrame: 해외선물옵션 기간계좌손익 일별 결과
     
     Example:
-        >>> df1, df2 = inquire_period_ccld(inqr_term_from_dt="20250601", inqr_term_to_dt="20250630", cano=trenv.my_acct, acnt_prdt_cd="08", crcy_cd="%%%", whol_trsl_yn="N", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
+        >>> df1, df2 = inquire_period_ccld(inqr_term_from_dt="20250601", inqr_term_to_dt="20250630", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, crcy_cd="%%%", whol_trsl_yn="N", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -95,32 +95,19 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
-
-        # 해외선물옵션 기간계좌손익 일별 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        inqr_term_from_dt = "20250601"  # 조회기간FROM일자
-        inqr_term_to_dt = "20250630"  # 조회기간TO일자
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        crcy_cd = "%%%"  # 통화코드
-        whol_trsl_yn = "N"  # 전체환산여부
-        fuop_dvsn = "00"  # 선물옵션구분
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-        ctx_area_nk200 = ""  # 연속조회키200
-
         
         # API 호출
         logger.info("API 호출 시작: 해외선물옵션 기간계좌손익 일별")
         result1, result2 = inquire_period_ccld(
-            inqr_term_from_dt=inqr_term_from_dt,  # 조회기간FROM일자
-            inqr_term_to_dt=inqr_term_to_dt,  # 조회기간TO일자
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            crcy_cd=crcy_cd,  # 통화코드
-            whol_trsl_yn=whol_trsl_yn,  # 전체환산여부
-            fuop_dvsn=fuop_dvsn,  # 선물옵션구분
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
+            inqr_term_from_dt="20250601",  # 조회기간FROM일자
+            inqr_term_to_dt="20250630",  # 조회기간TO일자
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
+            crcy_cd="%%%",  # 통화코드
+            whol_trsl_yn="N",  # 전체환산여부
+            fuop_dvsn="00",  # 선물옵션구분
+            ctx_area_fk200="",  # 연속조회검색조건200
+            ctx_area_nk200="",  # 연속조회키200
         )
         
         # 결과 확인

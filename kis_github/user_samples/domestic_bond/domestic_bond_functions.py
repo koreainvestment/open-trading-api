@@ -140,7 +140,7 @@ def avg_unit(
 
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logger.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return avg_unit(
                 inqr_strt_dt,
                 inqr_end_dt,
@@ -161,7 +161,7 @@ def avg_unit(
             return dataframe1, dataframe2, dataframe3
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
@@ -207,8 +207,8 @@ def buy(
         
     Example:
         >>> df = buy(
-        ...     cano="계좌번호", 
-        ...     acnt_prdt_cd="01", 
+        ...     cano=trenv.my_acct, 
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     pdno="KR1234567890", 
         ...     ord_qty2="10", 
         ...     bond_ord_unpr="10000",
@@ -336,7 +336,7 @@ def inquire_asking_price(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_asking_price(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -394,8 +394,8 @@ def inquire_balance(
         
     Example:
         >>> df = inquire_balance(
-        ...     cano='12345678',
-        ...     acnt_prdt_cd='01',
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     inqr_cndt='00',
         ...     pdno='',
         ...     buy_dt='',
@@ -458,7 +458,7 @@ def inquire_balance(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_balance(
                 cano,
                 acnt_prdt_cd,
@@ -558,7 +558,7 @@ def inquire_ccnl(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_ccnl(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -623,8 +623,8 @@ def inquire_daily_ccld(
         
     Example:
         >>> df1, df2 = inquire_daily_ccld(
-        ...     cano='12345678',
-        ...     acnt_prdt_cd='01',
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     inqr_strt_dt='20230101',
         ...     inqr_end_dt='20230107',
         ...     sll_buy_dvsn_cd='01',
@@ -729,7 +729,7 @@ def inquire_daily_ccld(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_ccld(
                 cano,
                 acnt_prdt_cd,
@@ -830,7 +830,7 @@ def inquire_daily_itemchartprice(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_itemchartprice(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -927,7 +927,7 @@ def inquire_daily_price(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_price(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1021,7 +1021,7 @@ def inquire_price(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_price(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1129,7 +1129,7 @@ def inquire_psbl_order(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_psbl_order(
                 cano,
                 acnt_prdt_cd,
@@ -1187,8 +1187,8 @@ def inquire_psbl_rvsecncl(
         
     Example:
         >>> df = inquire_psbl_rvsecncl(
-        ...     cano='12345678',
-        ...     acnt_prdt_cd='01',
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ord_dt='20230101',
         ...     odno='0000000001',
         ...     ctx_area_fk200='조건값',
@@ -1241,7 +1241,7 @@ def inquire_psbl_rvsecncl(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_psbl_rvsecncl(
                 cano,
                 acnt_prdt_cd,
@@ -1343,7 +1343,7 @@ def inquire_psbl_sell(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_psbl_sell(
                 cano,
                 acnt_prdt_cd,
@@ -1443,7 +1443,7 @@ def issue_info(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return issue_info(
                 pdno,
                 prdt_type_cd,
@@ -1501,8 +1501,8 @@ def order_rvsecncl(
         
     Example:
         >>> df = order_rvsecncl(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     pdno="KR6095572D81",
         ...     orgn_odno="0000015402",
         ...     ord_qty2="2",
@@ -1631,7 +1631,7 @@ def search_bond_info(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return search_bond_info(
                 pdno,
                 prdt_type_cd,
@@ -1696,8 +1696,8 @@ def sell(
         
     Example:
         >>> df = sell(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ord_dvsn="01",
         ...     pdno="KR6095572D81",
         ...     ord_qty2="1",

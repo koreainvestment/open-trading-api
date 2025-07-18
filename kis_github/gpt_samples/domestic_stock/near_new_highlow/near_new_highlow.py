@@ -135,7 +135,7 @@ def near_new_highlow(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return near_new_highlow(
                 fid_aply_rang_vol,
                 fid_cond_mrkt_div_code,

@@ -85,7 +85,7 @@ def hts_top_view(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return hts_top_view(
                 "N", dataframe, depth + 1, max_depth
             )

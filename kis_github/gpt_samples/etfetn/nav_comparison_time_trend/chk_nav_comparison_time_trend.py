@@ -60,7 +60,7 @@ def main():
     # case1 조회
     logging.info("API 호출")
     try:
-        result = nav_comparison_time_trend(fid_cond_mrkt_div_code="E", fid_input_iscd="069500", fid_input_date="60")
+        result = nav_comparison_time_trend(fid_cond_mrkt_div_code="E", fid_input_iscd="069500", fid_hour_cls_code="60")
     except ValueError as e:
         logging.error("에러 발생: %s", str(e))
         return

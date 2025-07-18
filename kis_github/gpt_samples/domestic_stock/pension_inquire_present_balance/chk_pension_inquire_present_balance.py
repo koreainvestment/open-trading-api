@@ -64,14 +64,14 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # Case 1: 퇴직연금 체결기준잔고 조회
     logging.info("=== 퇴직연금 체결기준잔고 조회 ===")
     try:
-        result1, result2 = pension_inquire_present_balance(
-            cano="81180744",
-            acnt_prdt_cd="29",
-            user_dvsn_cd="00"
-        )
+        result1, result2 = pension_inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
+                                                           user_dvsn_cd="00"
+                                                           )
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

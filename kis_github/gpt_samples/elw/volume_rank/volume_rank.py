@@ -175,7 +175,7 @@ def volume_rank(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return volume_rank(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -200,5 +200,5 @@ def volume_rank(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

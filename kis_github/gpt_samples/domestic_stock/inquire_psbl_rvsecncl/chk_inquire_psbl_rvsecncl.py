@@ -64,10 +64,12 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
-        result = inquire_psbl_rvsecncl(cano="81180744", acnt_prdt_cd="01", inqr_dvsn_1="1", inqr_dvsn_2="0")
+        result = inquire_psbl_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_dvsn_1="1", inqr_dvsn_2="0")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

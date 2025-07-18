@@ -120,8 +120,7 @@ def main():
         - DataFrame: 해외주식 체결기준현재잔고 결과
     
     Example:
-        >>> df1, df2, df3 = inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd="01", wcrc_frcr_dvsn_cd="02", natn_cd="000", tr_mket_cd="00", inqr_dvsn_cd="00", env_dv="real")  # 실전투자
-        >>> df1, df2, df3 = inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd="01", wcrc_frcr_dvsn_cd="02", natn_cd="000", tr_mket_cd="00", inqr_dvsn_cd="00", env_dv="demo")  # 모의투자
+        >>> df1, df2, df3 = inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, wcrc_frcr_dvsn_cd="02", natn_cd="000", tr_mket_cd="00", inqr_dvsn_cd="00", env_dv="real")  # 실전투자
     """
     try:
         # pandas 출력 옵션 설정
@@ -142,25 +141,16 @@ def main():
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외주식 체결기준현재잔고 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        wcrc_frcr_dvsn_cd = "02"  # 원화외화구분코드
-        natn_cd = "000"  # 국가코드
-        tr_mket_cd = "00"  # 거래시장코드
-        inqr_dvsn_cd = "00"  # 조회구분코드
 
-        
         # API 호출
         logger.info("API 호출")
         result1, result2, result3 = inquire_present_balance(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            wcrc_frcr_dvsn_cd=wcrc_frcr_dvsn_cd,  # 원화외화구분코드
-            natn_cd=natn_cd,  # 국가코드
-            tr_mket_cd=tr_mket_cd,  # 거래시장코드
-            inqr_dvsn_cd=inqr_dvsn_cd,  # 조회구분코드
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
+            wcrc_frcr_dvsn_cd="02",  # 원화외화구분코드
+            natn_cd="000",  # 국가코드
+            tr_mket_cd="00",  # 거래시장코드
+            inqr_dvsn_cd="00",  # 조회구분코드
             env_dv=env_dv,  # 실전모의구분
         )
         

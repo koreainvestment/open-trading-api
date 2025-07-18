@@ -63,8 +63,8 @@ def buy(
         
     Example:
         >>> df = buy(
-        ...     cano="계좌번호", 
-        ...     acnt_prdt_cd="01", 
+        ...     cano=trenv.my_acct, 
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     pdno="KR1234567890", 
         ...     ord_qty2="10", 
         ...     bond_ord_unpr="10000",

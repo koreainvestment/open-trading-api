@@ -75,7 +75,7 @@ def main():
         logger.info("API 호출 시작: 장내채권 정정취소주문")
         result = order_rvsecncl(
             cano=trenv.my_acct,
-            acnt_prdt_cd="01",
+            acnt_prdt_cd=trenv.my_prod,
             pdno="KR6095572D81",
             orgn_odno="0004357900",  # 실제 테스트 시 유효한 원주문번호로 변경해야 합니다.
             ord_qty2="1",  # 정정/취소 수량

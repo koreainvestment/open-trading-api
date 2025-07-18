@@ -97,7 +97,7 @@ def compare_stocks(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return compare_stocks(
                 fid_cond_scr_div_code,
                 fid_input_iscd,

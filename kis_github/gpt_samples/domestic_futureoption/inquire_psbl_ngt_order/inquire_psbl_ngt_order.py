@@ -47,7 +47,7 @@ def inquire_psbl_ngt_order(
         pd.DataFrame: (야간)선물옵션 주문가능 데이터
         
     Example:
-        >>> df = inquire_psbl_ngt_order(cano="81180744", acnt_prdt_cd="03", pdno="101T03", prdt_type_cd="301", sll_buy_dvsn_cd="02", unit_price="322", ord_dvsn_cd="01")
+        >>> df = inquire_psbl_ngt_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="101T03", prdt_type_cd="301", sll_buy_dvsn_cd="02", unit_price="322", ord_dvsn_cd="01")
         >>> print(df)
     """
 

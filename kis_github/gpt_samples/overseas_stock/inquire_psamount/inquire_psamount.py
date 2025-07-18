@@ -60,8 +60,8 @@ def inquire_psamount(
         
     Example:
         >>> df = inquire_psamount(
-        ...     cano="81019777",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     ovrs_ord_unpr="1.4",
         ...     item_cd="QQQ"
@@ -126,7 +126,7 @@ def inquire_psamount(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_psamount(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,

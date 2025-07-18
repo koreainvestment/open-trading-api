@@ -138,7 +138,7 @@ def short_sale(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return short_sale(
                 fid_aply_rang_vol,
                 fid_cond_mrkt_div_code,

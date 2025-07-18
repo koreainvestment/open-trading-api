@@ -58,7 +58,7 @@ def inquire_balance(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1, output2) 선물옵션 잔고현황 데이터
         
     Example:
-        >>> df1, df2 = inquire_balance(env_dv="real", cano="81180744", acnt_prdt_cd="03", mgna_dvsn="01", excc_stat_cd="1")
+        >>> df1, df2 = inquire_balance(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, mgna_dvsn="01", excc_stat_cd="1")
         >>> print(df1)
         >>> print(df2)
     """
@@ -126,7 +126,7 @@ def inquire_balance(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance(
                 env_dv, cano, acnt_prdt_cd, mgna_dvsn, excc_stat_cd,
                 FK200, NK200, "N", dataframe1, dataframe2, depth + 1, max_depth

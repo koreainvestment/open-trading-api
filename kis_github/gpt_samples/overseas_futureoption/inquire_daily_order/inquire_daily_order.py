@@ -68,8 +68,8 @@ def inquire_daily_order(
         
     Example:
         >>> df = inquire_daily_order(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     strt_dt="20220101",
         ...     end_dt="20221214",
         ...     fm_pdgr_cd="",
@@ -144,7 +144,7 @@ def inquire_daily_order(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_order(
                 cano,
                 acnt_prdt_cd,

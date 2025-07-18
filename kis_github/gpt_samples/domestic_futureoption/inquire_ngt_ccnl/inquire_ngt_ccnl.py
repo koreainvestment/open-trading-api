@@ -73,7 +73,7 @@ def inquire_ngt_ccnl(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1 데이터, output2 데이터)
         
     Example:
-        >>> df1, df2 = inquire_ngt_ccnl("81180744", "03", "20231201", "20231214", "00", "00")
+        >>> df1, df2 = inquire_ngt_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_ord_dt="20231201", end_ord_dt="20231214", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="00")
         >>> print(df1)
         >>> print(df2)
     """
@@ -151,7 +151,7 @@ def inquire_ngt_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ngt_ccnl(
                 cano, acnt_prdt_cd, strt_ord_dt, end_ord_dt, sll_buy_dvsn_cd, ccld_nccs_dvsn,
                 sort_sqn, strt_odno, pdno, mket_id_cd, fuop_dvsn_cd, scrn_dvsn,

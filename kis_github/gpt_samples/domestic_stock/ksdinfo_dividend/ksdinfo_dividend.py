@@ -120,7 +120,7 @@ def ksdinfo_dividend(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_dividend(
                 cts,
                 gb1,

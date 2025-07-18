@@ -47,7 +47,7 @@ def intgr_margin(
         pd.DataFrame: 주식통합증거금 현황 데이터
         
     Example:
-        >>> df = intgr_margin(cano="81180744", acnt_prdt_cd="01", cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01", fwex_ctrt_frcr_dvsn_cd="01")
+        >>> df = intgr_margin(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01", fwex_ctrt_frcr_dvsn_cd="01")
         >>> print(df)
     """
 

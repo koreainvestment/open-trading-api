@@ -67,7 +67,7 @@ def order_resv_list(
         pd.DataFrame: 해외주식 예약주문조회 데이터
         
     Example:
-        >>> df = order_resv_list(nat_dv="us", cano="12345678", acnt_prdt_cd="01", inqr_strt_dt="20250101", inqr_end_dt="20251231", inqr_dvsn_cd="00", ovrs_excg_cd="NASD")
+        >>> df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20250101", inqr_end_dt="20251231", inqr_dvsn_cd="00", ovrs_excg_cd="NASD")
         >>> print(df)
     """
     
@@ -135,7 +135,7 @@ def order_resv_list(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return order_resv_list(
                 nat_dv, cano, acnt_prdt_cd, inqr_strt_dt, inqr_end_dt, 
                 inqr_dvsn_cd, ovrs_excg_cd, prdt_type_cd, FK200, NK200, 

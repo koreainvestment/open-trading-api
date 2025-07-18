@@ -49,7 +49,7 @@ def inquire_credit_psamount(
         pd.DataFrame: 신용매수가능조회 데이터
         
     Example:
-        >>> df = inquire_credit_psamount(cano="81180744", acnt_prdt_cd="01", pdno="005930", ord_dvsn="00", crdt_type="21", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
+        >>> df = inquire_credit_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_dvsn="00", crdt_type="21", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
         >>> print(df)
     """
 

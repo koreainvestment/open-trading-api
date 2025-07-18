@@ -91,7 +91,7 @@ def compare_stocks(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return compare_stocks(
                 fid_cond_scr_div_code,
                 fid_input_iscd,
@@ -360,7 +360,7 @@ def cond_search(
         # 연속 데이터가 있는 경우 재귀 호출
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)  # API 호출 간격 조절
+            ka.smart_sleep()  # API 호출 간격 조절
             return cond_search(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -432,7 +432,7 @@ def cond_search(
         error_code = res.getErrorCode()
         error_message = res.getErrorMessage()
         logger.error("API call failed: %s - %s", error_code, error_message)
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()  # 빈 데이터프레임 반환
 
 ##############################################################################################
@@ -574,7 +574,7 @@ def expiration_stocks(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return expiration_stocks(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -735,7 +735,7 @@ def indicator(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return indicator(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -838,7 +838,7 @@ def indicator_trend_ccnl(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return indicator_trend_ccnl(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -929,7 +929,7 @@ def indicator_trend_daily(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return indicator_trend_daily(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1048,7 +1048,7 @@ def indicator_trend_minute(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return indicator_trend_minute(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1062,7 +1062,7 @@ def indicator_trend_minute(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()
 
 ##############################################################################################
@@ -1156,7 +1156,7 @@ def lp_trade_trend(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return lp_trade_trend(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1291,7 +1291,7 @@ def newly_listed(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return newly_listed(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -1459,7 +1459,7 @@ def quick_change(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return quick_change(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -1629,7 +1629,7 @@ def sensitivity(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return sensitivity(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -1734,7 +1734,7 @@ def sensitivity_trend_ccnl(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return sensitivity_trend_ccnl(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1834,7 +1834,7 @@ def sensitivity_trend_daily(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return sensitivity_trend_daily(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -1935,7 +1935,7 @@ def udrl_asset_list(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return udrl_asset_list(
                 fid_cond_scr_div_code,
                 fid_rank_sort_cls_code,
@@ -2110,7 +2110,7 @@ def udrl_asset_price(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return udrl_asset_price(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -2293,7 +2293,7 @@ def updown_rate(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return updown_rate(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -2404,7 +2404,7 @@ def volatility_trend_ccnl(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return volatility_trend_ccnl(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -2416,7 +2416,7 @@ def volatility_trend_ccnl(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()
 
 ##############################################################################################
@@ -2502,7 +2502,7 @@ def volatility_trend_daily(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return volatility_trend_daily(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -2622,7 +2622,7 @@ def volatility_trend_minute(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return volatility_trend_minute(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -2635,7 +2635,7 @@ def volatility_trend_minute(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()
 
 ##############################################################################################
@@ -2724,7 +2724,7 @@ def volatility_trend_tick(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return volatility_trend_tick(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -2735,7 +2735,7 @@ def volatility_trend_tick(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()
 
 ##############################################################################################
@@ -2894,7 +2894,7 @@ def volume_rank(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return volume_rank(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -2919,6 +2919,6 @@ def volume_rank(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()
 

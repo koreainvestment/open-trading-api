@@ -105,7 +105,7 @@ def ksdinfo_merger_split(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_merger_split(
                 cts,
                 f_dt,

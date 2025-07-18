@@ -60,7 +60,7 @@ def pension_inquire_daily_ccld(
         pd.DataFrame: 퇴직연금 미체결내역 데이터
         
     Example:
-        >>> df = pension_inquire_daily_ccld(cano="81180744", acnt_prdt_cd="29", user_dvsn_cd="%%", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="%%", inqr_dvsn_3="00")
+        >>> df = pension_inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, user_dvsn_cd="%%", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="%%", inqr_dvsn_3="00")
         >>> print(df)
     """
 
@@ -118,7 +118,7 @@ def pension_inquire_daily_ccld(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return pension_inquire_daily_ccld(
                 cano, acnt_prdt_cd, user_dvsn_cd, sll_buy_dvsn_cd, ccld_nccs_dvsn, inqr_dvsn_3, FK100, NK100, "N", dataframe, depth + 1, max_depth
             )

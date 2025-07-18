@@ -53,7 +53,7 @@ def algo_ordno(
         pd.DataFrame: 해외주식 지정가주문번호 데이터
         
     Example:
-        >>> df = algo_ordno(cano="81180744", acnt_prdt_cd="03", trad_dt="20250619")
+        >>> df = algo_ordno(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, trad_dt="20250619")
         >>> print(df)
     """
 
@@ -99,7 +99,7 @@ def algo_ordno(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return algo_ordno(
                 cano, acnt_prdt_cd, trad_dt, FK200, NK200, "N", dataframe, depth + 1, max_depth
             )

@@ -140,7 +140,7 @@ def invest_opbysec(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return invest_opbysec(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,

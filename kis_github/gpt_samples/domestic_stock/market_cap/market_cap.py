@@ -111,7 +111,7 @@ def market_cap(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return market_cap(
                 fid_input_price_2,
                 fid_cond_mrkt_div_code,

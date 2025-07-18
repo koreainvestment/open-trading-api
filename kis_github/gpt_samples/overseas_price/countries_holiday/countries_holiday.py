@@ -97,7 +97,7 @@ def countries_holiday(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return countries_holiday(
                 trad_dt,
                 ctx_area_nk,

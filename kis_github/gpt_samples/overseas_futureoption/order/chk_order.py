@@ -60,7 +60,7 @@ def main():
         - DataFrame: 해외선물옵션 주문 결과
     
     Example:
-        >>> df = order(cano=trenv.my_acct, acnt_prdt_cd="08", ovrs_futr_fx_pdno="1AALN25 C10.0", sll_buy_dvsn_cd="02", fm_lqd_ustl_ccld_dt="", fm_lqd_ustl_ccno="", pric_dvsn_cd="1", fm_limit_ord_pric="1.17", fm_stop_ord_pric="", fm_ord_qty="1", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", ccld_cndt_cd="6", cplx_ord_dvsn_cd="0", ecis_rsvn_ord_yn="N", fm_hdge_ord_scrn_yn="N")
+        >>> df = order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_futr_fx_pdno="1AALN25 C10.0", sll_buy_dvsn_cd="02", fm_lqd_ustl_ccld_dt="", fm_lqd_ustl_ccno="", pric_dvsn_cd="1", fm_limit_ord_pric="1.17", fm_stop_ord_pric="", fm_ord_qty="1", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", ccld_cndt_cd="6", cplx_ord_dvsn_cd="0", ecis_rsvn_ord_yn="N", fm_hdge_ord_scrn_yn="N")
     """
     try:
         # pandas 출력 옵션 설정
@@ -78,7 +78,7 @@ def main():
         logger.info("API 호출")
         result = order(
             cano=trenv.my_acct,
-            acnt_prdt_cd="08",
+            acnt_prdt_cd=trenv.my_prod,
             ovrs_futr_fx_pdno="6NU25",
             sll_buy_dvsn_cd="02",
             fm_lqd_ustl_ccld_dt="",

@@ -57,7 +57,7 @@ def inquire_daily_amount_fee(
         Tuple[pd.DataFrame, pd.DataFrame]: 선물옵션기간약정수수료일별 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_daily_amount_fee(cano="81180744", acnt_prdt_cd="03", inqr_strt_day="20240401", inqr_end_day="20240625")
+        >>> df1, df2 = inquire_daily_amount_fee(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_day="20240401", inqr_end_day="20240625")
         >>> print(df1)
         >>> print(df2)
     """
@@ -116,7 +116,7 @@ def inquire_daily_amount_fee(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_daily_amount_fee(
                 cano, acnt_prdt_cd, inqr_strt_day, inqr_end_day, fk200, nk200, "N", dataframe1, dataframe2, depth + 1, max_depth
             )

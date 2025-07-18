@@ -149,7 +149,7 @@ def avg_unit(
 
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logger.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return avg_unit(
                 inqr_strt_dt,
                 inqr_end_dt,
@@ -170,5 +170,5 @@ def avg_unit(
             return dataframe1, dataframe2, dataframe3
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()

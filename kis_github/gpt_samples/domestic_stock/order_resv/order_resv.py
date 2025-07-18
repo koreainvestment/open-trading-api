@@ -88,7 +88,7 @@ def order_resv(
         pd.DataFrame: 예약주문 결과 데이터
         
     Example:
-        >>> df = order_resv(cano="81180744", acnt_prdt_cd="01", pdno="005930", ord_qty="1", ord_unpr="55000", sll_buy_dvsn_cd="02", ord_dvsn_cd="00", ord_objt_cblc_dvsn_cd="10")
+        >>> df = order_resv(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_qty="1", ord_unpr="55000", sll_buy_dvsn_cd="02", ord_dvsn_cd="00", ord_objt_cblc_dvsn_cd="10")
         >>> print(df)
     """
 

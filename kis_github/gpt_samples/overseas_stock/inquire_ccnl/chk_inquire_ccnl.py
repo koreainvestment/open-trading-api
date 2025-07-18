@@ -88,8 +88,7 @@ def main():
         - DataFrame: 해외주식 주문체결내역 결과
     
     Example:
-        >>> df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd="01", pdno="", ord_strt_dt="20250101", ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="", sort_sqn="DS", ord_dt="", ord_gno_brno="", odno="", ctx_area_nk200="", ctx_area_fk200="", env_dv="real")  # 실전투자
-        >>> df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd="01", pdno="", ord_strt_dt="20250101", ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="", sort_sqn="DS", ord_dt="", ord_gno_brno="", odno="", ctx_area_nk200="", ctx_area_fk200="", env_dv="demo")  # 모의투자
+        >>> df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="", ord_strt_dt="20250101", ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="", sort_sqn="DS", ord_dt="", ord_gno_brno="", odno="", ctx_area_nk200="", ctx_area_fk200="", env_dv="real")  # 실전투자
     """
     try:
         # pandas 출력 옵션 설정
@@ -108,13 +107,14 @@ def main():
         elif env_dv == "demo":
             ka.auth(svr='vps')   # 모의투자용 토큰
         logger.info("토큰 발급 완료")
+
         trenv = ka.getTREnv()
         
         # API 호출
         logger.info("API 호출")
         result = inquire_ccnl(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             pdno="",  # 상품번호
             ord_strt_dt="20250601",  # 주문시작일자
             ord_end_dt="20250630",  # 주문종료일자

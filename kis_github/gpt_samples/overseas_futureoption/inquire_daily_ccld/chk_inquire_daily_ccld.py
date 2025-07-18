@@ -73,7 +73,7 @@ def main():
         - DataFrame: 해외선물옵션 일별 체결내역 결과
     
     Example:
-        >>> df1, df2 = inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd="01", strt_dt="20250101", end_dt="20250131", fuop_dvsn_cd="", fm_pdgr_cd="", crcy_cd="%%%", fm_item_ftng_yn="N", sll_buy_dvsn_cd="%%", ctx_area_fk200="", ctx_area_nk200="")
+        >>> df1, df2 = inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_dt="20250101", end_dt="20250131", fuop_dvsn_cd="", fm_pdgr_cd="", crcy_cd="%%%", fm_item_ftng_yn="N", sll_buy_dvsn_cd="%%", ctx_area_fk200="", ctx_area_nk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -91,7 +91,7 @@ def main():
         logger.info("API 호출 시작: 해외선물옵션 일별 체결내역")
         result1, result2 = inquire_daily_ccld(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="08",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             strt_dt="20250601",  # 시작일자
             end_dt="20250702",  # 종료일자
             fuop_dvsn_cd="00",  # 선물옵션구분코드

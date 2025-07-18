@@ -103,7 +103,7 @@ def search_stock_info(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return search_stock_info(
                 prdt_type_cd,
                 pdno,

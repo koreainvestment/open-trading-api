@@ -18,56 +18,56 @@ trenv = ka.getTREnv()
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 지정가주문번호조회 [해외주식-071]
 ##############################################################################################
-result = algo_ordno(cano="81180744", acnt_prdt_cd="03", trad_dt="20250619")
+result = algo_ordno(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, trad_dt="20250619")
 print(result)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 미국주간주문 [v1_해외주식-026]
 ##############################################################################################
-df = daytime_order(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.50", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00")
+df = daytime_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.50", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 미국주간정정취소 [v1_해외주식-027]
 ##############################################################################################
-df = daytime_order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", pdno="AAPL", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="10", ovrs_ord_unpr="150.25", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0")
+df = daytime_order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="10", ovrs_ord_unpr="150.25", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 - 해외증거금 통화별조회 [해외주식-035]
 ##############################################################################################
-df = foreign_margin(cano="12345678", acnt_prdt_cd="01")
+df = foreign_margin(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod)
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 지정가체결내역조회 [해외주식-070]
 ##############################################################################################
-result, result3 = inquire_algo_ccnl(cano="81180744", acnt_prdt_cd="01")
+result, result3 = inquire_algo_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,)
 print(result)
 print(result3)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 잔고 [v1_해외주식-006]
 ##############################################################################################
-df = inquire_balance(cano="12345678", acnt_prdt_cd="01", ovrs_excg_cd="NASD", tr_crcy_cd="USD", ctx_area_fk200="", ctx_area_nk200="")
+df = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", tr_crcy_cd="USD", ctx_area_fk200="", ctx_area_nk200="")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 주문체결내역 [v1_해외주식-007]
 ##############################################################################################
-df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd="01", pdno="", ord_strt_dt="20250101", ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="", sort_sqn="DS", ord_dt="", ord_gno_brno="", odno="", ctx_area_nk200="", ctx_area_fk200="", env_dv="real")
+df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="", ord_strt_dt="20250101", ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="", sort_sqn="DS", ord_dt="", ord_gno_brno="", odno="", ctx_area_nk200="", ctx_area_fk200="", env_dv="real")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 미체결내역 [v1_해외주식-005]
 ##############################################################################################
-df = inquire_nccs(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", sort_sqn="DS", FK200="", NK200="", env_dv="real")
+df = inquire_nccs(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", sort_sqn="DS", FK200="", NK200="", env_dv="real")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 결제기준잔고 [해외주식-064]
 ##############################################################################################
-df1, df2, df3 = inquire_paymt_stdr_balance(cano=trenv.my_acct, acnt_prdt_cd="01", bass_dt="20250630", wcrc_frcr_dvsn_cd="01", inqr_dvsn_cd="00")
+df1, df2, df3 = inquire_paymt_stdr_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, bass_dt="20250630", wcrc_frcr_dvsn_cd="01", inqr_dvsn_cd="00")
 print(df1)
 print(df2)
 print(df3)
@@ -75,21 +75,21 @@ print(df3)
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 기간손익 [v1_해외주식-032]
 ##############################################################################################
-df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", natn_cd="", crcy_cd="USD", pdno="", inqr_strt_dt="20230101", inqr_end_dt="20231231", wcrc_frcr_dvsn_cd="01", FK200="", NK200="")
+df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", natn_cd="", crcy_cd="USD", pdno="", inqr_strt_dt="20230101", inqr_end_dt="20231231", wcrc_frcr_dvsn_cd="01", FK200="", NK200="")
 print(df1)
 print(df2)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 일별거래내역 [해외주식-063]
 ##############################################################################################
-df1, df2 = inquire_period_trans(cano=trenv.my_acct, acnt_prdt_cd="01", erlm_strt_dt="20240420", erlm_end_dt="20240520", ovrs_excg_cd="NAS", pdno="", sll_buy_dvsn_cd="00", loan_dvsn_cd="", FK100="", NK100="")
+df1, df2 = inquire_period_trans(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, erlm_strt_dt="20240420", erlm_end_dt="20240520", ovrs_excg_cd="NAS", pdno="", sll_buy_dvsn_cd="00", loan_dvsn_cd="", FK100="", NK100="")
 print(df1)
 print(df2)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 체결기준현재잔고 [v1_해외주식-008]
 ##############################################################################################
-df1, df2, df3 = inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd="01", wcrc_frcr_dvsn_cd="02", natn_cd="000", tr_mket_cd="00", inqr_dvsn_cd="00", env_dv="real")
+df1, df2, df3 = inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, wcrc_frcr_dvsn_cd="02", natn_cd="000", tr_mket_cd="00", inqr_dvsn_cd="00", env_dv="real")
 print(df1)
 print(df2)
 print(df3)
@@ -97,7 +97,7 @@ print(df3)
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 매수가능금액조회 [해외주식-014]
 ##############################################################################################
-df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", ovrs_ord_unpr="1.4", item_cd="QQQ", env_dv="real")
+df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", ovrs_ord_unpr="1.4", item_cd="QQQ", env_dv="real")
 print(df)
 
 ##############################################################################################
@@ -117,13 +117,14 @@ print(result2)
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 주문 [v1_해외주식-001]
 ##############################################################################################
-df = order(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.00", ord_dv="sell", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00", env_dv="real")
+df = order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.00", ord_dv="sell", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00", env_dv="real")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 예약주문접수[v1_해외주식-002]
 ##############################################################################################
-result = order_resv(env_dv="real", ord_dv="usBuy", cano="81180744", acnt_prdt_cd="01", pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
+result = order_resv(env_dv="real", ord_dv="usBuy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
+         pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
 print(result)
 
 ##############################################################################################
@@ -132,8 +133,8 @@ print(result)
 result = order_resv_ccnl(
             env_dv="real",
             nat_dv="us", 
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             rsyn_ord_rcit_dt="20250610",
             ovrs_rsvn_odno="0030008244"
         )
@@ -142,13 +143,13 @@ print(result)
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 예약주문조회[v1_해외주식-013]
 ##############################################################################################
-df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd="01", inqr_strt_dt="20220809", inqr_end_dt="20220830", inqr_dvsn_cd="00", ovrs_excg_cd="NASD", env_dv="real")
+df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20220809", inqr_end_dt="20220830", inqr_dvsn_cd="00", ovrs_excg_cd="NASD")
 print(df)
 
 ################################################################################
 # [해외주식] 주문/계좌 > 해외주식 정정취소주문[v1_해외주식-003]
 ################################################################################
-df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NYSE", pdno="", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="", ord_svr_dvsn_cd="0", env_dv="real")
+df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NYSE", pdno="", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="", ord_svr_dvsn_cd="0", env_dv="real")
 print(df)
 
 ##############################################################################################

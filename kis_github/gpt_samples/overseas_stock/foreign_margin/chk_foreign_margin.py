@@ -56,7 +56,7 @@ def main():
         - DataFrame: 해외증거금 통화별조회 결과
     
     Example:
-        >>> df = foreign_margin(cano="12345678", acnt_prdt_cd="01")
+        >>> df = foreign_margin(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod)
     """
     try:
         # pandas 출력 옵션 설정
@@ -74,7 +74,7 @@ def main():
         logger.info("API 호출")
         result = foreign_margin(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
         )
         
         if result is None or result.empty:

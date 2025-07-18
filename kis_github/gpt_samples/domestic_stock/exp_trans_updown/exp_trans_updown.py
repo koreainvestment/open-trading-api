@@ -155,7 +155,7 @@ def exp_trans_updown(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return exp_trans_updown(
                 fid_rank_sort_cls_code,
                 fid_cond_mrkt_div_code,

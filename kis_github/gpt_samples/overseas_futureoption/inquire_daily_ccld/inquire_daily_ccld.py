@@ -72,8 +72,8 @@ def inquire_daily_ccld(
         
     Example:
         >>> df1, df2 = inquire_daily_ccld(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     strt_dt="20221010",
         ...     end_dt="20221216",
         ...     fuop_dvsn_cd="00",
@@ -183,7 +183,7 @@ def inquire_daily_ccld(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_ccld(
                 cano,
                 acnt_prdt_cd,

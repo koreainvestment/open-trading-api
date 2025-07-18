@@ -18,7 +18,7 @@ trenv = ka.getTREnv()
 ##############################################################################################
 # [국내주식] 기본시세 > ETF 구성종목시세[국내주식-073]
 ##############################################################################################
-result1, result2 = inquire_component_stock_price(fid_cond_mrkt_div_code="J", fid_input_iscd="069500", fid_input_date="11216")
+result1, result2 = inquire_component_stock_price(fid_cond_mrkt_div_code="J", fid_input_iscd="069500", fid_cond_scr_div_code="11216")
 print(result1)
 print(result2)
 
@@ -37,7 +37,7 @@ print(result)
 ##############################################################################################
 # [국내주식] 기본시세 > NAV 비교추이(분)[v1_국내주식-070]
 ##############################################################################################
-result = nav_comparison_time_trend(fid_cond_mrkt_div_code="E", fid_input_iscd="069500", fid_input_date="60")
+result = nav_comparison_time_trend(fid_cond_mrkt_div_code="E", fid_input_iscd="069500", fid_hour_cls_code="60")
 print(result)
 
 ##############################################################################################

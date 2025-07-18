@@ -274,7 +274,7 @@ def cond_search(
         # 연속 데이터가 있는 경우 재귀 호출
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)  # API 호출 간격 조절
+            ka.smart_sleep()  # API 호출 간격 조절
             return cond_search(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -346,5 +346,5 @@ def cond_search(
         error_code = res.getErrorCode()
         error_message = res.getErrorMessage()
         logger.error("API call failed: %s - %s", error_code, error_message)
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()  # 빈 데이터프레임 반환

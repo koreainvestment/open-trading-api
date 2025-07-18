@@ -104,7 +104,7 @@ def volatility_trend_ccnl(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return volatility_trend_ccnl(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -116,5 +116,5 @@ def volatility_trend_ccnl(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

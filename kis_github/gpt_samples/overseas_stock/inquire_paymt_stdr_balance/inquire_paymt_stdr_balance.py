@@ -62,8 +62,8 @@ def inquire_paymt_stdr_balance(
         
     Example:
         >>> df1, df2, df3 = inquire_paymt_stdr_balance(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     bass_dt="20230630",
         ...     wcrc_frcr_dvsn_cd="01",
         ...     inqr_dvsn_cd="00"
@@ -173,7 +173,7 @@ def inquire_paymt_stdr_balance(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_paymt_stdr_balance(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,

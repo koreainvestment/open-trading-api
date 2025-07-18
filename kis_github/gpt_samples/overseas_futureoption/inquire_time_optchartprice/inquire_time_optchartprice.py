@@ -139,7 +139,7 @@ def inquire_time_optchartprice(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_time_optchartprice(
                 srs_cd, exch_cd, qry_cnt, start_date_time, close_date_time, 
                 qry_gap, qry_tp, index_key, "N", dataframe1, dataframe2, depth + 1, max_depth

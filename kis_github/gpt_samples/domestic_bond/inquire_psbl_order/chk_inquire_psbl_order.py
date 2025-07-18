@@ -50,7 +50,7 @@ def main():
         - DataFrame: 장내채권 매수가능조회 결과
     
     Example:
-        >>> df = inquire_psbl_order(cano="1234567890", acnt_prdt_cd="01", pdno="KR2033022D33", bond_ord_unpr="1000")
+        >>> df = inquire_psbl_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="KR2033022D33", bond_ord_unpr="1000")
     """
     try:
         # pandas 출력 옵션 설정
@@ -70,7 +70,7 @@ def main():
         logger.info("API 호출 시작: 장내채권 매수가능조회")
         result = inquire_psbl_order(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             pdno="KR2033022D33",  # 채권종목코드(ex KR2033022D33)
             bond_ord_unpr="1000",  # 채권주문단가
         )

@@ -88,10 +88,12 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # 기간별계좌권리현황조회
     logging.info("=== 기간별계좌권리현황조회 ===")
     try:
-        result = period_rights(inqr_dvsn="03", cano="81180744", acnt_prdt_cd="01", inqr_strt_dt="20250101",
+        result = period_rights(inqr_dvsn="03", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20250101",
                                inqr_end_dt="20250103")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))

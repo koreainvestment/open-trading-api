@@ -88,7 +88,7 @@ def stock_detail(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return stock_detail(
                 srs_cd,
                 "N", dataframe, depth + 1, max_depth

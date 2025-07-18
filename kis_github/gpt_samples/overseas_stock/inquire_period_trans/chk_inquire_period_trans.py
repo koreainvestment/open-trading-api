@@ -84,7 +84,7 @@ def main():
         - DataFrame: 해외주식 일별거래내역 결과 (output1: 거래내역 목록, output2: 거래내역 요약)
     
     Example:
-        >>> df1, df2 = inquire_period_trans(cano=trenv.my_acct, acnt_prdt_cd="01", erlm_strt_dt="20240420", erlm_end_dt="20240520", ovrs_excg_cd="NAS", pdno="", sll_buy_dvsn_cd="00", loan_dvsn_cd="", FK100="", NK100="")
+        >>> df1, df2 = inquire_period_trans(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, erlm_strt_dt="20240420", erlm_end_dt="20240520", ovrs_excg_cd="NAS", pdno="", sll_buy_dvsn_cd="00", loan_dvsn_cd="", FK100="", NK100="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -102,7 +102,7 @@ def main():
         logger.info("API 호출")
         result1, result2 = inquire_period_trans(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             erlm_strt_dt="20240601",  # 등록시작일자
             erlm_end_dt="20240630",  # 등록종료일자
             ovrs_excg_cd="NASD",  # 해외거래소코드

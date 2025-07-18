@@ -151,7 +151,7 @@ def overtime_volume(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return overtime_volume(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,

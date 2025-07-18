@@ -59,8 +59,7 @@ def main():
         - DataFrame: 해외주식 매수가능금액조회 결과
     
     Example:
-        >>> df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", ovrs_ord_unpr="1.4", item_cd="QQQ", env_dv="real")  # 실전투자
-        >>> df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", ovrs_ord_unpr="1.4", item_cd="QQQ", env_dv="demo")  # 모의투자
+        >>> df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", ovrs_ord_unpr="1.4", item_cd="QQQ", env_dv="real")  # 실전투자
     """
     try:
         # pandas 출력 옵션 설정
@@ -85,7 +84,7 @@ def main():
         logger.info("API 호출")
         result = inquire_psamount(
             cano=trenv.my_acct,
-            acnt_prdt_cd="01",
+            acnt_prdt_cd=trenv.my_prod,
             ovrs_excg_cd="NASD",
             ovrs_ord_unpr="1.4",
             item_cd="QQQ",

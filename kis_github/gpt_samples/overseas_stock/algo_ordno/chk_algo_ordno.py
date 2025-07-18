@@ -52,11 +52,13 @@ def main():
     
     # 인증 토큰 발급
     ka.auth()
-    
+
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
-        result = algo_ordno(cano="81180744", acnt_prdt_cd="03", trad_dt="20250619")
+        result = algo_ordno(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, trad_dt="20250619")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

@@ -62,8 +62,8 @@ def daytime_order_rvsecncl(
         
     Example:
         >>> df = daytime_order_rvsecncl(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     pdno="AAPL",
         ...     orgn_odno="1234567890",

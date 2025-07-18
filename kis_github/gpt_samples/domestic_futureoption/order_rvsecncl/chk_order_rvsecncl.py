@@ -50,6 +50,8 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 테스트
     logging.info("=== case1 테스트 ===")
     try:
@@ -57,8 +59,8 @@ def main():
             env_dv="real",
             day_dv="day",
             ord_prcs_dvsn_cd="02",
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             rvse_cncl_dvsn_cd="02",
             orgn_odno="0000004018",
             ord_qty="0",

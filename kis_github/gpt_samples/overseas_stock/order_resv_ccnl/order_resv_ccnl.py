@@ -52,7 +52,7 @@ def order_resv_ccnl(
         pd.DataFrame: 해외주식 예약주문접수취소 결과 데이터
         
     Example:
-        >>> df = order_resv_ccnl(env_dv="real", nat_dv="us", cano="81180744", acnt_prdt_cd="01", rsyn_ord_rcit_dt="20220810", ovrs_rsvn_odno="0030008244")
+        >>> df = order_resv_ccnl(env_dv="real", nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rsyn_ord_rcit_dt="20220810", ovrs_rsvn_odno="0030008244")
         >>> print(df)
     """
 

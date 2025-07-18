@@ -141,7 +141,7 @@ def market_value(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return market_value(
                 fid_trgt_cls_code,
                 fid_cond_mrkt_div_code,

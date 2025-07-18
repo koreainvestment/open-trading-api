@@ -155,7 +155,7 @@ def daily_ccnl(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return daily_ccnl(
                 srs_cd,
                 exch_cd,
@@ -280,7 +280,7 @@ def inquire_asking_price(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_asking_price(
                 srs_cd,
                 dataframe1, dataframe2, "N", depth + 1, max_depth
@@ -336,8 +336,8 @@ def inquire_ccld(
         
     Example:
         >>> df = inquire_ccld(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ccld_nccs_dvsn="01",
         ...     sll_buy_dvsn_cd="01",
         ...     fuop_dvsn="00",
@@ -400,7 +400,7 @@ def inquire_ccld(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_ccld(
                 cano,
                 acnt_prdt_cd,
@@ -472,8 +472,8 @@ def inquire_daily_ccld(
         
     Example:
         >>> df1, df2 = inquire_daily_ccld(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     strt_dt="20221010",
         ...     end_dt="20221216",
         ...     fuop_dvsn_cd="00",
@@ -583,7 +583,7 @@ def inquire_daily_ccld(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_ccld(
                 cano,
                 acnt_prdt_cd,
@@ -655,8 +655,8 @@ def inquire_daily_order(
         
     Example:
         >>> df = inquire_daily_order(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     strt_dt="20220101",
         ...     end_dt="20221214",
         ...     fm_pdgr_cd="",
@@ -731,7 +731,7 @@ def inquire_daily_order(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_order(
                 cano,
                 acnt_prdt_cd,
@@ -790,8 +790,8 @@ def inquire_deposit(
         
     Example:
         >>> df = inquire_deposit(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     crcy_cd="KRW",
         ...     inqr_dt="20221214"
         ... )
@@ -845,7 +845,7 @@ def inquire_deposit(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_deposit(
                 cano,
                 acnt_prdt_cd,
@@ -912,8 +912,8 @@ def inquire_period_ccld(
         >>> df1, df2 = inquire_period_ccld(
         ...     inqr_term_from_dt="20250601",
         ...     inqr_term_to_dt="20250630",
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     crcy_cd="%%%",
         ...     whol_trsl_yn="N",
         ...     fuop_dvsn="00",
@@ -1014,7 +1014,7 @@ def inquire_period_ccld(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_period_ccld(
                 inqr_term_from_dt,
                 inqr_term_to_dt,
@@ -1084,8 +1084,8 @@ def inquire_period_trans(
         >>> df = inquire_period_trans(
         ...     inqr_term_from_dt="20220101",
         ...     inqr_term_to_dt="20221214",
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     acnt_tr_type_cd="%%",
         ...     crcy_cd="%%%",
         ...     ctx_area_fk100="",
@@ -1152,7 +1152,7 @@ def inquire_period_trans(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_period_trans(
                 inqr_term_from_dt,
                 inqr_term_to_dt,
@@ -1242,7 +1242,7 @@ def inquire_price(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_price(
                 srs_cd,
                 "N", dataframe, depth + 1, max_depth
@@ -1296,8 +1296,8 @@ def inquire_psamount(
         
     Example:
         >>> df = inquire_psamount(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_futr_fx_pdno="6AU22",
         ...     sll_buy_dvsn_cd="02",
         ...     fm_ord_pric="",
@@ -1356,7 +1356,7 @@ def inquire_psamount(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_psamount(
                 cano,
                 acnt_prdt_cd,
@@ -1517,7 +1517,7 @@ def inquire_time_futurechartprice(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_time_futurechartprice(
                 srs_cd,
                 exch_cd,
@@ -1658,7 +1658,7 @@ def inquire_time_optchartprice(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_time_optchartprice(
                 srs_cd, exch_cd, qry_cnt, start_date_time, close_date_time, 
                 qry_gap, qry_tp, index_key, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -1709,8 +1709,8 @@ def inquire_unpd(
         
     Example:
         >>> df = inquire_unpd(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     fuop_dvsn="00",
         ...     ctx_area_fk100="",
         ...     ctx_area_nk100=""
@@ -1763,7 +1763,7 @@ def inquire_unpd(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_unpd(
                 cano,
                 acnt_prdt_cd,
@@ -1901,7 +1901,7 @@ def investor_unpd_trend(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return investor_unpd_trend(
                 prod_iscd,
                 bsop_date,
@@ -1954,8 +1954,8 @@ def margin_detail(
         
     Example:
         >>> df = margin_detail(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     crcy_cd="USD",
         ...     inqr_dt="20230701"
         ... )
@@ -2009,7 +2009,7 @@ def margin_detail(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return margin_detail(
                 cano,
                 acnt_prdt_cd,
@@ -2119,7 +2119,7 @@ def market_time(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return market_time(
                 fm_pdgr_cd,
                 fm_clas_cd,
@@ -2284,7 +2284,7 @@ def monthly_ccnl(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return monthly_ccnl(
                 srs_cd,
                 exch_cd,
@@ -2407,7 +2407,7 @@ def opt_asking_price(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return opt_asking_price(
                 srs_cd,
                 dataframe1, dataframe2, tr_cont, depth + 1, max_depth
@@ -2529,7 +2529,7 @@ def opt_daily_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return opt_daily_ccnl(
                 srs_cd, exch_cd, qry_cnt, start_date_time, close_date_time, 
                 qry_gap, qry_tp, index_key, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -2719,7 +2719,7 @@ def opt_monthly_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return opt_monthly_ccnl(
                 srs_cd, exch_cd, qry_cnt, start_date_time, close_date_time, 
                 qry_gap, qry_tp, index_key, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -2913,7 +2913,7 @@ def opt_tick_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return opt_tick_ccnl(
                 srs_cd, exch_cd, qry_cnt, start_date_time, close_date_time,
                 qry_gap, qry_tp, index_key, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -3045,7 +3045,7 @@ def opt_weekly_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return opt_weekly_ccnl(
                 srs_cd, exch_cd, qry_cnt, start_date_time, close_date_time, 
                 qry_gap, qry_tp, index_key, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -3111,8 +3111,8 @@ def order(
         
     Example:
         >>> df = order(
-        ...     cano="81012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_futr_fx_pdno="6BZ22",
         ...     sll_buy_dvsn_cd="02",
         ...     fm_lqd_ustl_ccld_dt="",
@@ -3242,9 +3242,9 @@ def order_rvsecncl(
         
     Example:
         >>> df = order_rvsecncl(
-        ...     cano="81012345",
+        ...     cano=trenv.my_acct,
         ...     ord_dv="0",
-        ...     acnt_prdt_cd="08",
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     orgn_ord_dt="20250630",
         ...     orgn_odno="00360686",
         ...     fm_limit_ord_pric="",
@@ -3398,7 +3398,7 @@ def search_contract_detail(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return search_contract_detail(
                 qry_cnt, "N", dataframe, depth + 1, max_depth, **kwargs
             )
@@ -3661,7 +3661,7 @@ def stock_detail(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return stock_detail(
                 srs_cd,
                 "N", dataframe, depth + 1, max_depth
@@ -3815,7 +3815,7 @@ def tick_ccnl(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return tick_ccnl(
                 srs_cd,
                 exch_cd,
@@ -3973,7 +3973,7 @@ def weekly_ccnl(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return weekly_ccnl(
                 srs_cd,
                 exch_cd,

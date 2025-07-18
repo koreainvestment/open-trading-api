@@ -44,15 +44,17 @@ def main():
     
     # 인증 토큰 발급
     ka.auth()
-    
+
+    trenv = ka.getTREnv()
+
     # API 호출
     logging.info("API 호출")
     try:
         result = order_resv_ccnl(
             env_dv="real",
             nat_dv="us", 
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             rsyn_ord_rcit_dt="20250610",
             ovrs_rsvn_odno="0030008244"
         )

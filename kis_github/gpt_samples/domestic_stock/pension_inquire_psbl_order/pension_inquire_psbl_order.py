@@ -51,8 +51,7 @@ def pension_inquire_psbl_order(
         
     Example:
         >>> df = pension_inquire_psbl_order(
-        ...     cano="81180744",
-        ...     acnt_prdt_cd="29",
+        ...     cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
         ...     pdno="069500",
         ...     acca_dvsn_cd="00",
         ...     cma_evlu_amt_icld_yn="Y",

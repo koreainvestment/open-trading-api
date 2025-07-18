@@ -118,7 +118,7 @@ def inquire_index_daily_price(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_index_daily_price(
                 fid_period_div_code,
                 fid_cond_mrkt_div_code,

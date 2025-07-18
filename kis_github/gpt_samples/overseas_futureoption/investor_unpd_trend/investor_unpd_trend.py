@@ -140,7 +140,7 @@ def investor_unpd_trend(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return investor_unpd_trend(
                 prod_iscd,
                 bsop_date,

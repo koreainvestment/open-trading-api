@@ -32,39 +32,39 @@ print(df2)
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 당일주문내역조회 [v1_해외선물-004]
 ##############################################################################################
-df = inquire_ccld(cano=trenv.my_acct, acnt_prdt_cd="01", ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="", ctx_area_fk200="", ctx_area_nk200="")
+df = inquire_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="", ctx_area_fk200="", ctx_area_nk200="")
 print(df)
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 일별체결내역[해외선물-011]
 ##############################################################################################
-df1, df2 = inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd="01", strt_dt="20250101", end_dt="20250131", fuop_dvsn_cd="", fm_pdgr_cd="", crcy_cd="%%%", fm_item_ftng_yn="N", sll_buy_dvsn_cd="%%", ctx_area_fk200="", ctx_area_nk200="")
+df1, df2 = inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_dt="20250101", end_dt="20250131", fuop_dvsn_cd="", fm_pdgr_cd="", crcy_cd="%%%", fm_item_ftng_yn="N", sll_buy_dvsn_cd="%%", ctx_area_fk200="", ctx_area_nk200="")
 print(df1)
 print(df2)
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 일별 주문내역 [해외선물-013]
 ##############################################################################################
-df = inquire_daily_order(cano=trenv.my_acct, acnt_prdt_cd="08", strt_dt="20250601", end_dt="20250703", fm_pdgr_cd="", ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
+df = inquire_daily_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_dt="20250601", end_dt="20250703", fm_pdgr_cd="", ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
 print(df)
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 예수금현황 [해외선물-012]
 ##############################################################################################
-df = inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd="08", crcy_cd="TUS", inqr_dt="20250630")
+df = inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, crcy_cd="TUS", inqr_dt="20250630")
 print(df)
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 기간계좌손익 일별 [해외선물-010]
 ##############################################################################################
-df1, df2 = inquire_period_ccld(inqr_term_from_dt="20250601", inqr_term_to_dt="20250630", cano=trenv.my_acct, acnt_prdt_cd="08", crcy_cd="%%%", whol_trsl_yn="N", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
+df1, df2 = inquire_period_ccld(inqr_term_from_dt="20250601", inqr_term_to_dt="20250630", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, crcy_cd="%%%", whol_trsl_yn="N", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
 print(df1)
 print(df2)
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 기간계좌거래내역 [해외선물-014]
 ##############################################################################################
-df = inquire_period_trans(inqr_term_from_dt="20250101", inqr_term_to_dt="20250131", cano=trenv.my_acct, acnt_prdt_cd="01", acnt_tr_type_cd="1", crcy_cd="%%%", ctx_area_fk100="", ctx_area_nk100="", pwd_chk_yn="")
+df = inquire_period_trans(inqr_term_from_dt="20250101", inqr_term_to_dt="20250131", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acnt_tr_type_cd="1", crcy_cd="%%%", ctx_area_fk100="", ctx_area_nk100="", pwd_chk_yn="")
 print(df)
 
 ##############################################################################################
@@ -76,7 +76,7 @@ print(df)
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 주문가능조회 [v1_해외선물-006]
 ##############################################################################################
-df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd="08", ovrs_futr_fx_pdno="6AU22", sll_buy_dvsn_cd="02", fm_ord_pric="", ecis_rsvn_ord_yn="")
+df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_futr_fx_pdno="6AU22", sll_buy_dvsn_cd="02", fm_ord_pric="", ecis_rsvn_ord_yn="")
 print(df)
 
 ##############################################################################################
@@ -96,7 +96,7 @@ print(result2)
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 미결제내역조회(잔고) [v1_해외선물-005]
 ##############################################################################################
-df = inquire_unpd(cano=trenv.my_acct, acnt_prdt_cd="08", fuop_dvsn="00", ctx_area_fk100="", ctx_area_nk100="")
+df = inquire_unpd(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, fuop_dvsn="00", ctx_area_fk100="", ctx_area_nk100="")
 print(df)
 
 ##############################################################################################
@@ -109,7 +109,7 @@ print(df2)
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 증거금상세 [해외선물-032]
 ##############################################################################################
-df = margin_detail(cano=trenv.my_acct, acnt_prdt_cd="", crcy_cd="", inqr_dt="")
+df = margin_detail(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, crcy_cd="", inqr_dt="")
 print(df)
 
 ##############################################################################################
@@ -175,13 +175,13 @@ print(result2)
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 주문[v1_해외선물-001]
 ##############################################################################################
-df = order(cano=trenv.my_acct, acnt_prdt_cd="08", ovrs_futr_fx_pdno="1AALN25 C10.0", sll_buy_dvsn_cd="02", fm_lqd_ustl_ccld_dt="", fm_lqd_ustl_ccno="", pric_dvsn_cd="1", fm_limit_ord_pric="1.17", fm_stop_ord_pric="", fm_ord_qty="1", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", ccld_cndt_cd="6", cplx_ord_dvsn_cd="0", ecis_rsvn_ord_yn="N", fm_hdge_ord_scrn_yn="N")
+df = order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_futr_fx_pdno="1AALN25 C10.0", sll_buy_dvsn_cd="02", fm_lqd_ustl_ccld_dt="", fm_lqd_ustl_ccno="", pric_dvsn_cd="1", fm_limit_ord_pric="1.17", fm_stop_ord_pric="", fm_ord_qty="1", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", ccld_cndt_cd="6", cplx_ord_dvsn_cd="0", ecis_rsvn_ord_yn="N", fm_hdge_ord_scrn_yn="N")
 print(df)
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 정정취소주문[v1_해외선물-002, 003]
 ##############################################################################################
-df = order_rvsecncl(cano=trenv.my_acct, ord_dv="0", acnt_prdt_cd="08", orgn_ord_dt="20250630", orgn_odno="00123456", fm_limit_ord_pric="10.0", fm_stop_ord_pric="", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", fm_hdge_ord_scrn_yn="N", fm_mkpr_cvsn_yn="")
+df = order_rvsecncl(cano=trenv.my_acct, ord_dv="0", acnt_prdt_cd=trenv.my_prod, orgn_ord_dt="20250630", orgn_odno="00123456", fm_limit_ord_pric="10.0", fm_stop_ord_pric="", fm_lqd_lmt_ord_pric="", fm_lqd_stop_ord_pric="", fm_hdge_ord_scrn_yn="N", fm_mkpr_cvsn_yn="")
 print(df)
 
 ##############################################################################################

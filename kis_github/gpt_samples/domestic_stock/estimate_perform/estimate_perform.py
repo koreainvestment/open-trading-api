@@ -126,7 +126,7 @@ def estimate_perform(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return estimate_perform(
                 sht_cd, dataframe1, dataframe2, dataframe3, dataframe4, "N", depth + 1, max_depth
             )

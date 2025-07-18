@@ -138,7 +138,7 @@ def inquire_vi_status(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_vi_status(
                 fid_div_cls_code,
                 fid_cond_scr_div_code,

@@ -56,8 +56,7 @@ def main():
         - DataFrame: 해외주식 주문 결과
     
     Example:
-        >>> df = order(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.00", ord_dv="sell", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00", env_dv="real")  # 실전투자
-        >>> df = order(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.00", ord_dv="sell", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00", env_dv="demo")  # 모의투자
+        >>> df = order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.00", ord_dv="sell", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00", env_dv="real")  # 실전투자
     """
     try:
         # pandas 출력 옵션 설정
@@ -82,7 +81,7 @@ def main():
         logger.info("API 호출")
         result = order(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             ovrs_excg_cd="NASD",  # 해외거래소코드
             pdno="AAPL",  # 상품번호
             ord_qty="10",  # 주문수량

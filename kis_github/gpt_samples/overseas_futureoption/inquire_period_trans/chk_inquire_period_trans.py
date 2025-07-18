@@ -64,7 +64,7 @@ def main():
         - DataFrame: 해외선물옵션 기간계좌거래내역 결과
     
     Example:
-        >>> df = inquire_period_trans(inqr_term_from_dt="20250101", inqr_term_to_dt="20250131", cano=trenv.my_acct, acnt_prdt_cd="01", acnt_tr_type_cd="1", crcy_cd="%%%", ctx_area_fk100="", ctx_area_nk100="", pwd_chk_yn="")
+        >>> df = inquire_period_trans(inqr_term_from_dt="20250101", inqr_term_to_dt="20250131", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acnt_tr_type_cd="1", crcy_cd="%%%", ctx_area_fk100="", ctx_area_nk100="", pwd_chk_yn="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -77,32 +77,19 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
-
-        # 해외선물옵션 기간계좌거래내역 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        inqr_term_from_dt = "20250601"  # 조회기간FROM일자
-        inqr_term_to_dt = "20250630"  # 조회기간TO일자
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        acnt_tr_type_cd = "1"  # 계좌거래유형코드
-        crcy_cd = "%%%"  # 통화코드
-        ctx_area_fk100 = ""  # 연속조회검색조건100
-        ctx_area_nk100 = ""  # 연속조회키100
-        pwd_chk_yn = "N"  # 비밀번호체크여부
-
         
         # API 호출
         logger.info("API 호출 시작: 해외선물옵션 기간계좌거래내역")
         result = inquire_period_trans(
-            inqr_term_from_dt=inqr_term_from_dt,  # 조회기간FROM일자
-            inqr_term_to_dt=inqr_term_to_dt,  # 조회기간TO일자
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            acnt_tr_type_cd=acnt_tr_type_cd,  # 계좌거래유형코드
-            crcy_cd=crcy_cd,  # 통화코드
-            ctx_area_fk100=ctx_area_fk100,  # 연속조회검색조건100
-            ctx_area_nk100=ctx_area_nk100,  # 연속조회키100
-            pwd_chk_yn=pwd_chk_yn,  # 비밀번호체크여부
+            inqr_term_from_dt="20250601",  # 조회기간FROM일자
+            inqr_term_to_dt="20250630",  # 조회기간TO일자
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
+            acnt_tr_type_cd="1",  # 계좌거래유형코드
+            crcy_cd="%%%",  # 통화코드
+            ctx_area_fk100="",  # 연속조회검색조건100
+            ctx_area_nk100="",  # 연속조회키100
+            pwd_chk_yn="N",  # 비밀번호체크여부
         )
         
         if result is None or result.empty:

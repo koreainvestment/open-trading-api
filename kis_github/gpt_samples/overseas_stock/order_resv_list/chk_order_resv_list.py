@@ -75,8 +75,7 @@ def main():
         - DataFrame: 해외주식 예약주문조회 결과
     
     Example:
-        >>> df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd="01", inqr_strt_dt="20220809", inqr_end_dt="20220830", inqr_dvsn_cd="00", ovrs_excg_cd="NASD", env_dv="real")  # 실전투자
-        >>> df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd="01", inqr_strt_dt="20220809", inqr_end_dt="20220830", inqr_dvsn_cd="00", ovrs_excg_cd="NASD", env_dv="demo")  # 모의투자
+        >>> df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20220809", inqr_end_dt="20220830", inqr_dvsn_cd="00", ovrs_excg_cd="NASD")  # 실전투자
     """
     try:
         # pandas 출력 옵션 설정
@@ -84,17 +83,12 @@ def main():
         pd.set_option('display.width', None)  # 출력 너비 제한 해제
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
-        # 실전/모의투자 선택 (모의투자 지원 로직)
-        env_dv = "real"  # "real": 실전투자, "demo": 모의투자
-        logger.info("투자 환경: %s", "실전투자" if env_dv == "real" else "모의투자")
-
         # 토큰 발급 (모의투자 지원 로직)
         logger.info("토큰 발급 중...")
-        if env_dv == "real":
-            ka.auth(svr='prod')  # 실전투자용 토큰
-        elif env_dv == "demo":
-            ka.auth(svr='vps')   # 모의투자용 토큰
+        ka.auth()
         logger.info("토큰 발급 완료")
+        
+
         trenv = ka.getTREnv()
         
         # API 호출
@@ -102,12 +96,11 @@ def main():
         result = order_resv_list(
             nat_dv="us",  # 국가구분
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             inqr_strt_dt="20220809",  # 조회시작일자
             inqr_end_dt="20220830",  # 조회종료일자
             inqr_dvsn_cd="00",  # 조회구분코드
             ovrs_excg_cd="NASD",  # 해외거래소코드
-            env_dv="real",  # 실전모의구분
         )
         
         if result is None or result.empty:
@@ -127,7 +120,7 @@ def main():
                 result[col] = pd.to_numeric(result[col], errors='coerce')
         
         # 결과 출력
-        logger.info("=== 해외주식 예약주문조회 결과 (%s) ===", "실전투자" if env_dv == "real" else "모의투자")
+        logger.info("=== 해외주식 예약주문조회 결과 (실전투자) ===")
         logger.info("조회된 데이터 건수: %d", len(result))
         print(result)
         

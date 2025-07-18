@@ -103,7 +103,7 @@ def inquire_index_timeprice(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_index_timeprice(
                 fid_input_hour_1,
                 fid_input_iscd,

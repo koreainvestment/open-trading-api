@@ -21,7 +21,6 @@ import json
 import websockets
 import asyncio
 
-
 from io import StringIO
 
 import pandas as pd
@@ -58,6 +57,7 @@ _last_auth_time = datetime.now()
 _autoReAuth = False
 _DEBUG = False
 _isPaper = False
+_smartSleep = 0.1
 
 # 기본 헤더값 정의
 _base_headers = {
@@ -144,10 +144,12 @@ def changeTREnv(token_key, svr="prod", product=_cfg["my_prod"]):
         ak1 = "my_app"  # 실전투자용 앱키
         ak2 = "my_sec"  # 실전투자용 앱시크리트
         _isPaper = False
+        _smartSleep = 0.05
     elif svr == "vps":  # 모의투자
         ak1 = "paper_app"  # 모의투자용 앱키
         ak2 = "paper_sec"  # 모의투자용 앱시크리트
         _isPaper = True
+        _smartSleep = 0.5
 
     cfg["my_app"] = _cfg[ak1]
     cfg["my_sec"] = _cfg[ak2]
@@ -249,6 +251,13 @@ def reAuth(svr="prod", product=_cfg["my_prod"]):
 
 def getEnv():
     return _cfg
+
+
+def smart_sleep():
+    if _DEBUG:
+        print(f"[RateLimit] Sleeping {_smartSleep}s ")
+
+    time.sleep(_smartSleep)
 
 
 def getTREnv():
@@ -654,7 +663,7 @@ class KISWebSocket:
             except Exception as e:
                 print("Connection exception >> ", e)
                 self.retry_count += 1
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(1)
 
     # func
     @classmethod
@@ -674,7 +683,7 @@ class KISWebSocket:
         logging.info("send message >> %s" % json.dumps(msg))
 
         await ws.send(json.dumps(msg))
-        time.sleep(0.1)
+        ka.smart_sleep()
 
     async def send_multiple(
             self,

@@ -70,8 +70,8 @@ def inquire_period_trans(
         
     Example:
         >>> df1, df2 = inquire_period_trans(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     erlm_strt_dt="20240420",
         ...     erlm_end_dt="20240520",
         ...     ovrs_excg_cd="NAS",
@@ -175,7 +175,7 @@ def inquire_period_trans(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_period_trans(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,

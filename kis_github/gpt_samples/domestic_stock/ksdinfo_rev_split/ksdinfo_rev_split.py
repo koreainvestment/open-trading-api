@@ -115,7 +115,7 @@ def ksdinfo_rev_split(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_rev_split(
                 sht_cd,
                 cts,

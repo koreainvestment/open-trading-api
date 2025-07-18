@@ -54,7 +54,7 @@ def main():
         - DataFrame: 매도가능수량조회 결과
     
     Example:
-        >>> df = inquire_psbl_sell(cano="12345678", acnt_prdt_cd="01", pdno="000660")
+        >>> df = inquire_psbl_sell(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="000660")
     """
     try:
         # pandas 출력 옵션 설정
@@ -74,7 +74,7 @@ def main():
         logger.info("API 호출 시작: 매도가능수량조회")
         result = inquire_psbl_sell(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             pdno="005930",  # 종목번호
         )
 

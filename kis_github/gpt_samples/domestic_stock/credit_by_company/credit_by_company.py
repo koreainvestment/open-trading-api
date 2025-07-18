@@ -133,7 +133,7 @@ def credit_by_company(
         # 다음 페이지 호출
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return credit_by_company(
                 fid_rank_sort_cls_code,
                 fid_slct_yn,

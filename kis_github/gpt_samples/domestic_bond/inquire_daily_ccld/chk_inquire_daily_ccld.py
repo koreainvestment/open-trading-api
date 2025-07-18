@@ -76,7 +76,7 @@ def main():
         - Tuple[DataFrame, ...]: 장내채권 주문체결내역 결과
     
     Example:
-        >>> df1, df2 = inquire_daily_ccld(cano="12345678", acnt_prdt_cd="01", inqr_strt_dt="20250601", inqr_end_dt="20250630", sll_buy_dvsn_cd="%", sort_sqn_dvsn="01", pdno="", nccs_yn="N", ctx_area_nk200="", ctx_area_fk200="")
+        >>> df1, df2 = inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20250601", inqr_end_dt="20250630", sll_buy_dvsn_cd="%", sort_sqn_dvsn="01", pdno="", nccs_yn="N", ctx_area_nk200="", ctx_area_fk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -96,7 +96,7 @@ def main():
         logger.info("API 호출 시작: 장내채권 주문체결내역")
         result1, result2 = inquire_daily_ccld(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             inqr_strt_dt="20250601",  # 조회시작일자
             inqr_end_dt="20250630",  # 조회종료일자
             sll_buy_dvsn_cd="%",  # 매도매수구분코드

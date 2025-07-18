@@ -105,7 +105,7 @@ def inquire_psbl_sell(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_psbl_sell(
                 cano,
                 acnt_prdt_cd,

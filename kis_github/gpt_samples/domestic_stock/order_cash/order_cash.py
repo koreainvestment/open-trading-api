@@ -68,7 +68,7 @@ def order_cash(
         pd.DataFrame: 주식주문 결과 데이터
         
     Example:
-        >>> df = order_cash(env_dv="demo", ord_dv="buy", cano="12345678", acnt_prdt_cd="01", pdno="005930", ord_dvsn="00", ord_qty="1", ord_unpr="70000", excg_id_dvsn_cd="KRX")
+        >>> df = order_cash(env_dv="demo", ord_dv="buy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_dvsn="00", ord_qty="1", ord_unpr="70000", excg_id_dvsn_cd="KRX")
         >>> print(df)
     """
 
@@ -133,7 +133,7 @@ def order_cash(
     res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
     
     if res.isOK():
-        current_data = pd.DataFrame(res.getBody().output)
+        current_data = pd.DataFrame([res.getBody().output])
         return current_data
     else:
         res.printError(url=API_URL)

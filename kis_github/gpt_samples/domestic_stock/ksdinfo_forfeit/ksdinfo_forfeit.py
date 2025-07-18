@@ -107,7 +107,7 @@ def ksdinfo_forfeit(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_forfeit(
                 sht_cd,
                 t_dt,

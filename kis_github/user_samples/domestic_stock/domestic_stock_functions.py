@@ -139,7 +139,7 @@ def after_hour_balance(
         # 다음 페이지 호출
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return after_hour_balance(
                 fid_input_price_1,
                 fid_cond_mrkt_div_code,
@@ -306,7 +306,7 @@ def bulk_trans_num(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return bulk_trans_num(
                 fid_aply_rang_prc_2,
                 fid_cond_mrkt_div_code,
@@ -489,7 +489,7 @@ def chk_holiday(
 
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return chk_holiday(
                 bass_dt, NK100, FK100, "N", dataframe, depth + 1, max_depth
             )
@@ -601,7 +601,7 @@ def comp_interest(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return comp_interest(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -867,7 +867,7 @@ def credit_balance(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return credit_balance(
                 fid_cond_scr_div_code,
                 fid_input_iscd,
@@ -998,7 +998,7 @@ def credit_by_company(
         # 다음 페이지 호출
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return credit_by_company(
                 fid_rank_sort_cls_code,
                 fid_slct_yn,
@@ -1100,7 +1100,7 @@ def daily_credit_balance(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return daily_credit_balance(
                 fid_cond_mrkt_div_code, fid_cond_scr_div_code, fid_input_iscd, fid_input_date_1, "N", dataframe, depth + 1, max_depth
             )
@@ -1359,7 +1359,7 @@ def disparity(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return disparity(
                 fid_input_price_2,
                 fid_cond_mrkt_div_code,
@@ -1503,7 +1503,7 @@ def dividend_rate(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return dividend_rate(
                 cts_area,
                 gb1,
@@ -1631,7 +1631,7 @@ def estimate_perform(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return estimate_perform(
                 sht_cd, dataframe1, dataframe2, dataframe3, dataframe4, "N", depth + 1, max_depth
             )
@@ -1798,7 +1798,7 @@ def exp_index_trend(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return exp_index_trend(
                 fid_mkop_cls_code,
                 fid_input_hour_1,
@@ -1996,7 +1996,7 @@ def exp_total_index(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return exp_total_index(
                 fid_mrkt_cls_code,
                 fid_cond_mrkt_div_code,
@@ -2149,7 +2149,7 @@ def exp_trans_updown(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return exp_trans_updown(
                 fid_rank_sort_cls_code,
                 fid_cond_mrkt_div_code,
@@ -2259,7 +2259,7 @@ def finance_balance_sheet(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_balance_sheet(
                 fid_div_cls_code,
                 fid_cond_mrkt_div_code,
@@ -2363,7 +2363,7 @@ def finance_financial_ratio(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_financial_ratio(
                 fid_div_cls_code,
                 fid_cond_mrkt_div_code,
@@ -2467,7 +2467,7 @@ def finance_growth_ratio(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_growth_ratio(
                 fid_input_iscd,
                 fid_div_cls_code,
@@ -2567,7 +2567,7 @@ def finance_income_statement(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_income_statement(
                 fid_div_cls_code,
                 fid_cond_mrkt_div_code,
@@ -2664,7 +2664,7 @@ def finance_other_major_ratios(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_other_major_ratios(
                 fid_input_iscd,
                 fid_div_cls_code,
@@ -2770,7 +2770,7 @@ def finance_profit_ratio(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_profit_ratio(
                 fid_input_iscd,
                 fid_div_cls_code,
@@ -2913,7 +2913,7 @@ def finance_ratio(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_ratio(
                 fid_trgt_cls_code,
                 fid_cond_mrkt_div_code,
@@ -3023,7 +3023,7 @@ def finance_stability_ratio(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return finance_stability_ratio(
                 fid_input_iscd,
                 fid_div_cls_code,
@@ -3136,7 +3136,7 @@ def fluctuation(
 
         if tr_cont == "M":  # 다음 페이지 존재
             print("Call Next")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return fluctuation(
                 fid_rsfl_rate2, fid_cond_mrkt_div_code, fid_cond_scr_div_code,
                 fid_input_iscd, fid_rank_sort_cls_code, fid_input_cnt_1,
@@ -3490,7 +3490,7 @@ def frgnmem_trade_trend(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return frgnmem_trade_trend(
                 fid_cond_scr_div_code,
                 fid_input_iscd,
@@ -3572,7 +3572,7 @@ def hts_top_view(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return hts_top_view(
                 "N", dataframe, depth + 1, max_depth
             )
@@ -3768,7 +3768,7 @@ def inquire_balance(
         Tuple[pd.DataFrame, pd.DataFrame]: 주식잔고조회 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_balance(env_dv="real", cano="81180744", acnt_prdt_cd="01", afhr_flpr_yn="N", inqr_dvsn="01", unpr_dvsn="01", fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="00")
+        >>> df1, df2 = inquire_balance(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, afhr_flpr_yn="N", inqr_dvsn="01", unpr_dvsn="01", fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="00")
         >>> print(df1)
         >>> print(df2)
     """
@@ -3854,7 +3854,7 @@ def inquire_balance(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance(
                 env_dv, cano, acnt_prdt_cd, afhr_flpr_yn, inqr_dvsn, unpr_dvsn, 
                 fund_sttl_icld_yn, fncg_amt_auto_rdpt_yn, prcs_dvsn, FK100, NK100, 
@@ -3921,7 +3921,7 @@ def inquire_balance_rlz_pl(
         Tuple[pd.DataFrame, pd.DataFrame]: 주식잔고조회_실현손익 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_balance_rlz_pl(cano="81180744", acnt_prdt_cd="01", afhr_flpr_yn="N", inqr_dvsn="02", unpr_dvsn="01", fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="01")
+        >>> df1, df2 = inquire_balance_rlz_pl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, afhr_flpr_yn="N", inqr_dvsn="02", unpr_dvsn="01", fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="01")
         >>> print(df1)
         >>> print(df2)
     """
@@ -3999,7 +3999,7 @@ def inquire_balance_rlz_pl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance_rlz_pl(
                 cano, acnt_prdt_cd, afhr_flpr_yn, inqr_dvsn, unpr_dvsn, 
                 fund_sttl_icld_yn, fncg_amt_auto_rdpt_yn, prcs_dvsn, 
@@ -4108,7 +4108,7 @@ def inquire_credit_psamount(
         pd.DataFrame: 신용매수가능조회 데이터
         
     Example:
-        >>> df = inquire_credit_psamount(cano="81180744", acnt_prdt_cd="01", pdno="005930", ord_dvsn="00", crdt_type="21", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
+        >>> df = inquire_credit_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_dvsn="00", crdt_type="21", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
         >>> print(df)
     """
 
@@ -4228,7 +4228,7 @@ def inquire_daily_ccld(
         
     Example:
         >>> df1, df2 = inquire_daily_ccld(
-        ...     env_dv="real", pd_dv="inner", cano="81180744", acnt_prdt_cd="01",
+        ...     env_dv="real", pd_dv="inner", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
         ...     inqr_strt_dt="20220810", inqr_end_dt="20220810", 
         ...     sll_buy_dvsn_cd="00", pdno="005930", ccld_dvsn="00", 
         ...     inqr_dvsn="00", inqr_dvsn_3="00"
@@ -4340,7 +4340,7 @@ def inquire_daily_ccld(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_daily_ccld(
                 env_dv, pd_dv, cano, acnt_prdt_cd, inqr_strt_dt, inqr_end_dt, 
                 sll_buy_dvsn_cd, pdno, ccld_dvsn, inqr_dvsn, inqr_dvsn_3,
@@ -4495,7 +4495,7 @@ def inquire_daily_indexchartprice(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_daily_indexchartprice(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -4915,7 +4915,7 @@ def inquire_elw_price(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_elw_price(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -5048,7 +5048,7 @@ def inquire_index_category_price(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_index_category_price(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -5164,7 +5164,7 @@ def inquire_index_daily_price(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_index_daily_price(
                 fid_period_div_code,
                 fid_cond_mrkt_div_code,
@@ -5264,7 +5264,7 @@ def inquire_index_price(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_index_price(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -5360,7 +5360,7 @@ def inquire_index_tickprice(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_index_tickprice(
                 fid_input_iscd,
                 fid_cond_mrkt_div_code,
@@ -5460,7 +5460,7 @@ def inquire_index_timeprice(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_index_timeprice(
                 fid_input_hour_1,
                 fid_input_iscd,
@@ -5935,7 +5935,7 @@ def inquire_period_profit(
         Tuple[pd.DataFrame, pd.DataFrame]: 기간별손익일별합산조회 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_period_profit(cano="81180744", acnt_prdt_cd="01", inqr_strt_dt="20230101", inqr_end_dt="20240301", sort_dvsn="00", inqr_dvsn="00", cblc_dvsn="00")
+        >>> df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20230101", inqr_end_dt="20240301", sort_dvsn="00", inqr_dvsn="00", cblc_dvsn="00")
         >>> print(df1)
         >>> print(df2)
     """
@@ -6008,7 +6008,7 @@ def inquire_period_profit(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_period_profit(
                 cano, acnt_prdt_cd, inqr_strt_dt, inqr_end_dt, sort_dvsn, inqr_dvsn, cblc_dvsn,
                 pdno, NK100, FK100, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -6067,7 +6067,7 @@ def inquire_period_trade_profit(
         Tuple[pd.DataFrame, pd.DataFrame]: 기간별매매손익현황 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_period_trade_profit(cano="81180744", acnt_prdt_cd="01", sort_dvsn="02", inqr_strt_dt="20230216", inqr_end_dt="20240301", cblc_dvsn="00")
+        >>> df1, df2 = inquire_period_trade_profit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, sort_dvsn="02", inqr_strt_dt="20230216", inqr_end_dt="20240301", cblc_dvsn="00")
         >>> print(df1)
         >>> print(df2)
     """
@@ -6134,7 +6134,7 @@ def inquire_period_trade_profit(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_period_trade_profit(
                 cano, acnt_prdt_cd, sort_dvsn, inqr_strt_dt, inqr_end_dt, cblc_dvsn, 
                 pdno, NK100, FK100, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -6305,7 +6305,7 @@ def inquire_psbl_order(
         pd.DataFrame: 매수가능조회 데이터
         
     Example:
-        >>> df = inquire_psbl_order(env_dv="real", cano="12345678", acnt_prdt_cd="01", pdno="005930", ord_unpr="55000", ord_dvsn="01", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
+        >>> df = inquire_psbl_order(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_unpr="55000", ord_dvsn="01", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
         >>> print(df)
     """
 
@@ -6400,7 +6400,7 @@ def inquire_psbl_rvsecncl(
         pd.DataFrame: 주식정정취소가능주문조회 데이터
         
     Example:
-        >>> df = inquire_psbl_rvsecncl(cano="81180744", acnt_prdt_cd="01", inqr_dvsn_1="1", inqr_dvsn_2="0")
+        >>> df = inquire_psbl_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_dvsn_1="1", inqr_dvsn_2="0")
         >>> print(df)
     """
 
@@ -6450,7 +6450,7 @@ def inquire_psbl_rvsecncl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_psbl_rvsecncl(
                 cano, acnt_prdt_cd, inqr_dvsn_1, inqr_dvsn_2, FK100, NK100, "N", dataframe, depth + 1, max_depth
             )
@@ -6678,7 +6678,7 @@ def inquire_time_indexchartprice(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_time_indexchartprice(
                 fid_cond_mrkt_div_code,
                 fid_etc_cls_code,
@@ -7047,7 +7047,7 @@ def inquire_vi_status(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_vi_status(
                 fid_div_cls_code,
                 fid_cond_scr_div_code,
@@ -7099,7 +7099,7 @@ def intgr_margin(
         pd.DataFrame: 주식통합증거금 현황 데이터
         
     Example:
-        >>> df = intgr_margin(cano="81180744", acnt_prdt_cd="01", cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01", fwex_ctrt_frcr_dvsn_cd="01")
+        >>> df = intgr_margin(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01", fwex_ctrt_frcr_dvsn_cd="01")
         >>> print(df)
     """
 
@@ -7696,7 +7696,7 @@ def invest_opbysec(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return invest_opbysec(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -7826,7 +7826,7 @@ def invest_opinion(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return invest_opinion(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -8021,7 +8021,7 @@ def ksdinfo_bonus_issue(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_bonus_issue(
                 cts,
                 f_dt,
@@ -8123,7 +8123,7 @@ def ksdinfo_cap_dcrs(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_cap_dcrs(
                 cts,
                 f_dt,
@@ -8238,7 +8238,7 @@ def ksdinfo_dividend(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_dividend(
                 cts,
                 gb1,
@@ -8344,7 +8344,7 @@ def ksdinfo_forfeit(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_forfeit(
                 sht_cd,
                 t_dt,
@@ -8450,7 +8450,7 @@ def ksdinfo_list_info(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_list_info(
                 sht_cd,
                 t_dt,
@@ -8559,7 +8559,7 @@ def ksdinfo_mand_deposit(
         # 다음 페이지 호출
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_mand_deposit(
                 t_dt,
                 sht_cd,
@@ -8663,7 +8663,7 @@ def ksdinfo_merger_split(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_merger_split(
                 cts,
                 f_dt,
@@ -8771,7 +8771,7 @@ def ksdinfo_paidin_capin(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_paidin_capin(
                 cts,
                 gb1,
@@ -8872,7 +8872,7 @@ def ksdinfo_pub_offer(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_pub_offer(
                 sht_cd,
                 cts,
@@ -8976,7 +8976,7 @@ def ksdinfo_purreq(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_purreq(
                 sht_cd,
                 t_dt,
@@ -9087,7 +9087,7 @@ def ksdinfo_rev_split(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_rev_split(
                 sht_cd,
                 cts,
@@ -9189,7 +9189,7 @@ def ksdinfo_sharehld_meet(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_sharehld_meet(
                 cts,
                 f_dt,
@@ -9332,7 +9332,7 @@ def lendable_by_company(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return lendable_by_company(
                 excg_dvsn_cd,
                 pdno,
@@ -9447,7 +9447,7 @@ def market_cap(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return market_cap(
                 fid_input_price_2,
                 fid_cond_mrkt_div_code,
@@ -9628,7 +9628,7 @@ def market_value(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return market_value(
                 fid_trgt_cls_code,
                 fid_cond_mrkt_div_code,
@@ -9818,7 +9818,7 @@ def near_new_highlow(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return near_new_highlow(
                 fid_aply_rang_vol,
                 fid_cond_mrkt_div_code,
@@ -9941,7 +9941,7 @@ def news_title(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return news_title(
                 fid_news_ofer_entp_code,
                 fid_cond_mrkt_cls_code,
@@ -10014,7 +10014,7 @@ def order_cash(
         pd.DataFrame: 주식주문 결과 데이터
         
     Example:
-        >>> df = order_cash(env_dv="demo", ord_dv="buy", cano="12345678", acnt_prdt_cd="01", pdno="005930", ord_dvsn="00", ord_qty="1", ord_unpr="70000", excg_id_dvsn_cd="KRX")
+        >>> df = order_cash(env_dv="demo", ord_dv="buy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_dvsn="00", ord_qty="1", ord_unpr="70000", excg_id_dvsn_cd="KRX")
         >>> print(df)
     """
 
@@ -10079,7 +10079,7 @@ def order_cash(
     res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
     
     if res.isOK():
-        current_data = pd.DataFrame(res.getBody().output)
+        current_data = pd.DataFrame([res.getBody().output])
         return current_data
     else:
         res.printError(url=API_URL)
@@ -10157,7 +10157,7 @@ def order_credit(
         pd.DataFrame: 주식주문(신용) 결과 데이터
         
     Example:
-        >>> df = order_credit(ord_dv="buy", cano="12345678", acnt_prdt_cd="01", pdno="005930", crdt_type="21", loan_dt="20220810", ord_dvsn="00", ord_qty="1", ord_unpr="55000")
+        >>> df = order_credit(ord_dv="buy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", crdt_type="21", loan_dt="20220810", ord_dvsn="00", ord_qty="1", ord_unpr="55000")
         >>> print(df)
     """
 
@@ -10324,7 +10324,7 @@ def order_resv(
         pd.DataFrame: 예약주문 결과 데이터
         
     Example:
-        >>> df = order_resv(cano="81180744", acnt_prdt_cd="01", pdno="005930", ord_qty="1", ord_unpr="55000", sll_buy_dvsn_cd="02", ord_dvsn_cd="00", ord_objt_cblc_dvsn_cd="10")
+        >>> df = order_resv(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_qty="1", ord_unpr="55000", sll_buy_dvsn_cd="02", ord_dvsn_cd="00", ord_objt_cblc_dvsn_cd="10")
         >>> print(df)
     """
 
@@ -10436,8 +10436,7 @@ def order_resv_ccnl(
         ...     rsvn_ord_ord_dt="20220729",
         ...     rsvn_ord_end_dt="20220810", 
         ...     tmnl_mdia_kind_cd="00",
-        ...     cano="81180744",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
         ...     prcs_dvsn_cd="0",
         ...     cncl_yn="Y"
         ... )
@@ -10506,7 +10505,7 @@ def order_resv_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return order_resv_ccnl(
                 rsvn_ord_ord_dt, rsvn_ord_end_dt, tmnl_mdia_kind_cd, cano, acnt_prdt_cd, 
                 prcs_dvsn_cd, cncl_yn, rsvn_ord_seq, pdno, sll_buy_dvsn_cd,
@@ -10572,7 +10571,7 @@ def order_resv_rvsecncl(
         pd.DataFrame: 주식예약주문정정취소 결과 데이터
         
     Example:
-        >>> df = order_resv_rvsecncl(cano="81180744", acnt_prdt_cd="01", rsvn_ord_seq="88793", rsvn_ord_orgno="123", rsvn_ord_ord_dt="20250113", ord_type="cancel")
+        >>> df = order_resv_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rsvn_ord_seq="88793", rsvn_ord_orgno="123", rsvn_ord_ord_dt="20250113", ord_type="cancel")
         >>> print(df)
     """
 
@@ -10689,7 +10688,7 @@ def order_rvsecncl(
         pd.DataFrame: 주식주문(정정취소) 결과 데이터
         
     Example:
-        >>> df = order_rvsecncl(env_dv="real", cano="81180744", acnt_prdt_cd="01", ...)
+        >>> df = order_rvsecncl(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ...)
         >>> print(df)
     """
 
@@ -10966,7 +10965,7 @@ def overtime_fluctuation(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return overtime_fluctuation(
                 fid_cond_mrkt_div_code,
                 fid_mrkt_cls_code,
@@ -11118,7 +11117,7 @@ def overtime_volume(
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return overtime_volume(
                 fid_cond_mrkt_div_code,
                 fid_cond_scr_div_code,
@@ -11247,7 +11246,7 @@ def pension_inquire_balance(
         Tuple[pd.DataFrame, pd.DataFrame]: 퇴직연금 잔고 데이터
         
     Example:
-        >>> df1, df2 = pension_inquire_balance(cano="12345678", acnt_prdt_cd="29", acca_dvsn_cd="00", inqr_dvsn="00")
+        >>> df1, df2 = pension_inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acca_dvsn_cd="00", inqr_dvsn="00")
         >>> print(df1)
         >>> print(df2)
     """
@@ -11306,7 +11305,7 @@ def pension_inquire_balance(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return pension_inquire_balance(
                 cano, acnt_prdt_cd, acca_dvsn_cd, inqr_dvsn, FK100, NK100, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -11361,7 +11360,7 @@ def pension_inquire_daily_ccld(
         pd.DataFrame: 퇴직연금 미체결내역 데이터
         
     Example:
-        >>> df = pension_inquire_daily_ccld(cano="81180744", acnt_prdt_cd="29", user_dvsn_cd="%%", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="%%", inqr_dvsn_3="00")
+        >>> df = pension_inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, user_dvsn_cd="%%", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="%%", inqr_dvsn_3="00")
         >>> print(df)
     """
 
@@ -11419,7 +11418,7 @@ def pension_inquire_daily_ccld(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return pension_inquire_daily_ccld(
                 cano, acnt_prdt_cd, user_dvsn_cd, sll_buy_dvsn_cd, ccld_nccs_dvsn, inqr_dvsn_3, FK100, NK100, "N", dataframe, depth + 1, max_depth
             )
@@ -11455,7 +11454,7 @@ def pension_inquire_deposit(
         pd.DataFrame: 퇴직연금 예수금 데이터
         
     Example:
-        >>> df = pension_inquire_deposit(cano="12345678", acnt_prdt_cd="29", acca_dvsn_cd="00")
+        >>> df = pension_inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acca_dvsn_cd="00")
         >>> print(df)
     """
 
@@ -11516,7 +11515,7 @@ def pension_inquire_present_balance(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1, output2) 데이터프레임 튜플
         
     Example:
-        >>> df1, df2 = pension_inquire_present_balance(cano="12345678", acnt_prdt_cd="29", user_dvsn_cd="00")
+        >>> df1, df2 = pension_inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, user_dvsn_cd="00")
         >>> print(df1)
         >>> print(df2)
     """
@@ -11591,8 +11590,7 @@ def pension_inquire_psbl_order(
         
     Example:
         >>> df = pension_inquire_psbl_order(
-        ...     cano="81180744",
-        ...     acnt_prdt_cd="29",
+        ...     cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
         ...     pdno="069500",
         ...     acca_dvsn_cd="00",
         ...     cma_evlu_amt_icld_yn="Y",
@@ -11696,7 +11694,7 @@ def period_rights(
         pd.DataFrame: 기간별계좌권리현황 데이터
         
     Example:
-        >>> df = period_rights(inqr_dvsn="03", cano="12345678", acnt_prdt_cd="01", inqr_strt_dt="20250101", inqr_end_dt="20250103")
+        >>> df = period_rights(inqr_dvsn="03", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20250101", inqr_end_dt="20250103")
         >>> print(df)
     """
 
@@ -11755,7 +11753,7 @@ def period_rights(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return period_rights(
                 inqr_dvsn, cano, acnt_prdt_cd, inqr_strt_dt, inqr_end_dt,
                 cust_rncno25, hmid, rght_type_cd, pdno, prdt_type_cd,
@@ -11886,7 +11884,7 @@ def prefer_disparate_ratio(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return prefer_disparate_ratio(
                 fid_vol_cnt,
                 fid_cond_mrkt_div_code,
@@ -12037,7 +12035,7 @@ def profit_asset_index(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return profit_asset_index(
                 fid_cond_mrkt_div_code,
                 fid_trgt_cls_code,
@@ -12388,7 +12386,7 @@ def quote_balance(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return quote_balance(
                 fid_vol_cnt,
                 fid_cond_mrkt_div_code,
@@ -12496,7 +12494,7 @@ def search_info(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return search_info(
                 pdno,
                 prdt_type_cd,
@@ -12592,7 +12590,7 @@ def search_stock_info(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return search_stock_info(
                 prdt_type_cd,
                 pdno,
@@ -12723,7 +12721,7 @@ def short_sale(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return short_sale(
                 fid_aply_rang_vol,
                 fid_cond_mrkt_div_code,
@@ -12867,7 +12865,7 @@ def top_interest_stock(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return top_interest_stock(
                 fid_input_iscd_2,
                 fid_cond_mrkt_div_code,
@@ -13032,7 +13030,7 @@ def traded_by_company(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return traded_by_company(
                 fid_trgt_exls_cls_code,
                 fid_cond_mrkt_div_code,
@@ -13230,7 +13228,7 @@ def volume_power(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return volume_power(
                 fid_trgt_exls_cls_code,
                 fid_cond_mrkt_div_code,
@@ -13357,7 +13355,7 @@ def volume_rank(
 
         if tr_cont == "M":  # 다음 페이지 존재
             print("Call Next")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return volume_rank(
                 fid_cond_mrkt_div_code, fid_cond_scr_div_code, fid_input_iscd,
                 fid_div_cls_code, fid_blng_cls_code, fid_trgt_cls_code,

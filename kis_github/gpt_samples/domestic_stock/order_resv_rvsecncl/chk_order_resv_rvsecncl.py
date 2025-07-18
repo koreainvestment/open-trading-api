@@ -44,12 +44,14 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
         result = order_resv_rvsecncl(
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             rsvn_ord_seq="88793",
             rsvn_ord_orgno="001",
             rsvn_ord_ord_dt="20250113",

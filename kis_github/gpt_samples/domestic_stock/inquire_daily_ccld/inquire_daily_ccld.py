@@ -88,7 +88,7 @@ def inquire_daily_ccld(
         
     Example:
         >>> df1, df2 = inquire_daily_ccld(
-        ...     env_dv="real", pd_dv="inner", cano="81180744", acnt_prdt_cd="01",
+        ...     env_dv="real", pd_dv="inner", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
         ...     inqr_strt_dt="20220810", inqr_end_dt="20220810", 
         ...     sll_buy_dvsn_cd="00", pdno="005930", ccld_dvsn="00", 
         ...     inqr_dvsn="00", inqr_dvsn_3="00"
@@ -200,7 +200,7 @@ def inquire_daily_ccld(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_daily_ccld(
                 env_dv, pd_dv, cano, acnt_prdt_cd, inqr_strt_dt, inqr_end_dt, 
                 sll_buy_dvsn_cd, pdno, ccld_dvsn, inqr_dvsn, inqr_dvsn_3,

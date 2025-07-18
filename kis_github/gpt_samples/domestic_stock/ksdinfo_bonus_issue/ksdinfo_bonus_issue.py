@@ -108,7 +108,7 @@ def ksdinfo_bonus_issue(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return ksdinfo_bonus_issue(
                 cts,
                 f_dt,

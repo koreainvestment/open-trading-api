@@ -419,7 +419,7 @@ def inquire_balance(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1, output2) 선물옵션 잔고현황 데이터
         
     Example:
-        >>> df1, df2 = inquire_balance(env_dv="real", cano="81180744", acnt_prdt_cd="03", mgna_dvsn="01", excc_stat_cd="1")
+        >>> df1, df2 = inquire_balance(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, mgna_dvsn="01", excc_stat_cd="1")
         >>> print(df1)
         >>> print(df2)
     """
@@ -487,7 +487,7 @@ def inquire_balance(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance(
                 env_dv, cano, acnt_prdt_cd, mgna_dvsn, excc_stat_cd,
                 FK200, NK200, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -537,7 +537,7 @@ def inquire_balance_settlement_pl(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1 데이터, output2 데이터)
         
     Example:
-        >>> df1, df2 = inquire_balance_settlement_pl(cano="81180744", acnt_prdt_cd="03", inqr_dt="20230906")
+        >>> df1, df2 = inquire_balance_settlement_pl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_dt="20230906")
         >>> print(df1)
         >>> print(df2)
     """
@@ -592,7 +592,7 @@ def inquire_balance_settlement_pl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance_settlement_pl(
                 cano, acnt_prdt_cd, inqr_dt, FK200, NK200, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -644,7 +644,7 @@ def inquire_balance_valuation_pl(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1 데이터프레임, output2 데이터프레임)
         
     Example:
-        >>> df1, df2 = inquire_balance_valuation_pl(cano="81180744", acnt_prdt_cd="03", mgna_dvsn="01", excc_stat_cd="1")
+        >>> df1, df2 = inquire_balance_valuation_pl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, mgna_dvsn="01", excc_stat_cd="1")
         >>> print(df1)
         >>> print(df2)
     """
@@ -703,7 +703,7 @@ def inquire_balance_valuation_pl(
 
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance_valuation_pl(
                 cano, acnt_prdt_cd, mgna_dvsn, excc_stat_cd, FK200, NK200, "N", dataframe1, dataframe2, depth + 1,
                 max_depth
@@ -769,7 +769,7 @@ def inquire_ccnl(
         Tuple[pd.DataFrame, pd.DataFrame]: 주문체결내역 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_ccnl(env_dv="real", cano="81180744", acnt_prdt_cd="03", strt_ord_dt="20220730", end_ord_dt="20220830", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="00", sort_sqn="DS")
+        >>> df1, df2 = inquire_ccnl(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_ord_dt="20220730", end_ord_dt="20220830", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="00", sort_sqn="DS")
         >>> print(df1)
         >>> print(df2)
     """
@@ -856,7 +856,7 @@ def inquire_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ccnl(
                 env_dv, cano, acnt_prdt_cd, strt_ord_dt, end_ord_dt, 
                 sll_buy_dvsn_cd, ccld_nccs_dvsn, sort_sqn, pdno, strt_odno, 
@@ -912,7 +912,7 @@ def inquire_ccnl_bstime(
         Tuple[pd.DataFrame, pd.DataFrame]: 선물옵션 기준일체결내역 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_ccnl_bstime(cano="81180744", acnt_prdt_cd="03", ord_dt="20230920", fuop_tr_strt_tmd="000000", fuop_tr_end_tmd="240000")
+        >>> df1, df2 = inquire_ccnl_bstime(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ord_dt="20230920", fuop_tr_strt_tmd="000000", fuop_tr_end_tmd="240000")
         >>> print(df1)
         >>> print(df2)
     """
@@ -975,7 +975,7 @@ def inquire_ccnl_bstime(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ccnl_bstime(
                 cano, acnt_prdt_cd, ord_dt, fuop_tr_strt_tmd, fuop_tr_end_tmd, 
                 FK200, NK200, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -1027,7 +1027,7 @@ def inquire_daily_amount_fee(
         Tuple[pd.DataFrame, pd.DataFrame]: 선물옵션기간약정수수료일별 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_daily_amount_fee(cano="81180744", acnt_prdt_cd="03", inqr_strt_day="20240401", inqr_end_day="20240625")
+        >>> df1, df2 = inquire_daily_amount_fee(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_day="20240401", inqr_end_day="20240625")
         >>> print(df1)
         >>> print(df2)
     """
@@ -1086,7 +1086,7 @@ def inquire_daily_amount_fee(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_daily_amount_fee(
                 cano, acnt_prdt_cd, inqr_strt_day, inqr_end_day, fk200, nk200, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
@@ -1212,7 +1212,7 @@ def inquire_deposit(
         pd.DataFrame: 선물옵션 총자산현황 데이터
         
     Example:
-        >>> df = inquire_deposit(cano="81180744", acnt_prdt_cd="03")
+        >>> df = inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod)
         >>> print(df)
     """
 
@@ -1341,7 +1341,7 @@ def inquire_ngt_balance(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ngt_balance(
                 cano, acnt_prdt_cd, mgna_dvsn, excc_stat_cd, acnt_pwd,
                 FK200, NK200, "N", dataframe1, dataframe2, depth + 1, max_depth
@@ -1409,7 +1409,7 @@ def inquire_ngt_ccnl(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1 데이터, output2 데이터)
         
     Example:
-        >>> df1, df2 = inquire_ngt_ccnl("81180744", "03", "20231201", "20231214", "00", "00")
+        >>> df1, df2 = inquire_ngt_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_ord_dt="20231201", end_ord_dt="20231214", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="00")
         >>> print(df1)
         >>> print(df2)
     """
@@ -1487,7 +1487,7 @@ def inquire_ngt_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ngt_ccnl(
                 cano, acnt_prdt_cd, strt_ord_dt, end_ord_dt, sll_buy_dvsn_cd, ccld_nccs_dvsn,
                 sort_sqn, strt_odno, pdno, mket_id_cd, fuop_dvsn_cd, scrn_dvsn,
@@ -1607,7 +1607,7 @@ def inquire_psbl_ngt_order(
         pd.DataFrame: (야간)선물옵션 주문가능 데이터
         
     Example:
-        >>> df = inquire_psbl_ngt_order(cano="81180744", acnt_prdt_cd="03", pdno="101T03", prdt_type_cd="301", sll_buy_dvsn_cd="02", unit_price="322", ord_dvsn_cd="01")
+        >>> df = inquire_psbl_ngt_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="101T03", prdt_type_cd="301", sll_buy_dvsn_cd="02", unit_price="322", ord_dvsn_cd="01")
         >>> print(df)
     """
 
@@ -1686,7 +1686,7 @@ def inquire_psbl_order(
         pd.DataFrame: 선물옵션 주문가능 데이터
         
     Example:
-        >>> df = inquire_psbl_order(env_dv="real", cano="81180744", acnt_prdt_cd="03", 
+        >>> df = inquire_psbl_order(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
         ...                                    pdno="101S03", sll_buy_dvsn_cd="02", unit_price="1", ord_dvsn_cd="01")
         >>> print(df)
     """
@@ -1853,7 +1853,7 @@ def ngt_margin_detail(
         Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]: (output1, output2, output3) 데이터프레임
         
     Example:
-        >>> df1, df2, df3 = ngt_margin_detail(cano="81180744", acnt_prdt_cd="03", mgna_dvsn_cd="01")
+        >>> df1, df2, df3 = ngt_margin_detail(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, mgna_dvsn_cd="01")
         >>> print(df1)
     """
 
@@ -1940,7 +1940,7 @@ def order(
         pd.DataFrame: 선물옵션 주문 결과 데이터
         
     Example:
-        >>> df = order(env_dv="real", ord_dv="day", ord_prcs_dvsn_cd="02", cano="81180744", acnt_prdt_cd="03", sll_buy_dvsn_cd="02", shtn_pdno="167R12", ord_qty="1", unit_price="0", nmpr_type_cd="02", krx_nmpr_cndt_cd="0", ord_dvsn_cd="02")
+        >>> df = order(env_dv="real", ord_dv="day", ord_prcs_dvsn_cd="02", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, sll_buy_dvsn_cd="02", shtn_pdno="167R12", ord_qty="1", unit_price="0", nmpr_type_cd="02", krx_nmpr_cndt_cd="0", ord_dvsn_cd="02")
         >>> print(df)
     """
 
@@ -2071,7 +2071,7 @@ def order_rvsecncl(
     Example:
         >>> df = order_rvsecncl(
         ...     env_dv="real", day_dv="day", ord_prcs_dvsn_cd="02",
-        ...     cano="81180744", acnt_prdt_cd="03", rvse_cncl_dvsn_cd="02",
+        ...     cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rvse_cncl_dvsn_cd="02",
         ...     orgn_odno="0000004018", ord_qty="0", unit_price="0",
         ...     nmpr_type_cd="02", krx_nmpr_cndt_cd="0", rmn_qty_yn="Y",
         ...     ord_dvsn_cd="01"

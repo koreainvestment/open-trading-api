@@ -62,8 +62,8 @@ def inquire_nccs(
         
     Example:
         >>> df = inquire_nccs(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NYSE",
         ...     sort_sqn="DS",
         ...     FK200="",
@@ -121,7 +121,7 @@ def inquire_nccs(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_nccs(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,

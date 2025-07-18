@@ -149,7 +149,7 @@ def after_hour_balance(
         # 다음 페이지 호출
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return after_hour_balance(
                 fid_input_price_1,
                 fid_cond_mrkt_div_code,

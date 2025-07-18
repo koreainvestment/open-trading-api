@@ -57,8 +57,8 @@ def inquire_unpd(
         
     Example:
         >>> df = inquire_unpd(
-        ...     cano="80012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     fuop_dvsn="00",
         ...     ctx_area_fk100="",
         ...     ctx_area_nk100=""
@@ -111,7 +111,7 @@ def inquire_unpd(
         
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_unpd(
                 cano,
                 acnt_prdt_cd,

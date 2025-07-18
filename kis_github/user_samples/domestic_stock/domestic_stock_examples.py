@@ -280,7 +280,7 @@ print(df)
 ##############################################################################################
 # [국내주식] 주문/계좌 > 투자계좌자산현황조회[v1_국내주식-048]
 ##############################################################################################
-result1, result2 = inquire_account_balance(cano="81180744", acnt_prdt_cd="21")
+result1, result2 = inquire_account_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod)
 print(result1)
 print(result2)
 
@@ -297,8 +297,8 @@ print(result2)
 ##############################################################################################
 result1, result2 = inquire_balance(
             env_dv="real",
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             afhr_flpr_yn="N",
             inqr_dvsn="01",
             unpr_dvsn="01",
@@ -313,8 +313,8 @@ print(result2)
 # [국내주식] 주문/계좌 > 주식잔고조회_실현손익[v1_국내주식-041]
 ##############################################################################################
 result1, result2 = inquire_balance_rlz_pl(
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             afhr_flpr_yn="N",
             inqr_dvsn="02",
             unpr_dvsn="01",
@@ -336,8 +336,8 @@ print(result)
 # [국내주식] 주문/계좌 > 신용매수가능조회[v1_국내주식-042]
 ##############################################################################################
 result = inquire_credit_psamount(
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             pdno="005930",
             ord_dvsn="00",
             crdt_type="21",
@@ -352,8 +352,8 @@ print(result)
 result1, result2 = inquire_daily_ccld(
             env_dv="real",
             pd_dv="inner",
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             inqr_strt_dt="20220810",
             inqr_end_dt="20220810",
             sll_buy_dvsn_cd="00",
@@ -508,8 +508,8 @@ print(result)
 # [국내주식] 주문/계좌 > 기간별손익일별합산조회[v1_국내주식-052]
 ##############################################################################################
 result1, result2 = inquire_period_profit(
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             inqr_strt_dt="20230101",
             inqr_end_dt="20240301",
             sort_dvsn="00",
@@ -523,8 +523,8 @@ print(result2)
 # [국내주식] 주문/계좌 > 기간별매매손익현황조회[v1_국내주식-060]
 ##############################################################################################
 result1, result2 = inquire_period_trade_profit(
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             sort_dvsn="02",
             inqr_strt_dt="20230216",
             inqr_end_dt="20240301",
@@ -548,14 +548,14 @@ print(result)
 ##############################################################################################
 # [국내주식] 주문/계좌 > 매수가능조회[v1_국내주식-007]
 ##############################################################################################
-result = inquire_psbl_order(env_dv="real", cano="81180744", acnt_prdt_cd="01", pdno="005930", ord_unpr="55000",
+result = inquire_psbl_order(env_dv="real",cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_unpr="55000",
                                     ord_dvsn="01", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
 print(result)
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식정정취소가능주문조회[v1_국내주식-004]
 ##############################################################################################
-result = inquire_psbl_rvsecncl(cano="81180744", acnt_prdt_cd="01", inqr_dvsn_1="1", inqr_dvsn_2="0")
+result = inquire_psbl_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_dvsn_1="1", inqr_dvsn_2="0")
 print(result)
 
 ##############################################################################################
@@ -615,7 +615,7 @@ print(df)
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식통합증거금 현황 [국내주식-191]
 ##############################################################################################
-result = intgr_margin(cano="81180744", acnt_prdt_cd="01", cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01",
+result = intgr_margin(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01",
                               fwex_ctrt_frcr_dvsn_cd="01")
 print(result)
 
@@ -790,7 +790,7 @@ print(df)
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식주문(현금)[v1_국내주식-001]
 ##############################################################################################
-result = order_cash(env_dv="real", ord_dv="sell", cano="81180744", acnt_prdt_cd="01", pdno="005930",
+result = order_cash(env_dv="real", ord_dv="sell", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930",
                             ord_dvsn="00", ord_qty="1", ord_unpr="2000", excg_id_dvsn_cd="SOR")
 print(result)
 
@@ -799,8 +799,8 @@ print(result)
 ##############################################################################################
 result = order_credit(
             ord_dv="buy",
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             pdno="005930",
             crdt_type="21",
             loan_dt="20220810",
@@ -813,7 +813,7 @@ print(result)
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식예약주문[v1_국내주식-017]
 ##############################################################################################
-result = order_resv(cano="81180744", acnt_prdt_cd="01", pdno="005930", ord_qty="1", ord_unpr="55000",
+result = order_resv(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_qty="1", ord_unpr="55000",
                             sll_buy_dvsn_cd="02", ord_dvsn_cd="00", ord_objt_cblc_dvsn_cd="10")
 print(result)
 
@@ -824,8 +824,8 @@ result = order_resv_ccnl(
             rsvn_ord_ord_dt="20220729",
             rsvn_ord_end_dt="20220810",
             tmnl_mdia_kind_cd="00",
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             prcs_dvsn_cd="0",
             cncl_yn="Y"
         )
@@ -835,8 +835,8 @@ print(result)
 # [국내주식] 주문/계좌 > 주식예약주문정정취소[v1_국내주식-018,019]
 ##############################################################################################
 result = order_resv_rvsecncl(
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             rsvn_ord_seq="88793",
             rsvn_ord_orgno="001",
             rsvn_ord_ord_dt="20250113",
@@ -855,8 +855,8 @@ print(result)
 ##############################################################################################
 result = order_rvsecncl(
             env_dv="real",
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+             acnt_prdt_cd=trenv.my_prod,
             krx_fwdg_ord_orgno="06010",
             orgn_odno="0000002101",
             ord_dvsn="00",
@@ -908,7 +908,7 @@ print(result2)
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 잔고조회[v1_국내주식-036]
 ##############################################################################################
-result1, result2 = pension_inquire_balance(cano="81180744", acnt_prdt_cd="29", acca_dvsn_cd="00",
+result1, result2 = pension_inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acca_dvsn_cd="00",
                                                    inqr_dvsn="00")
 print(result1)
 print(result2)
@@ -916,24 +916,22 @@ print(result2)
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 미체결내역[v1_국내주식-033]
 ##############################################################################################
-result = pension_inquire_daily_ccld(cano="81180744", acnt_prdt_cd="29", user_dvsn_cd="%%", sll_buy_dvsn_cd="00",
+result = pension_inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, user_dvsn_cd="%%", sll_buy_dvsn_cd="00",
                                             ccld_nccs_dvsn="%%", inqr_dvsn_3="00")
 print(result)
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 예수금조회[v1_국내주식-035]
 ##############################################################################################
-result = pension_inquire_deposit(cano="81180744", acnt_prdt_cd="29", acca_dvsn_cd="00")
+result = pension_inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acca_dvsn_cd="00")
 print(result)
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 체결기준잔고[v1_국내주식-032]
 ##############################################################################################
-result1, result2 = pension_inquire_present_balance(
-            cano="81180744",
-            acnt_prdt_cd="29",
-            user_dvsn_cd="00"
-        )
+result1, result2 = pension_inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
+                                                           user_dvsn_cd="00"
+                                                           )
 print(result1)
 print(result2)
 
@@ -941,8 +939,8 @@ print(result2)
 # [국내주식] 주문/계좌 > 퇴직연금 매수가능조회[v1_국내주식-034]
 ##############################################################################################
 result = pension_inquire_psbl_order(
-            cano="81180744",
-            acnt_prdt_cd="29",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             pdno="069500",
             acca_dvsn_cd="00",
             cma_evlu_amt_icld_yn="Y",
@@ -954,7 +952,7 @@ print(result)
 ##############################################################################################
 # [국내주식] 주문/계좌 > 기간별계좌권리현황조회 [국내주식-211]
 ##############################################################################################
-result = period_rights(inqr_dvsn="03", cano="81180744", acnt_prdt_cd="01", inqr_strt_dt="20250101",
+result = period_rights(inqr_dvsn="03", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20250101",
                                inqr_end_dt="20250103")
 print(result)
 

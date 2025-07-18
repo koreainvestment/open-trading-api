@@ -100,7 +100,7 @@ def inquire_price(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_price(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,

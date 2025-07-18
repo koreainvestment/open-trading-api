@@ -136,7 +136,7 @@ def top_interest_stock(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return top_interest_stock(
                 fid_input_iscd_2,
                 fid_cond_mrkt_div_code,

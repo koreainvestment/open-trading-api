@@ -78,12 +78,14 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # Case1 조회
     logging.info("=== Case1 조회 ===")
     try:
         result1, result2 = inquire_period_trade_profit(
-            cano="81180744",
-            acnt_prdt_cd="01",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             sort_dvsn="02",
             inqr_strt_dt="20230216",
             inqr_end_dt="20240301",

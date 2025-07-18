@@ -94,12 +94,14 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # Case 1 조회
     logging.info("=== Case 1 조회 ===")
     try:
         result1, result2 = inquire_ngt_balance(
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             mgna_dvsn="01",
             excc_stat_cd="1"
         )

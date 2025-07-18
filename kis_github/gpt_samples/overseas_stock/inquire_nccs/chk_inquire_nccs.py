@@ -70,8 +70,7 @@ def main():
         - DataFrame: 해외주식 미체결내역 결과
     
     Example:
-        >>> df = inquire_nccs(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", sort_sqn="DS", FK200="", NK200="", env_dv="real")  # 실전투자
-        >>> df = inquire_nccs(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", sort_sqn="DS", FK200="", NK200="", env_dv="demo")  # 모의투자
+        >>> df = inquire_nccs(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", sort_sqn="DS", FK200="", NK200="", env_dv="real")  # 실전투자
     """
     try:
         # pandas 출력 옵션 설정
@@ -96,7 +95,7 @@ def main():
         logger.info("API 호출")
         result = inquire_nccs(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             ovrs_excg_cd="NASD",  # 해외거래소코드
             sort_sqn="DS",  # 정렬순서
             FK200="",  # 연속조회검색조건200

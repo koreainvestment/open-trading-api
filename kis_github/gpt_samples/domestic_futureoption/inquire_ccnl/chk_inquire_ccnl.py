@@ -75,13 +75,15 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
         result1, result2 = inquire_ccnl(
             env_dv="real",
-            cano="81180744",
-            acnt_prdt_cd="03",
+            cano=trenv.my_acct,
+            acnt_prdt_cd=trenv.my_prod,
             strt_ord_dt="20220730",
             end_ord_dt="20220830",
             sll_buy_dvsn_cd="00",

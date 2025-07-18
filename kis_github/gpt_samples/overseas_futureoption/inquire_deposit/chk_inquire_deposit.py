@@ -70,7 +70,7 @@ def main():
         - DataFrame: 해외선물옵션 예수금현황 결과
     
     Example:
-        >>> df = inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd="08", crcy_cd="TUS", inqr_dt="20250630")
+        >>> df = inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, crcy_cd="TUS", inqr_dt="20250630")
     """
     try:
         # pandas 출력 옵션 설정
@@ -82,14 +82,14 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
+
         trenv = ka.getTREnv()
 
-        
         # API 호출
         logger.info("API 호출 시작: 해외선물옵션 예수금현황")
         result = inquire_deposit(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="08",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             crcy_cd="TUS",  # 통화코드
             inqr_dt="20250630",  # 조회일자
         )

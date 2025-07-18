@@ -69,7 +69,7 @@ def order(
         pd.DataFrame: 선물옵션 주문 결과 데이터
         
     Example:
-        >>> df = order(env_dv="real", ord_dv="day", ord_prcs_dvsn_cd="02", cano="81180744", acnt_prdt_cd="03", sll_buy_dvsn_cd="02", shtn_pdno="167R12", ord_qty="1", unit_price="0", nmpr_type_cd="02", krx_nmpr_cndt_cd="0", ord_dvsn_cd="02")
+        >>> df = order(env_dv="real", ord_dv="day", ord_prcs_dvsn_cd="02", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, sll_buy_dvsn_cd="02", shtn_pdno="167R12", ord_qty="1", unit_price="0", nmpr_type_cd="02", krx_nmpr_cndt_cd="0", ord_dvsn_cd="02")
         >>> print(df)
     """
 

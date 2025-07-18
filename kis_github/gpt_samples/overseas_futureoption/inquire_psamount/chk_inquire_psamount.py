@@ -56,7 +56,7 @@ def main():
         - DataFrame: 해외선물옵션 주문가능조회 결과
     
     Example:
-        >>> df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd="08", ovrs_futr_fx_pdno="6AU22", sll_buy_dvsn_cd="02", fm_ord_pric="", ecis_rsvn_ord_yn="")
+        >>> df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_futr_fx_pdno="6AU22", sll_buy_dvsn_cd="02", fm_ord_pric="", ecis_rsvn_ord_yn="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -69,26 +69,16 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
-
-        # 해외선물옵션 주문가능조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        ovrs_futr_fx_pdno = "6AU22"  # 해외선물FX상품번호
-        sll_buy_dvsn_cd = "02"  # 매도매수구분코드
-        fm_ord_pric = ""  # FM주문가격
-        ecis_rsvn_ord_yn = ""  # 행사예약주문여부
-
         
         # API 호출
         logger.info("API 호출 시작: 해외선물옵션 주문가능조회")
         result = inquire_psamount(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            ovrs_futr_fx_pdno=ovrs_futr_fx_pdno,  # 해외선물FX상품번호
-            sll_buy_dvsn_cd=sll_buy_dvsn_cd,  # 매도매수구분코드
-            fm_ord_pric=fm_ord_pric,  # FM주문가격
-            ecis_rsvn_ord_yn=ecis_rsvn_ord_yn,  # 행사예약주문여부
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
+            ovrs_futr_fx_pdno="6AU22",  # 해외선물FX상품번호
+            sll_buy_dvsn_cd="02",  # 매도매수구분코드
+            fm_ord_pric="",  # FM주문가격
+            ecis_rsvn_ord_yn="",  # 행사예약주문여부
         )
         
         if result is None or result.empty:

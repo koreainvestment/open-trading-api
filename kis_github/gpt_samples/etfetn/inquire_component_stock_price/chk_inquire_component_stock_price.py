@@ -78,7 +78,7 @@ def main():
     # API 호출
     logging.info("API 호출")
     try:
-        result1, result2 = inquire_component_stock_price(fid_cond_mrkt_div_code="J", fid_input_iscd="069500", fid_input_date="11216")
+        result1, result2 = inquire_component_stock_price(fid_cond_mrkt_div_code="J", fid_input_iscd="069500", fid_cond_scr_div_code="11216")
     except ValueError as e:
         logging.error("에러 발생: %s", str(e))
         return

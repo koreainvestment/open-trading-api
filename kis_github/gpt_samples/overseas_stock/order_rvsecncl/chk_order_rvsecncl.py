@@ -56,8 +56,7 @@ def main():
         - DataFrame: 해외주식 정정취소주문 결과
     
     Example:
-        >>> df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NYSE", pdno="", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="", ord_svr_dvsn_cd="0", env_dv="real")  # 실전투자
-        >>> df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NYSE", pdno="", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="", ord_svr_dvsn_cd="0", env_dv="demo")  # 모의투자
+        >>> df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NYSE", pdno="", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="", ord_svr_dvsn_cd="0", env_dv="real")  # 실전투자
     """
     try:
         # pandas 출력 옵션 설정
@@ -76,13 +75,14 @@ def main():
         elif env_dv == "demo":
             ka.auth(svr='vps')   # 모의투자용 토큰
         logger.info("토큰 발급 완료")
+
         trenv = ka.getTREnv()
         
         # API 호출
         logger.info("API 호출")
         result = order_rvsecncl(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             ovrs_excg_cd="NASD",  # 해외거래소코드
             pdno="AMZN",  # 상품번호
             orgn_odno="0030132992",  # 원주문번호

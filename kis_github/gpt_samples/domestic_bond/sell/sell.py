@@ -71,8 +71,8 @@ def sell(
         
     Example:
         >>> df = sell(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ord_dvsn="01",
         ...     pdno="KR6095572D81",
         ...     ord_qty2="1",

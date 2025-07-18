@@ -53,7 +53,7 @@ def main():
         - DataFrame: 해외주식 미국주간정정취소 결과
     
     Example:
-        >>> df = daytime_order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", pdno="AAPL", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="10", ovrs_ord_unpr="150.25", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0")
+        >>> df = daytime_order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="10", ovrs_ord_unpr="150.25", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0")
     """
     try:
         # pandas 출력 옵션 설정
@@ -71,7 +71,7 @@ def main():
         logger.info("API 호출")
         result = daytime_order_rvsecncl(
             cano=trenv.my_acct,  # 종합계좌번호
-            acnt_prdt_cd="01",  # 계좌상품코드
+            acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
             ovrs_excg_cd="NASD",  # 해외거래소코드
             pdno="AMZN",  # 상품번호
             orgn_odno="0000034439",  # 원주문번호

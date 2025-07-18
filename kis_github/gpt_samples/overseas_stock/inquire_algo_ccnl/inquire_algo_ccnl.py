@@ -61,7 +61,7 @@ def inquire_algo_ccnl(
         Tuple[pd.DataFrame, pd.DataFrame]: (output, output3) 체결내역 데이터
         
     Example:
-        >>> result, result3 = inquire_algo_ccnl(cano="81180744", acnt_prdt_cd="01")
+        >>> result, result3 = inquire_algo_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod)
         >>> print(result)
         >>> print(result3)
     """
@@ -115,7 +115,7 @@ def inquire_algo_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_algo_ccnl(
                 cano, acnt_prdt_cd, ord_dt, ord_gno_brno, odno, ttlz_icld_yn, 
                 NK200, FK200, "N", dataframe, dataframe3, depth + 1, max_depth

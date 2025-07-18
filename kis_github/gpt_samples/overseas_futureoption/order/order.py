@@ -72,8 +72,8 @@ def order(
         
     Example:
         >>> df = order(
-        ...     cano="81012345",
-        ...     acnt_prdt_cd="08",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_futr_fx_pdno="6BZ22",
         ...     sll_buy_dvsn_cd="02",
         ...     fm_lqd_ustl_ccld_dt="",

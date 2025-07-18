@@ -80,7 +80,7 @@ def main():
         - DataFrame: 해외선물옵션 당일주문내역조회 결과
     
     Example:
-        >>> df = inquire_ccld(cano=trenv.my_acct, acnt_prdt_cd="01", ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="", ctx_area_fk200="", ctx_area_nk200="")
+        >>> df = inquire_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="", ctx_area_fk200="", ctx_area_nk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -96,7 +96,7 @@ def main():
         logger.info("API 호출")
         result = inquire_ccld(
             cano=trenv.my_acct,
-            acnt_prdt_cd="08",
+            acnt_prdt_cd=trenv.my_prod,
             ccld_nccs_dvsn="01",
             sll_buy_dvsn_cd="%%",
             fuop_dvsn="00",

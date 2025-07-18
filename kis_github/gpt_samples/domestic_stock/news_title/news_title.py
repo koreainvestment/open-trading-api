@@ -121,7 +121,7 @@ def news_title(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return news_title(
                 fid_news_ofer_entp_code,
                 fid_cond_mrkt_cls_code,

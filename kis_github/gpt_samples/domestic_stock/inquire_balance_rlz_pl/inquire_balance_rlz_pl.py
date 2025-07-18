@@ -71,7 +71,7 @@ def inquire_balance_rlz_pl(
         Tuple[pd.DataFrame, pd.DataFrame]: 주식잔고조회_실현손익 데이터 (output1, output2)
         
     Example:
-        >>> df1, df2 = inquire_balance_rlz_pl(cano="81180744", acnt_prdt_cd="01", afhr_flpr_yn="N", inqr_dvsn="02", unpr_dvsn="01", fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="01")
+        >>> df1, df2 = inquire_balance_rlz_pl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, afhr_flpr_yn="N", inqr_dvsn="02", unpr_dvsn="01", fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="01")
         >>> print(df1)
         >>> print(df2)
     """
@@ -149,7 +149,7 @@ def inquire_balance_rlz_pl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance_rlz_pl(
                 cano, acnt_prdt_cd, afhr_flpr_yn, inqr_dvsn, unpr_dvsn, 
                 fund_sttl_icld_yn, fncg_amt_auto_rdpt_yn, prcs_dvsn, 

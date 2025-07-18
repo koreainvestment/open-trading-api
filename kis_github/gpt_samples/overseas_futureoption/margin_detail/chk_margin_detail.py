@@ -109,7 +109,7 @@ def main():
         - DataFrame: 해외선물옵션 증거금상세 결과
     
     Example:
-        >>> df = margin_detail(cano=trenv.my_acct, acnt_prdt_cd="", crcy_cd="", inqr_dt="")
+        >>> df = margin_detail(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, crcy_cd="", inqr_dt="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -125,7 +125,7 @@ def main():
         logger.info("API 호출")
         result = margin_detail(
             cano=trenv.my_acct,
-            acnt_prdt_cd="08",
+            acnt_prdt_cd=trenv.my_prod,
             crcy_cd="TKR",
             inqr_dt="20250625"
         )

@@ -72,8 +72,7 @@ def order_resv_ccnl(
         ...     rsvn_ord_ord_dt="20220729",
         ...     rsvn_ord_end_dt="20220810", 
         ...     tmnl_mdia_kind_cd="00",
-        ...     cano="81180744",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
         ...     prcs_dvsn_cd="0",
         ...     cncl_yn="Y"
         ... )
@@ -142,7 +141,7 @@ def order_resv_ccnl(
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return order_resv_ccnl(
                 rsvn_ord_ord_dt, rsvn_ord_end_dt, tmnl_mdia_kind_cd, cano, acnt_prdt_cd, 
                 prcs_dvsn_cd, cncl_yn, rsvn_ord_seq, pdno, sll_buy_dvsn_cd,

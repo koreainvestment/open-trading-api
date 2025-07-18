@@ -41,7 +41,7 @@ def ngt_margin_detail(
         Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]: (output1, output2, output3) 데이터프레임
         
     Example:
-        >>> df1, df2, df3 = ngt_margin_detail(cano="81180744", acnt_prdt_cd="03", mgna_dvsn_cd="01")
+        >>> df1, df2, df3 = ngt_margin_detail(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, mgna_dvsn_cd="01")
         >>> print(df1)
     """
 

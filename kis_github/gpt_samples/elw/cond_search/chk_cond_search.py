@@ -144,7 +144,7 @@ def main():
         - DataFrame: ELW 종목검색 결과
     
     Example:
-        >>> df = cond_search(fid_cond_mrkt_div_code="W", fid_cond_scr_div_code="11510", fid_rank_sort_cls_code="0", fid_input_cnt_1="100", ...)
+        >>> df = cond_search(fid_cond_mrkt_div_code="W", fid_cond_scr_div_code="11510", fid_rank_sort_cls_code="0", fid_input_cnt_1="100")
     """
     try:
         # pandas 출력 옵션 설정

@@ -110,7 +110,7 @@ def fluctuation(
 
         if tr_cont == "M":  # 다음 페이지 존재
             print("Call Next")
-            time.sleep(0.1)  # 시스템 안정적 운영을 위한 지연
+            ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return fluctuation(
                 fid_rsfl_rate2, fid_cond_mrkt_div_code, fid_cond_scr_div_code,
                 fid_input_iscd, fid_rank_sort_cls_code, fid_input_cnt_1,

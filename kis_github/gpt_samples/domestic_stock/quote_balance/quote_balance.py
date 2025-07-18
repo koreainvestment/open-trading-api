@@ -125,7 +125,7 @@ def quote_balance(
 
         if tr_cont == "M":
             print("Call Next")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return quote_balance(
                 fid_vol_cnt,
                 fid_cond_mrkt_div_code,

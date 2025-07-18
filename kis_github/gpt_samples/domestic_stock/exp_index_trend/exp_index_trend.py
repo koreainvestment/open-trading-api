@@ -108,7 +108,7 @@ def exp_index_trend(
 
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return exp_index_trend(
                 fid_mkop_cls_code,
                 fid_input_hour_1,

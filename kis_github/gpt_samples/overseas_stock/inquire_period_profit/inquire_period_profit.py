@@ -72,8 +72,8 @@ def inquire_period_profit(
         
     Example:
         >>> df1, df2 = inquire_period_profit(
-        ...     cano="12345678",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     natn_cd="",
         ...     crcy_cd="USD",
@@ -182,7 +182,7 @@ def inquire_period_profit(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_period_profit(
                 cano=cano,
                 acnt_prdt_cd=acnt_prdt_cd,

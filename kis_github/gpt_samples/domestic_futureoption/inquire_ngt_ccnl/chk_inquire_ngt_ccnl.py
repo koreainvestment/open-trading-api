@@ -76,10 +76,12 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
-        result1, result2 = inquire_ngt_ccnl(cano="81180744", acnt_prdt_cd="03", strt_ord_dt="20250610",
+        result1, result2 = inquire_ngt_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_ord_dt="20250610",
                                             end_ord_dt="20250613", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="00")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))

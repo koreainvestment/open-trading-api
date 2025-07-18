@@ -124,7 +124,7 @@ def indicator_trend_minute(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return indicator_trend_minute(
                 fid_cond_mrkt_div_code,
                 fid_input_iscd,
@@ -138,5 +138,5 @@ def indicator_trend_minute(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

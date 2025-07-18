@@ -61,7 +61,7 @@ def main():
         - DataFrame: 해외선물옵션 미결제내역조회(잔고) 결과
     
     Example:
-        >>> df = inquire_unpd(cano=trenv.my_acct, acnt_prdt_cd="08", fuop_dvsn="00", ctx_area_fk100="", ctx_area_nk100="")
+        >>> df = inquire_unpd(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, fuop_dvsn="00", ctx_area_fk100="", ctx_area_nk100="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -77,7 +77,7 @@ def main():
         logger.info("API 호출")
         result = inquire_unpd(
             cano=trenv.my_acct,
-            acnt_prdt_cd="08",
+            acnt_prdt_cd=trenv.my_prod,
             fuop_dvsn="00",
             ctx_area_fk100="",
             ctx_area_nk100=""

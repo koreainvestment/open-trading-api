@@ -106,7 +106,7 @@ def issue_info(
         tr_cont = res.getHeader().tr_cont
         if tr_cont == "M":
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return issue_info(
                 pdno,
                 prdt_type_cd,

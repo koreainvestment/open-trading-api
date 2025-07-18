@@ -63,8 +63,8 @@ def inquire_balance(
         
     Example:
         >>> df1, df2 = inquire_balance(
-        ...     cano="810XXXXX",
-        ...     acnt_prdt_cd="01",
+        ...     cano=trenv.my_acct,
+        ...     acnt_prdt_cd=trenv.my_prod,
         ...     ovrs_excg_cd="NASD",
         ...     tr_crcy_cd="USD",
         ...     FK200="",
@@ -158,7 +158,7 @@ def inquire_balance(
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
-            time.sleep(0.1)
+            ka.smart_sleep()
             return inquire_balance(
                 cano,
                 acnt_prdt_cd,

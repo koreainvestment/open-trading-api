@@ -250,10 +250,12 @@ def main():
     # 인증 토큰 발급
     ka.auth()
 
+    trenv = ka.getTREnv()
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
-        result = intgr_margin(cano="81180744", acnt_prdt_cd="01", cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01",
+        result = intgr_margin(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01",
                               fwex_ctrt_frcr_dvsn_cd="01")
     except ValueError as e:
         logging.error("에러 발생: %s", str(e))
