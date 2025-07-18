@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 기타정보 > KSD종목정보(무상증자) [HHKDB669101C0]
+# [국내주식] 기타정보 > 예탁원정보(무상증자일정)[국내주식-144]
 ##############################################################################################
 
 # 통합 컬럼 매핑
@@ -35,6 +35,8 @@ COLUMN_MAPPING = {
     'issue_stk_qty': '발행할주식',
     'stk_kind': '주식종류'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -83,6 +85,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 예탁원정보(무상증자일정) 결과 ===")

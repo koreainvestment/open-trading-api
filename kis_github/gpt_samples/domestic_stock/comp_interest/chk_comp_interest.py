@@ -18,6 +18,10 @@ from comp_interest import comp_interest
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 금리 종합(국내채권_금리)[국내주식-155]
+##############################################################################################
+
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
 COLUMN_MAPPING = {
     'bcdt_code': '자료코드',
@@ -35,6 +39,9 @@ COLUMN_MAPPING = {
     'bstp_nmix_prdy_ctrt': '업종지수전일대비율',
     'stck_bsop_date': '주식영업일자'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -65,7 +72,7 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-        
+
         # API 호출     
         result1, result2 = comp_interest(
             fid_cond_mrkt_div_code="I",  # 조건시장분류코드
@@ -73,21 +80,25 @@ def main():
             fid_div_cls_code="1",  # 분류구분코드
             fid_div_cls_code1="",  # 분류구분코드
         )
-        
+
         # 결과 확인
         results = [result1, result2]
         if all(result is None or result.empty for result in results):
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
 
         # output1 결과 처리
         logger.info("=== output1 조회 ===")
         if not result1.empty:
             logger.info("사용 가능한 컬럼: %s", result1.columns.tolist())
-            
+
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -97,18 +108,24 @@ def main():
         logger.info("=== output2 조회 ===")
         if not result2.empty:
             logger.info("사용 가능한 컬럼: %s", result2.columns.tolist())
-            
+
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+
             logger.info("output2 결과:")
             print(result2)
         else:
             logger.info("output2 데이터가 없습니다.")
 
-        
+
     except Exception as e:
         logger.error("에러 발생: %s", str(e))
         raise
+
 
 if __name__ == "__main__":
     main()

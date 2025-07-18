@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 기본시세 > 국내주식 호가잔량순위 [FHPST01720000]
+# [국내주식] 기본시세 > 국내주식 호가잔량 순위[국내주식-089]
 ##############################################################################################
 
 # 통합 컬럼 매핑
@@ -31,6 +31,8 @@ COLUMN_MAPPING = {
     'shnu_rsqn_rate': '매수 잔량 비율',
     'seln_rsqn_rate': '매도 잔량 비율'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -84,7 +86,11 @@ def main():
 
     # 한글 컬럼명으로 변환
     result = result.rename(columns=COLUMN_MAPPING)
-    
+
+    for col in NUMERIC_COLUMNS:
+        if col in result.columns:
+            result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
     # 결과 출력
     print("\n=== 국내주식 호가잔량 순위 결과 ===")
     print(result)

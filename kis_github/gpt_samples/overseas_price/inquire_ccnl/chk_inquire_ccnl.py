@@ -8,16 +8,33 @@ import logging
 
 import pandas as pd
 
-sys.path.extend(['../..', '.'])
+sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
 import kis_auth as ka
 from inquire_ccnl import inquire_ccnl
 
 # 로깅 설정
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 ##############################################################################################
 # [해외주식] 기본시세 > 해외주식 체결추이[해외주식-037]
 ##############################################################################################
+
+COLUMN_MAPPING = {
+    'vpow': '체결강도',
+    'evol': '체결량',
+    'khms': '한국기준시간',
+    'tvol': '거래량',
+    'last': '체결가',
+    'mtyp': '시장구분',
+    'sign': '기호',
+    'pbid': '매수호가',
+    'diff': '대비',
+    'pask': '매도호가',
+    'rate': '등락율'
+}
+
+NUMERIC_COLUMNS = ['체결강도', '체결량', '거래량', '대비', '등락율', '매수호가', '매도호가']
 
 def main():
     """
@@ -48,27 +65,10 @@ def main():
     
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'vpow': '체결강도',
-        'evol': '체결량',
-        'khms': '한국기준시간',
-        'tvol': '거래량',
-        'last': '체결가',
-        'mtyp': '시장구분',
-        'sign': '기호',
-        'pbid': '매수호가',
-        'diff': '대비',
-        'pask': '매도호가',
-        'rate': '등락율'
-    }
-    
-    result = result.rename(columns=column_mapping)
+    result = result.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     

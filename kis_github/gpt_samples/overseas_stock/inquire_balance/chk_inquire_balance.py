@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-06-30
 
@@ -47,28 +46,29 @@ COLUMN_MAPPING = {
     'frcr_buy_amt_smtl2': '외화매수금액합계2'
 }
 
+# 숫자형 컬럼 정의
+NUMERIC_COLUMNS = []
+
 def main():
     """
     [해외주식] 주문/계좌
-    해외주식 잔고[v1_해외주식-006]
+    해외주식 잔고[해외주식-006]
 
     해외주식 잔고 테스트 함수
     
     Parameters:
-        - cano (str): 종합계좌번호 (계좌번호 체계(8-2)의 앞 8자리)
-        - acnt_prdt_cd (str): 계좌상품코드 (계좌번호 체계(8-2)의 뒤 2자리)
-        - ovrs_excg_cd (str): 해외거래소코드 ([모의] NASD : 나스닥 NYSE : 뉴욕  AMEX : 아멕스  [실전] NASD : 미국전체 NAS : 나스닥 NYSE : 뉴욕  AMEX : 아멕스  [모의/실전 공통] SEHK : 홍콩 SHAA : 중국상해 SZAA : 중국심천 TKSE : 일본 HASE : 베트남 하노이 VNSE : 베트남 호치민)
-        - tr_crcy_cd (str): 거래통화코드 (USD : 미국달러 HKD : 홍콩달러 CNY : 중국위안화 JPY : 일본엔화 VND : 베트남동)
-        - ctx_area_fk200 (str): 연속조회검색조건200 (공란 : 최초 조회시 이전 조회 Output CTX_AREA_FK200값 : 다음페이지 조회시(2번째부터))
-        - ctx_area_nk200 (str): 연속조회키200 (공란 : 최초 조회시 이전 조회 Output CTX_AREA_NK200값 : 다음페이지 조회시(2번째부터))
-        - env_dv (str): 실전모의구분 (real:실전, demo:모의)
+        - cano (str): 종합계좌번호 ()
+        - acnt_prdt_cd (str): 계좌상품코드 ()
+        - ovrs_excg_cd (str): 해외거래소코드 ()
+        - tr_crcy_cd (str): 거래통화코드 ()
+        - ctx_area_fk200 (str): 연속조회검색조건200 ()
+        - ctx_area_nk200 (str): 연속조회키200 ()
 
     Returns:
         - DataFrame: 해외주식 잔고 결과
     
     Example:
-        >>> df1, df2 = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", tr_crcy_cd="USD", ctx_area_fk200="", ctx_area_nk200="", env_dv="real")  # 실전투자
-        >>> df1, df2 = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", tr_crcy_cd="USD", ctx_area_fk200="", ctx_area_nk200="", env_dv="demo")  # 모의투자
+        >>> df = inquire_balance(cano="12345678", acnt_prdt_cd="01", ovrs_excg_cd="NASD", tr_crcy_cd="USD", ctx_area_fk200="", ctx_area_nk200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -76,72 +76,52 @@ def main():
         pd.set_option('display.width', None)  # 출력 너비 제한 해제
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
-        # 실전/모의투자 선택 (모의투자 지원 로직)
-        env_dv = "real"  # "real": 실전투자, "demo": 모의투자
-        logger.info("투자 환경: %s", "실전투자" if env_dv == "real" else "모의투자")
-
-        # 토큰 발급 (모의투자 지원 로직)
+        # 토큰 발급
         logger.info("토큰 발급 중...")
-        if env_dv == "real":
-            ka.auth(svr='prod')  # 실전투자용 토큰
-        elif env_dv == "demo":
-            ka.auth(svr='vps')   # 모의투자용 토큰
+        ka.auth()
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외주식 잔고 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        ovrs_excg_cd = "NASD"  # 해외거래소코드
-        tr_crcy_cd = "USD"  # 거래통화코드
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-        ctx_area_nk200 = ""  # 연속조회키200
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외주식 잔고 (%s)", "실전투자" if env_dv == "real" else "모의투자")
+        logger.info("API 호출")
         result1, result2 = inquire_balance(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            ovrs_excg_cd=ovrs_excg_cd,  # 해외거래소코드
-            tr_crcy_cd=tr_crcy_cd,  # 거래통화코드
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
-            env_dv=env_dv,  # 실전모의구분
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            ovrs_excg_cd="NASD",  # 해외거래소코드
+            tr_crcy_cd="USD",  # 거래통화코드
+            FK200="",  # 연속조회검색조건200
+            NK200="",  # 연속조회키200
         )
         
-        # 결과 확인
-        results = [result1, result2]
-        if all(result is None or result.empty for result in results):
-            logger.warning("조회된 데이터가 없습니다.")
-            return
-        
-
         # output1 결과 처리
-        logger.info("=== output1 조회 ===")
-        if not result1.empty:
-            logger.info("사용 가능한 컬럼: %s", result1.columns.tolist())
-            
-            # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
-            result1 = result1.rename(columns=COLUMN_MAPPING)
-            logger.info("output1 결과:")
-            print(result1)
-        else:
-            logger.info("output1 데이터가 없습니다.")
-
-        # output2 결과 처리
-        logger.info("=== output2 조회 ===")
-        if not result2.empty:
-            logger.info("사용 가능한 컬럼: %s", result2.columns.tolist())
-            
-            # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
-            result2 = result2.rename(columns=COLUMN_MAPPING)
-            logger.info("output2 결과:")
-            print(result2)
-        else:
-            logger.info("output2 데이터가 없습니다.")
-
+        logging.info("=== output1 결과 ===")
+        logging.info("사용 가능한 컬럼: %s", result1.columns.tolist())
+        
+        # 한글 컬럼명으로 변환
+        result1 = result1.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result1.columns:
+                result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+        
+        logging.info("결과:")
+        print(result1)
+        
+        # output3 결과 처리
+        logging.info("=== output2 결과 ===")
+        logging.info("사용 가능한 컬럼: %s", result2.columns.tolist())
+        
+        # 한글 컬럼명으로 변환
+        result2 = result2.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result2.columns:
+                result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+        
+        logging.info("결과(output2):")
+        print(result2)
         
     except Exception as e:
         logger.error("에러 발생: %s", str(e))

@@ -18,6 +18,10 @@ from exp_total_index import exp_total_index
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 업종/기타 > 국내주식 예상체결 전체지수[국내주식-122]
+##############################################################################################
+
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
 COLUMN_MAPPING = {
     'bstp_nmix_prpr': '업종 지수 현재가',
@@ -40,6 +44,8 @@ COLUMN_MAPPING = {
     'stnr_issu_cnt': '보합 종목 수',
     'down_issu_cnt': '하락 종목 수'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -95,6 +101,11 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -107,6 +118,11 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+
             logger.info("output2 결과:")
             print(result2)
         else:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-06-30
 
@@ -19,6 +18,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 주문체결내역 [v1_해외주식-007]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-stock/v1/trading/inquire-ccnl"
+
 def inquire_ccnl(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -32,8 +38,8 @@ def inquire_ccnl(
     ord_dt: str,  # 주문일자
     ord_gno_brno: str,  # 주문채번지점번호
     odno: str,  # 주문번호
-    ctx_area_nk200: str,  # 연속조회키200
-    ctx_area_fk200: str,  # 연속조회검색조건200
+    NK200: str,  # 연속조회키200
+    FK200: str,  # 연속조회검색조건200
     env_dv: str = "real",  # 실전모의구분
     tr_cont: str = "",
     dataframe: Optional[pd.DataFrame] = None,
@@ -58,8 +64,8 @@ def inquire_ccnl(
         ord_dt (str): "" (Null 값 설정)
         ord_gno_brno (str): "" (Null 값 설정)
         odno (str): "" (Null 값 설정) ※ 주문번호로 검색 불가능합니다. 반드시 ""(Null 값 설정) 바랍니다.
-        ctx_area_nk200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_NK200값 : 다음페이지 조회시(2번째부터)
-        ctx_area_fk200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_FK200값 : 다음페이지 조회시(2번째부터)
+        NK200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_NK200값 : 다음페이지 조회시(2번째부터)
+        FK200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_FK200값 : 다음페이지 조회시(2번째부터)
         env_dv (str): 실전모의구분 (real:실전, demo:모의)
         tr_cont (str): 연속 거래 여부
         dataframe (Optional[pd.DataFrame]): 누적 데이터프레임
@@ -83,8 +89,8 @@ def inquire_ccnl(
         ...     ord_dt="",
         ...     ord_gno_brno="02111",
         ...     odno="",
-        ...     ctx_area_nk200="",
-        ...     ctx_area_fk200=""
+        ...     NK200="",
+        ...     FK200=""
         ... )
         >>> print(df)
     """
@@ -119,7 +125,6 @@ def inquire_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-stock/v1/trading/inquire-ccnl"
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
         tr_id = "TTTS3035R"  # 실전투자용 TR ID
@@ -141,11 +146,11 @@ def inquire_ccnl(
         "ORD_DT": ord_dt,
         "ORD_GNO_BRNO": ord_gno_brno,
         "ODNO": odno,
-        "CTX_AREA_NK200": ctx_area_nk200,
-        "CTX_AREA_FK200": ctx_area_fk200,
+        "CTX_AREA_NK200": NK200,
+        "CTX_AREA_FK200": FK200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -161,9 +166,9 @@ def inquire_ccnl(
         else:
             dataframe = current_data
             
-        tr_cont = res.getHeader().tr_cont
+        tr_cont, NK200, FK200 = res.getHeader().tr_cont, res.getBody().ctx_area_nk200, res.getBody().ctx_area_fk200
         
-        if tr_cont == "M":
+        if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
             time.sleep(0.1)
             return inquire_ccnl(
@@ -179,15 +184,18 @@ def inquire_ccnl(
                 ord_dt,
                 ord_gno_brno,
                 odno,
-                ctx_area_nk200,
-                ctx_area_fk200,
+                NK200,
+                FK200,
                 env_dv,
-                "N", dataframe, depth + 1, max_depth
+                "N",
+                dataframe,
+                depth + 1,
+                max_depth
             )
-        else:
+        else:   
             logger.info("Data fetch complete.")
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

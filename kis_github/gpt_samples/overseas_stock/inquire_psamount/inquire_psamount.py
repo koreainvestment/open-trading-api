@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 매수가능금액조회 [해외주식-014]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-stock/v1/trading/inquire-psamount"
+
 def inquire_psamount(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -83,7 +90,6 @@ def inquire_psamount(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-stock/v1/trading/inquire-psamount"
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
         tr_id = "TTTS3007R"  # 실전투자용 TR ID
@@ -100,7 +106,7 @@ def inquire_psamount(
         "ITEM_CD": item_cd,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -122,18 +128,21 @@ def inquire_psamount(
             logger.info("Calling next page...")
             time.sleep(0.1)
             return inquire_psamount(
-                cano,
-                acnt_prdt_cd,
-                ovrs_excg_cd,
-                ovrs_ord_unpr,
-                item_cd,
-                env_dv,
-                "N", dataframe, depth + 1, max_depth
+                cano=cano,
+                acnt_prdt_cd=acnt_prdt_cd,
+                ovrs_excg_cd=ovrs_excg_cd,
+                ovrs_ord_unpr=ovrs_ord_unpr,
+                item_cd=item_cd,
+                env_dv=env_dv,
+                tr_cont="N",
+                dataframe=dataframe,
+                depth=depth + 1,
+                max_depth=max_depth
             )
         else:
             logger.info("Data fetch complete.")
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

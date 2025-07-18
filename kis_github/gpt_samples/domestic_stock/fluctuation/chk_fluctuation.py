@@ -6,6 +6,10 @@ sys.path.extend(['../..', '.']) # kis_auth 파일 경로 추가
 import kis_auth as ka
 from fluctuation import fluctuation
 
+##############################################################################################
+# [국내주식] 순위분석 > 등락률 순위[v1_국내주식-088]
+##############################################################################################
+
 COLUMN_MAPPING = {
     "stck_shrn_iscd": "주식 단축 종목코드",
     "data_rank": "데이터 순위",
@@ -32,6 +36,8 @@ COLUMN_MAPPING = {
     "prd_rsfl": "기간 등락",
     "prd_rsfl_rate": "기간 등락 비율"
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -94,10 +100,13 @@ def main():
     print("\n=== 사용 가능한 컬럼 목록 ===")
     print(result.columns.tolist())
 
-
     # 한글 컬럼명으로 변환
     result = result.rename(columns=COLUMN_MAPPING)
-    
+
+    for col in NUMERIC_COLUMNS:
+        if col in result.columns:
+            result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
     # 결과 출력
     print("\n=== 국내주식 거래량순위 조회 결과 ===")
     print(result)

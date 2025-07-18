@@ -18,6 +18,11 @@ from inquire_paymt_stdr_balance import inquire_paymt_stdr_balance
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 결제기준잔고 [해외주식-064]
+##############################################################################################
+
+# 컬럼명 매핑 (한글 변환용)
 COLUMN_MAPPING = {
     'pdno': '상품번호',
     'prdt_name': '상품명',
@@ -58,6 +63,15 @@ COLUMN_MAPPING = {
     'tot_loan_amt': '총대출금액',
     'tot_ldng_evlu_amt': '총대여평가금액'
 }
+
+# 숫자형 컬럼 정의 (소수점 처리용)
+NUMERIC_COLUMNS = [
+    '잔고수량13', '주문가능수량1', '평균단가3', '해외현재가격1', '외화매입금액',
+    '외화평가금액2', '평가손익금액2', '기준환율', '당일매도체결수량1', '당일매수체결수량1',
+    '평가손익율1', '담보수량', '대출잔액', '대여잔고수량', '외화예수금액2',
+    '최초고시환율', '매입금액합계금액', '총평가손익금액', '평가수익율1', '총예수금액',
+    '원화평가금액합계', '총자산금액2', '외화잔고원화평가금액합계', '총대출금액', '총대여평가금액'
+]
 
 def main():
     """
@@ -101,7 +115,7 @@ def main():
 
         
         # API 호출
-        logger.info("API 호출 시작: 해외주식 결제기준잔고")
+        logger.info("API 호출")
         result1, result2, result3 = inquire_paymt_stdr_balance(
             cano=cano,  # 종합계좌번호
             acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
@@ -124,6 +138,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+            
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -136,6 +156,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+            
             logger.info("output2 결과:")
             print(result2)
         else:
@@ -148,6 +174,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result3 = result3.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result3.columns:
+                    result3[col] = pd.to_numeric(result3[col], errors='coerce').round(2)
+            
             logger.info("output3 결과:")
             print(result3)
         else:

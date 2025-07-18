@@ -10,7 +10,7 @@ import logging
 
 import pandas as pd
 
-sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
+sys.path.extend(['../..', '.'])
 import kis_auth as ka
 from inquire_price import inquire_price
 
@@ -18,6 +18,11 @@ from inquire_price import inquire_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물종목현재가 [v1_해외선물-009]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'proc_date': '최종처리일자',
     'high_price': '고가',
@@ -52,6 +57,9 @@ COLUMN_MAPPING = {
     'sbsnsdate': '영업일자',
     'sttl_price': '정산가'
 }
+
+NUMERIC_COLUMNS = ['고가', '시가', '저가', '현재가', '누적거래수량', '전일대비가격', '전일대비율', '매수1수량', '매수1호가', '매도1수량', '매도1호가',
+                    '전일종가', '증거금', '체결량', '총매도잔량', '총매수잔량', '틱사이즈', '정산가']
 
 def main():
     """
@@ -101,6 +109,9 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물종목현재가 결과 ===")

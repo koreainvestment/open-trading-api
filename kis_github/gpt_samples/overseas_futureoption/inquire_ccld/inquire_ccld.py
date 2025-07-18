@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 당일주문내역조회 [v1_해외선물-004]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-ccld"
+
 def inquire_ccld(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -81,14 +88,12 @@ def inquire_ccld(
     if not fuop_dvsn:
         logger.error("fuop_dvsn is required. (e.g. '00')")
         raise ValueError("fuop_dvsn is required. (e.g. '00')")
-
     
     # 최대 재귀 깊이 체크
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/trading/inquire-ccld"
     tr_id = "OTFM3116R"
 
     params = {
@@ -101,7 +106,7 @@ def inquire_ccld(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -137,5 +142,5 @@ def inquire_ccld(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

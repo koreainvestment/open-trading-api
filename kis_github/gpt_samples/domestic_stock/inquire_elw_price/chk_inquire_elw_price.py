@@ -18,6 +18,10 @@ from inquire_elw_price import inquire_elw_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] ELW시세 > ELW 현재가 시세 [v1_국내주식-014]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'elw_shrn_iscd': 'ELW 단축 종목코드',
     'hts_kor_isnm': 'HTS 한글 종목명',
@@ -59,6 +63,8 @@ COLUMN_MAPPING = {
     'invt_epmd_cntt': '투자 유의 내용'
 }
 
+NUMERIC_COLUMNS = []
+
 def main():
     """
     [국내주식] ELW시세
@@ -84,6 +90,7 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 실전/모의투자 선택 (모의투자 지원 로직)
+        env_dv = "real"
         logger.info("투자 환경: %s", "실전투자" if env_dv == "real" else "모의투자")
 
         # 토큰 발급 (모의투자 지원 로직)
@@ -110,7 +117,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== ELW 현재가 시세 결과 (%s) ===", "실전투자" if env_dv == "real" else "모의투자")
         logger.info("조회된 데이터 건수: %d", len(result))

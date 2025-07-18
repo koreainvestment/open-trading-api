@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 ##############################################################################################
 
 # 컬럼명 매핑
-COLUMN_MAP = {
+COLUMN_MAPPING = {
     "MKSC_SHRN_ISCD": "유가증권단축종목코드",
     "STCK_CNTG_HOUR": "주식체결시간",
     "STCK_PRPR": "주식현재가",
@@ -108,7 +108,7 @@ def main():
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼명 매핑
-            result.rename(columns=COLUMN_MAP, inplace=True)
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
             for col in NUMERIC_COLUMNS:

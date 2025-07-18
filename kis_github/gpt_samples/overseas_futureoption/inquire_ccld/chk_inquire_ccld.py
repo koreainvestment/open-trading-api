@@ -18,6 +18,11 @@ from inquire_ccld import inquire_ccld
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 당일주문내역조회 [v1_해외선물-004]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'cano': '종합계좌번호',
     'acnt_prdt_cd': '계좌상품코드',
@@ -52,6 +57,9 @@ COLUMN_MAPPING = {
     'fuop_dvsn': '선물옵션구분'
 }
 
+NUMERIC_COLUMNS = ['FM주문수량', 'FM주문가격', 'FMSTOP주문가격', 'FM체결수량', 'FM체결가격', 'FM주문잔여수량',
+                   'FM청산LIMIT주문가격', 'FM청산STOP가격']
+
 def main():
     """
     [해외선물옵션] 주문/계좌
@@ -81,32 +89,19 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 토큰 발급
-        logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외선물옵션 당일주문내역조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        ccld_nccs_dvsn = "01"  # 체결미체결구분
-        sll_buy_dvsn_cd = "%%"  # 매도매수구분코드
-        fuop_dvsn = "00"  # 선물옵션구분
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-        ctx_area_nk200 = ""  # 연속조회키200
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물옵션 당일주문내역조회")
+        logger.info("API 호출")
         result = inquire_ccld(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            ccld_nccs_dvsn=ccld_nccs_dvsn,  # 체결미체결구분
-            sll_buy_dvsn_cd=sll_buy_dvsn_cd,  # 매도매수구분코드
-            fuop_dvsn=fuop_dvsn,  # 선물옵션구분
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
+            cano=trenv.my_acct,
+            acnt_prdt_cd="08",
+            ccld_nccs_dvsn="01",
+            sll_buy_dvsn_cd="%%",
+            fuop_dvsn="00",
+            ctx_area_fk200="",
+            ctx_area_nk200=""
         )
         
         if result is None or result.empty:
@@ -119,6 +114,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물옵션 당일주문내역조회 결과 ===")

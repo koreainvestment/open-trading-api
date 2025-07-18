@@ -19,6 +19,30 @@ logging.basicConfig(level=logging.INFO)
 # [해외선물옵션] 기본시세 > 해외옵션 체결추이(주간) [해외선물-036]
 ##############################################################################################
 
+# 컬럼명 매핑 
+COLUMN_MAPPING = {
+    'ret_cnt': '자료개수',
+    'last_n_cnt': 'N틱최종개수',
+    'index_key': '이전조회KEY',
+    'data_date': '일자',
+    'data_time': '시간',
+    'open_price': '시가',
+    'high_price': '고가',
+    'low_price': '저가',
+    'last_price': '체결가격',
+    'last_qntt': '체결수량',
+    'vol': '누적거래수량',
+    'prev_diff_flag': '전일대비구분',
+    'prev_diff_price': '전일대비가격',
+    'prev_diff_rate': '전일대비율'
+}
+
+# 숫자형 컬럼 
+NUMERIC_COLUMNS = [
+    'open_price', 'high_price', 'low_price', 'last_price', 'last_qntt', 'vol',
+    'prev_diff_price', 'prev_diff_rate'
+]
+
 def main():
     """
     해외옵션 체결추이(주간) 조회 테스트 함수
@@ -49,19 +73,11 @@ def main():
     logging.info("=== output1 결과 ===")
     logging.info("사용 가능한 컬럼: %s", result1.columns.tolist())
     
-    # 컬럼명 한글 변환
-    column_mapping1 = {
-        'ret_cnt': '자료개수',
-        'last_n_cnt': 'N틱최종개수',
-        'index_key': '이전조회KEY'
-    }
+    # 컬럼명 한글 변환 (통합 매핑 사용)
+    result1 = result1.rename(columns=COLUMN_MAPPING)
     
-    result1 = result1.rename(columns=column_mapping1)
-    
-    # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns1 = []
-    
-    for col in numeric_columns1:
+    # 숫자형 컬럼 소수점 둘째자리까지 표시 (통합 리스트 사용)
+    for col in NUMERIC_COLUMNS:
         if col in result1.columns:
             result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
     
@@ -72,27 +88,11 @@ def main():
     logging.info("=== output2 결과 ===")
     logging.info("사용 가능한 컬럼: %s" % result2.columns.tolist())
     
-    # 컬럼명 한글 변환
-    column_mapping2 = {
-        'data_date': '일자',
-        'data_time': '시간',
-        'open_price': '시가',
-        'high_price': '고가',
-        'low_price': '저가',
-        'last_price': '체결가격',
-        'last_qntt': '체결수량',
-        'vol': '누적거래수량',
-        'prev_diff_flag': '전일대비구분',
-        'prev_diff_price': '전일대비가격',
-        'prev_diff_rate': '전일대비율'
-    }
+    # 컬럼명 한글 변환 (통합 매핑 사용)
+    result2 = result2.rename(columns=COLUMN_MAPPING)
     
-    result2 = result2.rename(columns=column_mapping2)
-    
-    # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns2 = []
-    
-    for col in numeric_columns2:
+    # 숫자형 컬럼 소수점 둘째자리까지 표시 (통합 리스트 사용)
+    for col in NUMERIC_COLUMNS:
         if col in result2.columns:
             result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
     

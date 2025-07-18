@@ -18,11 +18,17 @@ from credit_by_company import credit_by_company
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 국내주식 당사 신용가능종목[국내주식-111]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stck_shrn_iscd': '주식 단축 종목코드',
     'hts_kor_isnm': 'HTS 한글 종목명',
     'crdt_rate': '신용 비율'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -73,7 +79,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 당사 신용가능종목 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

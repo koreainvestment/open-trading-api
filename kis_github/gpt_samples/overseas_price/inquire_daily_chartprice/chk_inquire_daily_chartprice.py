@@ -18,6 +18,10 @@ from inquire_daily_chartprice import inquire_daily_chartprice
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 종목_지수_환율기간별시세(일_주_월_년)[v1_해외주식-012]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'ovrs_nmix_prdy_vrss': '전일 대비',
     'prdy_vrss_sign': '전일 대비 부호',
@@ -39,6 +43,8 @@ COLUMN_MAPPING = {
     'acml_vol': '누적 거래량',
     'mod_yn': '변경 여부'
 }
+
+NUMERIC_COLUMNS = ['전일 대비', '전일 대비율', '전일 종가', '누적 거래량', '현재가', '시가', '최고가', '최저가']
 
 def main():
     """
@@ -80,24 +86,18 @@ def main():
             ka.auth(svr='vps')   # 모의투자용 토큰
         logger.info("토큰 발급 완료")
 
-        # 해외주식 종목_지수_환율기간별시세(일_주_월_년) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fid_cond_mrkt_div_code = "N"  # FID 조건 시장 분류 코드
-        fid_input_iscd = "QQQ"  # FID 입력 종목코드
-        fid_input_date_1 = "20250101"  # FID 입력 날짜1
-        fid_input_date_2 = "20250131"  # FID 입력 날짜2
-        fid_period_div_code = "D"  # FID 기간 분류 코드
+
 
         
         # API 호출
         logger.info("API 호출 시작: 해외주식 종목_지수_환율기간별시세(일_주_월_년) (%s)", "실전투자" if env_dv == "real" else "모의투자")
         result1, result2 = inquire_daily_chartprice(
-            fid_cond_mrkt_div_code=fid_cond_mrkt_div_code,  # FID 조건 시장 분류 코드
-            fid_input_iscd=fid_input_iscd,  # FID 입력 종목코드
-            fid_input_date_1=fid_input_date_1,  # FID 입력 날짜1
-            fid_input_date_2=fid_input_date_2,  # FID 입력 날짜2
-            fid_period_div_code=fid_period_div_code,  # FID 기간 분류 코드
-            env_dv=env_dv,  # 실전모의구분
+            fid_cond_mrkt_div_code="N",
+            fid_input_iscd="QQQ",
+            fid_input_date_1="20250101",
+            fid_input_date_2="20250131",
+            fid_period_div_code="D",
+            env_dv=env_dv,
         )
         
         # 결과 확인
@@ -114,6 +114,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -126,6 +129,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
             logger.info("output2 결과:")
             print(result2)
         else:

@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 종목정보 > 상품기본조회 [CTPF1604R]
+# [국내주식] 종목정보 > 상품기본조회[v1_국내주식-029]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -36,6 +36,9 @@ COLUMN_MAPPING = {
     'ivst_prdt_type_cd': '투자상품유형코드',
     'frst_erlm_dt': '최초등록일자'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -79,6 +82,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 상품기본조회 결과 ===")

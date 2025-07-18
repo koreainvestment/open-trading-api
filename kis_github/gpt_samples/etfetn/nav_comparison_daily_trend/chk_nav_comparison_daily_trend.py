@@ -19,6 +19,26 @@ logging.basicConfig(level=logging.INFO)
 # [국내주식] 기본시세 > NAV 비교추이(일)[v1_국내주식-071]
 ##############################################################################################
 
+# 컬럼명 매핑
+COLUMN_MAPPING = {
+    'stck_bsop_date': '주식 영업 일자',
+    'stck_clpr': '주식 종가',
+    'prdy_vrss': '전일 대비',
+    'prdy_vrss_sign': '전일 대비 부호',
+    'prdy_ctrt': '전일 대비율',
+    'acml_vol': '누적 거래량',
+    'cntg_vol': '체결 거래량',
+    'dprt': '괴리율',
+    'nav_vrss_prpr': 'NAV 대비 현재가',
+    'nav': 'NAV',
+    'nav_prdy_vrss_sign': 'NAV 전일 대비 부호',
+    'nav_prdy_vrss': 'NAV 전일 대비',
+    'nav_prdy_ctrt': 'NAV 전일 대비율'
+}
+
+# 숫자형 컬럼
+NUMERIC_COLUMNS = ['전일 대비', '전일 대비율', 'NAV 전일 대비율']
+
 def main():
     """
     NAV 비교추이(일) 조회 테스트 함수
@@ -39,43 +59,20 @@ def main():
     ka.auth()
     
     # case1 조회
-    logging.info("=== case1 조회 ===")
+    logging.info("API 호출")
     try:
-        result = nav_comparison_daily_trend(
-            fid_cond_mrkt_div_code="J",
-            fid_input_iscd="069500",
-            fid_input_date_1="20240101",
-            fid_input_date_2="20240220"
-        )
+        result = nav_comparison_daily_trend(fid_cond_mrkt_div_code="J", fid_input_iscd="069500", fid_input_date_1="20240101", fid_input_date_2="20240220")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return
     
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'stck_bsop_date': '주식 영업 일자',
-        'stck_clpr': '주식 종가',
-        'prdy_vrss': '전일 대비',
-        'prdy_vrss_sign': '전일 대비 부호',
-        'prdy_ctrt': '전일 대비율',
-        'acml_vol': '누적 거래량',
-        'cntg_vol': '체결 거래량',
-        'dprt': '괴리율',
-        'nav_vrss_prpr': 'NAV 대비 현재가',
-        'nav': 'NAV',
-        'nav_prdy_vrss_sign': 'NAV 전일 대비 부호',
-        'nav_prdy_vrss': 'NAV 전일 대비',
-        'nav_prdy_ctrt': 'NAV 전일 대비율'
-    }
-    
-    result = result.rename(columns=column_mapping)
+    # 한글 컬럼명으로 변환
+    result = result.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns = ['전일 대비', '전일 대비율', 'NAV 전일 대비율']
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     

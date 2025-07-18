@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-06-30
 
@@ -18,6 +17,11 @@ from inquire_ccnl import inquire_ccnl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 주문체결내역 [v1_해외주식-007]
+##############################################################################################
+
+# 컬럼명 매핑 (한글 변환용)
 COLUMN_MAPPING = {
     'ord_dt': '주문일자',
     'ord_gno_brno': '주문채번지점번호',
@@ -50,8 +54,11 @@ COLUMN_MAPPING = {
     'loan_dt': '대출일자',
     'mdia_dvsn_name': '매체구분명',
     'usa_amk_exts_rqst_yn': '미국애프터마켓연장신청여부',
-    'splt_buy_attr_name': '분할매수/매도속성명',
+    'splt_buy_attr_name': '분할매수/매도속성명'
 }
+
+# 숫자형 컬럼 정의 (소수점 처리용)
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -102,46 +109,28 @@ def main():
             ka.auth(svr='vps')   # 모의투자용 토큰
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
-
-        # 해외주식 주문체결내역 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        pdno = ""  # 상품번호
-        ord_strt_dt = "20250601"  # 주문시작일자
-        ord_end_dt = "20250630"  # 주문종료일자
-        sll_buy_dvsn = "00"  # 매도매수구분
-        ccld_nccs_dvsn = "00"  # 체결미체결구분
-        ovrs_excg_cd = "NASD"  # 해외거래소코드
-        sort_sqn = "DS"  # 정렬순서
-        ord_dt = ""  # 주문일자
-        ord_gno_brno = ""  # 주문채번지점번호
-        odno = ""  # 주문번호
-        ctx_area_nk200 = ""  # 연속조회키200
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-
         
         # API 호출
-        logger.info("API 호출 시작: 해외주식 주문체결내역 (%s)", "실전투자" if env_dv == "real" else "모의투자")
+        logger.info("API 호출")
         result = inquire_ccnl(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            pdno=pdno,  # 상품번호
-            ord_strt_dt=ord_strt_dt,  # 주문시작일자
-            ord_end_dt=ord_end_dt,  # 주문종료일자
-            sll_buy_dvsn=sll_buy_dvsn,  # 매도매수구분
-            ccld_nccs_dvsn=ccld_nccs_dvsn,  # 체결미체결구분
-            ovrs_excg_cd=ovrs_excg_cd,  # 해외거래소코드
-            sort_sqn=sort_sqn,  # 정렬순서
-            ord_dt=ord_dt,  # 주문일자
-            ord_gno_brno=ord_gno_brno,  # 주문채번지점번호
-            odno=odno,  # 주문번호
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            env_dv=env_dv,  # 실전모의구분
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            pdno="",  # 상품번호
+            ord_strt_dt="20250601",  # 주문시작일자
+            ord_end_dt="20250630",  # 주문종료일자
+            sll_buy_dvsn="00",  # 매도매수구분
+            ccld_nccs_dvsn="00",  # 체결미체결구분
+            ovrs_excg_cd="NASD",  # 해외거래소코드
+            sort_sqn="DS",  # 정렬순서
+            ord_dt="",  # 주문일자
+            ord_gno_brno="",  # 주문채번지점번호
+            odno="",  # 주문번호
+            NK200="",  # 연속조회키200
+            FK200="",  # 연속조회검색조건200
+            env_dv="real",  # 실전모의구분
         )
         
-        if result is None or result.empty:
+        if result is None:
             logger.warning("조회된 데이터가 없습니다.")
             return
         
@@ -151,6 +140,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외주식 주문체결내역 결과 (%s) ===", "실전투자" if env_dv == "real" else "모의투자")

@@ -21,6 +21,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 현재체결가[v1_해외주식-009]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-price/v1/quotations/price"
+
 def price(
     auth: str,  # 사용자권한정보
     excd: str,  # 거래소코드
@@ -70,16 +77,12 @@ def price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-price/v1/quotations/price"
-    
     # TR ID 설정 (모의투자 지원 로직)
-    if env_dv == "real":
-        tr_id = "HHDFS00000300"  # 실전투자용 TR ID
-    elif env_dv == "demo":
-        tr_id = "HHDFS00000300"  # 모의투자용 TR ID
+    if env_dv == "real" or env_dv == "demo":
+        tr_id = "HHDFS00000300"  # 실전투자, 모의투자 공통 TR ID
     else:
-        logger.error("env_dv can only be 'real' or 'demo'")
-        raise ValueError("env_dv can only be 'real' or 'demo'")
+        logger.error("Invalid env_dv value: %s. Must be 'real' or 'demo'.", env_dv)
+        raise ValueError("env_dv must be 'real' or 'demo'")
 
     params = {
         "AUTH": auth,
@@ -88,7 +91,7 @@ def price(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -121,5 +124,5 @@ def price(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외지수분봉조회[v1_해외주식-031]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice"
+
 def inquire_time_indexchartprice(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
     fid_input_iscd: str,  # 입력 종목코드
@@ -78,7 +85,6 @@ def inquire_time_indexchartprice(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice"
     tr_id = "FHKST03030200"
 
     params = {
@@ -88,7 +94,7 @@ def inquire_time_indexchartprice(
         "FID_PW_DATA_INCU_YN": fid_pw_data_incu_yn,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -148,5 +154,5 @@ def inquire_time_indexchartprice(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

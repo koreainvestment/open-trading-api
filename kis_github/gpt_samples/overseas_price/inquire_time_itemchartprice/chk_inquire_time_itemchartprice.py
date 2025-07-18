@@ -18,8 +18,11 @@ from inquire_time_itemchartprice import inquire_time_itemchartprice
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식분봉조회[v1_해외주식-030]
+##############################################################################################
+
 COLUMN_MAPPING = {
-    'Output1': '응답상세',
     'rsym': '실시간종목코드',
     'zdiv': '소수점자리수',
     'stim': '장시작현지시간',
@@ -29,7 +32,6 @@ COLUMN_MAPPING = {
     'next': '다음가능여부',
     'more': '추가데이타여부',
     'nrec': '레코드갯수',
-    'Output2': '응답상세2',
     'tymd': '현지영업일자',
     'xymd': '현지기준일자',
     'xhms': '현지기준시간',
@@ -42,6 +44,8 @@ COLUMN_MAPPING = {
     'evol': '체결량',
     'eamt': '체결대금'
 }
+
+NUMERIC_COLUMNS = ['소수점자리수', '시가', '고가', '저가', '종가', '체결량', '체결대금']
 
 def main():
     """
@@ -78,31 +82,20 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 해외주식분봉조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        auth = ""  # 사용자권한정보
-        excd = "NAS"  # 거래소코드
-        symb = "TSLA"  # 종목코드
-        nmin = "5"  # 분갭
-        pinc = "1"  # 전일포함여부
-        next = ""  # 다음여부
-        nrec = "120"  # 요청갯수
-        fill = ""  # 미체결채움구분
-        keyb = ""  # NEXT KEY BUFF
 
         
         # API 호출
         logger.info("API 호출 시작: 해외주식분봉조회")
         result1, result2 = inquire_time_itemchartprice(
-            auth=auth,  # 사용자권한정보
-            excd=excd,  # 거래소코드
-            symb=symb,  # 종목코드
-            nmin=nmin,  # 분갭
-            pinc=pinc,  # 전일포함여부
-            next=next,  # 다음여부
-            nrec=nrec,  # 요청갯수
-            fill=fill,  # 미체결채움구분
-            keyb=keyb,  # NEXT KEY BUFF
+            auth="",
+            excd="NAS",
+            symb="TSLA",
+            nmin="5",
+            pinc="1",
+            next="",
+            nrec="120",
+            fill="",
+            keyb="",
         )
         
         # 결과 확인
@@ -119,6 +112,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -131,6 +127,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
             logger.info("output2 결과:")
             print(result2)
         else:

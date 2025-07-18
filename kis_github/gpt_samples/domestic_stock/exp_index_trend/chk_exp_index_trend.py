@@ -18,6 +18,10 @@ from exp_index_trend import exp_index_trend
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 업종/기타 > 국내주식 예상체결지수 추이[국내주식-121]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stck_cntg_hour': '주식 단축 종목코드',
     'bstp_nmix_prpr': 'HTS 한글 종목명',
@@ -27,6 +31,8 @@ COLUMN_MAPPING = {
     'acml_vol': '전일 대비율',
     'acml_tr_pbmn': '기준가 대비 현재가'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -74,6 +80,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 국내주식 예상체결지수 추이 결과 ===")

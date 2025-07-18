@@ -18,6 +18,11 @@ from investor_unpd_trend import investor_unpd_trend
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물 미결제추이 [v1_해외선물-029]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'row_cnt': '응답레코드카운트',
     'prod_iscd': '상품',
@@ -38,6 +43,10 @@ COLUMN_MAPPING = {
     'askp_hedge_cust': '매도헤지고객',
     'cust_smtn': '고객합계'
 }
+
+NUMERIC_COLUMNS = ['응답레코드카운트', '매수투기', '매도투기', '스프레드투기', '매수헤지', '매도헤지', '미결제합계', 
+                   '매수누락', '매도누락', '매수투기고객', '매도투기고객', '스프레드투기고객', '매수헤지고객', 
+                   '매도헤지고객', '고객합계']
 
 def main():
     """
@@ -65,25 +74,15 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 토큰 발급
-        logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
 
-        # 해외선물 미결제추이 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        prod_iscd = "CL"  # 상품
-        bsop_date = "20250630"  # 일자
-        upmu_gubun = "0"  # 구분
-        cts_key = ""  # CTS_KEY
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물 미결제추이")
+        logger.info("API 호출")
         result1, result2 = investor_unpd_trend(
-            prod_iscd=prod_iscd,  # 상품
-            bsop_date=bsop_date,  # 일자
-            upmu_gubun=upmu_gubun,  # 구분
-            cts_key=cts_key,  # CTS_KEY
+            prod_iscd="CL",
+            bsop_date="20250630",
+            upmu_gubun="0",
+            cts_key=""
         )
         
         # 결과 확인
@@ -91,7 +90,6 @@ def main():
         if all(result is None or result.empty for result in results):
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
 
         # output1 결과 처리
         logger.info("=== output1 조회 ===")
@@ -100,6 +98,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+            
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -112,6 +116,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+            
             logger.info("output2 결과:")
             print(result2)
         else:

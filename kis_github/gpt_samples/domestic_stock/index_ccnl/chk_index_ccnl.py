@@ -16,6 +16,50 @@ from index_ccnl import index_ccnl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간시세 > 국내지수 실시간체결 [H0UPCNT0]
+##############################################################################################
+
+COLUMN_MAPPING = {
+    "bstp_cls_code": "업종 구분 코드",
+    "bsop_hour": "영업 시간",
+    "prpr_nmix": "현재가 지수",
+    "prdy_vrss_sign": "전일 대비 부호",
+    "bstp_nmix_prdy_vrss": "업종 지수 전일 대비",
+    "acml_vol": "누적 거래량",
+    "acml_tr_pbmn": "누적 거래 대금",
+    "pcas_vol": "건별 거래량",
+    "pcas_tr_pbmn": "건별 거래 대금",
+    "prdy_ctrt": "전일 대비율",
+    "oprc_nmix": "시가 지수",
+    "nmix_hgpr": "지수 최고가",
+    "nmix_lwpr": "지수 최저가",
+    "oprc_vrss_nmix_prpr": "시가 대비 지수 현재가",
+    "oprc_vrss_nmix_sign": "시가 대비 지수 부호",
+    "hgpr_vrss_nmix_prpr": "최고가 대비 지수 현재가",
+    "hgpr_vrss_nmix_sign": "최고가 대비 지수 부호",
+    "lwpr_vrss_nmix_prpr": "최저가 대비 지수 현재가",
+    "lwpr_vrss_nmix_sign": "최저가 대비 지수 부호",
+    "prdy_clpr_vrss_oprc_rate": "전일 종가 대비 시가2 비율",
+    "prdy_clpr_vrss_hgpr_rate": "전일 종가 대비 최고가 비율",
+    "prdy_clpr_vrss_lwpr_rate": "전일 종가 대비 최저가 비율",
+    "uplm_issu_cnt": "상한 종목 수",
+    "ascn_issu_cnt": "상승 종목 수",
+    "stnr_issu_cnt": "보합 종목 수",
+    "down_issu_cnt": "하락 종목 수",
+    "lslm_issu_cnt": "하한 종목 수",
+    "qtqt_ascn_issu_cnt": "기세 상승 종목수",
+    "qtqt_down_issu_cnt": "기세 하락 종목수",
+    "tick_vrss": "TICK대비"
+}
+NUMERIC_COLUMNS = [
+    "현재가 지수", "업종 지수 전일 대비", "누적 거래량", "누적 거래 대금", "건별 거래량", "건별 거래 대금",
+    "전일 대비율", "시가 지수", "지수 최고가", "지수 최저가", "시가 대비 지수 현재가",
+    "최고가 대비 지수 현재가", "최저가 대비 지수 현재가", "전일 종가 대비 시가2 비율",
+    "전일 종가 대비 최고가 비율", "전일 종가 대비 최저가 비율", "상한 종목 수", "상승 종목 수",
+    "보합 종목 수", "하락 종목 수", "하한 종목 수", "기세 상승 종목수", "기세 하락 종목수", "TICK대비"
+]
+
 
 def main():
     """
@@ -67,49 +111,10 @@ ex) 0|H0STCNT0|004|005930^123929^73100^5^...
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "bstp_cls_code": "업종 구분 코드",
-                "bsop_hour": "영업 시간",
-                "prpr_nmix": "현재가 지수",
-                "prdy_vrss_sign": "전일 대비 부호",
-                "bstp_nmix_prdy_vrss": "업종 지수 전일 대비",
-                "acml_vol": "누적 거래량",
-                "acml_tr_pbmn": "누적 거래 대금",
-                "pcas_vol": "건별 거래량",
-                "pcas_tr_pbmn": "건별 거래 대금",
-                "prdy_ctrt": "전일 대비율",
-                "oprc_nmix": "시가 지수",
-                "nmix_hgpr": "지수 최고가",
-                "nmix_lwpr": "지수 최저가",
-                "oprc_vrss_nmix_prpr": "시가 대비 지수 현재가",
-                "oprc_vrss_nmix_sign": "시가 대비 지수 부호",
-                "hgpr_vrss_nmix_prpr": "최고가 대비 지수 현재가",
-                "hgpr_vrss_nmix_sign": "최고가 대비 지수 부호",
-                "lwpr_vrss_nmix_prpr": "최저가 대비 지수 현재가",
-                "lwpr_vrss_nmix_sign": "최저가 대비 지수 부호",
-                "prdy_clpr_vrss_oprc_rate": "전일 종가 대비 시가2 비율",
-                "prdy_clpr_vrss_hgpr_rate": "전일 종가 대비 최고가 비율",
-                "prdy_clpr_vrss_lwpr_rate": "전일 종가 대비 최저가 비율",
-                "uplm_issu_cnt": "상한 종목 수",
-                "ascn_issu_cnt": "상승 종목 수",
-                "stnr_issu_cnt": "보합 종목 수",
-                "down_issu_cnt": "하락 종목 수",
-                "lslm_issu_cnt": "하한 종목 수",
-                "qtqt_ascn_issu_cnt": "기세 상승 종목수",
-                "qtqt_down_issu_cnt": "기세 하락 종목수",
-                "tick_vrss": "TICK대비"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
-            numeric_columns = [
-                "현재가 지수", "업종 지수 전일 대비", "누적 거래량", "누적 거래 대금", "건별 거래량", "건별 거래 대금",
-                "전일 대비율", "시가 지수", "지수 최고가", "지수 최저가", "시가 대비 지수 현재가",
-                "최고가 대비 지수 현재가", "최저가 대비 지수 현재가", "전일 종가 대비 시가2 비율",
-                "전일 종가 대비 최고가 비율", "전일 종가 대비 최저가 비율", "상한 종목 수", "상승 종목 수",
-                "보합 종목 수", "하락 종목 수", "하한 종목 수", "기세 상승 종목수", "기세 하락 종목수", "TICK대비"
-            ]
-            for col in numeric_columns:
+            for col in NUMERIC_COLUMNS:
                 if col in result.columns:
                     result[col] = pd.to_numeric(result[col], errors='coerce')
 

@@ -18,6 +18,11 @@ from inquire_period_profit import inquire_period_profit
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 기간손익 [v1_해외주식-032]
+##############################################################################################
+
+# 컬럼명 매핑 (한글 변환용)
 COLUMN_MAPPING = {
     'trad_day': '매매일',
     'ovrs_pdno': '해외상품번호',
@@ -42,6 +47,14 @@ COLUMN_MAPPING = {
     'exrt': '환율'
 }
 
+# 숫자형 컬럼 정의 (소수점 처리용)
+NUMERIC_COLUMNS = [
+    'slcl_qty', 'pchs_avg_pric', 'frcr_pchs_amt1', 'avg_sll_unpr', 'frcr_sll_amt_smtl1',
+    'stck_sll_tlex', 'ovrs_rlzt_pfls_amt', 'pftrt', 'exrt', 'frst_bltn_exrt',
+    'stck_sll_amt_smtl', 'stck_buy_amt_smtl', 'smtl_fee1', 'excc_dfrm_amt',
+    'ovrs_rlzt_pfls_tot_amt', 'tot_pftrt'
+]
+
 def main():
     """
     [해외주식] 주문/계좌
@@ -59,14 +72,14 @@ def main():
         - inqr_strt_dt (str): 조회시작일자 (YYYYMMDD)
         - inqr_end_dt (str): 조회종료일자 (YYYYMMDD)
         - wcrc_frcr_dvsn_cd (str): 원화외화구분코드 (01 : 외화, 02 : 원화)
-        - ctx_area_fk200 (str): 연속조회검색조건200 ()
-        - ctx_area_nk200 (str): 연속조회키200 ()
+        - FK200 (str): 연속조회검색조건200 (공란 : 최초 조회시 이전 조회 Output CTX_AREA_FK200값 : 다음페이지 조회시(2번째부터))
+        - NK200 (str): 연속조회키200 (공란 : 최초 조회시 이전 조회 Output CTX_AREA_NK200값 : 다음페이지 조회시(2번째부터))
 
     Returns:
-        - DataFrame: 해외주식 기간손익 결과
+        - DataFrame: 해외주식 기간손익 결과 (output1: 기간손익 목록, output2: 기간손익 요약)
     
     Example:
-        >>> df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="", natn_cd="", crcy_cd="", pdno="", inqr_strt_dt="20250101", inqr_end_dt="20250131", wcrc_frcr_dvsn_cd="01", ctx_area_fk200="", ctx_area_nk200="")
+        >>> df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd="01", ovrs_excg_cd="NASD", natn_cd="", crcy_cd="USD", pdno="", inqr_strt_dt="20230101", inqr_end_dt="20231231", wcrc_frcr_dvsn_cd="01", FK200="", NK200="")
     """
     try:
         # pandas 출력 옵션 설정
@@ -79,69 +92,62 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
-
-        # 해외주식 기간손익 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        ovrs_excg_cd = "NASD"  # 해외거래소코드
-        natn_cd = ""  # 국가코드
-        crcy_cd = "USD"  # 통화코드
-        pdno = ""  # 상품번호
-        inqr_strt_dt = "20250501"  # 조회시작일자
-        inqr_end_dt = "20250708"  # 조회종료일자
-        wcrc_frcr_dvsn_cd = "01"  # 원화외화구분코드
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-        ctx_area_nk200 = ""  # 연속조회키200
-
         
         # API 호출
-        logger.info("API 호출 시작: 해외주식 기간손익")
+        logger.info("API 호출")
         result1, result2 = inquire_period_profit(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            ovrs_excg_cd=ovrs_excg_cd,  # 해외거래소코드
-            natn_cd=natn_cd,  # 국가코드
-            crcy_cd=crcy_cd,  # 통화코드
-            pdno=pdno,  # 상품번호
-            inqr_strt_dt=inqr_strt_dt,  # 조회시작일자
-            inqr_end_dt=inqr_end_dt,  # 조회종료일자
-            wcrc_frcr_dvsn_cd=wcrc_frcr_dvsn_cd,  # 원화외화구분코드
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            ovrs_excg_cd="NASD",  # 해외거래소코드
+            natn_cd="",  # 국가코드
+            crcy_cd="USD",  # 통화코드
+            pdno="",  # 상품번호
+            inqr_strt_dt="20240601",  # 조회시작일자
+            inqr_end_dt="20240630",  # 조회종료일자
+            wcrc_frcr_dvsn_cd="01",  # 원화외화구분코드
+            FK200="",  # 연속조회검색조건200
+            NK200=""   # 연속조회키200
         )
         
-        # 결과 확인
-        results = [result1, result2]
-        if all(result is None or result.empty for result in results):
-            logger.warning("조회된 데이터가 없습니다.")
-            return
-        
+        if result1 is None or result1.empty:
+            logger.warning("조회된 기간손익 목록 데이터가 없습니다.")
+        else:
+            # 컬럼명 출력
+            logger.info("사용 가능한 컬럼 목록 (output1):")
+            logger.info(result1.columns.tolist())
 
-        # output1 결과 처리
-        logger.info("=== output1 조회 ===")
-        if not result1.empty:
-            logger.info("사용 가능한 컬럼: %s", result1.columns.tolist())
-            
-            # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
+            # 한글 컬럼명으로 변환
             result1 = result1.rename(columns=COLUMN_MAPPING)
-            logger.info("output1 결과:")
-            print(result1)
-        else:
-            logger.info("output1 데이터가 없습니다.")
-
-        # output2 결과 처리
-        logger.info("=== output2 조회 ===")
-        if not result2.empty:
-            logger.info("사용 가능한 컬럼: %s", result2.columns.tolist())
             
-            # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
-            result2 = result2.rename(columns=COLUMN_MAPPING)
-            logger.info("output2 결과:")
-            print(result2)
-        else:
-            logger.info("output2 데이터가 없습니다.")
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+            
+            # 결과 출력
+            logger.info("=== 해외주식 기간손익 목록 (output1) ===")
+            logger.info("조회된 데이터 건수: %d", len(result1))
+            print(result1)
 
+        if result2 is None or result2.empty:
+            logger.warning("조회된 기간손익 요약 데이터가 없습니다.")
+        else:
+            # 컬럼명 출력
+            logger.info("사용 가능한 컬럼 목록 (output2):")
+            logger.info(result2.columns.tolist())
+
+            # 한글 컬럼명으로 변환
+            result2 = result2.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+
+            # 결과 출력
+            logger.info("=== 해외주식 기간손익 요약 (output2) ===")
+            logger.info("조회된 데이터 건수: %d", len(result2))
+            print(result2)
         
     except Exception as e:
         logger.error("에러 발생: %s", str(e))

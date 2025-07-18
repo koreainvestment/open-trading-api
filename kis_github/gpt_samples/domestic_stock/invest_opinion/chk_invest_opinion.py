@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 종목정보 > 국내주식 종목투자의견 [FHKST663300C0]
+# [국내주식] 종목정보 > 국내주식 종목투자의견[국내주식-188]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -35,6 +35,9 @@ COLUMN_MAPPING = {
     'stft_esdg': '주식선물괴리도',
     'dprt': '괴리율'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -64,7 +67,7 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")        
+        logger.info("토큰 발급 완료")
         # API 호출        
         result = invest_opinion(
             fid_cond_mrkt_div_code="J",  # 조건시장분류코드
@@ -73,26 +76,31 @@ def main():
             fid_input_date_1="20250101",  # 입력날짜1
             fid_input_date_2="20250617",  # 입력날짜2
         )
-        
+
         if result is None or result.empty:
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
+
         # 컬럼명 출력
         logger.info("사용 가능한 컬럼 목록:")
         logger.info(result.columns.tolist())
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 종목투자의견 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))
         print(result)
-        
+
     except Exception as e:
         logger.error("에러 발생: %s", str(e))
         raise
+
 
 if __name__ == "__main__":
     main()

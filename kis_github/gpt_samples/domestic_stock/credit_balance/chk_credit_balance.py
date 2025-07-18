@@ -18,6 +18,10 @@ from credit_balance import credit_balance
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 순위분석 > 국내주식 신용잔고 상위 [국내주식-109]
+##############################################################################################
+
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
 COLUMN_MAPPING = {
     'bstp_cls_code': '업종 구분 코드',
@@ -40,6 +44,8 @@ COLUMN_MAPPING = {
     'nday_vrss_loan_rmnd_inrt': 'N일 대비 융자 잔고 증가율',
     'nday_vrss_stln_rmnd_inrt': 'N일 대비 대주 잔고 증가율'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -96,6 +102,11 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -108,6 +119,11 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+
             logger.info("output2 결과:")
             print(result2)
         else:

@@ -34,6 +34,8 @@ COLUMN_MAPPING = {
     'd120_dsrt': '120일 이격도'
 }
 
+NUMERIC_COLUMNS = []
+
 def main():
     """
     [국내주식] 순위분석
@@ -96,6 +98,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 국내주식 이격도 순위 결과 ===")

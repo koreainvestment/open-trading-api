@@ -18,6 +18,10 @@ from finance_other_major_ratios import finance_other_major_ratios
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 국내주식 기타주요비율 [v1_국내주식-088]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stac_yymm': '결산 년월',
     'payout_rate': '배당 성향',
@@ -25,6 +29,8 @@ COLUMN_MAPPING = {
     'ebitda': 'EBITDA',
     'ev_ebitda': 'EV_EBITDA'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -70,6 +76,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 국내주식 기타주요비율 결과 ===")

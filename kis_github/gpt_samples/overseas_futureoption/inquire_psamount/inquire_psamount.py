@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 주문가능조회 [v1_해외선물-006]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-psamount"
+
 def inquire_psamount(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -81,8 +88,7 @@ def inquire_psamount(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    url = "/uapi/overseas-futureoption/v1/trading/inquire-psamount"
+
     tr_id = "OTFM3304R"
 
     params = {
@@ -94,7 +100,7 @@ def inquire_psamount(
         "ECIS_RSVN_ORD_YN": ecis_rsvn_ord_yn,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -129,5 +135,5 @@ def inquire_psamount(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

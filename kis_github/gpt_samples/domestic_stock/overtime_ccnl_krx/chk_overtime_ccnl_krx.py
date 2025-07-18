@@ -21,6 +21,62 @@ logger = logging.getLogger(__name__)
 ##############################################################################################
 
 
+COLUMN_MAPPING = {
+    "mksc_shrn_iscd": "유가증권단축종목코드",
+    "stck_cntg_hour": "주식체결시간",
+    "stck_prpr": "주식현재가",
+    "prdy_vrss_sign": "전일대비구분",
+    "prdy_vrss": "전일대비",
+    "prdy_ctrt": "등락율",
+    "wghn_avrg_stck_prc": "가중평균주식가격",
+    "stck_oprc": "시가",
+    "stck_hgpr": "고가",
+    "stck_lwpr": "저가",
+    "askp1": "매도호가",
+    "bidp1": "매수호가",
+    "cntg_vol": "거래량",
+    "acml_vol": "누적거래량",
+    "acml_tr_pbmn": "누적거래대금",
+    "seln_cntg_csnu": "매도체결건수",
+    "shnu_cntg_csnu": "매수체결건수",
+    "ntby_cntg_csnu": "순매수체결건수",
+    "cttr": "체결강도",
+    "seln_cntg_smtn": "총매도수량",
+    "shnu_cntg_smtn": "총매수수량",
+    "cntg_cls_code": "체결구분",
+    "shnu_rate": "매수비율",
+    "prdy_vol_vrss_acml_vol_rate": "전일거래량대비등락율",
+    "oprc_hour": "시가시간",
+    "oprc_vrss_prpr_sign": "시가대비구분",
+    "oprc_vrss_prpr": "시가대비",
+    "hgpr_hour": "최고가시간",
+    "hgpr_vrss_prpr_sign": "고가대비구분",
+    "hgpr_vrss_prpr": "고가대비",
+    "lwpr_hour": "최저가시간",
+    "lwpr_vrss_prpr_sign": "저가대비구분",
+    "lwpr_vrss_prpr": "저가대비",
+    "bsop_date": "영업일자",
+    "new_mkop_cls_code": "신장운영구분코드",
+    "trht_yn": "거래정지여부",
+    "askp_rsqn1": "매도호가잔량1",
+    "bidp_rsqn1": "매수호가잔량1",
+    "total_askp_rsqn": "총매도호가잔량",
+    "total_bidp_rsqn": "총매수호가잔량",
+    "vol_tnrt": "거래량회전율",
+    "prdy_smns_hour_acml_vol": "전일동시간누적거래량",
+    "prdy_smns_hour_acml_vol_rate": "전일동시간누적거래량비율"
+}
+
+NUMERIC_COLUMNS = [
+    "주식현재가", "전일대비", "등락율", "가중평균주식가격", "시가", "고가", "저가",
+    "매도호가", "매수호가", "거래량", "누적거래량", "누적거래대금", "매도체결건수",
+    "매수체결건수", "순매수체결건수", "체결강도", "총매도수량", "총매수수량", "매수비율",
+    "전일거래량대비등락율", "시가대비", "고가대비", "저가대비", "매도호가잔량1",
+    "매수호가잔량1", "총매도호가잔량", "총매수호가잔량", "거래량회전율",
+    "전일동시간누적거래량", "전일동시간누적거래량비율"
+]
+
+
 def main():
     """
     국내주식 시간외 실시간체결가 (KRX)
@@ -69,69 +125,16 @@ ex) 0|H0STCNT0|004|005930^123929^73100^5^...
     kws = ka.KISWebSocket(api_url="/tryitout")
 
     # 조회
-    kws.subscribe(request=overtime_ccnl_krx, data=["023460", "199480","462860", "440790", "000660"])
+    kws.subscribe(request=overtime_ccnl_krx, data=["023460", "199480", "462860", "440790", "000660"])
 
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "mksc_shrn_iscd": "유가증권단축종목코드",
-                "stck_cntg_hour": "주식체결시간",
-                "stck_prpr": "주식현재가",
-                "prdy_vrss_sign": "전일대비구분",
-                "prdy_vrss": "전일대비",
-                "prdy_ctrt": "등락율",
-                "wghn_avrg_stck_prc": "가중평균주식가격",
-                "stck_oprc": "시가",
-                "stck_hgpr": "고가",
-                "stck_lwpr": "저가",
-                "askp1": "매도호가",
-                "bidp1": "매수호가",
-                "cntg_vol": "거래량",
-                "acml_vol": "누적거래량",
-                "acml_tr_pbmn": "누적거래대금",
-                "seln_cntg_csnu": "매도체결건수",
-                "shnu_cntg_csnu": "매수체결건수",
-                "ntby_cntg_csnu": "순매수체결건수",
-                "cttr": "체결강도",
-                "seln_cntg_smtn": "총매도수량",
-                "shnu_cntg_smtn": "총매수수량",
-                "cntg_cls_code": "체결구분",
-                "shnu_rate": "매수비율",
-                "prdy_vol_vrss_acml_vol_rate": "전일거래량대비등락율",
-                "oprc_hour": "시가시간",
-                "oprc_vrss_prpr_sign": "시가대비구분",
-                "oprc_vrss_prpr": "시가대비",
-                "hgpr_hour": "최고가시간",
-                "hgpr_vrss_prpr_sign": "고가대비구분",
-                "hgpr_vrss_prpr": "고가대비",
-                "lwpr_hour": "최저가시간",
-                "lwpr_vrss_prpr_sign": "저가대비구분",
-                "lwpr_vrss_prpr": "저가대비",
-                "bsop_date": "영업일자",
-                "new_mkop_cls_code": "신장운영구분코드",
-                "trht_yn": "거래정지여부",
-                "askp_rsqn1": "매도호가잔량1",
-                "bidp_rsqn1": "매수호가잔량1",
-                "total_askp_rsqn": "총매도호가잔량",
-                "total_bidp_rsqn": "총매수호가잔량",
-                "vol_tnrt": "거래량회전율",
-                "prdy_smns_hour_acml_vol": "전일동시간누적거래량",
-                "prdy_smns_hour_acml_vol_rate": "전일동시간누적거래량비율"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
-            numeric_columns = [
-                "주식현재가", "전일대비", "등락율", "가중평균주식가격", "시가", "고가", "저가",
-                "매도호가", "매수호가", "거래량", "누적거래량", "누적거래대금", "매도체결건수",
-                "매수체결건수", "순매수체결건수", "체결강도", "총매도수량", "총매수수량", "매수비율",
-                "전일거래량대비등락율", "시가대비", "고가대비", "저가대비", "매도호가잔량1",
-                "매수호가잔량1", "총매도호가잔량", "총매수호가잔량", "거래량회전율",
-                "전일동시간누적거래량", "전일동시간누적거래량비율"
-            ]
-            for col in numeric_columns:
+            for col in NUMERIC_COLUMNS:
                 if col in result.columns:
                     result[col] = pd.to_numeric(result[col], errors='coerce')
 

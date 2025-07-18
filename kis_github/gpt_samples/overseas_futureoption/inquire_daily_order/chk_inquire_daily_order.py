@@ -10,13 +10,17 @@ import logging
 
 import pandas as pd
 
-sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
+sys.path.extend(['../..', '.'])
 import kis_auth as ka
 from inquire_daily_order import inquire_daily_order
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 일별 주문내역 [해외선물-013]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'cano': '종합계좌번호',
@@ -48,6 +52,8 @@ COLUMN_MAPPING = {
     'trad_end_dt': '매매종료일자'
 }
 
+NUMERIC_COLUMNS = ['FM주문수량', 'FM주문가격', 'FMSTOP주문가격', 'FM체결수량', 'FM체결가격', 'FM주문잔여수량']
+    
 def main():
     """
     [해외선물옵션] 주문/계좌
@@ -84,34 +90,20 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
-
-        # 해외선물옵션 일별 주문내역 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        strt_dt = "20250601"  # 시작일자
-        end_dt = "20250703"  # 종료일자
-        fm_pdgr_cd = ""  # FM상품군코드
-        ccld_nccs_dvsn = "01"  # 체결미체결구분
-        sll_buy_dvsn_cd = "%%"  # 매도매수구분코드
-        fuop_dvsn = "00"  # 선물옵션구분
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-        ctx_area_nk200 = ""  # 연속조회키200
-
         
         # API 호출
         logger.info("API 호출 시작: 해외선물옵션 일별 주문내역")
         result = inquire_daily_order(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            strt_dt=strt_dt,  # 시작일자
-            end_dt=end_dt,  # 종료일자
-            fm_pdgr_cd=fm_pdgr_cd,  # FM상품군코드
-            ccld_nccs_dvsn=ccld_nccs_dvsn,  # 체결미체결구분
-            sll_buy_dvsn_cd=sll_buy_dvsn_cd,  # 매도매수구분코드
-            fuop_dvsn=fuop_dvsn,  # 선물옵션구분
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
+            cano=trenv.my_acct,           # 종합계좌번호 (자동 설정)
+            acnt_prdt_cd="08",            # 계좌상품코드
+            strt_dt="20250601",           # 시작일자
+            end_dt="20250703",            # 종료일자
+            fm_pdgr_cd="",                # FM상품군코드
+            ccld_nccs_dvsn="01",          # 체결미체결구분
+            sll_buy_dvsn_cd="%%",         # 매도매수구분코드
+            fuop_dvsn="00",               # 선물옵션구분
+            ctx_area_fk200="",            # 연속조회검색조건200
+            ctx_area_nk200=""             # 연속조회키200
         )
         
         if result is None or result.empty:
@@ -124,6 +116,9 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물옵션 일별 주문내역 결과 ===")

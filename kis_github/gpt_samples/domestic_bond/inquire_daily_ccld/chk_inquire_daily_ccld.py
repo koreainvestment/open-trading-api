@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [장내채권] 주문/계좌 > 장내채권 일별체결조회 [CTSC8013R]
+# [장내채권] 주문/계좌 > 장내채권 일별체결조회 [국내주식-127]
 ##############################################################################################
 
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
@@ -51,6 +51,7 @@ COLUMN_MAPPING = {
     'ord_gno_brno': '주문채번지점번호'
 }
 
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -119,6 +120,12 @@ def main():
 
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+
+            # 숫자형 컬럼 변환s
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce')
+
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -131,6 +138,12 @@ def main():
 
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+
+            # 숫자형 컬럼 변환s
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce')
+
             logger.info("output2 결과:")
             print(result2)
         else:

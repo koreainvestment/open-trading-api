@@ -18,6 +18,11 @@ from inquire_unpd import inquire_unpd
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 미결제내역조회(잔고) [v1_해외선물-005]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'cano': '종합계좌번호',
     'acnt_prdt_cd': '계좌상품코드',
@@ -35,6 +40,8 @@ COLUMN_MAPPING = {
     'ecis_rsvn_ord_yn': '행사예약주문여부',
     'fm_lqd_psbl_qty': 'FM청산가능수량'
 }
+
+NUMERIC_COLUMNS = ['FM미결제수량', 'FM체결평균가격', 'FM현재가격', 'FM평가손익금액', 'FM옵션평가금액', 'FM옵션평가손익금액', 'FM청산가능수량']
 
 def main():
     """
@@ -63,28 +70,17 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 토큰 발급
-        logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외선물옵션 미결제내역조회(잔고) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        fuop_dvsn = "00"  # 선물옵션구분
-        ctx_area_fk100 = ""  # 연속조회검색조건100
-        ctx_area_nk100 = ""  # 연속조회키100
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물옵션 미결제내역조회(잔고)")
+        logger.info("API 호출")
         result = inquire_unpd(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            fuop_dvsn=fuop_dvsn,  # 선물옵션구분
-            ctx_area_fk100=ctx_area_fk100,  # 연속조회검색조건100
-            ctx_area_nk100=ctx_area_nk100,  # 연속조회키100
+            cano=trenv.my_acct,
+            acnt_prdt_cd="08",
+            fuop_dvsn="00",
+            ctx_area_fk100="",
+            ctx_area_nk100=""
         )
         
         if result is None or result.empty:
@@ -97,6 +93,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물옵션 미결제내역조회(잔고) 결과 ===")

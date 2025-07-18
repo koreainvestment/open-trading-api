@@ -19,6 +19,28 @@ logging.basicConfig(level=logging.INFO)
 # [해외주식] 주문/계좌 > 해외주식 지정가체결내역조회 [해외주식-070]
 ##############################################################################################
 
+# 컬럼 매핑 정의
+COLUMN_MAPPING = {
+    'CCLD_SEQ': '체결순번',
+    'CCLD_BTWN': '체결시간',
+    'PDNO': '상품번호',
+    'ITEM_NAME': '종목명',
+    'FT_CCLD_QTY': 'FT체결수량',
+    'FT_CCLD_UNPR3': 'FT체결단가',
+    'FT_CCLD_AMT3': 'FT체결금액',
+    'ODNO': '주문번호',
+    'TRAD_DVSN_NAME': '매매구분명',
+    'FT_ORD_QTY': 'FT주문수량',
+    'FT_ORD_UNPR3': 'FT주문단가',
+    'ORD_TMD': '주문시각',
+    'SPLT_BUY_ATTR_NAME': '분할매수속성명',
+    'TR_CRCY': '거래통화',
+    'CCLD_CNT': '체결건수'
+}
+
+# 숫자형 컬럼 정의
+NUMERIC_COLUMNS = []
+
 def main():
     """
     해외주식 지정가체결내역조회 테스트 함수
@@ -38,8 +60,8 @@ def main():
     # 인증 토큰 발급
     ka.auth()
     
-    # case1 조회
-    logging.info("=== case1 조회 ===")
+    # API 호출
+    logging.info("API 호출")
     try:
         result, result3 = inquire_algo_ccnl(cano="81180744", acnt_prdt_cd="01")
     except ValueError as e:
@@ -50,23 +72,11 @@ def main():
     logging.info("=== output 결과 ===")
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'CCLD_SEQ': '체결순번',
-        'CCLD_BTWN': '체결시간',
-        'PDNO': '상품번호',
-        'ITEM_NAME': '종목명',
-        'FT_CCLD_QTY': 'FT체결수량',
-        'FT_CCLD_UNPR3': 'FT체결단가',
-        'FT_CCLD_AMT3': 'FT체결금액'
-    }
+    # 한글 컬럼명으로 변환
+    result = result.rename(columns=COLUMN_MAPPING)
     
-    result = result.rename(columns=column_mapping)
-    
-    # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 number 자료형이 명시된 컬럼 없음)
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    # 숫자형 컬럼 소수점 둘째자리까지 표시
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     
@@ -77,33 +87,15 @@ def main():
     logging.info("=== output3 결과 ===")
     logging.info("사용 가능한 컬럼: %s", result3.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping3 = {
-        'ODNO': '주문번호',
-        'TRAD_DVSN_NAME': '매매구분명',
-        'PDNO': '상품번호',
-        'ITEM_NAME': '종목명',
-        'FT_ORD_QTY': 'FT주문수량',
-        'FT_ORD_UNPR3': 'FT주문단가',
-        'ORD_TMD': '주문시각',
-        'SPLT_BUY_ATTR_NAME': '분할매수속성명',
-        'FT_CCLD_QTY': 'FT체결수량',
-        'TR_CRCY': '거래통화',
-        'FT_CCLD_UNPR3': 'FT체결단가',
-        'FT_CCLD_AMT3': 'FT체결금액',
-        'CCLD_CNT': '체결건수'
-    }
+    # 한글 컬럼명으로 변환
+    result3 = result3.rename(columns=COLUMN_MAPPING)
     
-    result3 = result3.rename(columns=column_mapping3)
-    
-    # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 number 자료형이 명시된 컬럼 없음)
-    numeric_columns3 = []
-    
-    for col in numeric_columns3:
+    # 숫자형 컬럼 소수점 둘째자리까지 표시
+    for col in NUMERIC_COLUMNS:
         if col in result3.columns:
             result3[col] = pd.to_numeric(result3[col], errors='coerce').round(2)
     
-    logging.info("결과:")
+    logging.info("결과(output3):")
     print(result3)
 
 if __name__ == "__main__":

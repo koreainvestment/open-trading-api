@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-06-26
 
@@ -18,6 +17,10 @@ from price import price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 현재체결가[v1_해외주식-009]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'rsym': '실시간조회종목코드',
     'zdiv': '소수점자리수',
@@ -31,6 +34,8 @@ COLUMN_MAPPING = {
     'tamt': '거래대금',
     'ordy': '매수가능여부'
 }
+
+NUMERIC_COLUMNS = ['소수점자리수', '전일종가', '전일거래량', '현재가', '대비', '등락율', '거래량', '거래대금']
 
 def main():
     """
@@ -62,7 +67,7 @@ def main():
         env_dv = "real"  # "real": 실전투자, "demo": 모의투자
         logger.info("투자 환경: %s", "실전투자" if env_dv == "real" else "모의투자")
 
-        # 토큰 발급 (모의투자 지원 로직)
+        # 토큰 발급
         logger.info("토큰 발급 중...")
         if env_dv == "real":
             ka.auth(svr='prod')  # 실전투자용 토큰
@@ -70,19 +75,13 @@ def main():
             ka.auth(svr='vps')   # 모의투자용 토큰
         logger.info("토큰 발급 완료")
 
-        # 해외주식 현재체결가 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        auth = ""  # 사용자권한정보
-        excd = "NAS"  # 거래소코드
-        symb = "TSLA"  # 종목코드
-
         # API 호출
         logger.info("API 호출 시작: 해외주식 현재체결가 (%s)", "실전투자" if env_dv == "real" else "모의투자")
         result = price(
-            auth=auth,  # 사용자권한정보
-            excd=excd,  # 거래소코드
-            symb=symb,  # 종목코드
-            env_dv=env_dv,  # 실전모의구분
+            auth="",
+            excd="NAS",
+            symb="AAPL",
+            env_dv="real"
         )
         
         if result is None or result.empty:
@@ -95,6 +94,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외주식 현재체결가 결과 (%s) ===", "실전투자" if env_dv == "real" else "모의투자")

@@ -18,6 +18,11 @@ from inquire_present_balance import inquire_present_balance
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 체결기준현재잔고 [v1_해외주식-008]
+##############################################################################################
+
+# 컬럼명 매핑 (한글 변환용)
 COLUMN_MAPPING = {
     'cblc_qty13': '잔고수량13',
     'thdt_buy_ccld_qty1': '당일매수체결수량1',
@@ -81,6 +86,20 @@ COLUMN_MAPPING = {
     'tot_loan_amt': '총대출금액'
 }
 
+# 숫자형 컬럼 정의 (소수점 처리용)
+NUMERIC_COLUMNS = [
+    'cblc_qty13', 'thdt_buy_ccld_qty1', 'thdt_sll_ccld_qty1', 'ccld_qty_smtl1', 'ord_psbl_qty1',
+    'frcr_pchs_amt', 'frcr_evlu_amt2', 'evlu_pfls_amt2', 'evlu_pfls_rt1', 'bass_exrt',
+    'ovrs_now_pric1', 'avg_unpr3', 'pchs_rmnd_wcrc_amt', 'thdt_buy_ccld_frcr_amt', 'thdt_sll_ccld_frcr_amt',
+    'unit_amt', 'loan_rmnd', 'frcr_buy_amt_smtl', 'frcr_sll_amt_smtl', 'frcr_dncl_amt_2',
+    'frst_bltn_exrt', 'frcr_buy_mgn_amt', 'frcr_etc_mgna', 'frcr_drwg_psbl_amt_1', 'frcr_evlu_amt2',
+    'nxdy_frcr_drwg_psbl_amt', 'pchs_amt_smtl', 'evlu_amt_smtl', 'evlu_pfls_amt_smtl', 'dncl_amt',
+    'cma_evlu_amt', 'tot_dncl_amt', 'etc_mgna', 'wdrw_psbl_tot_amt', 'frcr_evlu_tota',
+    'evlu_erng_rt1', 'pchs_amt_smtl_amt', 'evlu_amt_smtl_amt', 'tot_evlu_pfls_amt', 'tot_asst_amt',
+    'buy_mgn_amt', 'mgna_tota', 'frcr_use_psbl_amt', 'ustl_sll_amt_smtl', 'ustl_buy_amt_smtl',
+    'tot_frcr_cblc_smtl', 'tot_loan_amt'
+]
+
 def main():
     """
     [해외주식] 주문/계좌
@@ -134,7 +153,7 @@ def main():
 
         
         # API 호출
-        logger.info("API 호출 시작: 해외주식 체결기준현재잔고 (%s)", "실전투자" if env_dv == "real" else "모의투자")
+        logger.info("API 호출")
         result1, result2, result3 = inquire_present_balance(
             cano=cano,  # 종합계좌번호
             acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
@@ -159,6 +178,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+            
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -171,6 +196,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+            
             logger.info("output2 결과:")
             print(result2)
         else:
@@ -183,6 +214,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result3 = result3.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result3.columns:
+                    result3[col] = pd.to_numeric(result3[col], errors='coerce').round(2)
+            
             logger.info("output3 결과:")
             print(result3)
         else:

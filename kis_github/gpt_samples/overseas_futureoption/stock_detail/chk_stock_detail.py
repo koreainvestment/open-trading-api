@@ -18,6 +18,11 @@ from stock_detail import stock_detail
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물종목상세[v1_해외선물-008]
+##############################################################################################
+
+# 컬럼명 매핑
 COLUMN_MAPPING = {
     'exch_cd': '거래소코드',
     'tick_sz': '틱사이즈',
@@ -43,6 +48,9 @@ COLUMN_MAPPING = {
     'sprd_srs_cd1': '스프레드 종목 #1',
     'sprd_srs_cd2': '스프레드 종목 #2'
 }
+
+# 숫자형 컬럼
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -71,16 +79,9 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 해외선물종목상세 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        srs_cd = "BONU25"  # 종목코드
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물종목상세")
-        result = stock_detail(
-            srs_cd=srs_cd,  # 종목코드
-        )
+        logger.info("API 호출")
+        result = stock_detail(srs_cd="BONU25")
         
         if result is None or result.empty:
             logger.warning("조회된 데이터가 없습니다.")
@@ -92,6 +93,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물종목상세 결과 ===")

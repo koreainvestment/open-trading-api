@@ -20,6 +20,25 @@ logger = logging.getLogger(__name__)
 # [국내주식] 실시간 > 국내주식 실시간프로그램매매 (통합) [H0UNPGM0]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    "MKSC_SHRN_ISCD": "유가증권 단축 종목코드",
+    "STCK_CNTG_HOUR": "주식 체결 시간",
+    "SELN_CNQN": "매도 체결량",
+    "SELN_TR_PBMN": "매도 거래 대금",
+    "SHNU_CNQN": "매수2 체결량",
+    "SHNU_TR_PBMN": "매수2 거래 대금",
+    "NTBY_CNQN": "순매수 체결량",
+    "NTBY_TR_PBMN": "순매수 거래 대금",
+    "SELN_RSQN": "매도호가잔량",
+    "SHNU_RSQN": "매수호가잔량",
+    "WHOL_NTBY_QTY": "전체순매수호가잔량"
+}
+
+NUMERIC_COLUMNS = [
+    "매도 체결량", "매도 거래 대금", "매수2 체결량", "매수2 거래 대금",
+    "순매수 체결량", "순매수 거래 대금", "매도호가잔량", "매수호가잔량", "전체순매수호가잔량"
+]
+
 
 def main():
     """
@@ -47,27 +66,10 @@ def main():
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "MKSC_SHRN_ISCD": "유가증권 단축 종목코드",
-                "STCK_CNTG_HOUR": "주식 체결 시간",
-                "SELN_CNQN": "매도 체결량",
-                "SELN_TR_PBMN": "매도 거래 대금",
-                "SHNU_CNQN": "매수2 체결량",
-                "SHNU_TR_PBMN": "매수2 거래 대금",
-                "NTBY_CNQN": "순매수 체결량",
-                "NTBY_TR_PBMN": "순매수 거래 대금",
-                "SELN_RSQN": "매도호가잔량",
-                "SHNU_RSQN": "매수호가잔량",
-                "WHOL_NTBY_QTY": "전체순매수호가잔량"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
-            numeric_columns = [
-                "매도 체결량", "매도 거래 대금", "매수2 체결량", "매수2 거래 대금",
-                "순매수 체결량", "순매수 거래 대금", "매도호가잔량", "매수호가잔량", "전체순매수호가잔량"
-            ]
-            for col in numeric_columns:
+            for col in NUMERIC_COLUMNS:
                 if col in result.columns:
                     result[col] = pd.to_numeric(result[col], errors='coerce')
 

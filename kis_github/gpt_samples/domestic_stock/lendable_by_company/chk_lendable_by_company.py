@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 종목정보 > 당사 대주가능 종목 [CTSC2702R]
+# [국내주식] 종목정보 > 당사 대주가능 종목 [국내주식-195]
 ##############################################################################################
 
 # 통합 컬럼 매핑 (모든 output에서 공통 사용)
@@ -38,6 +38,8 @@ COLUMN_MAPPING = {
     'brch_lmt_qty': '지점한도수량',
     'rqst_psbl_qty': '신청가능수량'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -95,6 +97,11 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -107,6 +114,11 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+
             logger.info("output2 결과:")
             print(result2)
         else:

@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 def ccnl(
         tr_type: str,
         tr_key: str,
-) -> (dict, list[str]):
+) -> tuple[dict, list[str]]:
     """
     ※ CME, SGX 실시간시세 유료시세 신청 필수 (포럼 > FAQ > 해외선물옵션 API 유료시세 신청방법(CME, SGX 거래소))
     - CME, SGX 거래소 실시간시세는 유료시세 신청 후 이용하시는 모든 계좌에 대해서 접근토큰발급 API 호출하셔야 하며, 

@@ -18,6 +18,11 @@ from inquire_psamount import inquire_psamount
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 매수가능금액조회 [v1_해외주식-014]
+##############################################################################################
+
+# 컬럼명 매핑 (한글 변환용)
 COLUMN_MAPPING = {
     'tr_crcy_cd': '거래통화코드',
     'ord_psbl_frcr_amt': '주문가능외화금액',
@@ -31,6 +36,9 @@ COLUMN_MAPPING = {
     'frcr_ord_psbl_amt1': '외화주문가능금액1',
     'ovrs_max_ord_psbl_qty': '해외최대주문가능수량'
 }
+
+# 숫자형 컬럼 정의 (소수점 처리용)
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -73,24 +81,15 @@ def main():
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외주식 매수가능금액조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        ovrs_excg_cd = "NASD"  # 해외거래소코드
-        ovrs_ord_unpr = "1.4"  # 해외주문단가
-        item_cd = "QQQ"  # 종목코드
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외주식 매수가능금액조회 (%s)", "실전투자" if env_dv == "real" else "모의투자")
+        logger.info("API 호출")
         result = inquire_psamount(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            ovrs_excg_cd=ovrs_excg_cd,  # 해외거래소코드
-            ovrs_ord_unpr=ovrs_ord_unpr,  # 해외주문단가
-            item_cd=item_cd,  # 종목코드
-            env_dv=env_dv,  # 실전모의구분
+            cano=trenv.my_acct,
+            acnt_prdt_cd="01",
+            ovrs_excg_cd="NASD",
+            ovrs_ord_unpr="1.4",
+            item_cd="QQQ",
+            env_dv="real", 
         )
         
         if result is None or result.empty:
@@ -103,6 +102,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외주식 매수가능금액조회 결과 (%s) ===", "실전투자" if env_dv == "real" else "모의투자")

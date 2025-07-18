@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 종목정보 > 종합 시황/공시(제목) [FHKST01011800]
+# [국내주식] 종목정보 > 종합 시황/공시(제목) [국내주식-141]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -37,6 +37,9 @@ COLUMN_MAPPING = {
     'iscd4': '종목 코드4',
     'iscd5': '종목 코드5'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -92,7 +95,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 종합 시황_공시(제목) 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

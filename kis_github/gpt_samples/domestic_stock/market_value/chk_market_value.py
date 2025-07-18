@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 조건검색 > 국내주식 시장가치 순위 [FHPST01790000]
+# [국내주식] 조건검색 > 국내주식 시장가치 순위[v1_국내주식-096]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -37,6 +37,8 @@ COLUMN_MAPPING = {
     'stac_month_cls_code': '결산 월 구분 코드',
     'iqry_csnu': '조회 건수'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -95,7 +97,11 @@ def main():
 
     # 한글 컬럼명으로 변환
     result = result.rename(columns=COLUMN_MAPPING)
-    
+
+    for col in NUMERIC_COLUMNS:
+        if col in result.columns:
+            result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
     # 결과 출력
     print("\n=== 국내주식 시장가치 순위 결과 ===")
     print(result)

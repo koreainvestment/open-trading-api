@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [장내채권] 주문/계좌 > 장내채권 정정취소가능주문조회 [CTSC8035R]
+# [장내채권] 주문/계좌 > 장내채권 정정취소가능주문조회 [국내주식-126]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -38,6 +38,8 @@ COLUMN_MAPPING = {
     'mgco_aptm_odno': '운용사지정주문번호',
     'samt_mket_ptci_yn': '소액시장참여여부'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -94,7 +96,12 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        # 숫자형 컬럼 변환
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce')
+
         # 결과 출력
         logger.info("=== 채권정정취소가능주문조회 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 현재가상세[v1_해외주식-029]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-price/v1/quotations/price-detail"
+
 def price_detail(
     auth: str,  # 사용자권한정보
     excd: str,  # 거래소명
@@ -62,7 +69,6 @@ def price_detail(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-price/v1/quotations/price-detail"
     tr_id = "HHDFS76200200"
 
     params = {
@@ -71,7 +77,7 @@ def price_detail(
         "SYMB": symb,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -103,5 +109,5 @@ def price_detail(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

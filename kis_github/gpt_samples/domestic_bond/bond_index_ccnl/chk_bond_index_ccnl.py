@@ -20,6 +20,36 @@ logger = logging.getLogger(__name__)
 # [장내채권] 실시간정보 > 채권지수 실시간체결가 [H0BICNT0]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    "nmix_id": "지수ID",
+    "stnd_date1": "기준일자1",
+    "trnm_hour": "전송시간",
+    "totl_ernn_nmix_oprc": "총수익지수시가지수",
+    "totl_ernn_nmix_hgpr": "총수익지수최고가",
+    "totl_ernn_nmix_lwpr": "총수익지수최저가",
+    "totl_ernn_nmix": "총수익지수",
+    "prdy_totl_ernn_nmix": "전일총수익지수",
+    "totl_ernn_nmix_prdy_vrss": "총수익지수전일대비",
+    "totl_ernn_nmix_prdy_vrss_sign": "총수익지수전일대비부호",
+    "totl_ernn_nmix_prdy_ctrt": "총수익지수전일대비율",
+    "clen_prc_nmix": "순가격지수",
+    "mrkt_prc_nmix": "시장가격지수",
+    "bond_call_rnvs_nmix": "Call재투자지수",
+    "bond_zero_rnvs_nmix": "Zero재투자지수",
+    "bond_futs_thpr": "선물이론가격",
+    "bond_avrg_drtn_val": "평균듀레이션",
+    "bond_avrg_cnvx_val": "평균컨벡서티",
+    "bond_avrg_ytm_val": "평균YTM",
+    "bond_avrg_frdl_ytm_val": "평균선도YTM"
+}
+
+NUMERIC_COLUMNS = [
+    "총수익지수시가지수", "총수익지수최고가", "총수익지수최저가", "총수익지수",
+    "전일총수익지수", "총수익지수전일대비", "총수익지수전일대비율", "순가격지수",
+    "시장가격지수", "Call재투자지수", "Zero재투자지수", "선물이론가격",
+    "평균듀레이션", "평균컨벡서티", "평균YTM", "평균선도YTM"
+]
+
 
 def main():
     """
@@ -69,52 +99,24 @@ ex) 0|H0STCNT0|004|005930^123929^73100^5^...
     # 한경채권지수: KBPR01, KBPR02, KBPR03, KBPR04
     # KIS채권지수: KISR01, MSBI07, KTBL10, MSBI09, MSBI10, CDIX01
     # 매경채권지수: MKFR01, MSBI01, MSBI03, MSBI10, CORP01
-    bond_index_codes = [
+    kws.subscribe(request=bond_index_ccnl, data=[
         # 한경채권지수
         "KBPR01", "KBPR02", "KBPR03", "KBPR04",
         # KIS채권지수
         "KISR01", "MSBI07", "KTBL10", "MSBI09", "MSBI10", "CDIX01",
         # 매경채권지수
         "MKFR01", "MSBI01", "MSBI03", "MSBI10", "CORP01"
-    ]
-    kws.subscribe(request=bond_index_ccnl, data=bond_index_codes)
+    ])
 
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "nmix_id": "지수ID",
-                "stnd_date1": "기준일자1",
-                "trnm_hour": "전송시간",
-                "totl_ernn_nmix_oprc": "총수익지수시가지수",
-                "totl_ernn_nmix_hgpr": "총수익지수최고가",
-                "totl_ernn_nmix_lwpr": "총수익지수최저가",
-                "totl_ernn_nmix": "총수익지수",
-                "prdy_totl_ernn_nmix": "전일총수익지수",
-                "totl_ernn_nmix_prdy_vrss": "총수익지수전일대비",
-                "totl_ernn_nmix_prdy_vrss_sign": "총수익지수전일대비부호",
-                "totl_ernn_nmix_prdy_ctrt": "총수익지수전일대비율",
-                "clen_prc_nmix": "순가격지수",
-                "mrkt_prc_nmix": "시장가격지수",
-                "bond_call_rnvs_nmix": "Call재투자지수",
-                "bond_zero_rnvs_nmix": "Zero재투자지수",
-                "bond_futs_thpr": "선물이론가격",
-                "bond_avrg_drtn_val": "평균듀레이션",
-                "bond_avrg_cnvx_val": "평균컨벡서티",
-                "bond_avrg_ytm_val": "평균YTM",
-                "bond_avrg_frdl_ytm_val": "평균선도YTM"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
-            numeric_columns = [
-                "총수익지수시가지수", "총수익지수최고가", "총수익지수최저가", "총수익지수",
-                "전일총수익지수", "총수익지수전일대비", "총수익지수전일대비율", "순가격지수",
-                "시장가격지수", "Call재투자지수", "Zero재투자지수", "선물이론가격",
-                "평균듀레이션", "평균컨벡서티", "평균YTM", "평균선도YTM"
-            ]
-            for col in numeric_columns:
+            for col in NUMERIC_COLUMNS:
                 if col in result.columns:
                     result[col] = pd.to_numeric(result[col], errors='coerce')
 

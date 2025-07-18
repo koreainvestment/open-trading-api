@@ -19,6 +19,20 @@ logging.basicConfig(level=logging.INFO)
 # [국내선물옵션] 실시간시세 > KRX야간옵션실시간예상체결 [실시간-034]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    "optn_shrn_iscd": "옵션단축종목코드",
+    "bsop_hour": "영업시간",
+    "antc_cnpr": "예상체결가",
+    "antc_cntg_vrss": "예상체결대비",
+    "antc_cntg_vrss_sign": "예상체결대비부호",
+    "antc_cntg_prdy_ctrt": "예상체결전일대비율",
+    "antc_mkop_cls_code": "예상장운영구분코드",
+    "antc_cnqn": "예상체결수량"
+}
+
+NUMERIC_COLUMNS = []
+
+
 def main():
     """
     KRX야간옵션실시간예상체결 조회 테스트 함수
@@ -45,22 +59,9 @@ def main():
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
 
-        column_mapping = {
-            "optn_shrn_iscd": "옵션단축종목코드",
-            "bsop_hour": "영업시간",
-            "antc_cnpr": "예상체결가",
-            "antc_cntg_vrss": "예상체결대비",
-            "antc_cntg_vrss_sign": "예상체결대비부호",
-            "antc_cntg_prdy_ctrt": "예상체결전일대비율",
-            "antc_mkop_cls_code": "예상장운영구분코드",
-            "antc_cnqn": "예상체결수량"
-        }
+        result = result.rename(columns=COLUMN_MAPPING)
 
-        numeric_columns = []
-
-        result = result.rename(columns=column_mapping)
-
-        for col in numeric_columns:
+        for col in NUMERIC_COLUMNS:
             if col in result.columns:
                 result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
 
@@ -71,4 +72,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 일별 주문내역 [해외선물-013]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-daily-order"
+
 def inquire_daily_order(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -102,7 +109,6 @@ def inquire_daily_order(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/trading/inquire-daily-order"
     tr_id = "OTFM3120R"
 
     params = {
@@ -118,7 +124,7 @@ def inquire_daily_order(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -157,5 +163,5 @@ def inquire_daily_order(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

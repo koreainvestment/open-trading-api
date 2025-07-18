@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 def delayed_ccnl(
         tr_type: str,
         tr_key: str,
-) -> (dict, list[str]):
+) -> tuple[dict, list[str]]:
     """
     해외주식 실시간지연체결가의 경우 기본적으로 무료시세(지연체결가)가 제공되며, 
     HTS(efriend Plus) [7781] 시세신청(실시간) 화면에서 유료 서비스 신청 시 API로도 유료시세(실시간체결가)를 받아보실 수 있습니다. (24.11.29 반영)

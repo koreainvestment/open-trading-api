@@ -19,6 +19,27 @@ logging.basicConfig(level=logging.INFO)
 # [해외선물옵션] 기본시세 > 해외옵션 체결추이(월간) [해외선물-039]
 ##############################################################################################
 
+# 컬럼명 매핑
+COLUMN_MAPPING = {
+    'ret_cnt': '자료개수',
+    'last_n_cnt': 'N틱최종개수',
+    'index_key': '이전조회KEY',
+    'data_date': '일자',
+    'data_time': '시각',
+    'open_price': '시가',
+    'high_price': '고가',
+    'low_price': '저가',
+    'last_price': '체결가격',
+    'last_qntt': '체결수량',
+    'vol': '누적거래수량',
+    'prev_diff_flag': '전일대비구분',
+    'prev_diff_price': '전일대비가격',
+    'prev_diff_rate': '전일대비율'
+}
+
+# 숫자형 컬럼
+NUMERIC_COLUMNS = []
+
 def main():
     """
     해외옵션 체결추이(월간) 조회 테스트 함수
@@ -50,19 +71,11 @@ def main():
     logging.info("=== output1 처리 ===")
     logging.info("사용 가능한 컬럼: %s", result1.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping1 = {
-        'ret_cnt': '자료개수',
-        'last_n_cnt': 'N틱최종개수',
-        'index_key': '이전조회KEY'
-    }
-    
-    result1 = result1.rename(columns=column_mapping1)
+    # 한글 컬럼명으로 변환
+    result1 = result1.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns1 = []
-    
-    for col in numeric_columns1:
+    for col in NUMERIC_COLUMNS:
         if col in result1.columns:
             result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
     
@@ -73,27 +86,11 @@ def main():
     logging.info("=== output2 처리 ===")
     logging.info("사용 가능한 컬럼: %s" % result2.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping2 = {
-        'data_date': '일자',
-        'data_time': '시간',
-        'open_price': '시가',
-        'high_price': '고가',
-        'low_price': '저가',
-        'last_price': '체결가격',
-        'last_qntt': '체결수량',
-        'vol': '누적거래수량',
-        'prev_diff_flag': '전일대비구분',
-        'prev_diff_price': '전일대비가격',
-        'prev_diff_rate': '전일대비율'
-    }
-    
-    result2 = result2.rename(columns=column_mapping2)
+    # 한글 컬럼명으로 변환
+    result2 = result2.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns2 = []
-    
-    for col in numeric_columns2:
+    for col in NUMERIC_COLUMNS:
         if col in result2.columns:
             result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
     

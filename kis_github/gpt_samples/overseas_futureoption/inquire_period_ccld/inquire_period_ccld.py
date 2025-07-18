@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 기간계좌손익 일별 [해외선물-010]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-period-ccld"
+
 def inquire_period_ccld(
     inqr_term_from_dt: str,  # 조회기간FROM일자
     inqr_term_to_dt: str,  # 조회기간TO일자
@@ -102,7 +109,6 @@ def inquire_period_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/trading/inquire-period-ccld"
     tr_id = "OTFM3118R"
 
     params = {
@@ -117,7 +123,7 @@ def inquire_period_ccld(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -184,5 +190,5 @@ def inquire_period_ccld(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

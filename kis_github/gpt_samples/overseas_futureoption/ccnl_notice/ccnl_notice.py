@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 def ccnl_notice(
         tr_type: str,
         tr_key: str,
-) -> (dict, list[str]):
+) -> tuple[dict, list[str]]:
     """
     해외선물옵션 실시간체결내역통보 API입니다.
 

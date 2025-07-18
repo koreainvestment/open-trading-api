@@ -20,6 +20,33 @@ logger = logging.getLogger(__name__)
 # [장내채권] 실시간정보 > 일반채권 실시간체결가 [H0BJCNT0]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    "stnd_iscd": "표준종목코드",
+    "bond_isnm": "채권종목명",
+    "stck_cntg_hour": "주식체결시간",
+    "prdy_vrss_sign": "전일대비부호",
+    "prdy_vrss": "전일대비",
+    "prdy_ctrt": "전일대비율",
+    "stck_prpr": "현재가",
+    "cntg_vol": "체결거래량",
+    "stck_oprc": "시가",
+    "stck_hgpr": "고가",
+    "stck_lwpr": "저가",
+    "stck_prdy_clpr": "전일종가",
+    "bond_cntg_ert": "현재수익률",
+    "oprc_ert": "시가수익률",
+    "hgpr_ert": "고가수익률",
+    "lwpr_ert": "저가수익률",
+    "acml_vol": "누적거래량",
+    "prdy_vol": "전일거래량",
+    "cntg_type_cls_code": "체결유형코드"
+}
+
+NUMERIC_COLUMNS = [
+    "전일대비", "전일대비율", "현재가", "체결거래량", "시가", "고가", "저가", "전일종가",
+    "현재수익률", "시가수익률", "고가수익률", "저가수익률", "누적거래량", "전일거래량"
+]
+
 
 def main():
     """
@@ -66,41 +93,16 @@ ex) 0|H0STCNT0|004|005930^123929^73100^5^...
     kws = ka.KISWebSocket(api_url="/tryitout")
 
     # 조회
-    kws.subscribe(request=bond_ccnl, data=["KR103502GA34","KR6095572D81"])
+    kws.subscribe(request=bond_ccnl, data=["KR103502GA34", "KR6095572D81"])
 
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "stnd_iscd": "표준종목코드",
-                "bond_isnm": "채권종목명",
-                "stck_cntg_hour": "주식체결시간",
-                "prdy_vrss_sign": "전일대비부호",
-                "prdy_vrss": "전일대비",
-                "prdy_ctrt": "전일대비율",
-                "stck_prpr": "현재가",
-                "cntg_vol": "체결거래량",
-                "stck_oprc": "시가",
-                "stck_hgpr": "고가",
-                "stck_lwpr": "저가",
-                "stck_prdy_clpr": "전일종가",
-                "bond_cntg_ert": "현재수익률",
-                "oprc_ert": "시가수익률",
-                "hgpr_ert": "고가수익률",
-                "lwpr_ert": "저가수익률",
-                "acml_vol": "누적거래량",
-                "prdy_vol": "전일거래량",
-                "cntg_type_cls_code": "체결유형코드"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
-            numeric_columns = [
-                "전일대비", "전일대비율", "현재가", "체결거래량", "시가", "고가", "저가", "전일종가",
-                "현재수익률", "시가수익률", "고가수익률", "저가수익률", "누적거래량", "전일거래량"
-            ]
-            for col in numeric_columns:
+            for col in NUMERIC_COLUMNS:
                 if col in result.columns:
                     result[col] = pd.to_numeric(result[col], errors='coerce')
 

@@ -19,13 +19,21 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 미체결내역 [v1_해외주식-005]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-stock/v1/trading/inquire-nccs"
+
 def inquire_nccs(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
     ovrs_excg_cd: str,  # 해외거래소코드
     sort_sqn: str,  # 정렬순서
-    ctx_area_fk200: str,  # 연속조회검색조건200
-    ctx_area_nk200: str,  # 연속조회키200
+    FK200: str,  # 연속조회검색조건200
+    NK200: str,  # 연속조회키200
+    env_dv: str = "real",  # 실전모의구분
     tr_cont: str = "",
     dataframe: Optional[pd.DataFrame] = None,
     depth: int = 0,
@@ -41,8 +49,9 @@ def inquire_nccs(
         acnt_prdt_cd (str): 계좌번호 체계(8-2)의 뒤 2자리
         ovrs_excg_cd (str): NASD : 나스닥 NYSE : 뉴욕  AMEX : 아멕스 SEHK : 홍콩 SHAA : 중국상해 SZAA : 중국심천 TKSE : 일본 HASE : 베트남 하노이 VNSE : 베트남 호치민  * NASD 인 경우만 미국전체로 조회되며 나머지 거래소 코드는 해당 거래소만 조회됨 * 공백 입력 시 다음조회가 불가능하므로, 반드시 거래소코드 입력해야 함
         sort_sqn (str): DS : 정순 그외 : 역순  [header tr_id: TTTS3018R] ""(공란)
-        ctx_area_fk200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_FK200값 : 다음페이지 조회시(2번째부터)
-        ctx_area_nk200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_NK200값 : 다음페이지 조회시(2번째부터)
+        FK200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_FK200값 : 다음페이지 조회시(2번째부터)
+        NK200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_NK200값 : 다음페이지 조회시(2번째부터)
+        env_dv (str): 실전모의구분 (real:실전, demo:모의)
         tr_cont (str): 연속 거래 여부
         dataframe (Optional[pd.DataFrame]): 누적 데이터프레임
         depth (int): 현재 재귀 깊이
@@ -57,8 +66,8 @@ def inquire_nccs(
         ...     acnt_prdt_cd="01",
         ...     ovrs_excg_cd="NYSE",
         ...     sort_sqn="DS",
-        ...     ctx_area_fk200="",
-        ...     ctx_area_nk200=""
+        ...     FK200="",
+        ...     NK200=""
         ... )
         >>> print(df)
     """
@@ -81,7 +90,6 @@ def inquire_nccs(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-stock/v1/trading/inquire-nccs"
     tr_id = "TTTS3018R"
 
     params = {
@@ -89,11 +97,11 @@ def inquire_nccs(
         "ACNT_PRDT_CD": acnt_prdt_cd,
         "OVRS_EXCG_CD": ovrs_excg_cd,
         "SORT_SQN": sort_sqn,
-        "CTX_AREA_FK200": ctx_area_fk200,
-        "CTX_AREA_NK200": ctx_area_nk200,
+        "CTX_AREA_FK200": FK200,
+        "CTX_AREA_NK200": NK200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -109,24 +117,33 @@ def inquire_nccs(
         else:
             dataframe = current_data
             
-        tr_cont = res.getHeader().tr_cont
+        tr_cont, NK200, FK200 = res.getHeader().tr_cont, res.getBody().ctx_area_nk200, res.getBody().ctx_area_fk200
         
-        if tr_cont == "M":
+        if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
             time.sleep(0.1)
             return inquire_nccs(
-                cano,
-                acnt_prdt_cd,
-                ovrs_excg_cd,
-                sort_sqn,
-                ctx_area_fk200,
-                ctx_area_nk200,
-                "N", dataframe, depth + 1, max_depth
+                cano=cano,
+                acnt_prdt_cd=acnt_prdt_cd,
+                ovrs_excg_cd=ovrs_excg_cd,
+                sort_sqn=sort_sqn,
+                FK200=FK200,
+                NK200=NK200,
+                env_dv=env_dv,
+                tr_cont="N",
+                dataframe=dataframe,
+                depth=depth + 1,
+                max_depth=max_depth
             )
         else:
             logger.info("Data fetch complete.")
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
-        return pd.DataFrame()
+        res.printError(API_URL)
+        # 이미 수집된 데이터가 있으면 그것을 반환, 없으면 빈 DataFrame 반환
+        if dataframe is not None and not dataframe.empty:
+            logger.info("Returning already collected data due to API error.")
+            return dataframe
+        else:
+            return pd.DataFrame()

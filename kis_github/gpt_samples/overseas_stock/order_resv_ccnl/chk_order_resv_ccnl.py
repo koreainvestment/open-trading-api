@@ -19,6 +19,14 @@ logging.basicConfig(level=logging.INFO)
 # [해외주식] 주문/계좌 > 해외주식 예약주문접수취소[v1_해외주식-004]
 ##############################################################################################
 
+# 컬럼 매핑 정의
+COLUMN_MAPPING = {
+    'OVRS_RSVN_ODNO': '해외예약주문번호'
+}
+
+# 숫자형 컬럼 정의
+NUMERIC_COLUMNS = []
+
 def main():
     """
     해외주식 예약주문접수취소 조회 테스트 함수
@@ -37,8 +45,8 @@ def main():
     # 인증 토큰 발급
     ka.auth()
     
-    # case1 테스트
-    logging.info("=== Case1 테스트 ===")
+    # API 호출
+    logging.info("API 호출")
     try:
         result = order_resv_ccnl(
             env_dv="real",
@@ -54,17 +62,11 @@ def main():
     
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'OVRS_RSVN_ODNO': '해외예약주문번호'
-    }
+    # 한글 컬럼명으로 변환
+    result = result.rename(columns=COLUMN_MAPPING)
     
-    result = result.rename(columns=column_mapping)
-    
-    # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 number 자료형 없음)
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    # 숫자형 컬럼 소수점 둘째자리까지 표시
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     

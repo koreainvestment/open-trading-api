@@ -18,6 +18,10 @@ from finance_income_statement import finance_income_statement
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 국내주식 손익계산서 [v1_국내주식-087]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stac_yymm': '결산 년월',
     'sale_account': '매출액',
@@ -33,6 +37,9 @@ COLUMN_MAPPING = {
     'spec_loss': '특별 손실',
     'thtr_ntin': '당기순이익'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -60,33 +67,38 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")        
+        logger.info("토큰 발급 완료")
         # API 호출        
         result = finance_income_statement(
             fid_div_cls_code="0",  # 분류 구분 코드
             fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드
             fid_input_iscd="000660",  # 입력 종목코드
         )
-        
+
         if result is None or result.empty:
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
+
         # 컬럼명 출력
         logger.info("사용 가능한 컬럼 목록:")
         logger.info(result.columns.tolist())
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 손익계산서 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))
         print(result)
-        
+
     except Exception as e:
         logger.error("에러 발생: %s", str(e))
         raise
+
 
 if __name__ == "__main__":
     main()

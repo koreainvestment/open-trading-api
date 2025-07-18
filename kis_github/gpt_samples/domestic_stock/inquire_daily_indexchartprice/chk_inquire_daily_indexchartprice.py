@@ -50,6 +50,8 @@ COLUMN_MAPPING = {
     'mod_yn': '변경 여부'
 }
 
+NUMERIC_COLUMNS = []
+
 def main():
     """
     [국내주식] 업종/기타
@@ -79,6 +81,7 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 실전/모의투자 선택 (모의투자 지원 로직)
+        env_dv = "real"
         logger.info("투자 환경: %s", "실전투자" if env_dv == "real" else "모의투자")
 
         # 토큰 발급 (모의투자 지원 로직)
@@ -113,6 +116,11 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -125,6 +133,11 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+
             logger.info("output2 결과:")
             print(result2)
         else:

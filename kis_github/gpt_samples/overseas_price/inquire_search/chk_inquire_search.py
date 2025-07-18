@@ -18,6 +18,10 @@ from inquire_search import inquire_search
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 시세분석 > 해외주식조건검색[v1_해외주식-015]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'zdiv': '소수점자리수',
     'stat': '거래상태정보',
@@ -43,6 +47,8 @@ COLUMN_MAPPING = {
     'rank': '순위',
     'e_ordyn': '매매가능'
 }
+
+NUMERIC_COLUMNS = ['소수점자리수', '현재가', '발행주식', '시가총액', '저가', '고가', '시가', '거래량', '등락율', '대비', '기호', '거래대금', 'EPS', 'PER', '순위', '매매가능']
 
 def main():
     """
@@ -97,69 +103,39 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 해외주식조건검색 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        auth = ""  # 사용자권한정보
-        excd = "NAS"  # 거래소코드
-        co_yn_pricecur = "1"  # 현재가선택조건
-        co_st_pricecur = "160"  # 현재가시작범위가
-        co_en_pricecur = "170"  # 현재가끝범위가
-        co_yn_rate = ""  # 등락율선택조건
-        co_st_rate = ""  # 등락율시작율
-        co_en_rate = ""  # 등락율끝율
-        co_yn_valx = ""  # 시가총액선택조건
-        co_st_valx = ""  # 시가총액시작액
-        co_en_valx = ""  # 시가총액끝액
-        co_yn_shar = ""  # 발행주식수선택조건
-        co_st_shar = ""  # 발행주식시작수
-        co_en_shar = ""  # 발행주식끝수
-        co_yn_volume = ""  # 거래량선택조건
-        co_st_volume = ""  # 거래량시작량
-        co_en_volume = ""  # 거래량끝량
-        co_yn_amt = ""  # 거래대금선택조건
-        co_st_amt = ""  # 거래대금시작금
-        co_en_amt = ""  # 거래대금끝금
-        co_yn_eps = ""  # EPS선택조건
-        co_st_eps = ""  # EPS시작
-        co_en_eps = ""  # EPS끝
-        co_yn_per = ""  # PER선택조건
-        co_st_per = ""  # PER시작
-        co_en_per = ""  # PER끝
-        keyb = ""  # NEXT KEY BUFF
 
         
         # API 호출
         logger.info("API 호출 시작: 해외주식조건검색")
         result1, result2 = inquire_search(
-            auth=auth,  # 사용자권한정보
-            excd=excd,  # 거래소코드
-            co_yn_pricecur=co_yn_pricecur,  # 현재가선택조건
-            co_st_pricecur=co_st_pricecur,  # 현재가시작범위가
-            co_en_pricecur=co_en_pricecur,  # 현재가끝범위가
-            co_yn_rate=co_yn_rate,  # 등락율선택조건
-            co_st_rate=co_st_rate,  # 등락율시작율
-            co_en_rate=co_en_rate,  # 등락율끝율
-            co_yn_valx=co_yn_valx,  # 시가총액선택조건
-            co_st_valx=co_st_valx,  # 시가총액시작액
-            co_en_valx=co_en_valx,  # 시가총액끝액
-            co_yn_shar=co_yn_shar,  # 발행주식수선택조건
-            co_st_shar=co_st_shar,  # 발행주식시작수
-            co_en_shar=co_en_shar,  # 발행주식끝수
-            co_yn_volume=co_yn_volume,  # 거래량선택조건
-            co_st_volume=co_st_volume,  # 거래량시작량
-            co_en_volume=co_en_volume,  # 거래량끝량
-            co_yn_amt=co_yn_amt,  # 거래대금선택조건
-            co_st_amt=co_st_amt,  # 거래대금시작금
-            co_en_amt=co_en_amt,  # 거래대금끝금
-            co_yn_eps=co_yn_eps,  # EPS선택조건
-            co_st_eps=co_st_eps,  # EPS시작
-            co_en_eps=co_en_eps,  # EPS끝
-            co_yn_per=co_yn_per,  # PER선택조건
-            co_st_per=co_st_per,  # PER시작
-            co_en_per=co_en_per,  # PER끝
-            keyb=keyb,  # NEXT KEY BUFF
+            auth = "",
+            excd = "NAS",
+            co_yn_pricecur = "1",
+            co_st_pricecur = "160",
+            co_en_pricecur = "170",
+            co_yn_rate = "",
+            co_st_rate = "",
+            co_en_rate = "",
+            co_yn_valx = "",
+            co_st_valx = "",
+            co_en_valx = "",
+            co_yn_shar = "",
+            co_st_shar = "",
+            co_en_shar = "",
+            co_yn_volume = "",
+            co_st_volume = "",
+            co_en_volume = "",
+            co_yn_amt = "",
+            co_st_amt = "",
+            co_en_amt = "",
+            co_yn_eps = "",
+            co_st_eps = "",
+            co_en_eps = "",
+            co_yn_per = "",
+            co_st_per = "",
+            co_en_per = "",
+            keyb = "",
         )
-        
         # 결과 확인
         results = [result1, result2]
         if all(result is None or result.empty for result in results):
@@ -174,6 +150,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -186,6 +165,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
             logger.info("output2 결과:")
             print(result2)
         else:

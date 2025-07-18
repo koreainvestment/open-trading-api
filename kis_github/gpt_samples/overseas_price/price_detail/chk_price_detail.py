@@ -18,6 +18,10 @@ from price_detail import price_detail
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 현재가상세[v1_해외주식-029]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'rsym': '실시간조회종목코드',
     'pvol': '전일거래량',
@@ -62,6 +66,9 @@ COLUMN_MAPPING = {
     'etyp_nm': 'ETP 분류명'
 }
 
+NUMERIC_COLUMNS = ['소수점자리수', '전일거래량', '시가', '고가', '저가', '현재가', '전일종가', '시가총액', '전일거래대금', '상한가', '하한가', '52주최고가',
+                    '52주최저가', 'PER', 'PBR', 'EPS', 'BPS', '원환산당일가격', '원환산당일대비', '원환산당일등락', '원환산전일가격', '원환산전일대비', '원환산전일등락', '당일환율', '전일환율', '액면가', '거래량', '거래대금']
+
 def main():
     """
     [해외주식] 기본시세
@@ -91,19 +98,12 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 해외주식 현재가상세 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        auth = ""  # 사용자권한정보
-        excd = "NAS"  # 거래소명
-        symb = "TSLA"  # 종목코드
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외주식 현재가상세")
+        logger.info("API 호출")
         result = price_detail(
-            auth=auth,  # 사용자권한정보
-            excd=excd,  # 거래소명
-            symb=symb,  # 종목코드
+            auth="",  # 사용자권한정보
+            excd="NAS",  # 거래소명
+            symb="TSLA",  # 종목코드
         )
         
         if result is None or result.empty:
@@ -116,6 +116,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외주식 현재가상세 결과 ===")

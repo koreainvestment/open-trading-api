@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-06-26
 
@@ -17,6 +16,10 @@ from dailyprice import dailyprice
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 기간별시세[v1_해외주식-010]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'rsym': '실시간조회종목코드',
@@ -37,6 +40,7 @@ COLUMN_MAPPING = {
     'pask': '매도호가',
     'vask': '매도호가잔량'
 }
+NUMERIC_COLUMNS = ['대비', '등락율', '시가', '고가', '저가', '거래량', '거래대금', '매수호가', '매도호가', '매수호가잔량', '매도호가잔량']
 
 def main():
     """
@@ -78,28 +82,17 @@ def main():
         elif env_dv == "demo":
             ka.auth(svr='vps')   # 모의투자용 토큰
         logger.info("토큰 발급 완료")
-
-        # 해외주식 기간별시세 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        auth = ""  # 사용자권한정보
-        excd = "NAS"  # 거래소코드
-        symb = "TSLA"  # 종목코드
-        gubn = "2"  # 일/주/월구분
-        bymd = ""  # 조회기준일자
-        modp = "1"  # 수정주가반영여부
-        
-
         
         # API 호출
         logger.info("API 호출 시작: 해외주식 기간별시세 (%s)", "실전투자" if env_dv == "real" else "모의투자")
         result1, result2 = dailyprice(
-            auth=auth,  # 사용자권한정보
-            excd=excd,  # 거래소코드
-            symb=symb,  # 종목코드
-            gubn=gubn,  # 일/주/월구분
-            bymd=bymd,  # 조회기준일자
-            modp=modp,  # 수정주가반영여부
-            env_dv=env_dv,  # 실전모의구분
+            auth="",
+            excd="NAS",
+            symb="TSLA",
+            gubn="2",
+            bymd="",
+            modp="1",
+            env_dv=env_dv,
         )
         
         # 결과 확인
@@ -116,6 +109,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -128,6 +124,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
             logger.info("output2 결과:")
             print(result2)
         else:

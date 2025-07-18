@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import logging
 
-sys.path.extend(['../..', '.']) # kis_auth 파일 경로 추가
+sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
 import kis_auth as ka
 from volume_rank import volume_rank
 
@@ -12,31 +12,34 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 기본시세 > 국내주식 거래량순위 [FHPST01710000]
+# [국내주식] 기본시세 > 거래량순위[v1_국내주식-047]
 ##############################################################################################
 
 # 통합 컬럼 매핑
 COLUMN_MAPPING = {
-                'hts_kor_isnm': 'HTS 한글 종목명',
-                'mksc_shrn_iscd': '가중권 단축 종목코드',
-                'data_rank': '데이터 순위',
-                'stck_prpr': '주식 현재가',
-                'prdy_vrss_sign': '전일 대비 부호',
-                'prdy_vrss': '전일 대비',
-                'prdy_ctrt': '전일 대비율',
-                'acml_vol': '누적 거래량',
-                'prdy_vol': '전일 거래량',
-                'lstn_stcn': '상장 주식수',
-                'avrg_vol': '평균 거래량',
-                'n_befr_clpr_vrss_prpr_rate': '전일종가대비현재가(%)',
-                'vol_inrt': '거래량증가율',
-                'vol_tnrt': '거래량회전율',
-                'nday_vol_tnrt': 'N일 거래량회전율',
-                'avrg_tr_pbmn': '평균 거래 대금',
-                'tr_pbmn_tnrt': '거래대금회전율',
-                'nday_tr_pbmn_tnrt': 'N일 거래대금회전율',
-                'acml_tr_pbmn': '누적 거래 대금'
-    }
+    'hts_kor_isnm': 'HTS 한글 종목명',
+    'mksc_shrn_iscd': '가중권 단축 종목코드',
+    'data_rank': '데이터 순위',
+    'stck_prpr': '주식 현재가',
+    'prdy_vrss_sign': '전일 대비 부호',
+    'prdy_vrss': '전일 대비',
+    'prdy_ctrt': '전일 대비율',
+    'acml_vol': '누적 거래량',
+    'prdy_vol': '전일 거래량',
+    'lstn_stcn': '상장 주식수',
+    'avrg_vol': '평균 거래량',
+    'n_befr_clpr_vrss_prpr_rate': '전일종가대비현재가(%)',
+    'vol_inrt': '거래량증가율',
+    'vol_tnrt': '거래량회전율',
+    'nday_vol_tnrt': 'N일 거래량회전율',
+    'avrg_tr_pbmn': '평균 거래 대금',
+    'tr_pbmn_tnrt': '거래대금회전율',
+    'nday_tr_pbmn_tnrt': 'N일 거래대금회전율',
+    'acml_tr_pbmn': '누적 거래 대금'
+}
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -92,13 +95,17 @@ def main():
     print("\n=== 사용 가능한 컬럼 목록 ===")
     print(result.columns.tolist())
 
-
     # 한글 컬럼명으로 변환
     result = result.rename(columns=COLUMN_MAPPING)
-    
+
+    for col in NUMERIC_COLUMNS:
+        if col in result.columns:
+            result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
     # 결과 출력
     print("\n=== 국내주식 거래량순위 조회 결과 ===")
     print(result)
+
 
 if __name__ == "__main__":
     main()

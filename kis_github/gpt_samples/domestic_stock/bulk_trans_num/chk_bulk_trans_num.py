@@ -18,6 +18,10 @@ from bulk_trans_num import bulk_trans_num
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 순위분석 > 국내주식 대량거래건수 [v1_국내주식-098]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'mksc_shrn_iscd': '유가증권 단축 종목코드',
     'data_rank': '데이터 순위',
@@ -31,6 +35,9 @@ COLUMN_MAPPING = {
     'seln_cntg_csnu': '매도 체결 건수',
     'ntby_cnqn': '순매수 체결량'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -85,26 +92,31 @@ def main():
             fid_trgt_cls_code="0",  # 대상 구분 코드
             fid_vol_cnt="",  # 거래량 수
         )
-        
+
         if result is None or result.empty:
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
+
         # 컬럼명 출력
         logger.info("사용 가능한 컬럼 목록:")
         logger.info(result.columns.tolist())
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 대량체결건수 상위 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))
         print(result)
-        
+
     except Exception as e:
         logger.error("에러 발생: %s", str(e))
         raise
+
 
 if __name__ == "__main__":
     main()

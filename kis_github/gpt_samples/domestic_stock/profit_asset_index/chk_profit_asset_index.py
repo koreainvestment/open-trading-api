@@ -3,7 +3,7 @@ import sys
 
 import pandas as pd
 
-sys.path.extend(['../..', '.']) # kis_auth 파일 경로 추가
+sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
 import kis_auth as ka
 from profit_asset_index import profit_asset_index
 
@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 조건검색 > 국내주식 수익자산지표 순위 [FHPST01730000]
+# [국내주식] 조건검색 > 국내주식 수익자산지표 순위[v1_국내주식-090]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -35,6 +35,9 @@ COLUMN_MAPPING = {
     'stac_month_cls_code': '결산 월 구분 코드',
     'iqry_csnu': '조회 건수'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -69,8 +72,8 @@ def main():
     pd.set_option('display.max_rows', None)  # 모든 행 표시
 
     # 토큰 발급
-    ka.auth()    
-    
+    ka.auth()
+
     # API 호출
     result = profit_asset_index(
         fid_cond_mrkt_div_code="J",  # 조건 시장 분류 코드,
@@ -87,17 +90,22 @@ def main():
         fid_blng_cls_code="0",  # 소속 구분 코드,
         fid_trgt_exls_cls_code="0",  # 대상 제외 구분 코드
     )
-    
+
     # 컬럼명 출력
     print("\n=== 사용 가능한 컬럼 목록 ===")
     print(result.columns.tolist())
 
     # 한글 컬럼명으로 변환
     result = result.rename(columns=COLUMN_MAPPING)
-    
+
+    for col in NUMERIC_COLUMNS:
+        if col in result.columns:
+            result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
     # 결과 출력
     print("\n=== 국내주식 수익자산지표 순위 결과 ===")
     print(result)
+
 
 if __name__ == "__main__":
     main()

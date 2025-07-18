@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 시세분석 > 해외주식 상품기본정보[v1_해외주식-034]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-price/v1/quotations/search-info"
+
 
 def search_info(
         prdt_type_cd: str,  # 상품유형코드
@@ -61,7 +68,6 @@ def search_info(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = "/uapi/overseas-price/v1/quotations/search-info"
     tr_id = "CTPF1702R"
 
     params = {
@@ -69,7 +75,7 @@ def search_info(
         "PDNO": pdno,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -100,5 +106,5 @@ def search_info(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

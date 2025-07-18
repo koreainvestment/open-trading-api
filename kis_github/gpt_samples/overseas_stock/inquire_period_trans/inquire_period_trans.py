@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 일별거래내역 [해외주식-063]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-stock/v1/trading/inquire-period-trans"
+
 def inquire_period_trans(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -28,10 +35,8 @@ def inquire_period_trans(
     pdno: str,  # 상품번호
     sll_buy_dvsn_cd: str,  # 매도매수구분코드
     loan_dvsn_cd: str,  # 대출구분코드
-    ctx_area_fk100: str,  # 연속조회검색조건100
-    ctx_area_nk100: str,  # 연속조회키100
-    FK100: str = "",  # 연속조회검색조건
-    NK100: str = "",  # 연속조회검색조건
+    FK100: str,  # 연속조회검색조건100
+    NK100: str,  # 연속조회키100
     dataframe1: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output1)
     dataframe2: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output2)
     tr_cont: str = "",
@@ -52,10 +57,8 @@ def inquire_period_trans(
         pdno (str): 상품번호
         sll_buy_dvsn_cd (str): 매도매수구분코드 (00: 전체, 01: 매도, 02: 매수)
         loan_dvsn_cd (str): 대출구분코드
-        ctx_area_fk100 (str): 연속조회검색조건100
-        ctx_area_nk100 (str): 연속조회키100
-        FK100 (str): 연속조회검색조건
-        NK100 (str): 연속조회검색조건
+        FK100 (str): 연속조회검색조건100
+        NK100 (str): 연속조회키100
         dataframe1 (Optional[pd.DataFrame]): 누적 데이터프레임 (output1)
         dataframe2 (Optional[pd.DataFrame]): 누적 데이터프레임 (output2)
         tr_cont (str): 연속 거래 여부
@@ -75,8 +78,8 @@ def inquire_period_trans(
         ...     pdno="",
         ...     sll_buy_dvsn_cd="00",
         ...     loan_dvsn_cd="",
-        ...     ctx_area_fk100="",
-        ...     ctx_area_nk100=""
+        ...     FK100="",
+        ...     NK100=""
         ... )
         >>> print(df1)
         >>> print(df2)
@@ -107,7 +110,6 @@ def inquire_period_trans(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-stock/v1/trading/inquire-period-trans"
     tr_id = "CTOS4001R"
 
     params = {
@@ -119,13 +121,11 @@ def inquire_period_trans(
         "PDNO": pdno,
         "SLL_BUY_DVSN_CD": sll_buy_dvsn_cd,
         "LOAN_DVSN_CD": loan_dvsn_cd,
-        "CTX_AREA_FK100": ctx_area_fk100,
-        "CTX_AREA_NK100": ctx_area_nk100,
-        "ctx_area_fk100": FK100,
-        "ctx_area_nk100": NK100,
+        "CTX_AREA_FK100": FK100,
+        "CTX_AREA_NK100": NK100,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         # output1 처리
@@ -170,30 +170,38 @@ def inquire_period_trans(
         else:
             if dataframe2 is None:
                 dataframe2 = pd.DataFrame()
-        tr_cont = res.getHeader().tr_cont
-        FK100 = res.getBody().ctx_area_fk100 if hasattr(res.getBody(), 'ctx_area_fk100') else ""
-        NK100 = res.getBody().ctx_area_nk100 if hasattr(res.getBody(), 'ctx_area_nk100') else ""
+        
+        tr_cont, NK100, FK100 = res.getHeader().tr_cont, res.getBody().ctx_area_nk100, res.getBody().ctx_area_fk100
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
             time.sleep(0.1)
             return inquire_period_trans(
-                cano,
-                acnt_prdt_cd,
-                erlm_strt_dt,
-                erlm_end_dt,
-                ovrs_excg_cd,
-                pdno,
-                sll_buy_dvsn_cd,
-                loan_dvsn_cd,
-                ctx_area_fk100,
-                ctx_area_nk100,
-                "N", FK100, NK100, dataframe1, dataframe2, depth + 1, max_depth
+                cano=cano,
+                acnt_prdt_cd=acnt_prdt_cd,
+                erlm_strt_dt=erlm_strt_dt,
+                erlm_end_dt=erlm_end_dt,
+                ovrs_excg_cd=ovrs_excg_cd,
+                pdno=pdno,
+                sll_buy_dvsn_cd=sll_buy_dvsn_cd,
+                loan_dvsn_cd=loan_dvsn_cd,
+                FK100=FK100,
+                NK100=NK100,
+                dataframe1=dataframe1,
+                dataframe2=dataframe2,
+                tr_cont="N",
+                depth=depth + 1,
+                max_depth=max_depth
             )
         else:
             logger.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
-        return pd.DataFrame(), pd.DataFrame()
+        res.printError(API_URL)
+        # 이미 수집된 데이터가 있으면 그것을 반환, 없으면 빈 DataFrame 반환
+        if dataframe1 is not None and not dataframe1.empty:
+            logger.info("Returning already collected data due to API error.")
+            return dataframe1, dataframe2 if dataframe2 is not None else pd.DataFrame()
+        else:
+            return pd.DataFrame(), pd.DataFrame()

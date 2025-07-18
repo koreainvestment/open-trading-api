@@ -18,6 +18,10 @@ from inquire_index_price import inquire_index_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 업종/기타 > 국내업종 현재지수 [v1_국내주식-063]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'bstp_nmix_prpr': '업종 지수 현재가',
     'bstp_nmix_prdy_vrss': '업종 지수 전일 대비',
@@ -56,6 +60,8 @@ COLUMN_MAPPING = {
     'shnu_rsqn_rate': '매수2 잔량 비율',
     'ntby_rsqn': '순매수 잔량'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -99,7 +105,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내업종 현재지수 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

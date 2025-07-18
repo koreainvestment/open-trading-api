@@ -31,6 +31,8 @@ COLUMN_MAPPING = {
     'sale_totl_rate': '매출액 총이익율'
 }
 
+NUMERIC_COLUMNS = []
+
 def main():
     """
     [국내주식] 종목정보
@@ -75,7 +77,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 수익성비율 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

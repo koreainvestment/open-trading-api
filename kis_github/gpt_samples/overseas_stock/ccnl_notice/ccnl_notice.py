@@ -20,7 +20,7 @@ def ccnl_notice(
         tr_type: str,
         tr_key: str,
         env_dv: str,
-) -> (dict, list[str]):
+) -> tuple[dict, list[str]]:
     """
     해외주식 실시간체결통보 API입니다.
 

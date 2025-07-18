@@ -18,6 +18,10 @@ from inquire_index_timeprice import inquire_index_timeprice
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 업종/기타 > 국내업종 시간별지수(분)[국내주식-119]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'bsop_hour': '영업 시간',
     'bstp_nmix_prpr': '업종 지수 현재가',
@@ -28,6 +32,8 @@ COLUMN_MAPPING = {
     'acml_vol': '누적 거래량',
     'cntg_vol': '체결 거래량'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -73,6 +79,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 국내업종 시간별지수(분) 결과 ===")

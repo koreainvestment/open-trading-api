@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-07-01
 
@@ -18,6 +17,11 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+################################################################################
+# [해외주식] 주문/계좌 > 해외주식 정정취소주문[v1_해외주식-003]
+################################################################################
+
+API_URL = "/uapi/overseas-stock/v1/trading/order-rvsecncl"
 
 def order_rvsecncl(
         cano: str,  # 종합계좌번호
@@ -95,8 +99,7 @@ def order_rvsecncl(
     if not ovrs_ord_unpr:
         logger.error("ovrs_ord_unpr is required. (e.g. '226.00')")
         raise ValueError("ovrs_ord_unpr is required. (e.g. '226.00')")
-
-    url = "/uapi/overseas-stock/v1/trading/order-rvsecncl"
+    
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
         tr_id = "TTTT1004U"  # 실전투자용 TR ID
@@ -118,7 +121,7 @@ def order_rvsecncl(
         "ORD_SVR_DVSN_CD": ord_svr_dvsn_cd,
     }
 
-    res = ka._url_fetch(api_url=url,
+    res = ka._url_fetch(api_url=API_URL,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -137,5 +140,5 @@ def order_rvsecncl(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

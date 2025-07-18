@@ -10,7 +10,7 @@ import logging
 
 import pandas as pd
 
-sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
+sys.path.extend(['../..', '.'])
 import kis_auth as ka
 from inquire_period_ccld import inquire_period_ccld
 
@@ -18,6 +18,11 @@ from inquire_period_ccld import inquire_period_ccld
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 기간계좌손익 일별 [해외선물-010]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'cano': '종합계좌번호',
     'acnt_prdt_cd': '계좌상품코드',
@@ -52,6 +57,8 @@ COLUMN_MAPPING = {
     'fm_ustl_agrm_amt': 'FM미결제약정금액',
     'fm_opt_lqd_amt': 'FM옵션청산금액'
 }
+NUMERIC_COLUMNS = ['FM매수수량', 'FM매도수량', 'FM청산손익금액', 'FM수수료', 'FM순손익금액', 'FM미결제매수수량', 'FM미결제매도수량', 'FM미결제평가손익금액', 
+                   'FM미결제평가손익금액2', 'FM미결제평가손익증감금액', 'FM미결제약정금액', 'FM옵션청산금액', 'FM체결평균가격']
 
 def main():
     """
@@ -130,6 +137,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -142,6 +152,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
             logger.info("output2 결과:")
             print(result2)
         else:

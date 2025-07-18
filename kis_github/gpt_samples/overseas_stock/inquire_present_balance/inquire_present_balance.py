@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 체결기준현재잔고 [v1_해외주식-008]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-stock/v1/trading/inquire-present-balance"
+
 def inquire_present_balance(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -95,7 +102,6 @@ def inquire_present_balance(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame(), dataframe3 if dataframe3 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-stock/v1/trading/inquire-present-balance"
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
         tr_id = "CTRP6504R"  # 실전투자용 TR ID
@@ -113,7 +119,7 @@ def inquire_present_balance(
         "INQR_DVSN_CD": inqr_dvsn_cd,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         # output1 처리
@@ -182,19 +188,29 @@ def inquire_present_balance(
             logger.info("Calling next page...")
             time.sleep(0.1)
             return inquire_present_balance(
-                cano,
-                acnt_prdt_cd,
-                wcrc_frcr_dvsn_cd,
-                natn_cd,
-                tr_mket_cd,
-                inqr_dvsn_cd,
-                env_dv,
-                dataframe1, dataframe2, dataframe3, "N", depth + 1, max_depth
+                cano=cano,
+                acnt_prdt_cd=acnt_prdt_cd,
+                wcrc_frcr_dvsn_cd=wcrc_frcr_dvsn_cd,
+                natn_cd=natn_cd,
+                tr_mket_cd=tr_mket_cd,
+                inqr_dvsn_cd=inqr_dvsn_cd,
+                env_dv=env_dv,
+                dataframe1=dataframe1,
+                dataframe2=dataframe2,
+                dataframe3=dataframe3,
+                tr_cont="N",
+                depth=depth + 1,
+                max_depth=max_depth
             )
         else:
             logger.info("Data fetch complete.")
             return dataframe1, dataframe2, dataframe3
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
-        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+        res.printError(API_URL)
+        # 이미 수집된 데이터가 있으면 그것을 반환, 없으면 빈 DataFrame 반환
+        if dataframe1 is not None and not dataframe1.empty:
+            logger.info("Returning already collected data due to API error.")
+            return dataframe1, dataframe2 if dataframe2 is not None else pd.DataFrame(), dataframe3 if dataframe3 is not None else pd.DataFrame()
+        else:
+            return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()

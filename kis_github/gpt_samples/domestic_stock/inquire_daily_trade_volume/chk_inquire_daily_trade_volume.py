@@ -19,6 +19,17 @@ logging.basicConfig(level=logging.INFO)
 # [국내주식] 시세분석 > 종목별일별매수매도체결량 [v1_국내주식-056]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    'shnu_cnqn_smtn': '매수 체결량 합계',
+    'seln_cnqn_smtn': '매도 체결량 합계',
+    'stck_bsop_date': '주식 영업 일자',
+    'total_seln_qty': '총 매도 수량',
+    'total_shnu_qty': '총 매수 수량'
+}
+
+NUMERIC_COLUMNS = []
+
+
 def main():
     """
     종목별일별매수매도체결량 조회 테스트 함수
@@ -34,10 +45,10 @@ def main():
     pd.set_option('display.max_columns', None)  # 모든 컬럼 표시
     pd.set_option('display.width', None)  # 출력 너비 제한 해제
     pd.set_option('display.max_rows', None)  # 모든 행 표시
-    
+
     # 인증 토큰 발급
     ka.auth()
-    
+
     # case1 테스트
     logging.info("=== case1 테스트 ===")
     try:
@@ -49,51 +60,37 @@ def main():
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return
-    
+
     # output1 처리
     logging.info("=== output1 결과 ===")
     logging.info("사용 가능한 컬럼: %s", result1.columns.tolist())
-    
+
     # 컬럼명 한글 변환
-    column_mapping1 = {
-        'shnu_cnqn_smtn': '매수 체결량 합계',
-        'seln_cnqn_smtn': '매도 체결량 합계'
-    }
-    
-    result1 = result1.rename(columns=column_mapping1)
-    
+    result1 = result1.rename(columns=COLUMN_MAPPING)
+
     # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 number 자료형이 명시되지 않았으므로 없음)
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result1.columns:
             result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
-    
+
     logging.info("결과:")
     print(result1)
-    
+
     # output2 처리
     logging.info("=== output2 결과 ===")
     logging.info("사용 가능한 컬럼: %s", result2.columns.tolist())
-    
+
     # 컬럼명 한글 변환
-    column_mapping2 = {
-        'stck_bsop_date': '주식 영업 일자',
-        'total_seln_qty': '총 매도 수량',
-        'total_shnu_qty': '총 매수 수량'
-    }
-    
-    result2 = result2.rename(columns=column_mapping2)
-    
+    result2 = result2.rename(columns=COLUMN_MAPPING)
+
     # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 number 자료형이 명시되지 않았으므로 없음)
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result2.columns:
             result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
-    
+
     logging.info("결과:")
     print(result2)
 
+
 if __name__ == "__main__":
-    main() 
+    main()

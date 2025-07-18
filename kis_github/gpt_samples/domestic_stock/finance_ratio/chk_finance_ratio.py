@@ -6,6 +6,11 @@ sys.path.extend(['../..', '.']) # kis_auth 파일 경로 추가
 import kis_auth as ka
 from finance_ratio import finance_ratio
 
+##############################################################################################
+# [국내주식] 순위분석 > 국내주식 재무비율 순위[v1_국내주식-092]
+##############################################################################################
+
+
 COLUMN_MAPPING = {
     'data_rank': '데이터 순위',
     'hts_kor_isnm': 'HTS 한글 종목명',
@@ -35,6 +40,8 @@ COLUMN_MAPPING = {
     'stac_month_cls_code': '결산 월 구분 코드',
     'iqry_csnu': '조회 건수'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -94,7 +101,11 @@ def main():
 
     # 한글 컬럼명으로 변환
     result = result.rename(columns=COLUMN_MAPPING)
-    
+
+    for col in NUMERIC_COLUMNS:
+        if col in result.columns:
+            result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
     # 결과 출력
     print("\n=== 국내주식 재무비율 순위 결과 ===")
     print(result)

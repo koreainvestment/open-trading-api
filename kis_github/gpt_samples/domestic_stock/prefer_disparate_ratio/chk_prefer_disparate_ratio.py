@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 기본시세 > 국내주식 우선주비율 [FHPST01770000]
+# [국내주식] 기본시세 > 국내주식 우선주_괴리율 상위[v1_국내주식-094]
 ##############################################################################################
 
 # 통합 컬럼 매핑
@@ -42,6 +42,9 @@ COLUMN_MAPPING = {
     'prdy_ctrt': '전일 대비율',
     'prst_prdy_ctrt': '우선주 전일 대비율'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -75,7 +78,7 @@ def main():
         # 토큰 발급
         logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")        
+        logger.info("토큰 발급 완료")
         # API 호출        
         result = prefer_disparate_ratio(
             fid_vol_cnt="1000",  # 거래량 수
@@ -88,26 +91,31 @@ def main():
             fid_input_price_1="10000",  # 입력 가격1
             fid_input_price_2="50000",  # 입력 가격2
         )
-        
+
         if result is None or result.empty:
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
+
         # 컬럼명 출력
         logger.info("사용 가능한 컬럼 목록:")
         logger.info(result.columns.tolist())
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 우선주_괴리율 상위 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))
         print(result)
-        
+
     except Exception as e:
         logger.error("에러 발생: %s", str(e))
         raise
+
 
 if __name__ == "__main__":
     main()

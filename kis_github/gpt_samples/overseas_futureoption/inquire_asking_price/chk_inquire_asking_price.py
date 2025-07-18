@@ -18,6 +18,11 @@ from inquire_asking_price import inquire_asking_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물 호가 [해외선물-031]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'open_price': '시가',
     'high_price': '고가',
@@ -36,6 +41,9 @@ COLUMN_MAPPING = {
     'ask_num': '매도번호',
     'ask_price': '매도호가'
 }
+
+NUMERIC_COLUMNS = ['시가', '고가', '저가', '현재가', '전일종가', '거래량', '전일대비가', '전일대비율', 
+                   '매수수량', '매수호가', '매도수량', '매도호가']
 
 def main():
     """
@@ -60,27 +68,17 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 토큰 발급
-        logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
 
-        # 해외선물 호가 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        srs_cd = "ESZ25"  # 종목명
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물 호가")
-        result1, result2 = inquire_asking_price(
-            srs_cd=srs_cd,  # 종목명
-        )
+        logger.info("API 호출")
+        result1, result2 = inquire_asking_price(srs_cd="ESZ25")
         
         # 결과 확인
         results = [result1, result2]
         if all(result is None or result.empty for result in results):
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
 
         # output1 결과 처리
         logger.info("=== output1 조회 ===")
@@ -89,6 +87,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+            
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -101,6 +105,12 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            
+            # 숫자형 컬럼 처리
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+            
             logger.info("output2 결과:")
             print(result2)
         else:

@@ -20,6 +20,52 @@ logger = logging.getLogger(__name__)
 # [장내채권] 실시간정보 > 일반채권 실시간호가 [H0BJCNT0]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    "stnd_iscd": "표준종목코드",
+    "stck_cntg_hour": "주식체결시간",
+    "askp_ert1": "매도호가수익률1",
+    "bidp_ert1": "매수호가수익률1",
+    "askp1": "매도호가1",
+    "bidp1": "매수호가1",
+    "askp_rsqn1": "매도호가잔량1",
+    "bidp_rsqn1": "매수호가잔량1",
+    "askp_ert2": "매도호가수익률2",
+    "bidp_ert2": "매수호가수익률2",
+    "askp2": "매도호가2",
+    "bidp2": "매수호가2",
+    "askp_rsqn2": "매도호가잔량2",
+    "bidp_rsqn2": "매수호가잔량2",
+    "askp_ert3": "매도호가수익률3",
+    "bidp_ert3": "매수호가수익률3",
+    "askp3": "매도호가3",
+    "bidp3": "매수호가3",
+    "askp_rsqn3": "매도호가잔량3",
+    "bidp_rsqn3": "매수호가잔량3",
+    "askp_ert4": "매도호가수익률4",
+    "bidp_ert4": "매수호가수익률4",
+    "askp4": "매도호가4",
+    "bidp4": "매수호가4",
+    "askp_rsqn4": "매도호가잔량4",
+    "bidp_rsqn4": "매수호가잔량4",
+    "askp_ert5": "매도호가수익률5",
+    "bidp_ert5": "매수호가수익률5",
+    "askp5": "매도호가5",
+    "bidp5": "매수호가5",
+    "askp_rsqn52": "매도호가잔량5",
+    "bidp_rsqn53": "매수호가잔량5",
+    "total_askp_rsqn": "총매도호가잔량",
+    "total_bidp_rsqn": "총매수호가잔량"
+}
+
+NUMERIC_COLUMNS = [
+    "매도호가수익률1", "매수호가수익률1", "매도호가1", "매수호가1", "매도호가잔량1", "매수호가잔량1",
+    "매도호가수익률2", "매수호가수익률2", "매도호가2", "매수호가2", "매도호가잔량2", "매수호가잔량2",
+    "매도호가수익률3", "매수호가수익률3", "매도호가3", "매수호가3", "매도호가잔량3", "매수호가잔량3",
+    "매도호가수익률4", "매수호가수익률4", "매도호가4", "매수호가4", "매도호가잔량4", "매수호가잔량4",
+    "매도호가수익률5", "매수호가수익률5", "매도호가5", "매수호가5", "매도호가잔량5", "매수호가잔량5",
+    "총매도호가잔량", "총매수호가잔량"
+]
+
 
 def main():
     """
@@ -66,60 +112,17 @@ ex) 0|H0STCNT0|004|005930^123929^73100^5^...
     kws = ka.KISWebSocket(api_url="/tryitout")
 
     # 조회
-    kws.subscribe(request=bond_asking_price, data=["KR103502GA34","KR6095572D81"])
+    kws.subscribe(request=bond_asking_price, data=["KR103502GA34", "KR6095572D81"])
 
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "stnd_iscd": "표준종목코드",
-                "stck_cntg_hour": "주식체결시간",
-                "askp_ert1": "매도호가수익률1",
-                "bidp_ert1": "매수호가수익률1",
-                "askp1": "매도호가1",
-                "bidp1": "매수호가1",
-                "askp_rsqn1": "매도호가잔량1",
-                "bidp_rsqn1": "매수호가잔량1",
-                "askp_ert2": "매도호가수익률2",
-                "bidp_ert2": "매수호가수익률2",
-                "askp2": "매도호가2",
-                "bidp2": "매수호가2",
-                "askp_rsqn2": "매도호가잔량2",
-                "bidp_rsqn2": "매수호가잔량2",
-                "askp_ert3": "매도호가수익률3",
-                "bidp_ert3": "매수호가수익률3",
-                "askp3": "매도호가3",
-                "bidp3": "매수호가3",
-                "askp_rsqn3": "매도호가잔량3",
-                "bidp_rsqn3": "매수호가잔량3",
-                "askp_ert4": "매도호가수익률4",
-                "bidp_ert4": "매수호가수익률4",
-                "askp4": "매도호가4",
-                "bidp4": "매수호가4",
-                "askp_rsqn4": "매도호가잔량4",
-                "bidp_rsqn4": "매수호가잔량4",
-                "askp_ert5": "매도호가수익률5",
-                "bidp_ert5": "매수호가수익률5",
-                "askp5": "매도호가5",
-                "bidp5": "매수호가5",
-                "askp_rsqn52": "매도호가잔량5",
-                "bidp_rsqn53": "매수호가잔량5",
-                "total_askp_rsqn": "총매도호가잔량",
-                "total_bidp_rsqn": "총매수호가잔량"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
-            numeric_columns = [
-                "매도호가수익률1", "매수호가수익률1", "매도호가1", "매수호가1", "매도호가잔량1", "매수호가잔량1",
-                "매도호가수익률2", "매수호가수익률2", "매도호가2", "매수호가2", "매도호가잔량2", "매수호가잔량2",
-                "매도호가수익률3", "매수호가수익률3", "매도호가3", "매수호가3", "매도호가잔량3", "매수호가잔량3",
-                "매도호가수익률4", "매수호가수익률4", "매도호가4", "매수호가4", "매도호가잔량4", "매수호가잔량4",
-                "매도호가수익률5", "매수호가수익률5", "매도호가5", "매수호가5", "매도호가잔량5", "매수호가잔량5",
-                "총매도호가잔량", "총매수호가잔량"
-            ]
-            for col in numeric_columns:
+            for col in NUMERIC_COLUMNS:
                 if col in result.columns:
                     result[col] = pd.to_numeric(result[col], errors='coerce')
 

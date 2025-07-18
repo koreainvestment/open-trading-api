@@ -19,6 +19,10 @@ from inquire_vi_status import inquire_vi_status
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 기본시세 > 변동성완화장치(VI) 현황[v1_국내주식-055]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'Output1': '응답상세',
     'hts_kor_isnm': 'HTS 한글 종목명',
@@ -35,6 +39,8 @@ COLUMN_MAPPING = {
     'vi_dmc_dprt': '동적VI발동괴리율',
     'vi_count': 'VI발동횟수'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -90,6 +96,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 변동성완화장치(VI) 현황 결과 ===")

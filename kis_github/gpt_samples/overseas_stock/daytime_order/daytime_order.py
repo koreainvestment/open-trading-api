@@ -18,6 +18,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 미국주간주문 [v1_해외주식-026]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-stock/v1/trading/daytime-order"
+
 def daytime_order(
     order_dv: str, # 주문구분 buy(매수) / sell(매도)
     cano: str,  # 종합계좌번호
@@ -94,7 +101,6 @@ def daytime_order(
         logger.error("ord_dvsn is required. (e.g. '00')")
         raise ValueError("ord_dvsn is required. (e.g. '00')")
 
-    url = "/uapi/overseas-stock/v1/trading/daytime-order"
     if order_dv == "buy":
         tr_id = "TTTS6036U"
     elif order_dv == "sell":
@@ -116,7 +122,7 @@ def daytime_order(
         "ORD_DVSN": ord_dvsn,
     }
 
-    res = ka._url_fetch(api_url=url,
+    res = ka._url_fetch(api_url=API_URL,
                          ptr_id=tr_id,
                          tr_cont="",
                          params=params,
@@ -135,5 +141,5 @@ def daytime_order(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

@@ -18,6 +18,10 @@ from dividend_rate import dividend_rate
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 순위분석 > 국내주식 배당률 상위 [HHKDB13470100]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'rank': '순위',
     'sht_cd': '종목코드',
@@ -27,6 +31,7 @@ COLUMN_MAPPING = {
     'divi_kind': '배당종류'
 }
 
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -83,6 +88,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
 
         # 결과 출력
         logger.info("=== 국내주식 배당률 상위 결과 ===")

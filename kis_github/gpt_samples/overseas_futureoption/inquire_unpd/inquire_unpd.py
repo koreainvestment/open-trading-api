@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-07-02
 
@@ -18,6 +17,13 @@ import kis_auth as ka
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 미결제내역조회(잔고) [v1_해외선물-005]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-unpd"
 
 def inquire_unpd(
     cano: str,  # 종합계좌번호
@@ -75,7 +81,6 @@ def inquire_unpd(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/trading/inquire-unpd"
     tr_id = "OTFM1412R"
 
     params = {
@@ -86,7 +91,7 @@ def inquire_unpd(
         "CTX_AREA_NK100": ctx_area_nk100,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -120,5 +125,5 @@ def inquire_unpd(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

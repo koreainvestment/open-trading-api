@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물 호가 [해외선물-031]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/quotations/inquire-asking-price"
+
 def inquire_asking_price(
     srs_cd: str,  # 종목명
     dataframe1: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output1)
@@ -58,14 +65,13 @@ def inquire_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/quotations/inquire-asking-price"
     tr_id = "HHDFC86000000"
 
     params = {
         "SRS_CD": srs_cd,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -124,5 +130,5 @@ def inquire_asking_price(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

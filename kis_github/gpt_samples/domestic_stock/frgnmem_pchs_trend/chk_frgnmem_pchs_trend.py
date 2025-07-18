@@ -18,6 +18,22 @@ logging.basicConfig(level=logging.INFO)
 # [국내주식] 시세분석 > 종목별 외국계 순매수추이 [국내주식-164]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    'bsop_hour': '영업시간',
+    'stck_prpr': '주식현재가',
+    'prdy_vrss': '전일대비',
+    'prdy_vrss_sign': '전일대비부호',
+    'prdy_ctrt': '전일대비율',
+    'acml_vol': '누적거래량',
+    'frgn_seln_vol': '외국인매도거래량',
+    'frgn_shnu_vol': '외국인매수2거래량',
+    'glob_ntby_qty': '외국계순매수수량',
+    'frgn_ntby_qty_icdc': '외국인순매수수량증감'
+}
+
+NUMERIC_COLUMNS = []
+
+
 def main():
     """
     종목별 외국계 순매수추이 조회 테스트 함수
@@ -33,10 +49,10 @@ def main():
     pd.set_option('display.max_columns', None)  # 모든 컬럼 표시
     pd.set_option('display.width', None)  # 출력 너비 제한 해제
     pd.set_option('display.max_rows', None)  # 모든 행 표시
-    
+
     # 인증 토큰 발급
     ka.auth()
-    
+
     # case1 테스트
     logging.info("=== Case1: 삼성전자 외국계 순매수추이 조회 ===")
     try:
@@ -48,34 +64,20 @@ def main():
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return
-    
+
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
-    
+
     # 컬럼명 한글 변환
-    column_mapping = {
-        'bsop_hour': '영업시간',
-        'stck_prpr': '주식현재가',
-        'prdy_vrss': '전일대비',
-        'prdy_vrss_sign': '전일대비부호',
-        'prdy_ctrt': '전일대비율',
-        'acml_vol': '누적거래량',
-        'frgn_seln_vol': '외국인매도거래량',
-        'frgn_shnu_vol': '외국인매수2거래량',
-        'glob_ntby_qty': '외국계순매수수량',
-        'frgn_ntby_qty_icdc': '외국인순매수수량증감'
-    }
-    
-    result = result.rename(columns=column_mapping)
-    
+    result = result.rename(columns=COLUMN_MAPPING)
+
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
-    
+
     logging.info("결과:")
     print(result)
 
+
 if __name__ == "__main__":
-    main() 
+    main()

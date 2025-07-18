@@ -18,6 +18,10 @@ from ksdinfo_forfeit import ksdinfo_forfeit
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 예탁원정보(실권주일정)[국내주식-152]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'record_date': '기준일',
     'sht_cd': '종목코드',
@@ -28,6 +32,8 @@ COLUMN_MAPPING = {
     'list_dt': '상장/등록일',
     'lead_mgr': '주간사'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -76,6 +82,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 예탁원정보(실권주일정) 결과 ===")

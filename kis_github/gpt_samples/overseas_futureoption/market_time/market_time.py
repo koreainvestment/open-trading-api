@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물옵션 장운영시간 [해외선물-030]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/quotations/market-time"
+
 def market_time(
     fm_pdgr_cd: str,  # FM상품군코드
     fm_clas_cd: str,  # FM클래스코드
@@ -75,7 +82,6 @@ def market_time(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/quotations/market-time"
     tr_id = "OTFM2229R"
 
     params = {
@@ -87,7 +93,7 @@ def market_time(
         "CTX_AREA_FK200": ctx_area_fk200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -125,5 +131,5 @@ def market_time(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

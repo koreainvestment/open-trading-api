@@ -40,6 +40,9 @@ COLUMN_MAPPING = {
     'dt': '결산년월'
 }
 
+NUMERIC_COLUMNS = []
+
+
 def main():
     """
     [국내주식] 종목정보
@@ -72,21 +75,25 @@ def main():
         result1, result2, result3, result4 = estimate_perform(
             sht_cd="265520",  # 종목코드
         )
-        
+
         # 결과 확인
         results = [result1, result2, result3, result4]
         if all(result is None or result.empty for result in results):
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
 
         # output1 결과 처리
         logger.info("=== output1 조회 ===")
         if not result1.empty:
             logger.info("사용 가능한 컬럼: %s", result1.columns.tolist())
-            
+
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -96,9 +103,14 @@ def main():
         logger.info("=== output2 조회 ===")
         if not result2.empty:
             logger.info("사용 가능한 컬럼: %s", result2.columns.tolist())
-            
+
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+
             logger.info("output2 결과:")
             print(result2)
         else:
@@ -108,9 +120,14 @@ def main():
         logger.info("=== output3 조회 ===")
         if not result3.empty:
             logger.info("사용 가능한 컬럼: %s", result3.columns.tolist())
-            
+
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result3 = result3.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result3.columns:
+                    result3[col] = pd.to_numeric(result3[col], errors='coerce').round(2)
+
             logger.info("output3 결과:")
             print(result3)
         else:
@@ -120,18 +137,24 @@ def main():
         logger.info("=== output4 조회 ===")
         if not result4.empty:
             logger.info("사용 가능한 컬럼: %s", result4.columns.tolist())
-            
+
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result4 = result4.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result4.columns:
+                    result4[col] = pd.to_numeric(result4[col], errors='coerce').round(2)
+
             logger.info("output4 결과:")
             print(result4)
         else:
             logger.info("output4 데이터가 없습니다.")
 
-        
+
     except Exception as e:
         logger.error("에러 발생: %s", str(e))
         raise
+
 
 if __name__ == "__main__":
     main()

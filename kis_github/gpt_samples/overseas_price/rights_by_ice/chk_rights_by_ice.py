@@ -8,16 +8,34 @@ import logging
 
 import pandas as pd
 
-sys.path.extend(['../..', '.'])
+sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
 import kis_auth as ka
 from rights_by_ice import rights_by_ice
 
 # 로깅 설정
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 권리종합 [해외주식-050]
 ##############################################################################################
+
+COLUMN_MAPPING = {
+    'anno_dt': 'ICE공시일',
+    'ca_title': '권리유형',
+    'div_lock_dt': '배당락일',
+    'pay_dt': '지급일',
+    'record_dt': '기준일',
+    'validity_dt': '효력일자',
+    'local_end_dt': '현지지시마감일',
+    'lock_dt': '권리락일',
+    'delist_dt': '상장폐지일',
+    'redempt_dt': '상환일자',
+    'early_redempt_dt': '조기상환일자',
+    'effective_dt': '적용일'
+}
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -48,28 +66,10 @@ def main():
     
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'anno_dt': 'ICE공시일',
-        'ca_title': '권리유형',
-        'div_lock_dt': '배당락일',
-        'pay_dt': '지급일',
-        'record_dt': '기준일',
-        'validity_dt': '효력일자',
-        'local_end_dt': '현지지시마감일',
-        'lock_dt': '권리락일',
-        'delist_dt': '상장폐지일',
-        'redempt_dt': '상환일자',
-        'early_redempt_dt': '조기상환일자',
-        'effective_dt': '적용일'
-    }
-    
-    result = result.rename(columns=column_mapping)
+    result = result.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     

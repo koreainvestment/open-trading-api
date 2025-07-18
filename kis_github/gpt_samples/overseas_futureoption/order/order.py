@@ -18,6 +18,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# 상수 정의
+API_URL = "/uapi/overseas-futureoption/v1/trading/order"
+
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 주문[v1_해외선물-001]
+##############################################################################################
+
 def order(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -107,7 +114,7 @@ def order(
         logger.error("ccld_cndt_cd is required. (e.g. '6')")
         raise ValueError("ccld_cndt_cd is required. (e.g. '6')")
 
-    url = "/uapi/overseas-futureoption/v1/trading/order"
+    url = API_URL
     tr_id = "OTFM3001U"
 
     params = {
@@ -129,7 +136,7 @@ def order(
         "FM_HDGE_ORD_SCRN_YN": fm_hdge_ord_scrn_yn,
     }
 
-    res = ka._url_fetch(api_url=url,
+    res = ka._url_fetch(api_url=API_URL,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -149,5 +156,5 @@ def order(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

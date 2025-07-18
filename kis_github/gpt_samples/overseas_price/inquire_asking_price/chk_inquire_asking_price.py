@@ -18,6 +18,10 @@ from inquire_asking_price import inquire_asking_price
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 현재가 1호가[해외주식-033]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'rsym': '실시간조회종목코드',
     'zdiv': '소수점자리수',
@@ -44,7 +48,6 @@ COLUMN_MAPPING = {
     'vask1': '매도호가잔량1',
     'dbid1': '매수호가대비1',
     'dask1': '매도호가대비1',
-    'output3': '응답상세',
     'vstm': 'VCMStart시간',
     'vetm': 'VCMEnd시간',
     'csbp': 'CAS/VCM기준가',
@@ -53,6 +56,9 @@ COLUMN_MAPPING = {
     'iep': 'IEP',
     'iev': 'IEV'
 }
+
+NUMERIC_COLUMNS = ['소수점자리수', '시가율', '고가율', '저가율', '현재가율', '매수호가가격1', '매도호가가격1', '매수호가잔량1', 
+                   '매도호가잔량1', '매수호가대비1', '매도호가대비1', 'CAS/VCM기준가', 'CAS/VCMHighprice', 'CAS/VCMLowprice', 'IEP', 'IEV']
 
 def main():
     """
@@ -82,20 +88,13 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-
-        # 해외주식 현재가 1호가 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        auth = ""  # 사용자권한정보
-        excd = "NAS"  # 거래소코드
-        symb = "TSLA"  # 종목코드
-
         
         # API 호출
         logger.info("API 호출 시작: 해외주식 현재가 1호가")
         result1, result2, result3 = inquire_asking_price(
-            auth=auth,  # 사용자권한정보
-            excd=excd,  # 거래소코드
-            symb=symb,  # 종목코드
+            auth="",  # 사용자권한정보
+            excd="NAS",  # 거래소코드
+            symb="TSLA",  # 종목코드
         )
         
         # 결과 확인
@@ -104,43 +103,58 @@ def main():
             logger.warning("조회된 데이터가 없습니다.")
             return
         
+        # output1 처리
+        if result1 is not None and not result1.empty:
+            logger.info("=== output1 결과 ===")
+            logger.info("사용 가능한 컬럼 목록:")
+            logger.info(result1.columns.tolist())
 
         # output1 결과 처리
         logger.info("=== output1 조회 ===")
         if not result1.empty:
             logger.info("사용 가능한 컬럼: %s", result1.columns.tolist())
             
-            # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
+            # 통합 컬럼명 한글 변환
             result1 = result1.rename(columns=COLUMN_MAPPING)
-            logger.info("output1 결과:")
+            
+            # 숫자형 컬럼 소수점 둘째자리까지 표시
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+            
+            logger.info("조회된 데이터 건수: %d", len(result1))
+            print("=== output1 ===")
             print(result1)
-        else:
-            logger.info("output1 데이터가 없습니다.")
-
+        
         # output2 결과 처리
         logger.info("=== output2 조회 ===")
-        if not result2.empty:
+        if result2 is not None and not result2.empty:
             logger.info("사용 가능한 컬럼: %s", result2.columns.tolist())
             
-            # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
+            # 통합 컬럼명 한글 변환
             result2 = result2.rename(columns=COLUMN_MAPPING)
-            logger.info("output2 결과:")
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+            
+            logger.info("조회된 데이터 건수: %d", len(result2))
+            print("=== output2 ===")
             print(result2)
-        else:
-            logger.info("output2 데이터가 없습니다.")
-
+        
         # output3 결과 처리
         logger.info("=== output3 조회 ===")
-        if not result3.empty:
+        if result3 is not None and not result3.empty:
             logger.info("사용 가능한 컬럼: %s", result3.columns.tolist())
             
-            # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
+            # 통합 컬럼명 한글 변환
             result3 = result3.rename(columns=COLUMN_MAPPING)
-            logger.info("output3 결과:")
+            for col in NUMERIC_COLUMNS:
+                if col in result3.columns:
+                    result3[col] = pd.to_numeric(result3[col], errors='coerce').round(2)
+            
+            logger.info("조회된 데이터 건수: %d", len(result3))
+            print("=== output3 ===")
             print(result3)
-        else:
-            logger.info("output3 데이터가 없습니다.")
-
         
     except Exception as e:
         logger.error("에러 발생: %s", str(e))

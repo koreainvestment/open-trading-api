@@ -19,6 +19,29 @@ logging.basicConfig(level=logging.INFO)
 # [해외주식] 실시간시세 > 해외주식 지연호가(아시아)[실시간-008]
 ##############################################################################################
 
+# 컬럼 매핑 정의
+COLUMN_MAPPING = {
+    "symb": "종목코드",
+    "zdiv": "소숫점자리수",
+    "xymd": "현지일자",
+    "xhms": "현지시간",
+    "kymd": "한국일자",
+    "khms": "한국시간",
+    "bvol": "매수총잔량",
+    "avol": "매도총잔량",
+    "bdvl": "매수총잔량대비",
+    "advl": "매도총잔량대비",
+    "pbid1": "매수호가1",
+    "pask1": "매도호가1",
+    "vbid1": "매수잔량1",
+    "vask1": "매도잔량1",
+    "dbid1": "매수잔량대비1",
+    "dask1": "매도잔량대비1"
+}
+
+# 숫자형 컬럼 정의
+NUMERIC_COLUMNS = ["매수호가1", "매도호가1", "매수잔량1", "매도잔량1"]
+
 def main():
     """
     해외주식 지연호가(아시아) 조회 테스트 함수
@@ -48,30 +71,11 @@ def main():
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
 
-        column_mapping = {
-                "symb": "종목코드",
-                "zdiv": "소숫점자리수",
-                "xymd": "현지일자",
-                "xhms": "현지시간",
-                "kymd": "한국일자",
-                "khms": "한국시간",
-                "bvol": "매수총잔량",
-                "avol": "매도총잔량",
-                "bdvl": "매수총잔량대비",
-                "advl": "매도총잔량대비",
-                "pbid1": "매수호가1",
-                "pask1": "매도호가1",
-                "vbid1": "매수잔량1",
-                "vask1": "매도잔량1",
-                "dbid1": "매수잔량대비1",
-                "dask1": "매도잔량대비1"
-            }
+        # 한글 컬럼명으로 변환
+        result = result.rename(columns=COLUMN_MAPPING)
 
-        numeric_columns = []
-
-        result = result.rename(columns=column_mapping)
-
-        for col in numeric_columns:
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
             if col in result.columns:
                 result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
 
@@ -79,7 +83,6 @@ def main():
         print(result)
 
     kws.start(on_result=on_result)
-
 
 if __name__ == "__main__":
     main() 

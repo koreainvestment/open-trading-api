@@ -18,6 +18,10 @@ from finance_financial_ratio import finance_financial_ratio
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 국내주식 재무비율 [v1_국내주식-080]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stac_yymm': '결산 년월',
     'grs': '매출액 증가율',
@@ -30,6 +34,8 @@ COLUMN_MAPPING = {
     'rsrv_rate': '유보 비율',
     'lblt_rate': '부채 비율'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -75,7 +81,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 재무비율 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

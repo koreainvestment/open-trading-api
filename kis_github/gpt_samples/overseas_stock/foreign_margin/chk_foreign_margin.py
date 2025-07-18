@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on 2025-06-26
 
@@ -18,6 +17,11 @@ from foreign_margin import foreign_margin
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 - 해외증거금 통화별조회 [해외주식-035]
+##############################################################################################
+
+# 컬럼명 매핑 (한글 변환용)
 COLUMN_MAPPING = {
     'natn_name': '국가명',
     'frcr_dncl_amt1': '외화예수금액',
@@ -30,6 +34,12 @@ COLUMN_MAPPING = {
     'itgr_ord_psbl_amt': '통합주문가능금액',
     'bass_exrt': '기준환율'
 }
+
+# 숫자형 컬럼 정의 (소수점 처리용)
+NUMERIC_COLUMNS = [
+    '외화예수금액', '미결제매수금액', '미결제매도금액', '외화미수금액', '외화증거금액',
+    '외화일반주문가능금액', '외화주문가능금액', '통합주문가능금액', '기준환율'
+]
 
 def main():
     """
@@ -59,17 +69,12 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
-        # 해외증거금 통화별조회 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct
-        acnt_prdt_cd = "01"  # 계좌상품코드
 
-        
         # API 호출
-        logger.info("API 호출 시작: 해외증거금 통화별조회")
+        logger.info("API 호출")
         result = foreign_margin(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
         )
         
         if result is None or result.empty:
@@ -82,6 +87,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외증거금 통화별조회 결과 ===")

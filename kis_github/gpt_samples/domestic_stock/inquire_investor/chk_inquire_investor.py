@@ -19,6 +19,33 @@ logging.basicConfig(level=logging.INFO)
 # [국내주식] 기본시세 > 주식현재가 투자자[v1_국내주식-012]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    'stck_bsop_date': '주식 영업 일자',
+    'stck_clpr': '주식 종가',
+    'prdy_vrss': '전일 대비',
+    'prdy_vrss_sign': '전일 대비 부호',
+    'prsn_ntby_qty': '개인 순매수 수량',
+    'frgn_ntby_qty': '외국인 순매수 수량',
+    'orgn_ntby_qty': '기관계 순매수 수량',
+    'prsn_ntby_tr_pbmn': '개인 순매수 거래 대금',
+    'frgn_ntby_tr_pbmn': '외국인 순매수 거래 대금',
+    'orgn_ntby_tr_pbmn': '기관계 순매수 거래 대금',
+    'prsn_shnu_vol': '개인 매수2 거래량',
+    'frgn_shnu_vol': '외국인 매수2 거래량',
+    'orgn_shnu_vol': '기관계 매수2 거래량',
+    'prsn_shnu_tr_pbmn': '개인 매수2 거래 대금',
+    'frgn_shnu_tr_pbmn': '외국인 매수2 거래 대금',
+    'orgn_shnu_tr_pbmn': '기관계 매수2 거래 대금',
+    'prsn_seln_vol': '개인 매도 거래량',
+    'frgn_seln_vol': '외국인 매도 거래량',
+    'orgn_seln_vol': '기관계 매도 거래량',
+    'prsn_seln_tr_pbmn': '개인 매도 거래 대금',
+    'frgn_seln_tr_pbmn': '외국인 매도 거래 대금',
+    'orgn_seln_tr_pbmn': '기관계 매도 거래 대금'
+}
+
+NUMERIC_COLUMNS = []
+
 def main():
     """
     주식현재가 투자자 조회 테스트 함수
@@ -49,37 +76,10 @@ def main():
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
     # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'stck_bsop_date': '주식 영업 일자',
-        'stck_clpr': '주식 종가',
-        'prdy_vrss': '전일 대비',
-        'prdy_vrss_sign': '전일 대비 부호',
-        'prsn_ntby_qty': '개인 순매수 수량',
-        'frgn_ntby_qty': '외국인 순매수 수량',
-        'orgn_ntby_qty': '기관계 순매수 수량',
-        'prsn_ntby_tr_pbmn': '개인 순매수 거래 대금',
-        'frgn_ntby_tr_pbmn': '외국인 순매수 거래 대금',
-        'orgn_ntby_tr_pbmn': '기관계 순매수 거래 대금',
-        'prsn_shnu_vol': '개인 매수2 거래량',
-        'frgn_shnu_vol': '외국인 매수2 거래량',
-        'orgn_shnu_vol': '기관계 매수2 거래량',
-        'prsn_shnu_tr_pbmn': '개인 매수2 거래 대금',
-        'frgn_shnu_tr_pbmn': '외국인 매수2 거래 대금',
-        'orgn_shnu_tr_pbmn': '기관계 매수2 거래 대금',
-        'prsn_seln_vol': '개인 매도 거래량',
-        'frgn_seln_vol': '외국인 매도 거래량',
-        'orgn_seln_vol': '기관계 매도 거래량',
-        'prsn_seln_tr_pbmn': '개인 매도 거래 대금',
-        'frgn_seln_tr_pbmn': '외국인 매도 거래 대금',
-        'orgn_seln_tr_pbmn': '기관계 매도 거래 대금'
-    }
+    result = result.rename(columns=COLUMN_MAPPING)
     
-    result = result.rename(columns=column_mapping)
-    
-    # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 자료형이 명시되지 않았으므로 numeric_columns는 빈 리스트)
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 자료형이 명시되지 않았으므로 NUMERIC_COLUMNS는 빈 리스트)
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     

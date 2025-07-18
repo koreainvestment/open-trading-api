@@ -15,10 +15,53 @@ from index_option_realtime_quote import index_option_realtime_quote
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 
-
 ##############################################################################################
 # [국내선물옵션] 실시간시세 > 지수옵션 실시간호가[실시간-015]
 ##############################################################################################
+
+COLUMN_MAPPING = {
+    "optn_shrn_iscd": "옵션 단축 종목코드",
+    "bsop_hour": "영업 시간",
+    "optn_askp1": "옵션 매도호가1",
+    "optn_askp2": "옵션 매도호가2",
+    "optn_askp3": "옵션 매도호가3",
+    "optn_askp4": "옵션 매도호가4",
+    "optn_askp5": "옵션 매도호가5",
+    "optn_bidp1": "옵션 매수호가1",
+    "optn_bidp2": "옵션 매수호가2",
+    "optn_bidp3": "옵션 매수호가3",
+    "optn_bidp4": "옵션 매수호가4",
+    "optn_bidp5": "옵션 매수호가5",
+    "askp_csnu1": "매도호가 건수1",
+    "askp_csnu2": "매도호가 건수2",
+    "askp_csnu3": "매도호가 건수3",
+    "askp_csnu4": "매도호가 건수4",
+    "askp_csnu5": "매도호가 건수5",
+    "bidp_csnu1": "매수호가 건수1",
+    "bidp_csnu2": "매수호가 건수2",
+    "bidp_csnu3": "매수호가 건수3",
+    "bidp_csnu4": "매수호가 건수4",
+    "bidp_csnu5": "매수호가 건수5",
+    "askp_rsqn1": "매도호가 잔량1",
+    "askp_rsqn2": "매도호가 잔량2",
+    "askp_rsqn3": "매도호가 잔량3",
+    "askp_rsqn4": "매도호가 잔량4",
+    "askp_rsqn5": "매도호가 잔량5",
+    "bidp_rsqn1": "매수호가 잔량1",
+    "bidp_rsqn2": "매수호가 잔량2",
+    "bidp_rsqn3": "매수호가 잔량3",
+    "bidp_rsqn4": "매수호가 잔량4",
+    "bidp_rsqn5": "매수호가 잔량5",
+    "total_askp_csnu": "총 매도호가 건수",
+    "total_bidp_csnu": "총 매수호가 건수",
+    "total_askp_rsqn": "총 매도호가 잔량",
+    "total_bidp_rsqn": "총 매수호가 잔량",
+    "total_askp_rsqn_icdc": "총 매도호가 잔량 증감",
+    "total_bidp_rsqn_icdc": "총 매수호가 잔량 증감"
+}
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -46,52 +89,9 @@ def main():
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
 
-        column_mapping = {
-                "optn_shrn_iscd": "옵션 단축 종목코드",
-                "bsop_hour": "영업 시간",
-                "optn_askp1": "옵션 매도호가1",
-                "optn_askp2": "옵션 매도호가2",
-                "optn_askp3": "옵션 매도호가3",
-                "optn_askp4": "옵션 매도호가4",
-                "optn_askp5": "옵션 매도호가5",
-                "optn_bidp1": "옵션 매수호가1",
-                "optn_bidp2": "옵션 매수호가2",
-                "optn_bidp3": "옵션 매수호가3",
-                "optn_bidp4": "옵션 매수호가4",
-                "optn_bidp5": "옵션 매수호가5",
-                "askp_csnu1": "매도호가 건수1",
-                "askp_csnu2": "매도호가 건수2",
-                "askp_csnu3": "매도호가 건수3",
-                "askp_csnu4": "매도호가 건수4",
-                "askp_csnu5": "매도호가 건수5",
-                "bidp_csnu1": "매수호가 건수1",
-                "bidp_csnu2": "매수호가 건수2",
-                "bidp_csnu3": "매수호가 건수3",
-                "bidp_csnu4": "매수호가 건수4",
-                "bidp_csnu5": "매수호가 건수5",
-                "askp_rsqn1": "매도호가 잔량1",
-                "askp_rsqn2": "매도호가 잔량2",
-                "askp_rsqn3": "매도호가 잔량3",
-                "askp_rsqn4": "매도호가 잔량4",
-                "askp_rsqn5": "매도호가 잔량5",
-                "bidp_rsqn1": "매수호가 잔량1",
-                "bidp_rsqn2": "매수호가 잔량2",
-                "bidp_rsqn3": "매수호가 잔량3",
-                "bidp_rsqn4": "매수호가 잔량4",
-                "bidp_rsqn5": "매수호가 잔량5",
-                "total_askp_csnu": "총 매도호가 건수",
-                "total_bidp_csnu": "총 매수호가 건수",
-                "total_askp_rsqn": "총 매도호가 잔량",
-                "total_bidp_rsqn": "총 매수호가 잔량",
-                "total_askp_rsqn_icdc": "총 매도호가 잔량 증감",
-                "total_bidp_rsqn_icdc": "총 매수호가 잔량 증감"
-            }
+        result = result.rename(columns=COLUMN_MAPPING)
 
-        numeric_columns = []
-
-        result = result.rename(columns=column_mapping)
-
-        for col in numeric_columns:
+        for col in NUMERIC_COLUMNS:
             if col in result.columns:
                 result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
 
@@ -102,4 +102,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

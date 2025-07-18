@@ -18,11 +18,17 @@ from hts_top_view import hts_top_view
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 순위분석 > HTS조회상위20종목[국내주식-214]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'output1': '응답상세',
     'mrkt_div_cls_code': '시장구분',
     'mksc_shrn_iscd': '종목코드'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -64,7 +70,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== HTS조회상위20종목 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

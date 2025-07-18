@@ -18,6 +18,10 @@ from exp_trans_updown import exp_trans_updown
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 순위분석 > 국내주식 예상체결 상승_하락상위[v1_국내주식-103]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'stck_shrn_iscd': '주식 단축 종목코드',
     'hts_kor_isnm': 'HTS 한글 종목명',
@@ -35,6 +39,8 @@ COLUMN_MAPPING = {
     'total_askp_rsqn': '총 매도호가 잔량',
     'total_bidp_rsqn': '총 매수호가 잔량'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -94,7 +100,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 예상체결 상승_하락상위 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

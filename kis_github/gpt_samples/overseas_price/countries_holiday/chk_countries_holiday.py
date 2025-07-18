@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on 2025-06-26
+Created on 2025-06-30
 
 @author: LaivData jjlee with cursor
 """
@@ -18,6 +18,10 @@ from countries_holiday import countries_holiday
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외결제일자조회[해외주식-017]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'prdt_type_cd': '상품유형코드',
     'tr_natn_cd': '거래국가코드',
@@ -27,6 +31,8 @@ COLUMN_MAPPING = {
     'acpl_sttl_dt': '현지결제일자',
     'dmst_sttl_dt': '국내결제일자'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -82,6 +88,9 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외결제일자조회 결과 ===")

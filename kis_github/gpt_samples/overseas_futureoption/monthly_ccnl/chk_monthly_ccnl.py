@@ -18,6 +18,11 @@ from monthly_ccnl import monthly_ccnl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물 체결추이(월간)[해외선물-020]
+##############################################################################################
+
+# 컬럼명 매핑
 COLUMN_MAPPING = {
     'tret_cnt': '자료개수',
     'last_n_cnt': 'N틱최종개수',
@@ -34,6 +39,9 @@ COLUMN_MAPPING = {
     'prev_diff_price': '전일대비가격',
     'prev_diff_rate': '전일대비율'
 }
+
+# 숫자형 컬럼
+NUMERIC_COLUMNS = ['자료개수', 'N틱최종개수', '전일대비구분', '전일대비가격', '전일대비율', '시가', '고가', '저가', '체결가격', '체결수량', '누적거래수량',]
 
 def main():
     """
@@ -69,29 +77,19 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
 
-        # 해외선물 체결추이(월간) 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        srs_cd = "6AM24"  # 종목코드
-        exch_cd = "CME"  # 거래소코드
-        start_date_time = ""  # 조회시작일시
-        close_date_time = "20240402"  # 조회종료일시
-        qry_tp = "Q"  # 조회구분
-        qry_cnt = "30"  # 요청개수
-        qry_gap = ""  # 묶음개수
-        index_key = ""  # 이전조회KEY
 
         
         # API 호출
         logger.info("API 호출 시작: 해외선물 체결추이(월간)")
         result1, result2 = monthly_ccnl(
-            srs_cd=srs_cd,  # 종목코드
-            exch_cd=exch_cd,  # 거래소코드
-            start_date_time=start_date_time,  # 조회시작일시
-            close_date_time=close_date_time,  # 조회종료일시
-            qry_tp=qry_tp,  # 조회구분
-            qry_cnt=qry_cnt,  # 요청개수
-            qry_gap=qry_gap,  # 묶음개수
-            index_key=index_key,  # 이전조회KEY
+            srs_cd="6AM24",  # 종목코드
+            exch_cd="CME",  # 거래소코드
+            start_date_time="",  # 조회시작일시
+            close_date_time="20240402",  # 조회종료일시
+            qry_tp="Q",  # 조회구분
+            qry_cnt="30",  # 요청개수
+            qry_gap="",  # 묶음개수
+            index_key="",  # 이전조회KEY
         )
         
         # 결과 확인
@@ -108,6 +106,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -120,6 +121,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
             logger.info("output2 결과:")
             print(result2)
         else:

@@ -14,17 +14,17 @@ import pandas as pd
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+
 ##############################################################################################
 # [국내주식] 순위분석 > 국내주식 예상체결 상승_하락상위[v1_국내주식-103]
 ##############################################################################################
 
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/ranking/exp-trans-updown"
-
-# 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
 
 def exp_trans_updown(
         fid_rank_sort_cls_code: str,  # 순위 정렬 구분 코드

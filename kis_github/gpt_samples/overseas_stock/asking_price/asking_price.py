@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 def asking_price(
         tr_type: str,
         tr_key: str,
-) -> (dict, list[str]):
+) -> tuple[dict, list[str]]:
     """
     해외주식 실시간호가를 이용하여 미국시세 실시간 1호가(매수/매도) 시세가 무료로 제공됩니다. (미국은 유료시세 제공 X)
 

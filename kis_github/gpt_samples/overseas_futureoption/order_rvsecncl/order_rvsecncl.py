@@ -18,6 +18,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# 상수 정의
+API_URL = "/uapi/overseas-futureoption/v1/trading/order-rvsecncl"
+
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 정정취소주문[v1_해외선물-002, 003]
+##############################################################################################
+
 def order_rvsecncl(
     cano: str,  # 종합계좌번호
     ord_dv: str, # 주문구분
@@ -83,7 +90,6 @@ def order_rvsecncl(
         logger.error("orgn_odno is required. (e.g. '00360686')")
         raise ValueError("orgn_odno is required. (e.g. '00360686')")
 
-    url = "/uapi/overseas-futureoption/v1/trading/order-rvsecncl"
     if ord_dv == "0":
         tr_id = "OTFM3002U"
     elif ord_dv == "1":
@@ -107,7 +113,7 @@ def order_rvsecncl(
 
     logger.info("Calling API with parameters: %s", params)
 
-    res = ka._url_fetch(api_url=url,
+    res = ka._url_fetch(api_url=API_URL,
                          ptr_id=tr_id,
                          tr_cont="",
                          params=params,
@@ -126,5 +132,5 @@ def order_rvsecncl(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

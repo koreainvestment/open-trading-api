@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 조건검색 > 국내주식 신고/신저근접종목 상위 [FHPST01870000]
+# [국내주식] 조건검색 > 국내주식 신고_신저근접종목 상위[v1_국내주식-105]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -40,6 +40,8 @@ COLUMN_MAPPING = {
     'lwpr_near_rate': '저가 근접 비율',
     'stck_sdpr': '주식 기준가'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -98,7 +100,11 @@ def main():
 
     # 한글 컬럼명으로 변환
     result = result.rename(columns=COLUMN_MAPPING)
-    
+
+    for col in NUMERIC_COLUMNS:
+        if col in result.columns:
+            result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
     # 결과 출력
     print("\n=== 국내주식 신고_신저근접종목 상위 결과 ===")
     print(result)

@@ -14,16 +14,16 @@ import pandas as pd
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내주식 예상체결 전체지수[국내주식-122]
 ##############################################################################################
 
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/ranking/exp-total-index"
-
-# 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 
 def exp_total_index(

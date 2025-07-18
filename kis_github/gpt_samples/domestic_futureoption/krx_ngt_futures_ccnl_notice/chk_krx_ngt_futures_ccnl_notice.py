@@ -19,6 +19,31 @@ logging.basicConfig(level=logging.INFO)
 # [국내선물옵션] 실시간시세 > KRX야간선물 실시간체결통보 [실시간-066]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    "cust_id": "고객 ID",
+    "acnt_no": "계좌번호",
+    "oder_no": "주문번호",
+    "ooder_no": "원주문번호",
+    "seln_byov_cls": "매도매수구분",
+    "rctf_cls": "정정구분",
+    "oder_kind2": "주문종류2",
+    "stck_shrn_iscd": "주식 단축 종목코드",
+    "cntg_qty": "체결 수량",
+    "cntg_unpr": "체결단가",
+    "stck_cntg_hour": "주식 체결 시간",
+    "rfus_yn": "거부여부",
+    "cntg_yn": "체결여부",
+    "acpt_yn": "접수여부",
+    "brnc_no": "지점번호",
+    "oder_qty": "주문수량",
+    "acnt_name": "계좌명",
+    "cntg_isnm": "체결종목명",
+    "oder_cond": "주문조건"
+}
+
+NUMERIC_COLUMNS = []
+
+
 def main():
     """
     KRX야간선물 실시간체결통보 테스트 함수
@@ -44,34 +69,9 @@ def main():
 
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
+        result = result.rename(columns=COLUMN_MAPPING)
 
-        column_mapping = {
-            "cust_id": "고객 ID",
-            "acnt_no": "계좌번호",
-            "oder_no": "주문번호",
-            "ooder_no": "원주문번호",
-            "seln_byov_cls": "매도매수구분",
-            "rctf_cls": "정정구분",
-            "oder_kind2": "주문종류2",
-            "stck_shrn_iscd": "주식 단축 종목코드",
-            "cntg_qty": "체결 수량",
-            "cntg_unpr": "체결단가",
-            "stck_cntg_hour": "주식 체결 시간",
-            "rfus_yn": "거부여부",
-            "cntg_yn": "체결여부",
-            "acpt_yn": "접수여부",
-            "brnc_no": "지점번호",
-            "oder_qty": "주문수량",
-            "acnt_name": "계좌명",
-            "cntg_isnm": "체결종목명",
-            "oder_cond": "주문조건"
-        }
-
-        numeric_columns = []
-
-        result = result.rename(columns=column_mapping)
-
-        for col in numeric_columns:
+        for col in NUMERIC_COLUMNS:
             if col in result.columns:
                 result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
 
@@ -82,4 +82,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

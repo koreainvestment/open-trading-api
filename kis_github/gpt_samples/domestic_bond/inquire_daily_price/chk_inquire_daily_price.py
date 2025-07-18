@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [장내채권] 기본시세 > 장내채권 일별시세 [FHKBJ773404C0]
+# [장내채권] 기본시세 > 장내채권 일별시세 [국내주식-202]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -34,6 +34,8 @@ COLUMN_MAPPING = {
     'bond_hgpr': '채권고가',
     'bond_lwpr': '채권저가'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -79,7 +81,12 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        # 숫자형 컬럼 변환
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce')
+
         # 결과 출력
         logger.info("=== 장내채권현재가(일별) 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

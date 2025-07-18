@@ -20,6 +20,36 @@ logger = logging.getLogger(__name__)
 # [국내주식] 실시간정보 > 주식체결통보 [H0STCNI0]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    "CUST_ID": "고객 ID",
+    "ACNT_NO": "계좌번호",
+    "ODER_NO": "주문번호",
+    "ODER_QTY": "주문수량",
+    "SELN_BYOV_CLS": "매도매수구분",
+    "RCTF_CLS": "접수구분",
+    "ODER_KIND": "주문종류",
+    "ODER_COND": "주문조건",
+    "STCK_SHRN_ISCD": "종목코드",
+    "CNTG_QTY": "체결수량",
+    "CNTG_UNPR": "체결단가",
+    "STCK_CNTG_HOUR": "주식체결시간",
+    "RFUS_YN": "거부여부",
+    "CNTG_YN": "체결여부",
+    "ACPT_YN": "접수여부",
+    "BRNC_NO": "지점번호",
+    "ACNT_NO2": "계좌번호2",
+    "ACNT_NAME": "계좌명",
+    "ORD_COND_PRC": "호가조건가격",
+    "ORD_EXG_GB": "주문거래소 구분",
+    "POPUP_YN": "체결정보 표시",
+    "FILLER": "필러",
+    "CRDT_CLS": "신용거래구분",
+    "CRDT_LOAN_DATE": "신용대출일자",
+    "CNTG_ISNM40": "체결일자",
+    "ODER_PRC": "주문가격"
+}
+NUMERIC_COLUMNS = ["주문수량", "체결수량", "체결단가", "호가조건가격", "주문가격"]
+
 
 def main():
     """
@@ -74,39 +104,10 @@ https://wikidocs.net/book/7847 (국내주식 업데이트 완료, 추후 해외�
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "CUST_ID": "고객 ID",
-                "ACNT_NO": "계좌번호",
-                "ODER_NO": "주문번호",
-                "ODER_QTY": "주문수량",
-                "SELN_BYOV_CLS": "매도매수구분",
-                "RCTF_CLS": "접수구분",
-                "ODER_KIND": "주문종류",
-                "ODER_COND": "주문조건",
-                "STCK_SHRN_ISCD": "종목코드",
-                "CNTG_QTY": "체결수량",
-                "CNTG_UNPR": "체결단가",
-                "STCK_CNTG_HOUR": "주식체결시간",
-                "RFUS_YN": "거부여부",
-                "CNTG_YN": "체결여부",
-                "ACPT_YN": "접수여부",
-                "BRNC_NO": "지점번호",
-                "ACNT_NO2": "계좌번호2",
-                "ACNT_NAME": "계좌명",
-                "ORD_COND_PRC": "호가조건가격",
-                "ORD_EXG_GB": "주문거래소 구분",
-                "POPUP_YN": "체결정보 표시",
-                "FILLER": "필러",
-                "CRDT_CLS": "신용거래구분",
-                "CRDT_LOAN_DATE": "신용대출일자",
-                "CNTG_ISNM40": "체결일자",
-                "ODER_PRC": "주문가격"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
-            numeric_columns = ["주문수량", "체결수량", "체결단가", "호가조건가격", "주문가격"]
-            for col in numeric_columns:
+            for col in NUMERIC_COLUMNS:
                 if col in result.columns:
                     result[col] = pd.to_numeric(result[col], errors='coerce')
 

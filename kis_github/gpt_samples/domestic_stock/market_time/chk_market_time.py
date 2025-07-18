@@ -19,6 +19,20 @@ logging.basicConfig(level=logging.INFO)
 # [국내주식] 종목정보 > 국내선물 영업일조회 [국내주식-160]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    'date1': '영업일1',
+    'date2': '영업일2',
+    'date3': '영업일3',
+    'date4': '영업일4',
+    'date5': '영업일5',
+    'today': '오늘일자',
+    'time': '현재시간',
+    's_time': '장시작시간',
+    'e_time': '장마감시간'
+}
+
+NUMERIC_COLUMNS = []
+
 def main():
     """
     국내선물 영업일조회 테스트 함수
@@ -48,24 +62,10 @@ def main():
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
     # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'date1': '영업일1',
-        'date2': '영업일2',
-        'date3': '영업일3',
-        'date4': '영업일4',
-        'date5': '영업일5',
-        'today': '오늘일자',
-        'time': '현재시간',
-        's_time': '장시작시간',
-        'e_time': '장마감시간'
-    }
-    
-    result = result.rename(columns=column_mapping)
+    result = result.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     

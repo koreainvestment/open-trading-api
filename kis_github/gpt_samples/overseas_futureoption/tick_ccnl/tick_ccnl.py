@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# 상수 정의
+API_URL = "/uapi/overseas-futureoption/v1/quotations/tick-ccnl"
+
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물 체결추이(틱)[해외선물-019]
+##############################################################################################
+
 def tick_ccnl(
     srs_cd: str,  # 종목코드
     exch_cd: str,  # 거래소코드
@@ -93,7 +100,6 @@ def tick_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/quotations/tick-ccnl"
     tr_id = "HHDFC55020200"
 
     params = {
@@ -107,7 +113,7 @@ def tick_ccnl(
         "INDEX_KEY": index_key,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -171,5 +177,5 @@ def tick_ccnl(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

@@ -19,6 +19,13 @@ logging.basicConfig(level=logging.INFO)
 # [국내주식] 주문/계좌 > 주식예약주문정정취소[v1_국내주식-018,019]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    'nrml_prcs_yn': '정상처리여부'
+}
+
+NUMERIC_COLUMNS = []
+
+
 def main():
     """
     주식예약주문정정취소 조회 테스트 함수
@@ -33,10 +40,10 @@ def main():
     pd.set_option('display.max_columns', None)  # 모든 컬럼 표시
     pd.set_option('display.width', None)  # 출력 너비 제한 해제
     pd.set_option('display.max_rows', None)  # 모든 행 표시
-    
+
     # 인증 토큰 발급
     ka.auth()
-    
+
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
@@ -57,25 +64,20 @@ def main():
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return
-    
+
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
-    
+
     # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'nrml_prcs_yn': '정상처리여부'
-    }
-    
-    result = result.rename(columns=column_mapping)
-    
+    result = result.rename(columns=COLUMN_MAPPING)
+
     # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 number 자료형이 명시된 필드만 포함)
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
-    
+
     logging.info("결과:")
     print(result)
 
+
 if __name__ == "__main__":
-    main() 
+    main()

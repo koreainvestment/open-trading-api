@@ -14,16 +14,17 @@ import pandas as pd
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+
 ##############################################################################################
 # [국내주식] 순위분석 > HTS조회상위20종목[국내주식-214]
 ##############################################################################################
 
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/quotations/hts-top-view"
-
-# 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 
 def hts_top_view(

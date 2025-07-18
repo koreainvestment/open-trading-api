@@ -18,7 +18,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [장내채권] 기본시세 > 장내채권 호가잔량 [FHKBJ773401C0]
+# [장내채권] 기본시세 > 장내채권 호가잔량 [국내주식-132]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -58,6 +58,7 @@ COLUMN_MAPPING = {
     'shnu_ernn_rate5': '매수2 수익 비율5'
 }
 
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -103,6 +104,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        # 숫자형 컬럼 변환
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce')
 
         # 결과 출력
         logger.info("=== 장내채권현재가(호가) 결과 ===")

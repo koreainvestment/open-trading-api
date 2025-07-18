@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물 미결제추이 [해외선물-029]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/quotations/investor-unpd-trend"
+
 def investor_unpd_trend(
     prod_iscd: str,  # 상품
     bsop_date: str,  # 일자
@@ -75,7 +82,6 @@ def investor_unpd_trend(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/quotations/investor-unpd-trend"
     tr_id = "HHDDB95030000"
 
     params = {
@@ -85,7 +91,7 @@ def investor_unpd_trend(
         "CTS_KEY": cts_key,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -147,5 +153,5 @@ def investor_unpd_trend(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

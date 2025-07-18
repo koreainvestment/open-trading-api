@@ -14,10 +14,16 @@ import pandas as pd
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
-
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 주문 [v1_해외주식-001]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-stock/v1/trading/order"
 
 def order(
     cano: str,  # 종합계좌번호
@@ -143,12 +149,10 @@ def order(
 
     # 모의투자인 경우 TR ID 앞에 V 붙이기
     if env_dv == "demo":
-        tr_id = "V" + tr_id
+        tr_id = "V" + tr_id[1:]
     elif env_dv != "real":
         logger.error("env_dv can only be 'real' or 'demo'")
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    url = "/uapi/overseas-stock/v1/trading/order"
 
     params = {
         "CANO": cano,
@@ -164,7 +168,7 @@ def order(
         "ORD_DVSN": ord_dvsn,
     }
 
-    res = ka._url_fetch(api_url=url,
+    res = ka._url_fetch(api_url=API_URL,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -184,5 +188,5 @@ def order(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

@@ -10,7 +10,7 @@ import logging
 
 import pandas as pd
 
-sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
+sys.path.extend(['../..', '.'])
 import kis_auth as ka
 from inquire_period_trans import inquire_period_trans
 
@@ -18,6 +18,11 @@ from inquire_period_trans import inquire_period_trans
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 기간계좌거래내역 [해외선물-014]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'bass_dt': '기준일자',
     'cano': '종합계좌번호',
@@ -35,6 +40,7 @@ COLUMN_MAPPING = {
     'ovdu_int_pybk_amt': '연체이자변제금액',
     'rmks_text': '비고내용'
 }
+NUMERIC_COLUMNS = ['FM입출금액', 'FM수수료', 'FM세금금액', 'FM결제금액', 'FM이전예수금액', 'FM예수금액', 'FM미수발생금액', 'FM미수변제금액', '연체이자변제금액']
 
 def main():
     """
@@ -109,6 +115,9 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물옵션 기간계좌거래내역 결과 ===")

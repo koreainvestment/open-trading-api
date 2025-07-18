@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 기본시세 > 국내주식 시간외잔량순위 [FHPST01760000]
+# [국내주식] 기본시세 > 국내주식 시간외잔량순위 [v1_국내주식-093]
 ##############################################################################################
 
 # 통합 컬럼 매핑
@@ -36,6 +36,9 @@ COLUMN_MAPPING = {
     'mkob_otcp_vol': '장개시전 시간외종가 거래량',
     'mkfa_otcp_vol': '장종료후 시간외종가 거래량'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -97,7 +100,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 시간외잔량 순위 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

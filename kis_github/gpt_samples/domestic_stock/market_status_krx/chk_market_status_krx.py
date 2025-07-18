@@ -16,6 +16,24 @@ from market_status_krx import market_status_krx
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 실시간시세 > 국내주식 장운영정보 (KRX) [H0STMKO0]
+##############################################################################################
+
+COLUMN_MAPPING = {
+    "mksc_shrn_iscd": "유가증권단축종목코드",
+    "trht_yn": "거래정지여부",
+    "tr_susp_reas_cntt": "거래정지사유내용",
+    "mkop_cls_code": "장운영구분코드",
+    "antc_mkop_cls_code": "예상장운영구분코드",
+    "mrkt_trtm_cls_code": "임의연장구분코드",
+    "divi_app_cls_code": "동시호가배분처리구분코드",
+    "iscd_stat_cls_code": "종목상태구분코드",
+    "vi_cls_code": "VI적용구분코드",
+    "ovtm_vi_cls_code": "시간외단일가VI적용구분코드",
+    "EXCH_CLS_CODE": "거래소구분코드"
+}
+NUMERIC_COLUMNS = ["유가증권단축종목코드"]  # 예시로 숫자형 변환이 필요한 컬럼 추가
 
 def main():
     """
@@ -69,24 +87,10 @@ ex) 0|H0STCNT0|004|005930^123929^73100^5^...
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "mksc_shrn_iscd": "유가증권단축종목코드",
-                "trht_yn": "거래정지여부",
-                "tr_susp_reas_cntt": "거래정지사유내용",
-                "mkop_cls_code": "장운영구분코드",
-                "antc_mkop_cls_code": "예상장운영구분코드",
-                "mrkt_trtm_cls_code": "임의연장구분코드",
-                "divi_app_cls_code": "동시호가배분처리구분코드",
-                "iscd_stat_cls_code": "종목상태구분코드",
-                "vi_cls_code": "VI적용구분코드",
-                "ovtm_vi_cls_code": "시간외단일가VI적용구분코드",
-                "EXCH_CLS_CODE": "거래소구분코드"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
             # 숫자형 컬럼 변환
-            numeric_columns = ["유가증권단축종목코드"]  # 예시로 숫자형 변환이 필요한 컬럼 추가
-            for col in numeric_columns:
+            for col in NUMERIC_COLUMNS:
                 if col in result.columns:
                     result[col] = pd.to_numeric(result[col], errors='coerce')
 

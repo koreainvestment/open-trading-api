@@ -13,7 +13,8 @@ sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
 # 로깅 설정
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외속보(제목) [해외주식-055]

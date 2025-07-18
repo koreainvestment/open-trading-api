@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 종목정보 > 국내주식 증권사별 투자의견 [FHKST663400C0]
+# [국내주식] 종목정보 > 국국내주식 증권사별 투자의견[국내주식-189]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -39,6 +39,8 @@ COLUMN_MAPPING = {
     'stft_esdg': '주식선물괴리도',
     'dprt': '괴리율'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -90,6 +92,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 국내주식 증권사별 투자의견 결과 ===")

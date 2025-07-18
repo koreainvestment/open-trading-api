@@ -18,6 +18,11 @@ from margin_detail import margin_detail
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 증거금상세 [해외선물-032]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'cano': '종합계좌번호',
     'acnt_prdt_cd': '계좌상품코드',
@@ -70,6 +75,23 @@ COLUMN_MAPPING = {
     'fm_opt_mntn_mgn_amt': 'FM옵션유지증거금액'
 }
 
+NUMERIC_COLUMNS = [
+    'FM주문가능금액', 'FM추가증거금액', 'FM위탁증거금액', 'FM정산위탁증거금액',
+    'FM미결제증거금액', 'FM유지증거금액', 'FM주문증거금액', 'FM선물주문증거금액',
+    'FM옵션매수주문금액', 'FM옵션매도주문증거금액', 'FM옵션매수주문증거금액',
+    'FM행사예약증거금액', 'FMSPAN위탁증거금액', 'FMSPAN가격변동증거금액',
+    'FMSPAN기간스프레드증거금액', 'FMSPAN옵션가격증거금액', 'FMSPAN옵션최소증거금액',
+    'FMSPAN총위험증거금액', 'FMSPAN유지증거금액', 'FMSPAN유지가격변동증거금액',
+    'FMSPAN유지기간스프레드증거금액', 'FMSPAN유지옵션가격증거금액', 'FMSPAN유지옵션최소증거금액',
+    'FMSPAN유지총위험증거금액', 'FMEUREX위탁증거금액', 'FMEUREX가격변동증거금액',
+    'FMEUREX기간스프레드증거금액', 'FMEUREX옵션가격증거금액', 'FMEUREX매수옵션최소증거금액',
+    'FMEUREX총위험증거금액', 'FMEUREX유지증거금액', 'FMEUREX유지가격변동증거금액',
+    'FMEUREX기간스프레드증거금액', 'FMEUREX유지옵션가격증거금액', 'FMEUREX유지총위험증거금액',
+    'FM일반위탁증거금액', 'FM선물미결제증거금액', 'FM매도옵션미결제증거금액',
+    'FM매수옵션미결제증거금액', 'FM스프레드미결제증거금액', 'FMAVG할인증거금액',
+    'FM일반유지증거금액', 'FM선물유지증거금액', 'FM옵션유지증거금액'
+]
+
 def main():
     """
     [해외선물옵션] 주문/계좌
@@ -96,26 +118,16 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 토큰 발급
-        logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외선물옵션 증거금상세 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        crcy_cd = "TKR"  # 통화코드
-        inqr_dt = "20250625"  # 조회일자
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물옵션 증거금상세")
+        logger.info("API 호출")
         result = margin_detail(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            crcy_cd=crcy_cd,  # 통화코드
-            inqr_dt=inqr_dt,  # 조회일자
+            cano=trenv.my_acct,
+            acnt_prdt_cd="08",
+            crcy_cd="TKR",
+            inqr_dt="20250625"
         )
         
         if result is None or result.empty:
@@ -128,6 +140,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물옵션 증거금상세 결과 ===")

@@ -19,6 +19,38 @@ logging.basicConfig(level=logging.INFO)
 # [국내주식] 시세분석 > 국내주식 공매도 일별추이[국내주식-134]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    'stck_prpr': '주식 현재가',
+    'prdy_vrss': '전일 대비',
+    'prdy_vrss_sign': '전일 대비 부호',
+    'prdy_ctrt': '전일 대비율',
+    'acml_vol': '누적 거래량',
+    'prdy_vol': '전일 거래량',
+    'stck_bsop_date': '주식 영업 일자',
+    'stck_clpr': '주식 종가',
+    'prdy_vrss': '전일 대비',
+    'prdy_vrss_sign': '전일 대비 부호',
+    'prdy_ctrt': '전일 대비율',
+    'acml_vol': '누적 거래량',
+    'stnd_vol_smtn': '기준 거래량 합계',
+    'ssts_cntg_qty': '공매도 체결 수량',
+    'ssts_vol_rlim': '공매도 거래량 비중',
+    'acml_ssts_cntg_qty': '누적 공매도 체결 수량',
+    'acml_ssts_cntg_qty_rlim': '누적 공매도 체결 수량 비중',
+    'acml_tr_pbmn': '누적 거래 대금',
+    'stnd_tr_pbmn_smtn': '기준 거래대금 합계',
+    'ssts_tr_pbmn': '공매도 거래 대금',
+    'ssts_tr_pbmn_rlim': '공매도 거래대금 비중',
+    'acml_ssts_tr_pbmn': '누적 공매도 거래 대금',
+    'acml_ssts_tr_pbmn_rlim': '누적 공매도 거래 대금 비중',
+    'stck_oprc': '주식 시가2',
+    'stck_hgpr': '주식 최고가',
+    'stck_lwpr': '주식 최저가',
+    'avrg_prc': '평균가격'
+}
+
+NUMERIC_COLUMNS = []
+
 def main():
     """
     국내주식 공매도 일별추이 조회 테스트 함수
@@ -56,21 +88,11 @@ def main():
     logging.info("사용 가능한 컬럼: %s", result1.columns.tolist())
     
     # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping1 = {
-        'stck_prpr': '주식 현재가',
-        'prdy_vrss': '전일 대비',
-        'prdy_vrss_sign': '전일 대비 부호',
-        'prdy_ctrt': '전일 대비율',
-        'acml_vol': '누적 거래량',
-        'prdy_vol': '전일 거래량'
-    }
-    
-    result1 = result1.rename(columns=column_mapping1)
+    result1 = result1.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 number 타입 명시된 것이 없으므로 비어있음)
-    numeric_columns = []
-    
-    for col in numeric_columns:
+
+    for col in NUMERIC_COLUMNS:
         if col in result1.columns:
             result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
     
@@ -82,36 +104,11 @@ def main():
     logging.info("사용 가능한 컬럼: %s" % result2.columns.tolist())
     
     # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping2 = {
-        'stck_bsop_date': '주식 영업 일자',
-        'stck_clpr': '주식 종가',
-        'prdy_vrss': '전일 대비',
-        'prdy_vrss_sign': '전일 대비 부호',
-        'prdy_ctrt': '전일 대비율',
-        'acml_vol': '누적 거래량',
-        'stnd_vol_smtn': '기준 거래량 합계',
-        'ssts_cntg_qty': '공매도 체결 수량',
-        'ssts_vol_rlim': '공매도 거래량 비중',
-        'acml_ssts_cntg_qty': '누적 공매도 체결 수량',
-        'acml_ssts_cntg_qty_rlim': '누적 공매도 체결 수량 비중',
-        'acml_tr_pbmn': '누적 거래 대금',
-        'stnd_tr_pbmn_smtn': '기준 거래대금 합계',
-        'ssts_tr_pbmn': '공매도 거래 대금',
-        'ssts_tr_pbmn_rlim': '공매도 거래대금 비중',
-        'acml_ssts_tr_pbmn': '누적 공매도 거래 대금',
-        'acml_ssts_tr_pbmn_rlim': '누적 공매도 거래 대금 비중',
-        'stck_oprc': '주식 시가2',
-        'stck_hgpr': '주식 최고가',
-        'stck_lwpr': '주식 최저가',
-        'avrg_prc': '평균가격'
-    }
-    
-    result2 = result2.rename(columns=column_mapping2)
+    result2 = result2.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시 (메타데이터에 number 타입 명시된 것이 없으므로 비어있음)
-    numeric_columns = []
-    
-    for col in numeric_columns:
+
+    for col in NUMERIC_COLUMNS:
         if col in result2.columns:
             result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
     

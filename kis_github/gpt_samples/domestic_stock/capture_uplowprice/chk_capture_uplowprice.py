@@ -15,10 +15,32 @@ from capture_uplowprice import capture_uplowprice
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 
-
 ##############################################################################################
 # [국내주식] 시세분석 > 국내주식 상하한가 포착 [국내주식-190]
 ##############################################################################################
+
+COLUMN_MAPPING = {
+    'mksc_shrn_iscd': '유가증권단축종목코드',
+    'hts_kor_isnm': 'HTS한글종목명',
+    'stck_prpr': '주식현재가',
+    'prdy_vrss_sign': '전일대비부호',
+    'prdy_vrss': '전일대비',
+    'prdy_ctrt': '전일대비율',
+    'acml_vol': '누적거래량',
+    'total_askp_rsqn': '총매도호가잔량',
+    'total_bidp_rsqn': '총매수호가잔량',
+    'askp_rsqn1': '매도호가잔량1',
+    'bidp_rsqn1': '매수호가잔량1',
+    'prdy_vol': '전일거래량',
+    'seln_cnqn': '매도체결량',
+    'shnu_cnqn': '매수2체결량',
+    'stck_llam': '주식하한가',
+    'stck_mxpr': '주식상한가',
+    'prdy_vrss_vol_rate': '전일대비거래량비율'
+}
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -55,32 +77,10 @@ def main():
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
 
     # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'mksc_shrn_iscd': '유가증권단축종목코드',
-        'hts_kor_isnm': 'HTS한글종목명',
-        'stck_prpr': '주식현재가',
-        'prdy_vrss_sign': '전일대비부호',
-        'prdy_vrss': '전일대비',
-        'prdy_ctrt': '전일대비율',
-        'acml_vol': '누적거래량',
-        'total_askp_rsqn': '총매도호가잔량',
-        'total_bidp_rsqn': '총매수호가잔량',
-        'askp_rsqn1': '매도호가잔량1',
-        'bidp_rsqn1': '매수호가잔량1',
-        'prdy_vol': '전일거래량',
-        'seln_cnqn': '매도체결량',
-        'shnu_cnqn': '매수2체결량',
-        'stck_llam': '주식하한가',
-        'stck_mxpr': '주식상한가',
-        'prdy_vrss_vol_rate': '전일대비거래량비율'
-    }
-
-    result = result.rename(columns=column_mapping)
+    result = result.rename(columns=COLUMN_MAPPING)
 
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns = []
-
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
 

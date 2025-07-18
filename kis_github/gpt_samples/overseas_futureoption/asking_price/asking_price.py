@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 def asking_price(
         tr_type: str,
         tr_key: str,
-) -> (dict, list[str]):
+) -> tuple[dict, list[str]]:
     """
     [해외선물옵션]실시간시세 > 해외선물옵션 실시간호가[실시간-018]
     

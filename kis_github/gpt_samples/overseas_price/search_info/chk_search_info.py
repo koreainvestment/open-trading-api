@@ -18,6 +18,10 @@ from search_info import search_info
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 시세분석 > 해외주식 상품기본정보[v1_해외주식-034]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'std_pdno': '표준상품번호',
     'prdt_eng_name': '상품영문명',
@@ -76,6 +80,8 @@ COLUMN_MAPPING = {
     'last_rcvg_dtime': '최종수신일시'
 }
 
+NUMERIC_COLUMNS = ['해외액면가', '매도단위수량', '매수단위수량', '거래단위금액', '상장주식수', 'ETP추적수익율배수', '해외현재가격1']
+
 def main():
     """
     [해외주식] 기본시세
@@ -127,6 +133,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce')
         
         # 결과 출력
         logger.info("=== 해외주식 상품기본정보 결과 ===")

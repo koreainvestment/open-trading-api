@@ -19,6 +19,22 @@ logging.basicConfig(level=logging.INFO)
 # [해외주식] 주문/계좌 > 해외주식 지정가주문번호조회 [해외주식-071]
 ##############################################################################################
 
+# 컬럼 매핑 정의
+COLUMN_MAPPING = {
+    'ODNO': '주문번호',
+    'TRAD_DVSN_NAME': '매매구분명',
+    'PDNO': '상품번호',
+    'ITEM_NAME': '종목명',
+    'FT_ORD_QTY': 'FT주문수량',
+    'FT_ORD_UNPR3': 'FT주문단가',
+    'SPLT_BUY_ATTR_NAME': '분할매수속성명',
+    'FT_CCLD_QTY': 'FT체결수량',
+    'ORD_GNO_BRNO': '주문채번지점번호'
+}
+
+# 숫자형 컬럼 정의
+NUMERIC_COLUMNS = []
+
 def main():
     """
     해외주식 지정가주문번호조회 테스트 함수
@@ -47,25 +63,11 @@ def main():
     
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
-    # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'ODNO': '주문번호',
-        'TRAD_DVSN_NAME': '매매구분명',
-        'PDNO': '상품번호',
-        'ITEM_NAME': '종목명',
-        'FT_ORD_QTY': 'FT주문수량',
-        'FT_ORD_UNPR3': 'FT주문단가',
-        'SPLT_BUY_ATTR_NAME': '분할매수속성명',
-        'FT_CCLD_QTY': 'FT체결수량',
-        'ORD_GNO_BRNO': '주문채번지점번호'
-    }
-    
-    result = result.rename(columns=column_mapping)
+    # 한글 컬럼명으로 변환
+    result = result.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     

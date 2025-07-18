@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 ##############################################################################################
 
 # 컬럼명 매핑
-COLUMN_MAP = {
+COLUMN_MAPPING = {
     "mksc_shrn_iscd": "유가증권단축종목코드",
     "seln2_mbcr_name1": "매도2회원사명1",
     "seln2_mbcr_name2": "매도2회원사명2",
@@ -167,23 +167,23 @@ ex) 0|H0STCNT0|004|005930^123929^73100^5^...
             # 안전한 컬럼명 매핑 (존재하는 컬럼에 대해서만 한글명 적용)
             if not result.empty:
                 # 컬럼명 매핑
-                existing_columns = {col: COLUMN_MAP[col] for col in result.columns if col in COLUMN_MAP}
+                existing_columns = {col: COLUMN_MAPPING[col] for col in result.columns if col in COLUMN_MAPPING}
                 if existing_columns:
                     result = result.rename(columns=existing_columns)
                     logging.info(f"컬럼명 매핑 완료: {len(existing_columns)}개 컬럼")
                 
                 # 안전한 숫자형 컬럼 변환 (존재하는 컬럼에 대해서만 적용)
-                numeric_columns_to_convert = [col for col in NUMERIC_COLUMNS if col in result.columns]
-                if numeric_columns_to_convert:
-                    for col in numeric_columns_to_convert:
+                NUMERIC_COLUMNS_to_convert = [col for col in NUMERIC_COLUMNS if col in result.columns]
+                if NUMERIC_COLUMNS_to_convert:
+                    for col in NUMERIC_COLUMNS_to_convert:
                         try:
                             # 한글명으로 변환된 컬럼이 있는지 확인
-                            tarcol = COLUMN_MAP.get(col, col)
+                            tarcol = COLUMN_MAPPING.get(col, col)
                             if tarcol in result.columns:
                                 result[tarcol] = pd.to_numeric(result[tarcol], errors='coerce')
                         except Exception as e:
                             logging.warning(f"컬럼 '{col}' 숫자 변환 실패: {e}")
-                    logging.info(f"숫자형 변환 완료: {len(numeric_columns_to_convert)}개 컬럼")
+                    logging.info(f"숫자형 변환 완료: {len(NUMERIC_COLUMNS_to_convert)}개 컬럼")
             
             logging.info("결과:")
             print(result)

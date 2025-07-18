@@ -18,6 +18,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 미국주간정정취소 [v1_해외주식-027]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-stock/v1/trading/daytime-order-rvsecncl"
+
 def daytime_order_rvsecncl(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -98,7 +105,6 @@ def daytime_order_rvsecncl(
         logger.error("ord_svr_dvsn_cd is required. (e.g. '0')")
         raise ValueError("ord_svr_dvsn_cd is required. (e.g. '0')")
 
-    url = "/uapi/overseas-stock/v1/trading/daytime-order-rvsecncl"
     tr_id = "TTTS6038U"
 
     params = {
@@ -115,7 +121,7 @@ def daytime_order_rvsecncl(
         "ORD_SVR_DVSN_CD": ord_svr_dvsn_cd,
     }
 
-    res = ka._url_fetch(api_url=url,
+    res = ka._url_fetch(api_url=API_URL,
                          ptr_id=tr_id,
                          tr_cont="",
                          params=params,
@@ -135,5 +141,5 @@ def daytime_order_rvsecncl(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

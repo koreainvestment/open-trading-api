@@ -18,6 +18,11 @@ from finance_balance_sheet import finance_balance_sheet
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 국내주식 대차대조표 [v1_국내주식-078]
+##############################################################################################
+
+
 COLUMN_MAPPING = {
     'stac_yymm': '결산 년월',
     'cras': '유동자산',
@@ -31,6 +36,8 @@ COLUMN_MAPPING = {
     'prfi_surp': '이익 잉여금',
     'total_cptl': '자본총계'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -76,6 +83,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 국내주식 대차대조표 결과 ===")

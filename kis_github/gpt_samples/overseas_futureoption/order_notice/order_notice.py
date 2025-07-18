@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 def order_notice(
         tr_type: str,
         tr_key: str,
-) -> (dict, list[str]):
+) -> tuple[dict, list[str]]:
     """
     [참고자료]
 

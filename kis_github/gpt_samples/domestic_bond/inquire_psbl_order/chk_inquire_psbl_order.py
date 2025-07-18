@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [장내채권] 주문/계좌 > 장내채권 매수가능조회 [TTTC8910R]
+# [장내채권] 주문/계좌 > 장내채권 매수가능조회 [국내주식-199]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -32,6 +32,7 @@ COLUMN_MAPPING = {
     'cma_evlu_amt': 'CMA평가금액'
 }
 
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -84,6 +85,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        # 숫자형 컬럼 변환
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce')
 
         # 결과 출력
         logger.info("=== 장내채권 매수가능조회 결과 ===")

@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 기간계좌거래내역 [해외선물-014]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-period-trans"
+
 def inquire_period_trans(
     inqr_term_from_dt: str,  # 조회기간FROM일자
     inqr_term_to_dt: str,  # 조회기간TO일자
@@ -95,8 +102,6 @@ def inquire_period_trans(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    url = "/uapi/overseas-futureoption/v1/trading/inquire-period-trans"
     tr_id = "OTFM3114R"
 
     params = {
@@ -111,7 +116,7 @@ def inquire_period_trans(
         "PWD_CHK_YN": pwd_chk_yn,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -149,5 +154,5 @@ def inquire_period_trans(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame()

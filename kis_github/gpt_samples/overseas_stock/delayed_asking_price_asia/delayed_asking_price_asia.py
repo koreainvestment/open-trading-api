@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 def delayed_asking_price_asia(
         tr_type: str,
         tr_key: str,
-) -> (dict, list[str]):
+) -> tuple[dict, list[str]]:
     """
     해외주식 지연호가(아시아)의 경우 아시아 무료시세(지연호가)가 제공됩니다.
 

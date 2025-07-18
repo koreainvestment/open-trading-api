@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 일별체결내역[해외선물-011]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-daily-ccld"
+
 def inquire_daily_ccld(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -111,7 +118,6 @@ def inquire_daily_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/trading/inquire-daily-ccld"
     tr_id = "OTFM3122R"
 
     params = {
@@ -128,7 +134,7 @@ def inquire_daily_ccld(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output 처리
@@ -173,7 +179,7 @@ def inquire_daily_ccld(
         else:
             if dataframe2 is None:
                 dataframe2 = pd.DataFrame()
-        tr_cont, ctx_area_fk200, ctx_area_fk200 = res.getHeader().tr_cont, res.getBody().ctx_area_fk200, res.getBody().ctx_area_fk200
+        tr_cont, ctx_area_fk200, ctx_area_nk200 = res.getHeader().tr_cont, res.getBody().ctx_area_fk200, res.getBody().ctx_area_fk200
         
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
@@ -197,5 +203,5 @@ def inquire_daily_ccld(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

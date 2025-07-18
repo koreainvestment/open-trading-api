@@ -10,13 +10,17 @@ import logging
 
 import pandas as pd
 
-sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
+sys.path.extend(['../..', '.'])
 import kis_auth as ka
 from inquire_daily_ccld import inquire_daily_ccld
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 일별체결내역[해외선물-011]
+##############################################################################################
 
 COLUMN_MAPPING = {
     'fm_tot_ccld_qty': 'FM총체결수량',
@@ -40,6 +44,10 @@ COLUMN_MAPPING = {
     'odno': '주문번호',
     'ord_mdia_dvsn_name': '주문매체구분명'
 }
+
+NUMERIC_COLUMNS = ['FM총체결수량', 'FM총선물약정금액', 'FM총옵션약정금액', 'FM수수료합계', 'FM체결수량', 'FM체결금액', 'FM선물체결금액',
+                    'FM옵션체결금액', 'FM수수료', 'FM선물순약정금액', 'FM옵션순약정금액']
+
 
 def main():
     """
@@ -78,36 +86,21 @@ def main():
         ka.auth()
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
-
-        # 해외선물옵션 일별 체결내역 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        strt_dt = "20250601"  # 시작일자
-        end_dt = "20250702"  # 종료일자
-        fuop_dvsn_cd = "00"  # 선물옵션구분코드
-        fm_pdgr_cd = ""  # FM상품군코드
-        crcy_cd = "%%%"  # 통화코드
-        fm_item_ftng_yn = "N"  # FM종목합산여부
-        sll_buy_dvsn_cd = "%%"  # 매도매수구분코드
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-        ctx_area_nk200 = ""  # 연속조회키200
-
         
         # API 호출
         logger.info("API 호출 시작: 해외선물옵션 일별 체결내역")
         result1, result2 = inquire_daily_ccld(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            strt_dt=strt_dt,  # 시작일자
-            end_dt=end_dt,  # 종료일자
-            fuop_dvsn_cd=fuop_dvsn_cd,  # 선물옵션구분코드
-            fm_pdgr_cd=fm_pdgr_cd,  # FM상품군코드
-            crcy_cd=crcy_cd,  # 통화코드
-            fm_item_ftng_yn=fm_item_ftng_yn,  # FM종목합산여부
-            sll_buy_dvsn_cd=sll_buy_dvsn_cd,  # 매도매수구분코드
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="08",  # 계좌상품코드
+            strt_dt="20250601",  # 시작일자
+            end_dt="20250702",  # 종료일자
+            fuop_dvsn_cd="00",  # 선물옵션구분코드
+            fm_pdgr_cd="",  # FM상품군코드
+            crcy_cd="%%%",  # 통화코드
+            fm_item_ftng_yn="N",  # FM종목합산여부
+            sll_buy_dvsn_cd="%%",  # 매도매수구분코드
+            ctx_area_fk200="",  # 연속조회검색조건200
+            ctx_area_nk200="",  # 연속조회키200
         )
         
         # 결과 확인
@@ -124,6 +117,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -136,6 +132,9 @@ def main():
             
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
             logger.info("output2 결과:")
             print(result2)
         else:

@@ -14,17 +14,17 @@ import pandas as pd
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+
 ##############################################################################################
 # [국내주식] 순위분석 > 국내주식 배당률 상위[국내주식-106]
 ##############################################################################################
 
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/ranking/dividend-rate"
-
-# 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
 
 def dividend_rate(
         cts_area: str,  # CTS_AREA

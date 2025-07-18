@@ -15,6 +15,9 @@ import kis_auth as ka
 # 로깅 설정
 logging.basicConfig(level=logging.INFO)
 
+# 상수 정의
+API_URL = "/uapi/etfetn/v1/quotations/inquire-component-stock-price"
+
 ##############################################################################################
 # [국내주식] 기본시세 > ETF 구성종목시세[국내주식-073]
 ##############################################################################################
@@ -56,7 +59,6 @@ def inquire_component_stock_price(
         raise ValueError("fid_cond_scr_div_code is required (e.g. '11216')")
     
     # API 호출 설정
-    url = "/uapi/etfetn/v1/quotations/inquire-component-stock-price"
     tr_id = "FHKST121600C0"
     
     # 파라미터 설정
@@ -67,7 +69,7 @@ def inquire_component_stock_price(
     }
     
     # API 호출
-    res = ka._url_fetch(url, tr_id, "", params)
+    res = ka._url_fetch(API_URL, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) -> DataFrame 변환
@@ -80,5 +82,5 @@ def inquire_component_stock_price(
         
         return df1, df2
     else:
-        res.printError(url=url)
+        res.printError(url=API_URL)
         return pd.DataFrame(), pd.DataFrame() 

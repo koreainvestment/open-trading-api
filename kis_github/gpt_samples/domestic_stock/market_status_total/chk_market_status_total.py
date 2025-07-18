@@ -20,6 +20,21 @@ logger = logging.getLogger(__name__)
 # [국내주식] 실시간정보 > 국내주식 장운영정보(통합) [H0UNMKO0]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    "TRHT_YN": "거래정지 여부",
+    "TR_SUSP_REAS_CNTT": "거래 정지 사유 내용",
+    "MKOP_CLS_CODE": "장운영 구분 코드",
+    "ANTC_MKOP_CLS_CODE": "예상 장운영 구분 코드",
+    "MRKT_TRTM_CLS_CODE": "임의연장구분코드",
+    "DIVI_APP_CLS_CODE": "동시호가배분처리구분코드",
+    "ISCD_STAT_CLS_CODE": "종목상태구분코드",
+    "VI_CLS_CODE": "VI적용구분코드",
+    "OVTM_VI_CLS_CODE": "시간외단일가VI적용구분코드",
+    "EXCH_CLS_CODE": "거래소 구분코드"
+}
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -47,22 +62,11 @@ def main():
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
         try:
             # 컬럼 매핑
-            column_mapping = {
-                "TRHT_YN": "거래정지 여부",
-                "TR_SUSP_REAS_CNTT": "거래 정지 사유 내용",
-                "MKOP_CLS_CODE": "장운영 구분 코드",
-                "ANTC_MKOP_CLS_CODE": "예상 장운영 구분 코드",
-                "MRKT_TRTM_CLS_CODE": "임의연장구분코드",
-                "DIVI_APP_CLS_CODE": "동시호가배분처리구분코드",
-                "ISCD_STAT_CLS_CODE": "종목상태구분코드",
-                "VI_CLS_CODE": "VI적용구분코드",
-                "OVTM_VI_CLS_CODE": "시간외단일가VI적용구분코드",
-                "EXCH_CLS_CODE": "거래소 구분코드"
-            }
-            result.rename(columns=column_mapping, inplace=True)
+            result.rename(columns=COLUMN_MAPPING, inplace=True)
 
-            # 숫자형 컬럼 변환 (필요한 경우에만)
-            # 예시: result['some_numeric_column'] = pd.to_numeric(result['some_numeric_column'], errors='coerce')
+            for col in NUMERIC_COLUMNS:
+                if col in result.columns:
+                    result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
 
             logging.info("결과:")
             print(result)

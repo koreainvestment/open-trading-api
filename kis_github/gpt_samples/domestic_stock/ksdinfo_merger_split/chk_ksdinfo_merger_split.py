@@ -18,6 +18,10 @@ from ksdinfo_merger_split import ksdinfo_merger_split
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [국내주식] 종목정보 > 예탁원정보(합병_분할일정)[국내주식-147]
+##############################################################################################
+
 COLUMN_MAPPING = {
     'record_date': '기준일',
     'sht_cd': '종목코드',
@@ -34,6 +38,8 @@ COLUMN_MAPPING = {
     'issue_stk_qty': '발행할주식',
     'seq': '연번'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -82,6 +88,10 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 예탁원정보(합병_분할일정) 결과 ===")

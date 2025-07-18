@@ -9,13 +9,14 @@ import sys
 sys.path.extend(['../..', '.'])
 import kis_auth as ka
 
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 ##############################################################################################
 # [국내주식] 실시간시세 > 국내주식 실시간 체결가 (NXT) [H0NXCNT0]
 ##############################################################################################
 
-# 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 def ccnl_nxt(
         tr_type: str,

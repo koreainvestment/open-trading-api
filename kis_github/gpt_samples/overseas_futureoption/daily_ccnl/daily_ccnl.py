@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물 체결추이(일간) [해외선물-018]
+##############################################################################################
+
+# API 정보
+API_URL = "/uapi/overseas-futureoption/v1/quotations/daily-ccnl"
+
 def daily_ccnl(
     srs_cd: str,  # 종목코드
     exch_cd: str,  # 거래소코드
@@ -88,13 +95,11 @@ def daily_ccnl(
         logger.error("qry_cnt is required. (e.g. '30')")
         raise ValueError("qry_cnt is required. (e.g. '30')")
 
-
     # 최대 재귀 깊이 체크
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-futureoption/v1/quotations/daily-ccnl"
     tr_id = "HHDFC55020100"
 
     params = {
@@ -108,7 +113,7 @@ def daily_ccnl(
         "INDEX_KEY": index_key,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -178,5 +183,5 @@ def daily_ccnl(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

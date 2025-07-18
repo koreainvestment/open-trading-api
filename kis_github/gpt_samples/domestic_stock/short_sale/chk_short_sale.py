@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 조건검색 > 국내주식 공매도 상위종목 [FHPST04820000]
+# [국내주식] 조건검색 > 국내주식 공매도 상위종목[국내주식-133]
 ##############################################################################################
 
 COLUMN_MAPPING = {
@@ -39,6 +39,8 @@ COLUMN_MAPPING = {
     'stnd_date2': '기준 일자2',
     'avrg_prc': '평균가격'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -98,7 +100,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
-        
+
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+
         # 결과 출력
         logger.info("=== 국내주식 공매도 상위종목 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))

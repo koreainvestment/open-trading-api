@@ -19,6 +19,13 @@ import kis_auth as ka
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 종목_지수_환율기간별시세(일_주_월_년)[v1_해외주식-012]
+##############################################################################################
+
+# 상수 정의
+API_URL = "/uapi/overseas-price/v1/quotations/inquire-daily-chartprice"
+
 def inquire_daily_chartprice(
     fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
     fid_input_iscd: str,  # FID 입력 종목코드
@@ -87,7 +94,6 @@ def inquire_daily_chartprice(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = "/uapi/overseas-price/v1/quotations/inquire-daily-chartprice"
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real" or env_dv == "demo":
         tr_id = "FHKST03030100"  # 실전투자용 TR ID
@@ -102,7 +108,7 @@ def inquire_daily_chartprice(
         "FID_PERIOD_DIV_CODE": fid_period_div_code,
     }
 
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -166,5 +172,5 @@ def inquire_daily_chartprice(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(url)
+        res.printError(API_URL)
         return pd.DataFrame(), pd.DataFrame()

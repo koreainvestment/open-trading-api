@@ -18,10 +18,18 @@ from order_rvsecncl import order_rvsecncl
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 정정취소주문[v1_해외선물-002, 003]
+##############################################################################################
+
+# 컬럼명 매핑
 COLUMN_MAPPING = {
     'ORD_DT': '주문일자',
     'ODNO': '주문번호'
 }
+
+# 숫자형 컬럼
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -62,35 +70,20 @@ def main():
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외선물옵션 정정취소주문 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        ord_dv = "1"  # 주문구분, 정정 0, 취소 1
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        orgn_ord_dt = "20250703"  # 원주문일자
-        orgn_odno = "00000398"  # 원주문번호
-        fm_limit_ord_pric = ""  # FMLIMIT주문가격
-        fm_stop_ord_pric = ""  # FMSTOP주문가격
-        fm_lqd_lmt_ord_pric = ""  # FM청산LIMIT주문가격
-        fm_lqd_stop_ord_pric = ""  # FM청산STOP주문가격
-        fm_hdge_ord_scrn_yn = "N"  # FM_HEDGE주문화면여부
-        fm_mkpr_cvsn_yn = "N"  # FM시장가전환여부
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물옵션 정정취소주문")
+        logger.info("API 호출")
         result = order_rvsecncl(
-            cano=cano,  # 종합계좌번호
-            ord_dv=ord_dv,  # 주문구분
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            orgn_ord_dt=orgn_ord_dt,  # 원주문일자
-            orgn_odno=orgn_odno,  # 원주문번호
-            fm_limit_ord_pric=fm_limit_ord_pric,  # FMLIMIT주문가격
-            fm_stop_ord_pric=fm_stop_ord_pric,  # FMSTOP주문가격
-            fm_lqd_lmt_ord_pric=fm_lqd_lmt_ord_pric,  # FM청산LIMIT주문가격
-            fm_lqd_stop_ord_pric=fm_lqd_stop_ord_pric,  # FM청산STOP주문가격
-            fm_hdge_ord_scrn_yn=fm_hdge_ord_scrn_yn,  # FM_HEDGE주문화면여부
-            fm_mkpr_cvsn_yn=fm_mkpr_cvsn_yn,  # FM시장가전환여부
+            cano=trenv.my_acct,
+            ord_dv="1",
+            acnt_prdt_cd="08",
+            orgn_ord_dt="20250703",
+            orgn_odno="00000398",
+            fm_limit_ord_pric="",
+            fm_stop_ord_pric="",
+            fm_lqd_lmt_ord_pric="",
+            fm_lqd_stop_ord_pric="",
+            fm_hdge_ord_scrn_yn="N",
+            fm_mkpr_cvsn_yn="N"
         )
         
         if result is None or result.empty:
@@ -104,9 +97,13 @@ def main():
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
         
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
+        
         # 결과 출력
-        order_type = "정정" if ord_dv == "0" else "취소"
-        logger.info(f"=== 해외선물옵션 정정취소주문 결과 (주문구분: {order_type}) ===")
+        logger.info("=== 해외선물옵션 정정취소주문 결과 ===")
         logger.info("조회된 데이터 건수: %d", len(result))
         print(result)
         

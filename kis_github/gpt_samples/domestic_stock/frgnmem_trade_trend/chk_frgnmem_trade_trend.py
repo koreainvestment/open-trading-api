@@ -14,13 +14,12 @@ sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
 import kis_auth as ka
 from frgnmem_trade_trend import frgnmem_trade_trend
 
-
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 ##############################################################################################
-# [국내주식] 기본시세 > 국내주식 외국인기관매매동향 [FHKST644200C0]
+# [국내주식] 기본시세 > 회원사 실 시간 매매동향(틱)[국내주식-163]
 ##############################################################################################
 
 # 통합 컬럼 매핑
@@ -37,6 +36,9 @@ COLUMN_MAPPING = {
     'glob_ntby_qty': '외국계순매수수량',
     'frgn_ntby_qty_icdc': '외국인순매수수량증감'
 }
+
+NUMERIC_COLUMNS = []
+
 
 def main():
     """
@@ -69,7 +71,7 @@ def main():
         logger.info("토큰 발급 중...")
         ka.auth()
         logger.info("토큰 발급 완료")
-        
+
         # API 호출        
         result1, result2 = frgnmem_trade_trend(
             fid_cond_scr_div_code="20432",  # 화면분류코드
@@ -79,21 +81,25 @@ def main():
             fid_mrkt_cls_code="A",  # 시장구분코드
             fid_vol_cnt="",  # 거래량
         )
-        
+
         # 결과 확인
         results = [result1, result2]
         if all(result is None or result.empty for result in results):
             logger.warning("조회된 데이터가 없습니다.")
             return
-        
 
         # output1 결과 처리
         logger.info("=== output1 조회 ===")
         if not result1.empty:
             logger.info("사용 가능한 컬럼: %s", result1.columns.tolist())
-            
+
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result1 = result1.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result1.columns:
+                    result1[col] = pd.to_numeric(result1[col], errors='coerce').round(2)
+
             logger.info("output1 결과:")
             print(result1)
         else:
@@ -103,18 +109,24 @@ def main():
         logger.info("=== output2 조회 ===")
         if not result2.empty:
             logger.info("사용 가능한 컬럼: %s", result2.columns.tolist())
-            
+
             # 통합 컬럼명 한글 변환 (필요한 컬럼만 자동 매핑됨)
             result2 = result2.rename(columns=COLUMN_MAPPING)
+
+            for col in NUMERIC_COLUMNS:
+                if col in result2.columns:
+                    result2[col] = pd.to_numeric(result2[col], errors='coerce').round(2)
+
             logger.info("output2 결과:")
             print(result2)
         else:
             logger.info("output2 데이터가 없습니다.")
 
-        
+
     except Exception as e:
         logger.error("에러 발생: %s", str(e))
         raise
+
 
 if __name__ == "__main__":
     main()

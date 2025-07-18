@@ -19,6 +19,17 @@ logging.basicConfig(level=logging.INFO)
 # [국내주식] 시세분석 > 관심종목 그룹조회 [국내주식-204]
 ##############################################################################################
 
+COLUMN_MAPPING = {
+    'date': '일자',
+    'trnm_hour': '전송 시간',
+    'data_rank': '데이터 순위',
+    'inter_grp_code': '관심 그룹 코드',
+    'inter_grp_name': '관심 그룹 명',
+    'ask_cnt': '요청 개수'
+}
+
+NUMERIC_COLUMNS = []
+
 def main():
     """
     관심종목 그룹조회 테스트 함수
@@ -48,21 +59,10 @@ def main():
     logging.info("사용 가능한 컬럼: %s", result.columns.tolist())
     
     # 컬럼명 한글 변환 및 데이터 출력
-    column_mapping = {
-        'date': '일자',
-        'trnm_hour': '전송 시간',
-        'data_rank': '데이터 순위',
-        'inter_grp_code': '관심 그룹 코드',
-        'inter_grp_name': '관심 그룹 명',
-        'ask_cnt': '요청 개수'
-    }
-    
-    result = result.rename(columns=column_mapping)
+    result = result.rename(columns=COLUMN_MAPPING)
     
     # 숫자형 컬럼 소수점 둘째자리까지 표시
-    numeric_columns = []
-    
-    for col in numeric_columns:
+    for col in NUMERIC_COLUMNS:
         if col in result.columns:
             result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
     

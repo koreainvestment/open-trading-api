@@ -18,6 +18,11 @@ from market_time import market_time
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 기본시세 > 해외선물옵션 장운영시간 [해외선물-030]
+##############################################################################################
+
+# 상수 정의
 COLUMN_MAPPING = {
     'fm_pdgr_cd': 'FM상품군코드',
     'fm_pdgr_name': 'FM상품군명',
@@ -35,6 +40,8 @@ COLUMN_MAPPING = {
     'base_mket_strt_tmd': '기본시장시작시각',
     'base_mket_end_tmd': '기본시장종료시각'
 }
+
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -64,29 +71,17 @@ def main():
         pd.set_option('display.max_rows', None)  # 모든 행 표시
 
         # 토큰 발급
-        logger.info("토큰 발급 중...")
         ka.auth()
-        logger.info("토큰 발급 완료")
 
-        # 해외선물옵션 장운영시간 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        fm_pdgr_cd = ""  # FM상품군코드
-        fm_clas_cd = ""  # FM클래스코드
-        fm_excg_cd = "CME"  # FM거래소코드
-        opt_yn = "%"  # 옵션여부
-        ctx_area_nk200 = ""  # 연속조회키200
-        ctx_area_fk200 = ""  # 연속조회검색조건200
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물옵션 장운영시간")
+        logger.info("API 호출")
         result = market_time(
-            fm_pdgr_cd=fm_pdgr_cd,  # FM상품군코드
-            fm_clas_cd=fm_clas_cd,  # FM클래스코드
-            fm_excg_cd=fm_excg_cd,  # FM거래소코드
-            opt_yn=opt_yn,  # 옵션여부
-            ctx_area_nk200=ctx_area_nk200,  # 연속조회키200
-            ctx_area_fk200=ctx_area_fk200,  # 연속조회검색조건200
+            fm_pdgr_cd="",
+            fm_clas_cd="",
+            fm_excg_cd="CME",
+            opt_yn="%",
+            ctx_area_nk200="",
+            ctx_area_fk200=""
         )
         
         if result is None or result.empty:
@@ -99,6 +94,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물옵션 장운영시간 결과 ===")

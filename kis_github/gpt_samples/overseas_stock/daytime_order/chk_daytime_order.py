@@ -18,11 +18,19 @@ from daytime_order import daytime_order
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외주식] 주문/계좌 > 해외주식 미국주간주문 [v1_해외주식-026]
+##############################################################################################
+
+# 컬럼명 매핑 (한글 변환용)
 COLUMN_MAPPING = {
     'KRX_FWDG_ORD_ORGNO': '한국거래소전송주문조직번호',
     'ODNO': '주문번호',
     'ORD_TMD': '주문시각'
 }
+
+# 숫자형 컬럼 정의
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -61,35 +69,20 @@ def main():
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외주식 미국주간주문 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        order_dv = "buy"  # 주문구분
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "01"  # 계좌상품코드
-        ovrs_excg_cd = "NASD"  # 해외거래소코드
-        pdno = "AAPL"  # 상품번호
-        ord_qty = "10"  # 주문수량
-        ovrs_ord_unpr = "0.8"  # 해외주문단가
-        ctac_tlno = ""  # 연락전화번호
-        mgco_aptm_odno = ""  # 운용사지정주문번호
-        ord_svr_dvsn_cd = "0"  # 주문서버구분코드
-        ord_dvsn = "00"  # 주문구분
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외주식 미국주간주문")
+        logger.info("API 호출")
         result = daytime_order(
-            order_dv=order_dv,  # 주문구분
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            ovrs_excg_cd=ovrs_excg_cd,  # 해외거래소코드
-            pdno=pdno,  # 상품번호
-            ord_qty=ord_qty,  # 주문수량
-            ovrs_ord_unpr=ovrs_ord_unpr,  # 해외주문단가
-            ctac_tlno=ctac_tlno,  # 연락전화번호
-            mgco_aptm_odno=mgco_aptm_odno,  # 운용사지정주문번호
-            ord_svr_dvsn_cd=ord_svr_dvsn_cd,  # 주문서버구분코드
-            ord_dvsn=ord_dvsn,  # 주문구분
+            order_dv="buy",  # 주문구분
+            cano=trenv.my_acct,  # 종합계좌번호
+            acnt_prdt_cd="01",  # 계좌상품코드
+            ovrs_excg_cd="NASD",  # 해외거래소코드
+            pdno="AAPL",  # 상품번호
+            ord_qty="10",  # 주문수량
+            ovrs_ord_unpr="0.8",  # 해외주문단가
+            ctac_tlno="",  # 연락전화번호
+            mgco_aptm_odno="",  # 운용사지정주문번호
+            ord_svr_dvsn_cd="0",  # 주문서버구분코드
+            ord_dvsn="00",  # 주문구분
         )
         
         if result is None or result.empty:
@@ -102,6 +95,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 처리
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외주식 미국주간주문 결과 ===")

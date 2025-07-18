@@ -18,10 +18,18 @@ from order import order
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+##############################################################################################
+# [해외선물옵션] 주문/계좌 > 해외선물옵션 주문[v1_해외선물-001]
+##############################################################################################
+
+# 컬럼명 매핑
 COLUMN_MAPPING = {
     'ORD_DT': '주문일자',
     'ODNO': '주문번호'
 }
+
+# 숫자형 컬럼
+NUMERIC_COLUMNS = []
 
 def main():
     """
@@ -66,45 +74,25 @@ def main():
         logger.info("토큰 발급 완료")
         trenv = ka.getTREnv()
 
-        # 해외선물옵션 주문 파라미터 설정
-        logger.info("API 파라미터 설정 중...")
-        cano = trenv.my_acct  # 계좌번호 (자동 설정)
-        acnt_prdt_cd = "08"  # 계좌상품코드
-        ovrs_futr_fx_pdno = "6NU25"  # 해외선물FX상품번호
-        sll_buy_dvsn_cd = "02"  # 매도매수구분코드
-        fm_lqd_ustl_ccld_dt = ""  # FM청산미결제체결일자
-        fm_lqd_ustl_ccno = ""  # FM청산미결제체결번호
-        pric_dvsn_cd = "1"  # 가격구분코드
-        fm_limit_ord_pric = "100"  # FMLIMIT주문가격
-        fm_stop_ord_pric = ""  # FMSTOP주문가격
-        fm_ord_qty = "1"  # FM주문수량
-        fm_lqd_lmt_ord_pric = ""  # FM청산LIMIT주문가격
-        fm_lqd_stop_ord_pric = ""  # FM청산STOP주문가격
-        ccld_cndt_cd = "6"  # 체결조건코드
-        cplx_ord_dvsn_cd = "0"  # 복합주문구분코드
-        ecis_rsvn_ord_yn = "N"  # 행사예약주문여부
-        fm_hdge_ord_scrn_yn = "N"  # FM_HEDGE주문화면여부
-
-        
         # API 호출
-        logger.info("API 호출 시작: 해외선물옵션 주문")
+        logger.info("API 호출")
         result = order(
-            cano=cano,  # 종합계좌번호
-            acnt_prdt_cd=acnt_prdt_cd,  # 계좌상품코드
-            ovrs_futr_fx_pdno=ovrs_futr_fx_pdno,  # 해외선물FX상품번호
-            sll_buy_dvsn_cd=sll_buy_dvsn_cd,  # 매도매수구분코드
-            fm_lqd_ustl_ccld_dt=fm_lqd_ustl_ccld_dt,  # FM청산미결제체결일자
-            fm_lqd_ustl_ccno=fm_lqd_ustl_ccno,  # FM청산미결제체결번호
-            pric_dvsn_cd=pric_dvsn_cd,  # 가격구분코드
-            fm_limit_ord_pric=fm_limit_ord_pric,  # FMLIMIT주문가격
-            fm_stop_ord_pric=fm_stop_ord_pric,  # FMSTOP주문가격
-            fm_ord_qty=fm_ord_qty,  # FM주문수량
-            fm_lqd_lmt_ord_pric=fm_lqd_lmt_ord_pric,  # FM청산LIMIT주문가격
-            fm_lqd_stop_ord_pric=fm_lqd_stop_ord_pric,  # FM청산STOP주문가격
-            ccld_cndt_cd=ccld_cndt_cd,  # 체결조건코드
-            cplx_ord_dvsn_cd=cplx_ord_dvsn_cd,  # 복합주문구분코드
-            ecis_rsvn_ord_yn=ecis_rsvn_ord_yn,  # 행사예약주문여부
-            fm_hdge_ord_scrn_yn=fm_hdge_ord_scrn_yn,  # FM_HEDGE주문화면여부
+            cano=trenv.my_acct,
+            acnt_prdt_cd="08",
+            ovrs_futr_fx_pdno="6NU25",
+            sll_buy_dvsn_cd="02",
+            fm_lqd_ustl_ccld_dt="",
+            fm_lqd_ustl_ccno="",
+            pric_dvsn_cd="1",
+            fm_limit_ord_pric="100",
+            fm_stop_ord_pric="",
+            fm_ord_qty="1",
+            fm_lqd_lmt_ord_pric="",
+            fm_lqd_stop_ord_pric="",
+            ccld_cndt_cd="6",
+            cplx_ord_dvsn_cd="0",
+            ecis_rsvn_ord_yn="N",
+            fm_hdge_ord_scrn_yn="N"
         )
         
         if result is None or result.empty:
@@ -117,6 +105,11 @@ def main():
 
         # 한글 컬럼명으로 변환
         result = result.rename(columns=COLUMN_MAPPING)
+        
+        # 숫자형 컬럼 소수점 둘째자리까지 표시
+        for col in NUMERIC_COLUMNS:
+            if col in result.columns:
+                result[col] = pd.to_numeric(result[col], errors='coerce').round(2)
         
         # 결과 출력
         logger.info("=== 해외선물옵션 주문 결과 ===")
