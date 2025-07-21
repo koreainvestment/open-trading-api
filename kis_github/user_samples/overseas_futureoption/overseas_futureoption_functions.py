@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # [해외선물옵션] 기본시세 > 해외선물 체결추이(일간) [해외선물-018]
 ##############################################################################################
 
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/daily-ccnl"
-
 def daily_ccnl(
     srs_cd: str,  # 종목코드
     exch_cd: str,  # 거래소코드
@@ -93,6 +90,9 @@ def daily_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/daily-ccnl"
+
+    
     tr_id = "HHDFC55020100"
 
     params = {
@@ -106,7 +106,7 @@ def daily_ccnl(
         "INDEX_KEY": index_key,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -176,15 +176,12 @@ def daily_ccnl(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물 호가 [해외선물-031]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/inquire-asking-price"
 
 def inquire_asking_price(
     srs_cd: str,  # 종목명
@@ -225,13 +222,16 @@ def inquire_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/inquire-asking-price"
+
+    
     tr_id = "HHDFC86000000"
 
     params = {
         "SRS_CD": srs_cd,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -290,15 +290,12 @@ def inquire_asking_price(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 당일주문내역조회 [v1_해외선물-004]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-ccld"
 
 def inquire_ccld(
     cano: str,  # 종합계좌번호
@@ -368,6 +365,9 @@ def inquire_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/trading/inquire-ccld"
+
+    
     tr_id = "OTFM3116R"
 
     params = {
@@ -380,7 +380,7 @@ def inquire_ccld(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -416,15 +416,12 @@ def inquire_ccld(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 일별체결내역[해외선물-011]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-daily-ccld"
 
 def inquire_daily_ccld(
     cano: str,  # 종합계좌번호
@@ -518,6 +515,9 @@ def inquire_daily_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/trading/inquire-daily-ccld"
+
+    
     tr_id = "OTFM3122R"
 
     params = {
@@ -534,7 +534,7 @@ def inquire_daily_ccld(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output 처리
@@ -603,15 +603,12 @@ def inquire_daily_ccld(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 일별 주문내역 [해외선물-013]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-daily-order"
 
 def inquire_daily_order(
     cano: str,  # 종합계좌번호
@@ -696,6 +693,9 @@ def inquire_daily_order(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/trading/inquire-daily-order"
+
+    
     tr_id = "OTFM3120R"
 
     params = {
@@ -711,7 +711,7 @@ def inquire_daily_order(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -750,15 +750,12 @@ def inquire_daily_order(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 예수금현황 [해외선물-012]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-deposit"
 
 def inquire_deposit(
     cano: str,  # 종합계좌번호
@@ -816,6 +813,9 @@ def inquire_deposit(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/trading/inquire-deposit"
+
+    
     tr_id = "OTFM1411R"
 
     params = {
@@ -825,7 +825,7 @@ def inquire_deposit(
         "INQR_DT": inqr_dt,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -858,15 +858,12 @@ def inquire_deposit(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 기간계좌손익 일별 [해외선물-010]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-period-ccld"
 
 def inquire_period_ccld(
     inqr_term_from_dt: str,  # 조회기간FROM일자
@@ -951,6 +948,9 @@ def inquire_period_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/trading/inquire-period-ccld"
+
+    
     tr_id = "OTFM3118R"
 
     params = {
@@ -965,7 +965,7 @@ def inquire_period_ccld(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -1032,15 +1032,12 @@ def inquire_period_ccld(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 기간계좌거래내역 [해외선물-014]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-period-trans"
 
 def inquire_period_trans(
     inqr_term_from_dt: str,  # 조회기간FROM일자
@@ -1118,6 +1115,8 @@ def inquire_period_trans(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
+    api_url = "/uapi/overseas-futureoption/v1/trading/inquire-period-trans"
+
     tr_id = "OTFM3114R"
 
     params = {
@@ -1132,7 +1131,7 @@ def inquire_period_trans(
         "PWD_CHK_YN": pwd_chk_yn,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1170,15 +1169,12 @@ def inquire_period_trans(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물종목현재가 [v1_해외선물-009]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/inquire-price"
 
 def inquire_price(
     srs_cd: str,  # 종목코드
@@ -1216,13 +1212,16 @@ def inquire_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/inquire-price"
+
+    
     tr_id = "HHDFC55010000"
 
     params = {
         "SRS_CD": srs_cd,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -1252,15 +1251,12 @@ def inquire_price(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 주문가능조회 [v1_해외선물-006]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-psamount"
 
 def inquire_psamount(
     cano: str,  # 종합계좌번호
@@ -1325,6 +1321,9 @@ def inquire_psamount(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/overseas-futureoption/v1/trading/inquire-psamount"
+
+
     tr_id = "OTFM3304R"
 
     params = {
@@ -1336,7 +1335,7 @@ def inquire_psamount(
         "ECIS_RSVN_ORD_YN": ecis_rsvn_ord_yn,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1371,15 +1370,12 @@ def inquire_psamount(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물 분봉조회[해외선물-016]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/inquire-time-futurechartprice"
 
 def inquire_time_futurechartprice(
     srs_cd: str,  # 종목코드
@@ -1455,6 +1451,9 @@ def inquire_time_futurechartprice(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/inquire-time-futurechartprice"
+
+    
     tr_id = "HHDFC55020400"
 
     params = {
@@ -1468,7 +1467,7 @@ def inquire_time_futurechartprice(
         "INDEX_KEY": index_key,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -1534,15 +1533,12 @@ def inquire_time_futurechartprice(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션 분봉조회 [해외선물-040]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/inquire-time-optchartprice"
 
 def inquire_time_optchartprice(
     srs_cd: str,  # 종목코드
@@ -1623,6 +1619,9 @@ def inquire_time_optchartprice(
             return (dataframe1 if dataframe1 is not None else pd.DataFrame(), 
                    dataframe2 if dataframe2 is not None else pd.DataFrame())
 
+    api_url = "/uapi/overseas-futureoption/v1/quotations/inquire-time-optchartprice"
+
+
     tr_id = "HHDFO55020100"  # 해외옵션 분봉조회
 
     params = {
@@ -1636,7 +1635,7 @@ def inquire_time_optchartprice(
         "INDEX_KEY": index_key  # 이전조회KEY
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (object)
@@ -1667,15 +1666,12 @@ def inquire_time_optchartprice(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 미결제내역조회(잔고) [v1_해외선물-005]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-unpd"
 
 def inquire_unpd(
     cano: str,  # 종합계좌번호
@@ -1733,6 +1729,9 @@ def inquire_unpd(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/trading/inquire-unpd"
+
+    
     tr_id = "OTFM1412R"
 
     params = {
@@ -1743,7 +1742,7 @@ def inquire_unpd(
         "CTX_AREA_NK100": ctx_area_nk100,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1777,15 +1776,12 @@ def inquire_unpd(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물 미결제추이 [해외선물-029]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/investor-unpd-trend"
 
 def investor_unpd_trend(
     prod_iscd: str,  # 상품
@@ -1843,6 +1839,9 @@ def investor_unpd_trend(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/investor-unpd-trend"
+
+    
     tr_id = "HHDDB95030000"
 
     params = {
@@ -1852,7 +1851,7 @@ def investor_unpd_trend(
         "CTS_KEY": cts_key,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -1914,15 +1913,12 @@ def investor_unpd_trend(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 증거금상세 [해외선물-032]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/margin-detail"
 
 def margin_detail(
     cano: str,  # 종합계좌번호
@@ -1980,6 +1976,9 @@ def margin_detail(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/trading/margin-detail"
+
+    
     tr_id = "OTFM3115R"
 
     params = {
@@ -1989,7 +1988,7 @@ def margin_detail(
         "INQR_DT": inqr_dt,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -2022,15 +2021,12 @@ def margin_detail(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물옵션 장운영시간 [해외선물-030]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/market-time"
 
 def market_time(
     fm_pdgr_cd: str,  # FM상품군코드
@@ -2088,6 +2084,9 @@ def market_time(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/market-time"
+
+    
     tr_id = "OTFM2229R"
 
     params = {
@@ -2099,7 +2098,7 @@ def market_time(
         "CTX_AREA_FK200": ctx_area_fk200,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -2137,15 +2136,12 @@ def market_time(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물 체결추이(월간)[해외선물-020]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/monthly-ccnl"
 
 def monthly_ccnl(
     srs_cd: str,  # 종목코드
@@ -2221,7 +2217,9 @@ def monthly_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = API_URL
+    url = api_url
+    api_url = "/uapi/overseas-futureoption/v1/quotations/monthly-ccnl"
+
     tr_id = "HHDFC55020300"
 
     params = {
@@ -2235,7 +2233,7 @@ def monthly_ccnl(
         "INDEX_KEY": index_key,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -2305,15 +2303,12 @@ def monthly_ccnl(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션 호가 [해외선물-033]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-asking-price"
 
 def opt_asking_price(
     srs_cd: str,  # 종목명
@@ -2354,13 +2349,16 @@ def opt_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/opt-asking-price"
+
+    
     tr_id = "HHDFO86000000"
 
     params = {
         "SRS_CD": srs_cd,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -2417,15 +2415,12 @@ def opt_asking_price(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션 체결추이(일간) [해외선물-037]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-daily-ccnl"
 
 def opt_daily_ccnl(
     srs_cd: str,                              # [필수] 종목코드 (ex. OESU24 C5500)  
@@ -2494,6 +2489,9 @@ def opt_daily_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-futureoption/v1/quotations/opt-daily-ccnl"
+
+
     tr_id = "HHDFO55020100"
 
     params = {
@@ -2507,7 +2505,7 @@ def opt_daily_ccnl(
         "INDEX_KEY": index_key
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (object)
@@ -2538,15 +2536,12 @@ def opt_daily_ccnl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션종목상세 [해외선물-034]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-detail"
 
 def opt_detail(
     srs_cd: str  # [필수] 종목명
@@ -2588,27 +2583,27 @@ def opt_detail(
     if srs_cd == "":
         raise ValueError("srs_cd is required (e.g. 'C5500')")
 
+    api_url = "/uapi/overseas-futureoption/v1/quotations/opt-detail"
+
+
     tr_id = "HHDFO55010100"
 
     params = {
         "SRS_CD": srs_cd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output1, index=[0])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션 체결추이(월간) [해외선물-039]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-monthly-ccnl"
 
 def opt_monthly_ccnl(
     srs_cd: str,  # 종목코드
@@ -2685,6 +2680,9 @@ def opt_monthly_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-futureoption/v1/quotations/opt-monthly-ccnl"
+
+
     tr_id = "HHDFO55020300"  # 해외옵션 체결추이(월간)
 
     params = {
@@ -2698,7 +2696,7 @@ def opt_monthly_ccnl(
         "INDEX_KEY": index_key
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data1 = pd.DataFrame([res.getBody().output1])
@@ -2728,15 +2726,12 @@ def opt_monthly_ccnl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션종목현재가 [해외선물-035]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-price"
 
 def opt_price(
     srs_cd: str  # 종목코드
@@ -2773,27 +2768,27 @@ def opt_price(
     if srs_cd == "":
         raise ValueError("srs_cd is required")
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/opt-price"
+
+    
     tr_id = "HHDFO55010000"  # 해외옵션종목현재가
 
     params = {
         "SRS_CD": srs_cd  # 종목코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output1, index=[0])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션 체결추이(틱) [해외선물-038]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-tick-ccnl"
 
 def opt_tick_ccnl(
     srs_cd: str,                                    # [필수] 종목코드
@@ -2878,6 +2873,9 @@ def opt_tick_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-futureoption/v1/quotations/opt-tick-ccnl"
+
+
     tr_id = "HHDFO55020200"
 
     params = {
@@ -2891,7 +2889,7 @@ def opt_tick_ccnl(
         "INDEX_KEY": index_key
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (object 타입)
@@ -2922,15 +2920,12 @@ def opt_tick_ccnl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션 체결추이(주간) [해외선물-036]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-weekly-ccnl"
 
 def opt_weekly_ccnl(
     srs_cd: str,  # 종목코드
@@ -3009,6 +3004,9 @@ def opt_weekly_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-futureoption/v1/quotations/opt-weekly-ccnl"
+
+
     tr_id = "HHDFO55020000"  # 해외옵션 체결추이(주간)
 
     params = {
@@ -3022,7 +3020,7 @@ def opt_weekly_ccnl(
         "INDEX_KEY": index_key  # 이전조회KEY
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (object 타입)
@@ -3054,15 +3052,12 @@ def opt_weekly_ccnl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 주문[v1_해외선물-001]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/order"
 
 def order(
     cano: str,  # 종합계좌번호
@@ -3153,7 +3148,9 @@ def order(
         logger.error("ccld_cndt_cd is required. (e.g. '6')")
         raise ValueError("ccld_cndt_cd is required. (e.g. '6')")
 
-    url = API_URL
+    url = api_url
+    api_url = "/uapi/overseas-futureoption/v1/trading/order"
+
     tr_id = "OTFM3001U"
 
     params = {
@@ -3175,7 +3172,7 @@ def order(
         "FM_HDGE_ORD_SCRN_YN": fm_hdge_ord_scrn_yn,
     }
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -3195,15 +3192,12 @@ def order(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 정정취소주문[v1_해외선물-002, 003]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/trading/order-rvsecncl"
 
 def order_rvsecncl(
     cano: str,  # 종합계좌번호
@@ -3271,6 +3265,8 @@ def order_rvsecncl(
         raise ValueError("orgn_odno is required. (e.g. '00360686')")
 
     if ord_dv == "0":
+        api_url = "/uapi/overseas-futureoption/v1/trading/order-rvsecncl"
+
         tr_id = "OTFM3002U"
     elif ord_dv == "1":
         tr_id = "OTFM3003U"
@@ -3293,7 +3289,7 @@ def order_rvsecncl(
 
     logger.info("Calling API with parameters: %s", params)
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                          ptr_id=tr_id,
                          tr_cont="",
                          params=params,
@@ -3312,15 +3308,12 @@ def order_rvsecncl(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물 상품기본정보[해외선물-023]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/search-contract-detail"
 
 def search_contract_detail(
     qry_cnt: str,  # 요청개수
@@ -3365,6 +3358,9 @@ def search_contract_detail(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/search-contract-detail"
+
+    
     tr_id = "HHDFC55200000"
 
     # 기본 파라미터
@@ -3378,7 +3374,7 @@ def search_contract_detail(
         api_key = f"SRS_CD_{i:02d}"
         params[api_key] = kwargs.get(srs_key, "")
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output2'):
@@ -3407,15 +3403,12 @@ def search_contract_detail(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외옵션 상품기본정보 [해외선물-041]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/search-opt-detail"
 
 def search_opt_detail(
     qry_cnt: str,  # [필수] 요청개수 (SRS_CD_N 개수)
@@ -3516,6 +3509,9 @@ def search_opt_detail(
     if srs_cd_01 == "":
         raise ValueError("srs_cd_01 is required")
 
+    api_url = "/uapi/overseas-futureoption/v1/quotations/search-opt-detail"
+
+
     tr_id = "HHDFO55200000"  # 해외옵션 상품기본정보
 
     params = {
@@ -3583,21 +3579,18 @@ def search_opt_detail(
     if srs_cd_30:
         params["SRS_CD_30"] = srs_cd_30
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # 메타데이터에 따라 output2 (array)를 pd.DataFrame으로 반환
         return pd.DataFrame(res.getBody().output2)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물종목상세[v1_해외선물-008]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/stock-detail"
 
 def stock_detail(
     srs_cd: str,  # 종목코드
@@ -3635,13 +3628,16 @@ def stock_detail(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/stock-detail"
+
+    
     tr_id = "HHDFC55010100"
 
     params = {
         "SRS_CD": srs_cd,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -3671,15 +3667,12 @@ def stock_detail(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물 체결추이(틱)[해외선물-019]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/tick-ccnl"
 
 def tick_ccnl(
     srs_cd: str,  # 종목코드
@@ -3755,6 +3748,9 @@ def tick_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/tick-ccnl"
+
+    
     tr_id = "HHDFC55020200"
 
     params = {
@@ -3768,7 +3764,7 @@ def tick_ccnl(
         "INDEX_KEY": index_key,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -3832,15 +3828,12 @@ def tick_ccnl(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물 체결추이(주간)[해외선물-017]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-futureoption/v1/quotations/weekly-ccnl"
 
 def weekly_ccnl(
     srs_cd: str,  # 종목코드
@@ -3913,6 +3906,9 @@ def weekly_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-futureoption/v1/quotations/weekly-ccnl"
+
+    
     tr_id = "HHDFC55020000"
 
     params = {
@@ -3926,7 +3922,7 @@ def weekly_ccnl(
         "INDEX_KEY": index_key,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -3994,6 +3990,6 @@ def weekly_ccnl(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 

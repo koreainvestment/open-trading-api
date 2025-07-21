@@ -128,6 +128,7 @@ ex) 0|H0STCNT0|004|005930^123929^73100^5^...
 
             logging.info("결과:")
             print(result)
+
         except Exception as e:
             logging.error(f"결과 처리 중 오류: {e}")
             logging.error(f"받은 데이터: {result}")

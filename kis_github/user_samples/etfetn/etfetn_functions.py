@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # [국내주식] 기본시세 > ETF 구성종목시세[국내주식-073]
 ##############################################################################################
 
-# 상수 정의
-API_URL = "/uapi/etfetn/v1/quotations/inquire-component-stock-price"
-
 def inquire_component_stock_price(
     fid_cond_mrkt_div_code: str,
     fid_input_iscd: str,
@@ -56,6 +53,8 @@ def inquire_component_stock_price(
         raise ValueError("fid_cond_scr_div_code is required (e.g. '11216')")
     
     # API 호출 설정
+    api_url = "/uapi/etfetn/v1/quotations/inquire-component-stock-price"
+
     tr_id = "FHKST121600C0"
     
     # 파라미터 설정
@@ -66,7 +65,7 @@ def inquire_component_stock_price(
     }
     
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) -> DataFrame 변환
@@ -79,15 +78,12 @@ def inquire_component_stock_price(
         
         return df1, df2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > ETF/ETN 현재가[v1_국내주식-068]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/etfetn/v1/quotations/inquire-price"
 
 def inquire_price(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -115,6 +111,9 @@ def inquire_price(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (e.g. '123456')")
 
+    api_url = "/uapi/etfetn/v1/quotations/inquire-price"
+
+
     tr_id = "FHPST02400000"  # ETF/ETN 현재가
 
     params = {
@@ -122,21 +121,18 @@ def inquire_price(
         "FID_INPUT_ISCD": fid_input_iscd,                  # 입력 종목코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > NAV 비교추이(일)[v1_국내주식-071]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/etfetn/v1/quotations/nav-comparison-daily-trend"
 
 def nav_comparison_daily_trend(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -176,6 +172,9 @@ def nav_comparison_daily_trend(
     if fid_input_date_2 == "":
         raise ValueError("fid_input_date_2 is required (e.g. '20240220')")
 
+    api_url = "/uapi/etfetn/v1/quotations/nav-comparison-daily-trend"
+
+
     tr_id = "FHPST02440200"  # NAV 비교추이(일)
 
     params = {
@@ -185,22 +184,19 @@ def nav_comparison_daily_trend(
         "FID_INPUT_DATE_2": fid_input_date_2               # 조회종료일자
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > NAV 비교추이(분)[v1_국내주식-070]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/etfetn/v1/quotations/nav-comparison-time-trend"
 
 def nav_comparison_time_trend(
     fid_cond_mrkt_div_code: str,  # [필수] 조건시장분류코드 (ex. E)
@@ -235,6 +231,9 @@ def nav_comparison_time_trend(
     if fid_hour_cls_code == "" or fid_hour_cls_code is None:
         raise ValueError("fid_hour_cls_code is required (e.g. '60:1분,180:3분,...,7200:120분')")
 
+    api_url = "/uapi/etfetn/v1/quotations/nav-comparison-time-trend"
+
+
     tr_id = "FHPST02440100"
 
     params = {
@@ -243,22 +242,19 @@ def nav_comparison_time_trend(
         "FID_HOUR_CLS_CODE": fid_hour_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output (array) -> pd.DataFrame
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > NAV 비교추이(종목)[v1_국내주식-069]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/etfetn/v1/quotations/nav-comparison-trend"
 
 def nav_comparison_trend(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. J)
@@ -287,6 +283,9 @@ def nav_comparison_trend(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required")
 
+    api_url = "/uapi/etfetn/v1/quotations/nav-comparison-trend"
+
+
     tr_id = "FHPST02440000"  # NAV 비교추이(종목)
 
     params = {
@@ -294,7 +293,7 @@ def nav_comparison_trend(
         "FID_INPUT_ISCD": fid_input_iscd,                  # 입력 종목코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         output1_data = pd.DataFrame(res.getBody().output1, index=[0])
@@ -303,6 +302,6 @@ def nav_comparison_trend(
         logging.info("Data fetch complete.")
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 

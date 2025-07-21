@@ -14,9 +14,13 @@ my_paper_stock: "모의투자 증권계좌 8자리"
 my_paper_future: "모의투자 선물옵션계좌 8자리"
 
 #계좌번호 뒤 2자리
-my_prod: "01" # 
+my_prod: "01" # 종합계좌
+# my_prod: "03" # 국내선물옵션계좌
+# my_prod: "08" # 해외선물옵션 계좌
+# my_prod: "22" # 연급저축계좌
 
-#domain info
+#domain infos
+
 prod: "https://openapi.koreainvestment.com:9443" # 서비스
 ops: "ws://ops.koreainvestment.com:21000" # 웹소켓
 vps: "https://openapivts.koreainvestment.com:29443" # 모의투자 서비스

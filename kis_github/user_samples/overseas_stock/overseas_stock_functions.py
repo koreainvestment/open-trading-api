@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # [해외주식] 주문/계좌 > 해외주식 지정가주문번호조회 [해외주식-071]
 ##############################################################################################
 
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/algo-ordno"
-
 def algo_ordno(
     cano: str,                    # [필수] 종합계좌번호
     acnt_prdt_cd: str,           # [필수] 계좌상품코드 (ex. 01)
@@ -68,6 +65,9 @@ def algo_ordno(
         else:
             return dataframe
 
+    api_url = "/uapi/overseas-stock/v1/trading/algo-ordno"
+
+
     tr_id = "TTTS6058R"  # 해외주식 지정가주문번호조회
 
     params = {
@@ -78,7 +78,7 @@ def algo_ordno(
         "CTX_AREA_NK200": NK200         # 연속조회키200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -102,15 +102,12 @@ def algo_ordno(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 미국주간주문 [v1_해외주식-026]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/daytime-order"
 
 def daytime_order(
     order_dv: str, # 주문구분 buy(매수) / sell(매도)
@@ -189,6 +186,8 @@ def daytime_order(
         raise ValueError("ord_dvsn is required. (e.g. '00')")
 
     if order_dv == "buy":
+        api_url = "/uapi/overseas-stock/v1/trading/daytime-order"
+
         tr_id = "TTTS6036U"
     elif order_dv == "sell":
         tr_id = "TTTS6037U"
@@ -209,7 +208,7 @@ def daytime_order(
         "ORD_DVSN": ord_dvsn,
     }
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                          ptr_id=tr_id,
                          tr_cont="",
                          params=params,
@@ -228,15 +227,12 @@ def daytime_order(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 미국주간정정취소 [v1_해외주식-027]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/daytime-order-rvsecncl"
 
 def daytime_order_rvsecncl(
     cano: str,  # 종합계좌번호
@@ -318,6 +314,9 @@ def daytime_order_rvsecncl(
         logger.error("ord_svr_dvsn_cd is required. (e.g. '0')")
         raise ValueError("ord_svr_dvsn_cd is required. (e.g. '0')")
 
+    api_url = "/uapi/overseas-stock/v1/trading/daytime-order-rvsecncl"
+
+
     tr_id = "TTTS6038U"
 
     params = {
@@ -334,7 +333,7 @@ def daytime_order_rvsecncl(
         "ORD_SVR_DVSN_CD": ord_svr_dvsn_cd,
     }
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                          ptr_id=tr_id,
                          tr_cont="",
                          params=params,
@@ -354,15 +353,12 @@ def daytime_order_rvsecncl(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 - 해외증거금 통화별조회 [해외주식-035]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/foreign-margin"
 
 def foreign_margin(
     cano: str,  # 종합계좌번호
@@ -406,6 +402,9 @@ def foreign_margin(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-stock/v1/trading/foreign-margin"
+
+    
     tr_id = "TTTC2101R"
 
     params = {
@@ -414,7 +413,7 @@ def foreign_margin(
     }
 
     # API 호출
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -445,15 +444,12 @@ def foreign_margin(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 지정가체결내역조회 [해외주식-070]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-algo-ccnl"
 
 def inquire_algo_ccnl(
     cano: str,  # [필수] 계좌번호
@@ -511,6 +507,9 @@ def inquire_algo_ccnl(
             dataframe3 = pd.DataFrame()
         return dataframe, dataframe3
 
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-algo-ccnl"
+
+
     tr_id = "TTTS6059R"  # 해외주식 지정가체결내역조회
 
     params = {
@@ -524,7 +523,7 @@ def inquire_algo_ccnl(
         "CTX_AREA_FK200": FK200  # 연속조회조건200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -555,15 +554,12 @@ def inquire_algo_ccnl(
             logging.info("Data fetch complete.")
             return dataframe, dataframe3
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 잔고 [v1_해외주식-006]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-balance"
 
 def inquire_balance(
     cano: str,  # 종합계좌번호
@@ -634,6 +630,8 @@ def inquire_balance(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
+        api_url = "/uapi/overseas-stock/v1/trading/inquire-balance"
+
         tr_id = "TTTS3012R"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTTS3012R"  # 모의투자용 TR ID
@@ -649,7 +647,7 @@ def inquire_balance(
         "CTX_AREA_NK200": NK200,
     }
 
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         # output1 처리
@@ -718,15 +716,12 @@ def inquire_balance(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 주문체결내역 [v1_해외주식-007]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-ccnl"
 
 def inquire_ccnl(
     cano: str,  # 종합계좌번호
@@ -830,6 +825,8 @@ def inquire_ccnl(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
+        api_url = "/uapi/overseas-stock/v1/trading/inquire-ccnl"
+
         tr_id = "TTTS3035R"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTTS3035R"  # 모의투자용 TR ID
@@ -853,7 +850,7 @@ def inquire_ccnl(
         "CTX_AREA_FK200": FK200,
     }
 
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -900,15 +897,12 @@ def inquire_ccnl(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 미체결내역 [v1_해외주식-005]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-nccs"
 
 def inquire_nccs(
     cano: str,  # 종합계좌번호
@@ -974,6 +968,9 @@ def inquire_nccs(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-nccs"
+
+    
     tr_id = "TTTS3018R"
 
     params = {
@@ -985,7 +982,7 @@ def inquire_nccs(
         "CTX_AREA_NK200": NK200,
     }
 
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1024,7 +1021,7 @@ def inquire_nccs(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         # 이미 수집된 데이터가 있으면 그것을 반환, 없으면 빈 DataFrame 반환
         if dataframe is not None and not dataframe.empty:
             logger.info("Returning already collected data due to API error.")
@@ -1035,9 +1032,6 @@ def inquire_nccs(
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 결제기준잔고 [해외주식-064]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-paymt-stdr-balance"
 
 def inquire_paymt_stdr_balance(
     cano: str,  # 종합계좌번호
@@ -1106,6 +1100,9 @@ def inquire_paymt_stdr_balance(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame(), dataframe3 if dataframe3 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-paymt-stdr-balance"
+
+    
     tr_id = "CTRP6010R"
 
     params = {
@@ -1116,7 +1113,7 @@ def inquire_paymt_stdr_balance(
         "INQR_DVSN_CD": inqr_dvsn_cd,
     }
 
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         # output1 처리
@@ -1205,7 +1202,7 @@ def inquire_paymt_stdr_balance(
             return dataframe1, dataframe2, dataframe3
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         # 이미 수집된 데이터가 있으면 그것을 반환, 없으면 빈 DataFrame 반환
         if dataframe1 is not None and not dataframe1.empty:
             logger.info("Returning already collected data due to API error.")
@@ -1216,9 +1213,6 @@ def inquire_paymt_stdr_balance(
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 기간손익 [v1_해외주식-032]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-period-profit"
 
 def inquire_period_profit(
     cano: str,  # 종합계좌번호
@@ -1310,6 +1304,9 @@ def inquire_period_profit(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-period-profit"
+
+    
     tr_id = "TTTS3039R"
 
     params = {
@@ -1326,7 +1323,7 @@ def inquire_period_profit(
         "CTX_AREA_NK200": NK200,
     }
 
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         # Output1 처리
@@ -1400,7 +1397,7 @@ def inquire_period_profit(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         # 이미 수집된 데이터가 있으면 그것을 반환, 없으면 빈 DataFrame 반환
         if dataframe1 is not None and not dataframe1.empty:
             logger.info("Returning already collected data due to API error.")
@@ -1411,9 +1408,6 @@ def inquire_period_profit(
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 일별거래내역 [해외주식-063]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-period-trans"
 
 def inquire_period_trans(
     cano: str,  # 종합계좌번호
@@ -1499,6 +1493,9 @@ def inquire_period_trans(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-period-trans"
+
+    
     tr_id = "CTOS4001R"
 
     params = {
@@ -1514,7 +1511,7 @@ def inquire_period_trans(
         "CTX_AREA_NK100": NK100,
     }
 
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         # output1 처리
@@ -1587,7 +1584,7 @@ def inquire_period_trans(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         # 이미 수집된 데이터가 있으면 그것을 반환, 없으면 빈 DataFrame 반환
         if dataframe1 is not None and not dataframe1.empty:
             logger.info("Returning already collected data due to API error.")
@@ -1598,9 +1595,6 @@ def inquire_period_trans(
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 체결기준현재잔고 [v1_해외주식-008]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-present-balance"
 
 def inquire_present_balance(
     cano: str,  # 종합계좌번호
@@ -1680,6 +1674,8 @@ def inquire_present_balance(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
+        api_url = "/uapi/overseas-stock/v1/trading/inquire-present-balance"
+
         tr_id = "CTRP6504R"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTRP6504R"  # 모의투자용 TR ID
@@ -1695,7 +1691,7 @@ def inquire_present_balance(
         "INQR_DVSN_CD": inqr_dvsn_cd,
     }
 
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         # output1 처리
@@ -1783,7 +1779,7 @@ def inquire_present_balance(
             return dataframe1, dataframe2, dataframe3
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         # 이미 수집된 데이터가 있으면 그것을 반환, 없으면 빈 DataFrame 반환
         if dataframe1 is not None and not dataframe1.empty:
             logger.info("Returning already collected data due to API error.")
@@ -1794,9 +1790,6 @@ def inquire_present_balance(
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 매수가능금액조회 [해외주식-014]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/inquire-psamount"
 
 def inquire_psamount(
     cano: str,  # 종합계좌번호
@@ -1864,6 +1857,8 @@ def inquire_psamount(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
+        api_url = "/uapi/overseas-stock/v1/trading/inquire-psamount"
+
         tr_id = "TTTS3007R"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTTS3007R"  # 모의투자용 TR ID
@@ -1878,7 +1873,7 @@ def inquire_psamount(
         "ITEM_CD": item_cd,
     }
 
-    res = ka._url_fetch(api_url=API_URL, ptr_id=tr_id, tr_cont=tr_cont, params=params)
+    res = ka._url_fetch(api_url=api_url, ptr_id=tr_id, tr_cont=tr_cont, params=params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1916,15 +1911,12 @@ def inquire_psamount(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 시가총액순위[해외주식-047]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/market-cap"
 
 def market_cap(
     excd: str,  # 거래소명
@@ -1973,6 +1965,9 @@ def market_cap(
         else:
             return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/market-cap"
+
+
     tr_id = "HHDFS76350100"  # 해외주식 시가총액순위
 
     params = {
@@ -1982,7 +1977,7 @@ def market_cap(
         "AUTH": auth,  # 사용자권한정보
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리
@@ -2011,15 +2006,12 @@ def market_cap(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 신고/신저가[해외주식-042]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/new-highlow"
 
 def new_highlow(
     excd: str,  # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
@@ -2085,6 +2077,9 @@ def new_highlow(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/new-highlow"
+
+
     tr_id = "HHDFS76300000"  # 해외주식 신고/신저가
 
     params = {
@@ -2097,7 +2092,7 @@ def new_highlow(
         "AUTH": auth
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (object 타입)
@@ -2128,15 +2123,12 @@ def new_highlow(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 주문 [v1_해외주식-001]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/order"
 
 def order(
     cano: str,  # 종합계좌번호
@@ -2224,6 +2216,8 @@ def order(
     # TR ID 설정 (매수/매도 및 거래소별)
     if ord_dv == "buy":
         if ovrs_excg_cd in ("NASD", "NYSE", "AMEX"):
+            api_url = "/uapi/overseas-stock/v1/trading/order"
+
             tr_id = "TTTT1002U"  # 미국 매수 주문 [모의투자] VTTT1002U
         elif ovrs_excg_cd == "SEHK":
             tr_id = "TTTS1002U"  # 홍콩 매수 주문 [모의투자] VTTS1002U
@@ -2281,7 +2275,7 @@ def order(
         "ORD_DVSN": ord_dvsn,
     }
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -2301,15 +2295,12 @@ def order(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 예약주문접수[v1_해외주식-002]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/order-resv"
 
 def order_resv(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -2426,6 +2417,8 @@ def order_resv(
     # tr_id 설정
     if env_dv == "real":
         if ord_dv == "usBuy":
+            api_url = "/uapi/overseas-stock/v1/trading/order-resv"
+
             tr_id = "TTTT3014U"
         elif ord_dv == "usSell":
             tr_id = "TTTT3016U"
@@ -2472,22 +2465,19 @@ def order_resv(
     if algo_ord_tmd_dvsn_cd:
         params["ALGO_ORD_TMD_DVSN_CD"] = algo_ord_tmd_dvsn_cd
     
-    res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
+    res = ka._url_fetch(api_url, tr_id, "", params, postFlag=True)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 예약주문접수취소[v1_해외주식-004]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/order-resv-ccnl"
 
 def order_resv_ccnl(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -2544,6 +2534,8 @@ def order_resv_ccnl(
     # tr_id 설정
     if env_dv == "real":
         if nat_dv == "us":
+            api_url = "/uapi/overseas-stock/v1/trading/order-resv-ccnl"
+
             tr_id = "TTTT3017U"
         else:
             raise ValueError("nat_dv can only be 'us'")
@@ -2562,7 +2554,7 @@ def order_resv_ccnl(
         "OVRS_RSVN_ODNO": ovrs_rsvn_odno
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output은 object 자료형이므로 DataFrame으로 변환
@@ -2570,15 +2562,12 @@ def order_resv_ccnl(
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 예약주문조회[v1_해외주식-013]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/order-resv-list"
 
 def order_resv_list(
     nat_dv: str,  # 국가구분코드
@@ -2657,6 +2646,8 @@ def order_resv_list(
 
     # tr_id 설정
     if nat_dv == "us":
+        api_url = "/uapi/overseas-stock/v1/trading/order-resv-list"
+
         tr_id = "TTTT3039R"
     elif nat_dv == "asia":
         tr_id = "TTTS3014R"
@@ -2675,7 +2666,7 @@ def order_resv_list(
         "CTX_AREA_NK200": NK200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -2701,15 +2692,12 @@ def order_resv_list(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ################################################################################
 # [해외주식] 주문/계좌 > 해외주식 정정취소주문[v1_해외주식-003]
 ################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/trading/order-rvsecncl"
 
 def order_rvsecncl(
         cano: str,  # 종합계좌번호
@@ -2790,6 +2778,8 @@ def order_rvsecncl(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
+        api_url = "/uapi/overseas-stock/v1/trading/order-rvsecncl"
+
         tr_id = "TTTT1004U"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTTT1004U"  # 모의투자용 TR ID
@@ -2809,7 +2799,7 @@ def order_rvsecncl(
         "ORD_SVR_DVSN_CD": ord_svr_dvsn_cd,
     }
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -2828,15 +2818,12 @@ def order_rvsecncl(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 가격급등락[해외주식-038]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/price-fluct"
 
 def price_fluct(
     excd: str,  # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
@@ -2897,6 +2884,9 @@ def price_fluct(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/price-fluct"
+
+
     tr_id = "HHDFS76260000"  # 해외주식 가격급등락
 
     params = {
@@ -2908,7 +2898,7 @@ def price_fluct(
         "AUTH": auth
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리
@@ -2937,15 +2927,12 @@ def price_fluct(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 거래증가율순위[해외주식-045]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/trade-growth"
 
 def trade_growth(
     excd: str,  # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
@@ -3001,6 +2988,9 @@ def trade_growth(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/trade-growth"
+
+
     tr_id = "HHDFS76330000"  # 해외주식 거래증가율순위
 
     params = {
@@ -3011,7 +3001,7 @@ def trade_growth(
         "KEYB": keyb
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (object)
@@ -3040,15 +3030,12 @@ def trade_growth(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 거래대금순위[해외주식-044]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/trade-pbmn"
 
 def trade_pbmn(
     excd: str,  # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
@@ -3106,6 +3093,9 @@ def trade_pbmn(
         else:
             return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/trade-pbmn"
+
+
     tr_id = "HHDFS76320010"  # 해외주식 거래대금순위
 
     params = {
@@ -3118,7 +3108,7 @@ def trade_pbmn(
         "PRC2": prc2,  # 현재가 필터범위 끝
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (object 타입)
@@ -3150,15 +3140,12 @@ def trade_pbmn(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 거래회전율순위[해외주식-046]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/trade-turnover"
 
 def trade_turnover(
     excd: str,     # 거래소명
@@ -3216,6 +3203,9 @@ def trade_turnover(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/trade-turnover"
+
+
     tr_id = "HHDFS76340000"  # 해외주식 거래회전율순위
 
     params = {
@@ -3226,7 +3216,7 @@ def trade_turnover(
         "AUTH": auth           # 사용자권한정보
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리
@@ -3255,15 +3245,12 @@ def trade_turnover(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 거래량순위[해외주식-043]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/trade-vol"
 
 def trade_vol(
     excd: str,  # 거래소명
@@ -3324,6 +3311,9 @@ def trade_vol(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/trade-vol"
+
+
     tr_id = "HHDFS76310010"  # 해외주식 거래량순위
 
     params = {
@@ -3336,7 +3326,7 @@ def trade_vol(
         "PRC2": prc2
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리
@@ -3365,15 +3355,12 @@ def trade_vol(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 상승률/하락률[해외주식-041]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/updown-rate"
 
 def updown_rate(
     excd: str,  # [필수] 거래소명
@@ -3433,6 +3420,9 @@ def updown_rate(
         else:
             return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
+    api_url = "/uapi/overseas-stock/v1/ranking/updown-rate"
+
+
     tr_id = "HHDFS76290000"
 
     params = {
@@ -3444,7 +3434,7 @@ def updown_rate(
         "KEYB": keyb
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리
@@ -3473,15 +3463,12 @@ def updown_rate(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 매수체결강도상위[해외주식-040]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/volume-power"
 
 def volume_power(
     excd: str,  # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
@@ -3538,6 +3525,9 @@ def volume_power(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/volume-power"
+
+
     tr_id = "HHDFS76280000"
 
     params = {
@@ -3548,7 +3538,7 @@ def volume_power(
         "KEYB": keyb
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (object)
@@ -3577,15 +3567,12 @@ def volume_power(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [해외주식] 시세분석 > 해외주식 거래량급증[해외주식-039]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/overseas-stock/v1/ranking/volume-surge"
 
 def volume_surge(
     excd: str,  # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
@@ -3641,6 +3628,9 @@ def volume_surge(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/overseas-stock/v1/ranking/volume-surge"
+
+
     tr_id = "HHDFS76270000"  # 해외주식 거래량급증
 
     params = {
@@ -3651,7 +3641,7 @@ def volume_surge(
         "AUTH": auth   # 사용자권한정보
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리
@@ -3680,6 +3670,6 @@ def volume_surge(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 

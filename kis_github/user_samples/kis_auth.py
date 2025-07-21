@@ -357,6 +357,49 @@ class APIResp:
 
     # end of class APIResp
 
+class APIRespError(APIResp):
+    def __init__(self, status_code, error_text):
+        # 부모 생성자 호출하지 않고 직접 초기화
+        self.status_code = status_code
+        self.error_text = error_text
+        self._error_code = str(status_code)
+        self._error_message = error_text
+    
+    def isOK(self):
+        return False
+    
+    def getErrorCode(self):
+        return self._error_code
+    
+    def getErrorMessage(self):
+        return self._error_message
+    
+    def getBody(self):
+        # 빈 객체 리턴 (속성 접근 시 AttributeError 방지)
+        class EmptyBody:
+            def __getattr__(self, name):
+                return None
+        return EmptyBody()
+    
+    def getHeader(self):
+        # 빈 객체 리턴
+        class EmptyHeader:
+            tr_cont = ""
+            def __getattr__(self, name):
+                return ""
+        return EmptyHeader()
+    
+    def printAll(self):
+        print(f"=== ERROR RESPONSE ===")
+        print(f"Status Code: {self.status_code}")
+        print(f"Error Message: {self.error_text}")
+        print(f"======================")
+    
+    def printError(self, url=""):
+        print(f"Error Code : {self.status_code} | {self.error_text}")
+        if url:
+            print(f"URL: {url}")
+
 
 ########### API call wrapping : API 호출 공통
 
@@ -402,7 +445,7 @@ def _url_fetch(
         return ar
     else:
         print("Error Code : " + str(res.status_code) + " | " + res.text)
-        return None
+        return APIRespError(res.status_code, res.text)
 
 
 # auth()

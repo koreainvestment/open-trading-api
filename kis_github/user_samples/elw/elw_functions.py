@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # [국내주식] ELW시세 - ELW 비교대상종목조회[국내주식-183]
 ##############################################################################################
 
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/compare-stocks"
-
 def compare_stocks(
     fid_cond_scr_div_code: str,  # 조건화면분류코드
     fid_input_iscd: str,  # 입력종목코드
@@ -61,6 +58,9 @@ def compare_stocks(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/elw/v1/quotations/compare-stocks"
+
+
     tr_id = "FHKEW151701C0"
 
     params = {
@@ -69,7 +69,7 @@ def compare_stocks(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -102,15 +102,12 @@ def compare_stocks(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 종목검색[국내주식-166]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/cond-search"
 
 def cond_search(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드 (필수)
@@ -265,6 +262,8 @@ def cond_search(
         return dataframe if dataframe is not None else pd.DataFrame()
     
     # API 호출 정보 설정
+    api_url = "/uapi/elw/v1/quotations/cond-search"
+
     tr_id = "FHKEW15100000"
 
     # 요청 파라미터 설정
@@ -332,7 +331,7 @@ def cond_search(
     logger.info("ELW 종목검색 API 호출 시작 (depth: %d)", depth)
     
     # API 호출 실행
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -432,15 +431,12 @@ def cond_search(
         error_code = res.getErrorCode()
         error_message = res.getErrorMessage()
         logger.error("API call failed: %s - %s", error_code, error_message)
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()  # 빈 데이터프레임 반환
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 만기예정/만기종목[국내주식-184]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/expiration-stocks"
 
 def expiration_stocks(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -538,6 +534,9 @@ def expiration_stocks(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/quotations/expiration-stocks"
+
+    
     tr_id = "FHKEW154700C0"
 
     params = {
@@ -554,7 +553,7 @@ def expiration_stocks(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -593,15 +592,12 @@ def expiration_stocks(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 지표순위[국내주식-169]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/ranking/indicator"
 
 def indicator(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -698,6 +694,9 @@ def indicator(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/ranking/indicator"
+
+    
     tr_id = "FHPEW02790000"
 
     params = {
@@ -715,7 +714,7 @@ def indicator(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -755,15 +754,12 @@ def indicator(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 투자지표추이(체결)[국내주식-172]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/indicator-trend-ccnl"
 
 def indicator_trend_ccnl(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -807,6 +803,9 @@ def indicator_trend_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/quotations/indicator-trend-ccnl"
+
+    
     tr_id = "FHPEW02740100"
 
     params = {
@@ -815,7 +814,7 @@ def indicator_trend_ccnl(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -850,15 +849,12 @@ def indicator_trend_ccnl(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 투자지표추이(일별)[국내주식-173]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/indicator-trend-daily"
 
 def indicator_trend_daily(
     fid_cond_mrkt_div_code: str,  # 시장 분류 코드 (예: 'W')
@@ -901,6 +897,9 @@ def indicator_trend_daily(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/quotations/indicator-trend-daily"
+
+    
     tr_id = "FHPEW02740200"
 
     params = {
@@ -909,7 +908,7 @@ def indicator_trend_daily(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -940,15 +939,12 @@ def indicator_trend_daily(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 투자지표추이(분별)[국내주식-174]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/indicator-trend-minute"
 
 def indicator_trend_minute(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -1013,7 +1009,9 @@ def indicator_trend_minute(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    url = API_URL
+    url = api_url
+    api_url = "/uapi/elw/v1/quotations/indicator-trend-minute"
+
     tr_id = "FHPEW02740300"
 
     # 요청 파라미터 설정
@@ -1062,15 +1060,12 @@ def indicator_trend_minute(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW LP매매추이
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/lp-trade-trend"
 
 def lp_trade_trend(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -1120,6 +1115,9 @@ def lp_trade_trend(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/quotations/lp-trade-trend"
+
+    
     tr_id = "FHPEW03760000"
 
     params = {
@@ -1127,7 +1125,7 @@ def lp_trade_trend(
         "FID_INPUT_ISCD": fid_input_iscd,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -1167,15 +1165,12 @@ def lp_trade_trend(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 신규상장종목[국내주식-181]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/newly-listed"
 
 def newly_listed(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -1257,6 +1252,9 @@ def newly_listed(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/quotations/newly-listed"
+
+    
     tr_id = "FHKEW154800C0"
 
     params = {
@@ -1270,7 +1268,7 @@ def newly_listed(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -1308,15 +1306,12 @@ def newly_listed(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 당일급변종목[국내주식-171]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/ranking/quick-change"
 
 def quick_change(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -1419,6 +1414,9 @@ def quick_change(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/elw/v1/ranking/quick-change"
+
+
     tr_id = "FHPEW02870000"
 
     params = {
@@ -1439,7 +1437,7 @@ def quick_change(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1482,15 +1480,12 @@ def quick_change(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 민감도 순위[국내주식-170]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/ranking/sensitivity"
 
 def sensitivity(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -1590,6 +1585,9 @@ def sensitivity(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/ranking/sensitivity"
+
+    
     tr_id = "FHPEW02850000"
 
     params = {
@@ -1609,7 +1607,7 @@ def sensitivity(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1651,15 +1649,12 @@ def sensitivity(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 민감도 추이(체결)[국내주식-175]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/sensitivity-trend-ccnl"
 
 def sensitivity_trend_ccnl(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -1703,6 +1698,9 @@ def sensitivity_trend_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/quotations/sensitivity-trend-ccnl"
+
+    
     tr_id = "FHPEW02830100"
 
     params = {
@@ -1711,7 +1709,7 @@ def sensitivity_trend_ccnl(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -1746,15 +1744,12 @@ def sensitivity_trend_ccnl(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 민감도 추이(일별)[국내주식-176]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/sensitivity-trend-daily"
 
 def sensitivity_trend_daily(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -1802,6 +1797,8 @@ def sensitivity_trend_daily(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
+    api_url = "/uapi/elw/v1/quotations/sensitivity-trend-daily"
+
     tr_id = "FHPEW02830200"
 
     # 요청 파라미터 설정
@@ -1811,7 +1808,7 @@ def sensitivity_trend_daily(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -1845,15 +1842,12 @@ def sensitivity_trend_daily(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 기초자산 목록조회[국내주식-185]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/udrl-asset-list"
 
 def udrl_asset_list(
     fid_cond_scr_div_code: str,  # 조건화면분류코드
@@ -1906,6 +1900,9 @@ def udrl_asset_list(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/elw/v1/quotations/udrl-asset-list"
+
+
     tr_id = "FHKEW154100C0"
 
     params = {
@@ -1915,7 +1912,7 @@ def udrl_asset_list(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1947,15 +1944,12 @@ def udrl_asset_list(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 기초자산별 종목시세[국내주식-186]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/udrl-asset-price"
 
 def udrl_asset_price(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -2068,6 +2062,9 @@ def udrl_asset_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/elw/v1/quotations/udrl-asset-price"
+
+
     tr_id = "FHKEW154101C0"
 
     params = {
@@ -2090,7 +2087,7 @@ def udrl_asset_price(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -2135,15 +2132,12 @@ def udrl_asset_price(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 상승률순위[국내주식-167]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/ranking/updown-rate"
 
 def updown_rate(
     fid_cond_mrkt_div_code: str,  # 사용자권한정보
@@ -2253,6 +2247,9 @@ def updown_rate(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/elw/v1/ranking/updown-rate"
+
+
     tr_id = "FHPEW02770000"
 
     params = {
@@ -2273,7 +2270,7 @@ def updown_rate(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -2316,15 +2313,12 @@ def updown_rate(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 변동성추이(체결)[국내주식-177]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/volatility-trend-ccnl"
 
 def volatility_trend_ccnl(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -2372,7 +2366,9 @@ def volatility_trend_ccnl(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    url = API_URL
+    url = api_url
+    api_url = "/uapi/elw/v1/quotations/volatility-trend-ccnl"
+
     tr_id = "FHPEW02840100"
 
     # 요청 파라미터 설정
@@ -2416,15 +2412,12 @@ def volatility_trend_ccnl(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 변동성추이(일별)[국내주식-178]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/volatility-trend-daily"
 
 def volatility_trend_daily(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -2471,6 +2464,9 @@ def volatility_trend_daily(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/elw/v1/quotations/volatility-trend-daily"
+
+    
     tr_id = "FHPEW02840200"
 
     params = {
@@ -2479,7 +2475,7 @@ def volatility_trend_daily(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -2514,15 +2510,12 @@ def volatility_trend_daily(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 변동성추이(분별)[국내주식-179]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/volatility-trend-minute"
 
 def volatility_trend_minute(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -2587,7 +2580,9 @@ def volatility_trend_minute(
         return dataframe if dataframe is not None else pd.DataFrame()
     
     # API 호출 URL 및 거래 ID 설정
-    url = API_URL
+    url = api_url
+    api_url = "/uapi/elw/v1/quotations/volatility-trend-minute"
+
     tr_id = "FHPEW02840300"
 
     # 요청 파라미터 설정
@@ -2635,15 +2630,12 @@ def volatility_trend_minute(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 변동성추이(틱)[국내주식-180]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/quotations/volatility-trend-tick"
 
 def volatility_trend_tick(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -2691,7 +2683,9 @@ def volatility_trend_tick(
         return dataframe if dataframe is not None else pd.DataFrame()
     
     # API 호출 URL 및 거래 ID 설정
-    url = API_URL
+    url = api_url
+    api_url = "/uapi/elw/v1/quotations/volatility-trend-tick"
+
     tr_id = "FHPEW02840400"
 
     # 요청 파라미터 설정
@@ -2735,15 +2729,12 @@ def volatility_trend_tick(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 - ELW 거래량순위[국내주식-168]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/elw/v1/ranking/volume-rank"
 
 def volume_rank(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -2849,7 +2840,9 @@ def volume_rank(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = API_URL
+    url = api_url
+    api_url = "/uapi/elw/v1/ranking/volume-rank"
+
     tr_id = "FHPEW02780000"
 
     params = {
@@ -2919,6 +2912,6 @@ def volume_rank(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 

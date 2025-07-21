@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # [국내선물옵션] 기본시세 > 국내옵션전광판_콜풋[국내선물-022]
 ##############################################################################################
 
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/display-board-callput"
-
 def display_board_callput(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. O: 옵션)
     fid_cond_scr_div_code: str,   # [필수] 조건 화면 분류 코드 (ex. 20503)
@@ -67,6 +64,9 @@ def display_board_callput(
     if fid_mrkt_cls_code1 == "":
         raise ValueError("fid_mrkt_cls_code1 is required (e.g. 'PO')")
 
+    api_url = "/uapi/domestic-futureoption/v1/quotations/display-board-callput"
+
+
     tr_id = "FHPIF05030100"
 
     params = {
@@ -78,22 +78,19 @@ def display_board_callput(
         "FID_COND_MRKT_CLS_CODE": fid_cond_mrkt_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         output1_df = pd.DataFrame(res.getBody().output1)
         output2_df = pd.DataFrame(res.getBody().output2)
         return output1_df, output2_df
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 기본시세 > 국내옵션전광판_선물[국내선물-023]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/display-board-futures"
 
 def display_board_futures(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -127,6 +124,9 @@ def display_board_futures(
     if fid_cond_mrkt_cls_code == "":
         raise ValueError("fid_cond_mrkt_cls_code is required (e.g. 'MKI')")
 
+    api_url = "/uapi/domestic-futureoption/v1/quotations/display-board-futures"
+
+
     tr_id = "FHPIF05030200"
 
     params = {
@@ -135,20 +135,17 @@ def display_board_futures(
         "FID_COND_MRKT_CLS_CODE": fid_cond_mrkt_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         return pd.DataFrame(res.getBody().output)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 기본시세 > 국내옵션전광판_옵션월물리스트[국내선물-020]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/display-board-option-list"
 
 def display_board_option_list(
     fid_cond_scr_div_code: str,
@@ -175,6 +172,9 @@ def display_board_option_list(
     if fid_cond_scr_div_code == "":
         raise ValueError("fid_cond_scr_div_code is required (e.g. '509')")
 
+    api_url = "/uapi/domestic-futureoption/v1/quotations/display-board-option-list"
+
+
     tr_id = "FHPIO056104C0"
 
     params = {
@@ -183,21 +183,18 @@ def display_board_option_list(
         "FID_COND_MRKT_CLS_CODE": fid_cond_mrkt_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 기본시세 > 국내선물 기초자산 시세[국내선물-021]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/display-board-top"
 
 def display_board_top(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. F)
@@ -234,6 +231,9 @@ def display_board_top(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (e.g. '101V06')")
 
+    api_url = "/uapi/domestic-futureoption/v1/quotations/display-board-top"
+
+
     tr_id = "FHPIF05030000"
 
     params = {
@@ -245,7 +245,7 @@ def display_board_top(
         "FID_COND_MRKT_CLS_CODE": fid_cond_mrkt_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         output1 = pd.DataFrame(res.getBody().output1, index=[0])
@@ -253,15 +253,12 @@ def display_board_top(
         
         return output1, output2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 기본시세 > 선물옵션 일중예상체결추이[국내선물-018]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/exp-price-trend"
 
 def exp_price_trend(
     fid_input_iscd: str,  # [필수] 입력 종목코드 (ex. 101V06)
@@ -290,6 +287,9 @@ def exp_price_trend(
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'F')")
 
+    api_url = "/uapi/domestic-futureoption/v1/quotations/exp-price-trend"
+
+
     tr_id = "FHPIF05110100"  # 선물옵션 일중예상체결추이
 
     params = {
@@ -297,7 +297,7 @@ def exp_price_trend(
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code  # 조건 시장 분류 코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1은 object 타입이므로 단일 행 DataFrame
@@ -308,15 +308,12 @@ def exp_price_trend(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 기본시세 > 선물옵션 시세호가[v1_국내선물-007]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/inquire-asking-price"
 
 def inquire_asking_price(
     fid_cond_mrkt_div_code: str,  # [필수] FID 조건 시장 분류 코드 (ex. F: 지수선물, JF: 주식선물)
@@ -352,6 +349,8 @@ def inquire_asking_price(
 
     # TR_ID 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-asking-price"
+
         tr_id = "FHMIF10010000"
     elif env_dv == "demo":
         tr_id = "FHMIF10010000"
@@ -363,7 +362,7 @@ def inquire_asking_price(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) -> DataFrame
@@ -374,15 +373,12 @@ def inquire_asking_price(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 잔고현황[v1_국내선물-004]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-balance"
 
 def inquire_balance(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -449,6 +445,8 @@ def inquire_balance(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-futureoption/v1/trading/inquire-balance"
+
         tr_id = "CTFO6118R"
     elif env_dv == "demo":
         tr_id = "VTFO6118R"
@@ -464,7 +462,7 @@ def inquire_balance(
         "CTX_AREA_NK200": NK200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (array)
@@ -496,15 +494,12 @@ def inquire_balance(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 잔고정산손익내역[v1_국내선물-013]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-balance-settlement-pl"
 
 def inquire_balance_settlement_pl(
     cano: str,  # 종합계좌번호
@@ -559,6 +554,9 @@ def inquire_balance_settlement_pl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-balance-settlement-pl"
+
+
     tr_id = "CTFO6117R"
 
     params = {
@@ -569,7 +567,7 @@ def inquire_balance_settlement_pl(
         "CTX_AREA_NK200": NK200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (array)
@@ -600,15 +598,12 @@ def inquire_balance_settlement_pl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 잔고평가손익내역[v1_국내선물-015]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-balance-valuation-pl"
 
 def inquire_balance_valuation_pl(
         cano: str,  # [필수] 종합계좌번호 (ex. 계좌번호 체계(8-2)의 앞 8자리)
@@ -669,6 +664,9 @@ def inquire_balance_valuation_pl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-balance-valuation-pl"
+
+
     tr_id = "CTFO6159R"  # 선물옵션 잔고평가손익내역
 
     params = {
@@ -680,7 +678,7 @@ def inquire_balance_valuation_pl(
         "CTX_AREA_NK200": NK200
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리 (array)
@@ -712,15 +710,12 @@ def inquire_balance_valuation_pl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 주문체결내역조회[v1_국내선물-003]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-ccnl"
 
 def inquire_ccnl(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -810,6 +805,8 @@ def inquire_ccnl(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ccnl"
+
         tr_id = "TTTO5201R"
     elif env_dv == "demo":
         tr_id = "VTTO5201R"
@@ -832,7 +829,7 @@ def inquire_ccnl(
         "CTX_AREA_NK200": NK200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 데이터 처리
@@ -867,15 +864,12 @@ def inquire_ccnl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 기준일체결내역[v1_국내선물-016]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-ccnl-bstime"
 
 def inquire_ccnl_bstime(
     cano: str,  # [필수] 종합계좌번호
@@ -940,6 +934,9 @@ def inquire_ccnl_bstime(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ccnl-bstime"
+
+
     tr_id = "CTFO5139R"
 
     params = {
@@ -952,7 +949,7 @@ def inquire_ccnl_bstime(
         "CTX_AREA_NK200": NK200  # 연속조회키200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (array)
@@ -984,15 +981,12 @@ def inquire_ccnl_bstime(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션기간약정수수료일별[v1_국내선물-017]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-daily-amount-fee"
 
 def inquire_daily_amount_fee(
     cano: str,                                    # [필수] 종합계좌번호
@@ -1052,6 +1046,9 @@ def inquire_daily_amount_fee(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-daily-amount-fee"
+
+
     tr_id = "CTFO6119R"  # 선물옵션기간약정수수료일별
 
     params = {
@@ -1063,7 +1060,7 @@ def inquire_daily_amount_fee(
         "CTX_AREA_NK200": nk200            # 연속조회키200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 (array) 처리
@@ -1094,15 +1091,12 @@ def inquire_daily_amount_fee(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 기본시세 > 선물옵션기간별시세(일/주/월/년)[v1_국내선물-008]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/inquire-daily-fuopchartprice"
 
 def inquire_daily_fuopchartprice(
     fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
@@ -1162,6 +1156,8 @@ def inquire_daily_fuopchartprice(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-daily-fuopchartprice"
+
         tr_id = "FHKIF03020100"
     elif env_dv == "demo":
         tr_id = "FHKIF03020100"
@@ -1176,7 +1172,7 @@ def inquire_daily_fuopchartprice(
         "FID_PERIOD_DIV_CODE": fid_period_div_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1: object -> DataFrame (1행)
@@ -1187,15 +1183,12 @@ def inquire_daily_fuopchartprice(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 총자산현황[v1_국내선물-014]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-deposit"
 
 def inquire_deposit(
     cano: str,  # [필수] 종합계좌번호
@@ -1222,6 +1215,9 @@ def inquire_deposit(
     if acnt_prdt_cd == "":
         raise ValueError("acnt_prdt_cd is required")
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-deposit"
+
+
     tr_id = "CTRP6550R"  # 선물옵션 총자산현황
 
     params = {
@@ -1229,22 +1225,19 @@ def inquire_deposit(
         "ACNT_PRDT_CD": acnt_prdt_cd  # 계좌상품코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame([res.getBody().output])
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > (야간)선물옵션 잔고현황 [국내선물-010]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-ngt-balance"
 
 def inquire_ngt_balance(
     cano: str,  # 종합계좌번호
@@ -1306,6 +1299,9 @@ def inquire_ngt_balance(
             dataframe2 if dataframe2 is not None else pd.DataFrame()
         )
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ngt-balance"
+
+
     tr_id = "CTFN6118R"
 
     params = {
@@ -1318,7 +1314,7 @@ def inquire_ngt_balance(
         "CTX_AREA_NK200": NK200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (array)
@@ -1350,15 +1346,12 @@ def inquire_ngt_balance(
             logging.info("Data fetch complete.")
             return (dataframe1, dataframe2)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return (pd.DataFrame(), pd.DataFrame())
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > (야간)선물옵션 주문체결 내역조회 [국내선물-009]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-ngt-ccnl"
 
 def inquire_ngt_ccnl(
     cano: str,                                           # 종합계좌번호
@@ -1441,6 +1434,9 @@ def inquire_ngt_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ngt-ccnl"
+
+
     tr_id = "STTN5201R"
 
     params = {
@@ -1460,7 +1456,7 @@ def inquire_ngt_ccnl(
         "CTX_AREA_NK200": NK200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     print(res.getBody())
 
@@ -1497,15 +1493,12 @@ def inquire_ngt_ccnl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 기본시세 > 선물옵션 시세[v1_국내선물-006]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/inquire-price"
 
 def inquire_price(
     fid_cond_mrkt_div_code: str,  # [필수] FID 조건 시장 분류 코드 (ex. F: 지수선물, O: 지수옵션)
@@ -1547,6 +1540,8 @@ def inquire_price(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-price"
+
         tr_id = "FHMIF10000000"
     elif env_dv == "demo":
         tr_id = "FHMIF10000000"
@@ -1558,7 +1553,7 @@ def inquire_price(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 처리
@@ -1572,15 +1567,12 @@ def inquire_price(
         
         return output1, output2, output3
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > (야간)선물옵션 주문가능 조회 [국내선물-011]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-psbl-ngt-order"
 
 def inquire_psbl_ngt_order(
     cano: str,                 # 종합계좌번호
@@ -1633,6 +1625,9 @@ def inquire_psbl_ngt_order(
     if ord_dvsn_cd == "" or ord_dvsn_cd is None:
         raise ValueError("ord_dvsn_cd is required (e.g. '01', '02', '03', '04', '10', '11', '12', '13', '14', '15')")
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-psbl-ngt-order"
+
+
     tr_id = "STTN5105R"
 
     params = {
@@ -1645,21 +1640,18 @@ def inquire_psbl_ngt_order(
         "ORD_DVSN_CD": ord_dvsn_cd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame([res.getBody().output])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 주문가능[v1_국내선물-005]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/inquire-psbl-order"
 
 def inquire_psbl_order(
     env_dv: str,         # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -1715,6 +1707,8 @@ def inquire_psbl_order(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-futureoption/v1/trading/inquire-psbl-order"
+
         tr_id = "TTTO5105R"
     elif env_dv == "demo":
         tr_id = "VTTO5105R"
@@ -1730,22 +1724,19 @@ def inquire_psbl_order(
         "ORD_DVSN_CD": ord_dvsn_cd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 기본시세 > 선물옵션 분봉조회[v1_국내선물-012]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/quotations/inquire-time-fuopchartprice"
 
 def inquire_time_fuopchartprice(
     fid_cond_mrkt_div_code: str,     # FID 조건 시장 분류 코드 (F: 지수선물, O: 지수옵션)
@@ -1801,6 +1792,9 @@ def inquire_time_fuopchartprice(
     if fid_input_hour_1 == "":
         raise ValueError("fid_input_hour_1 is required (e.g. '100000')")
 
+    api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-time-fuopchartprice"
+
+
     tr_id = "FHKIF03020200"  # 선물옵션 분봉조회
 
     params = {
@@ -1813,7 +1807,7 @@ def inquire_time_fuopchartprice(
         "FID_INPUT_HOUR_1": fid_input_hour_1
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1: object array -> DataFrame
@@ -1825,15 +1819,12 @@ def inquire_time_fuopchartprice(
         logging.info("Data fetch complete.")
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > (야간)선물옵션 증거금 상세 [국내선물-024]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/ngt-margin-detail"
 
 def ngt_margin_detail(
         cano: str,  # 종합계좌번호
@@ -1866,6 +1857,9 @@ def ngt_margin_detail(
     if mgna_dvsn_cd == "":
         raise ValueError("mgna_dvsn_cd is required (e.g. '01:위탁, 02:유지')")
 
+    api_url = "/uapi/domestic-futureoption/v1/trading/ngt-margin-detail"
+
+
     tr_id = "CTFN7107R"  # (야간)선물옵션 증거금 상세
 
     params = {
@@ -1874,7 +1868,7 @@ def ngt_margin_detail(
         "MGNA_DVSN_CD": mgna_dvsn_cd
     }
 
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
 
     if res.isOK():
         output1_data = pd.DataFrame(res.getBody().output1)
@@ -1883,15 +1877,12 @@ def ngt_margin_detail(
 
         return output1_data, output2_data, output3_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 주문[v1_국내선물-001]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/order"
 
 def order(
     env_dv: str,  # 실전모의구분
@@ -1984,6 +1975,8 @@ def order(
     # tr_id 설정
     if env_dv == "real":
         if ord_dv == "day":
+            api_url = "/uapi/domestic-futureoption/v1/trading/order"
+
             tr_id = "TTTO1101U"
         elif ord_dv == "night":
             tr_id = "STTN1101U"
@@ -2012,20 +2005,17 @@ def order(
         "FUOP_ITEM_DVSN_CD": fuop_item_dvsn_cd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
+    res = ka._url_fetch(api_url, tr_id, "", params, postFlag=True)
     
     if res.isOK():
         return pd.DataFrame(res.getBody().output, index=[0])
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내선물옵션] 주문/계좌 > 선물옵션 정정취소주문[v1_국내선물-002]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-futureoption/v1/trading/order-rvsecncl"
 
 def order_rvsecncl(
     env_dv: str,                    # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -2082,6 +2072,8 @@ def order_rvsecncl(
     # tr_id 설정
     if env_dv == "real":
         if day_dv == "day":
+            api_url = "/uapi/domestic-futureoption/v1/trading/order-rvsecncl"
+
             tr_id = "TTTO1103U"
         elif day_dv == "night":
             tr_id = "TTTN1103U"
@@ -2110,11 +2102,11 @@ def order_rvsecncl(
         "FUOP_ITEM_DVSN_CD": fuop_item_dvsn_cd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
+    res = ka._url_fetch(api_url, tr_id, "", params, postFlag=True)
     
     if res.isOK():
         return pd.DataFrame(res.getBody().output)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 

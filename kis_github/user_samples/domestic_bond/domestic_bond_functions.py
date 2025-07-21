@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # [장내채권] 기본시세 > 장내채권 평균단가조회 [국내채권-158]
 ##############################################################################################
 
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/quotations/avg-unit"
-
 def avg_unit(
         inqr_strt_dt: str,  # 조회시작일자
         inqr_end_dt: str,  # 조회종료일자
@@ -97,6 +94,9 @@ def avg_unit(
             dataframe3 if dataframe3 is not None else pd.DataFrame()
         )
 
+    api_url = "/uapi/domestic-bond/v1/quotations/avg-unit"
+
+
     tr_id = "CTPF2005R"
 
     params = {
@@ -109,7 +109,7 @@ def avg_unit(
         "CTX_AREA_FK100": ctx_area_fk100,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 연속조회 정보 업데이트
@@ -161,15 +161,12 @@ def avg_unit(
             return dataframe1, dataframe2, dataframe3
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 주문/계좌 > 장내채권 매수주문 [국내주식-124]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/trading/buy"
 
 def buy(
         cano: str,
@@ -217,6 +214,8 @@ def buy(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-bond/v1/trading/buy"
+
     tr_id = "TTTC0952U"
 
     params = {
@@ -233,7 +232,7 @@ def buy(
         "CTAC_TLNO": ctac_tlno,
     }
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -253,15 +252,12 @@ def buy(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 기본시세 > 장내채권 호가잔량 [국내주식-132]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/quotations/inquire-asking-price"
 
 def inquire_asking_price(
         fid_cond_mrkt_div_code: str,  # 시장 분류 코드
@@ -305,6 +301,9 @@ def inquire_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/quotations/inquire-asking-price"
+
+
     tr_id = "FHKBJ773401C0"
 
     params = {
@@ -313,7 +312,7 @@ def inquire_asking_price(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -348,15 +347,12 @@ def inquire_asking_price(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 주문/계좌 > 장내채권 잔고조회 [국내주식-198]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/trading/inquire-balance"
 
 def inquire_balance(
         cano: str,  # 종합계좌번호
@@ -425,6 +421,9 @@ def inquire_balance(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/trading/inquire-balance"
+
+
     tr_id = "CTSC8407R"
 
     params = {
@@ -438,7 +437,7 @@ def inquire_balance(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -474,15 +473,12 @@ def inquire_balance(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 기본시세 > 장내채권 체결내역 [국내주식-201]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/quotations/inquire-ccnl"
 
 def inquire_ccnl(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -526,6 +522,9 @@ def inquire_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/quotations/inquire-ccnl"
+
+
     tr_id = "FHKBJ773403C0"
 
     # API 요청 파라미터 설정
@@ -535,7 +534,7 @@ def inquire_ccnl(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -569,15 +568,12 @@ def inquire_ccnl(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 주문/계좌 > 장내채권 일별체결조회 [국내주식-127]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/trading/inquire-daily-ccld"
 
 def inquire_daily_ccld(
         cano: str,  # 종합계좌번호
@@ -665,6 +661,9 @@ def inquire_daily_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/trading/inquire-daily-ccld"
+
+
     tr_id = "CTSC8013R"
 
     params = {
@@ -680,7 +679,7 @@ def inquire_daily_ccld(
         "CTX_AREA_FK200": ctx_area_fk200,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -748,15 +747,12 @@ def inquire_daily_ccld(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 기본시세 > 장내채권 분/일별차트가격 [국내주식-159]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/quotations/inquire-daily-itemchartprice"
 
 def inquire_daily_itemchartprice(
         fid_cond_mrkt_div_code: str,  # 조건 시장 구분 코드
@@ -800,6 +796,9 @@ def inquire_daily_itemchartprice(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/quotations/inquire-daily-itemchartprice"
+
+
     tr_id = "FHKBJ773701C0"
 
     params = {
@@ -808,7 +807,7 @@ def inquire_daily_itemchartprice(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -841,15 +840,12 @@ def inquire_daily_itemchartprice(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 기본시세 > 장내채권 일별시세 [국내주식-202]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/quotations/inquire-daily-price"
 
 def inquire_daily_price(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -896,6 +892,9 @@ def inquire_daily_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/quotations/inquire-daily-price"
+
+
     tr_id = "FHKBJ773404C0"
 
     params = {
@@ -904,7 +903,7 @@ def inquire_daily_price(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -939,15 +938,12 @@ def inquire_daily_price(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 기본시세 > 장내채권현재가(시세) [국내주식-200]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/quotations/inquire-price"
 
 def inquire_price(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -991,6 +987,9 @@ def inquire_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/quotations/inquire-price"
+
+
     tr_id = "FHKBJ773400C0"
 
     params = {
@@ -999,7 +998,7 @@ def inquire_price(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1032,15 +1031,12 @@ def inquire_price(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 주문/계좌 > 장내채권 매수가능조회 [국내주식-199]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/trading/inquire-psbl-order"
 
 def inquire_psbl_order(
         cano: str,  # 종합계좌번호
@@ -1096,6 +1092,9 @@ def inquire_psbl_order(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/trading/inquire-psbl-order"
+
+
     tr_id = "TTTC8910R"
 
     params = {
@@ -1106,7 +1105,7 @@ def inquire_psbl_order(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -1143,15 +1142,12 @@ def inquire_psbl_order(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 주문/계좌 > 장내채권 정정취소가능주문조회 [국내주식-126]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/trading/inquire-psbl-rvsecncl"
 
 def inquire_psbl_rvsecncl(
     cano: str,  # 종합계좌번호
@@ -1210,6 +1206,9 @@ def inquire_psbl_rvsecncl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    api_url = "/uapi/domestic-bond/v1/trading/inquire-psbl-rvsecncl"
+
+    
     tr_id = "CTSC8035R"
 
     params = {
@@ -1221,7 +1220,7 @@ def inquire_psbl_rvsecncl(
         "CTX_AREA_NK200": ctx_area_nk200,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1256,15 +1255,12 @@ def inquire_psbl_rvsecncl(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 주문/계좌 > 장내채권 매도가능조회 [국내주식-165]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-psbl-sell"
 
 def inquire_psbl_sell(
         cano: str,  # 종합계좌번호
@@ -1314,6 +1310,9 @@ def inquire_psbl_sell(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-sell"
+
+
     tr_id = "TTTC8408R"
 
     params = {
@@ -1323,7 +1322,7 @@ def inquire_psbl_sell(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1355,15 +1354,12 @@ def inquire_psbl_sell(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 기본시세 > 장내채권 발행정보 [국내주식-156]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/quotations/issue-info"
 
 def issue_info(
         pdno: str,  # 사용자권한정보
@@ -1411,6 +1407,8 @@ def issue_info(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
+    api_url = "/uapi/domestic-bond/v1/quotations/issue-info"
+
     tr_id = "CTPF1101R"
 
     # 요청 파라미터 설정
@@ -1420,7 +1418,7 @@ def issue_info(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 호출 성공 여부 확인
     if res.isOK():
@@ -1455,15 +1453,12 @@ def issue_info(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 주문/계좌 > 장내채권 정정취소주문 [국내주식-125]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/trading/order-rvsecncl"
 
 def order_rvsecncl(
     cano: str,
@@ -1512,6 +1507,8 @@ def order_rvsecncl(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-bond/v1/trading/order-rvsecncl"
+
     tr_id = "TTTC0953U"
 
     params = {
@@ -1528,7 +1525,7 @@ def order_rvsecncl(
         "CTAC_TLNO": ctac_tlno
     }
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                          ptr_id=tr_id,
                          tr_cont="",
                          params=params,
@@ -1548,15 +1545,12 @@ def order_rvsecncl(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 기본시세 > 장내채권 검색조건 [국내주식-129]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/quotations/search-bond-info"
 
 def search_bond_info(
         pdno: str,  # 상품번호
@@ -1603,6 +1597,9 @@ def search_bond_info(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-bond/v1/quotations/search-bond-info"
+
+
     tr_id = "CTPF1114R"
 
     params = {
@@ -1611,7 +1608,7 @@ def search_bond_info(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1642,15 +1639,12 @@ def search_bond_info(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [장내채권] 주문/계좌 > 장내채권 매도주문 [국내주식-123]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-bond/v1/trading/sell"
 
 def sell(
         cano: str,
@@ -1709,6 +1703,8 @@ def sell(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-bond/v1/trading/sell"
+
     tr_id = "TTTC0958U"
 
     params = {
@@ -1729,7 +1725,7 @@ def sell(
         "CTAC_TLNO": ctac_tlno
     }
 
-    res = ka._url_fetch(api_url=API_URL,
+    res = ka._url_fetch(api_url=api_url,
                         ptr_id=tr_id,
                         tr_cont="",
                         params=params,
@@ -1749,6 +1745,6 @@ def sell(
         return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 

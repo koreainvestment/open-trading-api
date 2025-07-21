@@ -67,6 +67,9 @@ def main():
         logging.info("결과:")
         print(result)
 
+        # 구독 해제
+        kws.unsubscribe(ws=ws, request=option_exp_ccnl, data=["339W08088"])
+
     kws.start(on_result=on_result)
 
 

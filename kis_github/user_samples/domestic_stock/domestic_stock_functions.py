@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # [국내주식] 기본시세 > 국내주식 시간외잔량 순위[v1_국내주식-093]
 ##############################################################################################
 
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/after-hour-balance"
-
 def after_hour_balance(
     fid_input_price_1: str,  # 입력 가격1
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -101,6 +98,9 @@ def after_hour_balance(
 
     # API 호출 URL 및 거래 ID 설정
 
+    api_url = "/uapi/domestic-stock/v1/ranking/after-hour-balance"
+
+
     tr_id = "FHPST01760000"
 
     # API 요청 파라미터 설정
@@ -118,7 +118,7 @@ def after_hour_balance(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 호출 성공 시 데이터 처리
     if res.isOK():
@@ -159,15 +159,12 @@ def after_hour_balance(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 대량체결건수 상위[국내주식-107]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/bulk-trans-num"
 
 def bulk_trans_num(
     fid_aply_rang_prc_2: str,  # 적용 범위 가격2
@@ -268,6 +265,10 @@ def bulk_trans_num(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/bulk-trans-num"
+
+
+
     tr_id = "FHKST190900C0"
 
     params = {
@@ -286,7 +287,7 @@ def bulk_trans_num(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -328,15 +329,12 @@ def bulk_trans_num(
     else:
         # API 호출 실패 시 에러 로그
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내주식 상하한가 포착 [국내주식-190]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/capture-uplowprice"
 
 def capture_uplowprice(
         fid_cond_mrkt_div_code: str,  # [필수] 조건시장분류코드 (ex. J:주식)
@@ -391,6 +389,9 @@ def capture_uplowprice(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (e.g. '0000', '0001', '1001')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/capture-uplowprice"
+
+
     tr_id = "FHKST130000C0"
 
     params = {
@@ -406,20 +407,17 @@ def capture_uplowprice(
         "FID_VOL_CNT": fid_vol_cnt
     }
 
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
 
     if res.isOK():
         return pd.DataFrame(res.getBody().output)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내휴장일조회[국내주식-040]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/chk-holiday"
 
 def chk_holiday(
         bass_dt: str,  # 기준일자 (YYYYMMDD)
@@ -465,6 +463,9 @@ def chk_holiday(
         else:
             return dataframe
 
+    api_url = "/uapi/domestic-stock/v1/quotations/chk-holiday"
+
+
     tr_id = "CTCA0903R"  # 국내휴장일조회
 
     params = {
@@ -473,7 +474,7 @@ def chk_holiday(
         "CTX_AREA_NK100": NK100
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
@@ -497,15 +498,12 @@ def chk_holiday(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 금리 종합(국내채권_금리)[국내주식-155]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/comp-interest"
 
 def comp_interest(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -564,6 +562,10 @@ def comp_interest(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/quotations/comp-interest"
+
+
+
     tr_id = "FHPST07020000"
 
     params = {
@@ -574,7 +576,7 @@ def comp_interest(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -614,15 +616,12 @@ def comp_interest(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 프로그램매매 종합현황(일별)[국내주식-115]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/comp-program-trade-daily"
 
 def comp_program_trade_daily(
         fid_cond_mrkt_div_code: str,  # [필수] 조건시장분류코드 (ex. J:주식,NX:NXT,UN:통합)
@@ -654,6 +653,9 @@ def comp_program_trade_daily(
     if fid_mrkt_cls_code == "":
         raise ValueError("fid_mrkt_cls_code is required (e.g. 'K:코스피,Q:코스닥')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/comp-program-trade-daily"
+
+
     tr_id = "FHPPG04600001"
 
     params = {
@@ -663,20 +665,17 @@ def comp_program_trade_daily(
         "FID_INPUT_DATE_2": fid_input_date_2
     }
 
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
 
     if res.isOK():
         return pd.DataFrame(res.getBody().output)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 프로그램매매 종합현황(시간) [국내주식-114]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/comp-program-trade-today"
 
 def comp_program_trade_today(
     fid_cond_mrkt_div_code: str,  # [필수] 시장 구분 코드 (J:KRX,NX:NXT,UN:통합)
@@ -716,6 +715,9 @@ def comp_program_trade_today(
     if fid_mrkt_cls_code == "":
         raise ValueError("fid_mrkt_cls_code is required (e.g. 'K:코스피, Q:코스닥')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/comp-program-trade-today"
+
+
     tr_id = "FHPPG04600101"  # 프로그램매매 종합현황(시간)
 
     params = {
@@ -727,7 +729,7 @@ def comp_program_trade_today(
         "FID_INPUT_HOUR_1": fid_input_hour_1               # 입력시간
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # array 타입이므로 DataFrame으로 반환
@@ -735,15 +737,12 @@ def comp_program_trade_today(
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 순위분석 > 국내주식 신용잔고 상위 [국내주식-109]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/credit-balance"
 
 def credit_balance(
         fid_cond_scr_div_code: str,  # 조건 화면 분류 코드
@@ -808,6 +807,9 @@ def credit_balance(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-stock/v1/ranking/credit-balance"
+
+
     tr_id = "FHKST17010000"
 
     params = {
@@ -818,7 +820,7 @@ def credit_balance(
         "FID_RANK_SORT_CLS_CODE": fid_rank_sort_cls_code,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -881,15 +883,12 @@ def credit_balance(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 당사 신용가능종목[국내주식-111]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/credit-by-company"
 
 def credit_by_company(
         fid_rank_sort_cls_code: str,  # 순위 정렬 구분 코드
@@ -962,6 +961,9 @@ def credit_by_company(
 
     # API 호출 URL 및 ID 설정
 
+    api_url = "/uapi/domestic-stock/v1/ranking/credit-by-company"
+
+
     tr_id = "FHPST04770000"
 
     # 요청 파라미터 설정
@@ -974,7 +976,7 @@ def credit_by_company(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 호출 성공 시 데이터 처리
     if res.isOK():
@@ -1013,15 +1015,12 @@ def credit_by_company(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내주식 신용잔고 일별추이[국내주식-110]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/daily-credit-balance"
 
 def daily_credit_balance(
     fid_cond_mrkt_div_code: str,  # [필수] 시장 분류 코드
@@ -1077,6 +1076,9 @@ def daily_credit_balance(
         else:
             return dataframe
 
+    api_url = "/uapi/domestic-stock/v1/quotations/daily-credit-balance"
+
+
     tr_id = "FHPST04760000"  # 국내주식 신용잔고 일별추이
 
     params = {
@@ -1086,7 +1088,7 @@ def daily_credit_balance(
         "FID_INPUT_DATE_1": fid_input_date_1               # 결제일자
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -1108,15 +1110,12 @@ def daily_credit_balance(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목별 일별 대차거래추이 [국내주식-135]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/daily-loan-trans"
 
 def daily_loan_trans(
     mrkt_div_cls_code: str,  # [필수] 조회구분 (ex. 1:코스피,2:코스닥,3:종목)
@@ -1151,6 +1150,9 @@ def daily_loan_trans(
     if mksc_shrn_iscd == "":
         raise ValueError("mksc_shrn_iscd is required (e.g. '123456')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/daily-loan-trans"
+
+
     tr_id = "HHPST074500C0"
 
     params = {
@@ -1161,21 +1163,18 @@ def daily_loan_trans(
         "CTS": cts
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         result_data = pd.DataFrame(res.getBody().output1)
         return result_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내주식 공매도 일별추이[국내주식-134]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/daily-short-sale"
 
 def daily_short_sale(
     fid_cond_mrkt_div_code: str,  # [필수] 시장분류코드 (ex. J:주식)
@@ -1208,6 +1207,9 @@ def daily_short_sale(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (e.g. '123456')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/daily-short-sale"
+
+
     tr_id = "FHPST04830000"
 
     params = {
@@ -1217,7 +1219,7 @@ def daily_short_sale(
         "FID_INPUT_DATE_2": fid_input_date_2
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 처리 (object 타입 -> DataFrame)
@@ -1228,15 +1230,12 @@ def daily_short_sale(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 순위분석 > 국내주식 이격도 순위 [v1_국내주식-095]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/disparity"
 
 def disparity(
         fid_input_price_2: str,  # 입력 가격2
@@ -1326,6 +1325,9 @@ def disparity(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-stock/v1/ranking/disparity"
+
+
     tr_id = "FHPST01780000"
 
     params = {
@@ -1342,7 +1344,7 @@ def disparity(
         "fid_vol_cnt": fid_vol_cnt,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1379,15 +1381,12 @@ def disparity(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 순위분석 > 국내주식 배당률 상위[국내주식-106]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/dividend-rate"
 
 def dividend_rate(
         cts_area: str,  # CTS_AREA
@@ -1473,6 +1472,10 @@ def dividend_rate(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/dividend-rate"
+
+
+
     tr_id = "HHKDB13470100"
 
     params = {
@@ -1486,7 +1489,7 @@ def dividend_rate(
         "GB4": gb4,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1520,15 +1523,12 @@ def dividend_rate(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 종목추정실적[국내주식-187]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/estimate-perform"
 
 def estimate_perform(
         sht_cd: str,  # 종목코드
@@ -1578,13 +1578,16 @@ def estimate_perform(
             dataframe4 if dataframe4 is not None else pd.DataFrame()
         )
 
+    api_url = "/uapi/domestic-stock/v1/quotations/estimate-perform"
+
+
     tr_id = "HHKST668300C0"
 
     params = {
         "SHT_CD": sht_cd,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -1640,15 +1643,12 @@ def estimate_perform(
             return dataframe1, dataframe2, dataframe3, dataframe4
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식 장마감 예상체결가[국내주식-120]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/exp-closing-price"
 
 def exp_closing_price(
     fid_cond_mrkt_div_code: str,  # [필수] 조건시장분류코드 (ex. J:주식)
@@ -1692,6 +1692,9 @@ def exp_closing_price(
     if fid_blng_cls_code == "":
         raise ValueError("fid_blng_cls_code is required (e.g. '0', '1')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/exp-closing-price"
+
+
     tr_id = "FHKST117300C0"
 
     params = {
@@ -1702,20 +1705,17 @@ def exp_closing_price(
         "FID_BLNG_CLS_CODE": fid_blng_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         return pd.DataFrame(res.getBody().output)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내주식 예상체결지수 추이[국내주식-121]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/exp-index-trend"
 
 def exp_index_trend(
         fid_mkop_cls_code: str,  # 장운영 구분 코드
@@ -1768,6 +1768,10 @@ def exp_index_trend(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/quotations/exp-index-trend"
+
+
+
     tr_id = "FHPST01840000"
 
     params = {
@@ -1778,7 +1782,7 @@ def exp_index_trend(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -1811,15 +1815,12 @@ def exp_index_trend(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내주식 예상체결가 추이[국내주식-118]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/exp-price-trend"
 
 def exp_price_trend(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드 (ex. J)
@@ -1854,6 +1855,9 @@ def exp_price_trend(
     if not fid_mkop_cls_code:
         raise ValueError("fid_mkop_cls_code is required (e.g. '0')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/exp-price-trend"
+
+
     tr_id = "FHPST01810000"
 
     params = {
@@ -1862,7 +1866,7 @@ def exp_price_trend(
         "FID_MKOP_CLS_CODE": fid_mkop_cls_code,
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         output1_data = pd.DataFrame([res.getBody().output1])
@@ -1871,15 +1875,12 @@ def exp_price_trend(
         logging.info("Data fetch complete.")
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내주식 예상체결 전체지수[국내주식-122]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/exp-total-index"
 
 def exp_total_index(
         fid_mrkt_cls_code: str,  # 시장 구분 코드
@@ -1954,6 +1955,10 @@ def exp_total_index(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/exp-total-index"
+
+
+
     tr_id = "FHKUP11750000"
 
     params = {
@@ -1965,7 +1970,7 @@ def exp_total_index(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -2010,15 +2015,12 @@ def exp_total_index(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 순위분석 > 국내주식 예상체결 상승_하락상위[v1_국내주식-103]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/exp-trans-updown"
 
 def exp_trans_updown(
         fid_rank_sort_cls_code: str,  # 순위 정렬 구분 코드
@@ -2113,6 +2115,10 @@ def exp_trans_updown(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/exp-trans-updown"
+
+
+
     tr_id = "FHPST01820000"
 
     params = {
@@ -2129,7 +2135,7 @@ def exp_trans_updown(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -2168,15 +2174,12 @@ def exp_trans_updown(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 대차대조표 [v1_국내주식-078]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/finance/balance-sheet"
 
 def finance_balance_sheet(
         fid_div_cls_code: str,  # 분류 구분 코드
@@ -2230,6 +2233,10 @@ def finance_balance_sheet(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/finance/balance-sheet"
+
+
+
     tr_id = "FHKST66430100"
 
     params = {
@@ -2239,7 +2246,7 @@ def finance_balance_sheet(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -2272,15 +2279,12 @@ def finance_balance_sheet(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 재무비율 [v1_국내주식-080]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/finance/financial-ratio"
 
 def finance_financial_ratio(
     fid_div_cls_code: str,  # 분류 구분 코드
@@ -2334,6 +2338,10 @@ def finance_financial_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
     
 
+    api_url = "/uapi/domestic-stock/v1/finance/financial-ratio"
+
+    
+
     tr_id = "FHKST66430300"
 
     params = {
@@ -2343,7 +2351,7 @@ def finance_financial_ratio(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -2375,15 +2383,12 @@ def finance_financial_ratio(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 성장성비율 [v1_국내주식-085]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/finance/growth-ratio"
 
 def finance_growth_ratio(
         fid_input_iscd: str,  # 입력 종목코드
@@ -2437,6 +2442,8 @@ def finance_growth_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API URL 및 거래 ID 설정
+    api_url = "/uapi/domestic-stock/v1/finance/growth-ratio"
+
     tr_id = "FHKST66430800"
 
     # 요청 파라미터 설정
@@ -2447,7 +2454,7 @@ def finance_growth_ratio(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -2479,15 +2486,12 @@ def finance_growth_ratio(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 손익계산서 [v1_국내주식-087]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/finance/income-statement"
 
 def finance_income_statement(
         fid_div_cls_code: str,  # 분류 구분 코드
@@ -2536,6 +2540,10 @@ def finance_income_statement(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/finance/income-statement"
+
+
+
     tr_id = "FHKST66430200"
 
     params = {
@@ -2545,7 +2553,7 @@ def finance_income_statement(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -2579,15 +2587,12 @@ def finance_income_statement(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 기타주요비율[v1_국내주식-082]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/finance/other-major-ratios"
 
 def finance_other_major_ratios(
     fid_input_iscd: str,  # 입력 종목코드
@@ -2638,6 +2643,10 @@ def finance_other_major_ratios(
         return dataframe if dataframe is not None else pd.DataFrame()
     
 
+    api_url = "/uapi/domestic-stock/v1/finance/other-major-ratios"
+
+    
+
     tr_id = "FHKST66430500"
 
     params = {
@@ -2647,7 +2656,7 @@ def finance_other_major_ratios(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -2676,15 +2685,12 @@ def finance_other_major_ratios(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식 수익성비율[v1_국내주식-081]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/finance/profit-ratio"
 
 def finance_profit_ratio(
         fid_input_iscd: str,  # 입력 종목코드
@@ -2738,6 +2744,10 @@ def finance_profit_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/finance/profit-ratio"
+
+
+
     tr_id = "FHKST66430400"
 
     params = {
@@ -2747,7 +2757,7 @@ def finance_profit_ratio(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -2783,15 +2793,12 @@ def finance_profit_ratio(
     else:
         # API 호출 실패 시 에러 로그
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 순위분석 > 국내주식 재무비율 순위[v1_국내주식-092]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/finance-ratio"
 
 def finance_ratio(
         fid_trgt_cls_code: str,  # 대상 구분 코드
@@ -2874,6 +2881,10 @@ def finance_ratio(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/finance-ratio"
+
+
+
     tr_id = "FHPST01750000"
 
     params = {
@@ -2893,7 +2904,7 @@ def finance_ratio(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -2935,15 +2946,12 @@ def finance_ratio(
             return dataframe
     else:
         # 오류 처리
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 안정성비율[v1_국내주식-083]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/finance/stability-ratio"
 
 def finance_stability_ratio(
         fid_input_iscd: str,  # 입력 종목코드
@@ -2994,6 +3002,10 @@ def finance_stability_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/finance/stability-ratio"
+
+
+
     tr_id = "FHKST66430600"
 
     params = {
@@ -3003,7 +3015,7 @@ def finance_stability_ratio(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -3035,15 +3047,12 @@ def finance_stability_ratio(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 순위분석 > 등락률 순위[v1_국내주식-088]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/fluctuation"
 
 def fluctuation(
         fid_cond_mrkt_div_code: str,  # 필수, 조건 시장 분류 코드
@@ -3100,6 +3109,10 @@ def fluctuation(
         raise ValueError("조건 화면 분류 코드 확인요망!!!")
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/fluctuation"
+
+
+
     tr_id = "FHPST01700000"  # 국내주식 등락률 순위
 
     params = {
@@ -3119,7 +3132,7 @@ def fluctuation(
         "fid_rsfl_rate1": fid_rsfl_rate1
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -3148,15 +3161,12 @@ def fluctuation(
             print("The End")
             return dataframe
     else:
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내기관_외국인 매매종목가집계[국내주식-037]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/foreign-institution-total"
 
 def foreign_institution_total(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -3209,6 +3219,9 @@ def foreign_institution_total(
     if fid_etc_cls_code == "":
         raise ValueError("fid_etc_cls_code is required (e.g. '0:전체,1:외국인,2:기관계,3:기타')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/foreign-institution-total"
+
+
     tr_id = "FHPTJ04400000"  # 국내기관_외국인 매매종목가집계
 
     params = {
@@ -3220,7 +3233,7 @@ def foreign_institution_total(
         "FID_ETC_CLS_CODE": fid_etc_cls_code                 # 기타구분정렬
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -3228,15 +3241,12 @@ def foreign_institution_total(
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목별 외국계 순매수추이 [국내주식-164]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/frgnmem-pchs-trend"
 
 def frgnmem_pchs_trend(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드 (ex. J)
@@ -3269,6 +3279,9 @@ def frgnmem_pchs_trend(
     if not fid_input_iscd_2:
         raise ValueError("fid_input_iscd_2 is required (e.g. '99999')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-pchs-trend"
+
+
     tr_id = "FHKST644400C0"
 
     params = {
@@ -3277,7 +3290,7 @@ def frgnmem_pchs_trend(
         "FID_INPUT_ISCD_2": fid_input_iscd_2,
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         output_data = pd.DataFrame(res.getBody().output)
@@ -3285,15 +3298,12 @@ def frgnmem_pchs_trend(
         logging.info("Data fetch complete.")
         return output_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 외국계 매매종목 가집계 [국내주식-161]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-estimate"
 
 def frgnmem_trade_estimate(
         fid_cond_mrkt_div_code: str,
@@ -3336,6 +3346,9 @@ def frgnmem_trade_estimate(
     if fid_rank_sort_cls_code_2 == "":
         raise ValueError("fid_rank_sort_cls_code_2 is required (e.g. '0')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-estimate"
+
+
     tr_id = "FHKST644100C0"
 
     params = {
@@ -3346,21 +3359,18 @@ def frgnmem_trade_estimate(
         "FID_RANK_SORT_CLS_CODE_2": fid_rank_sort_cls_code_2
     }
 
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
 
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 회원사 실 시간 매매동향(틱)[국내주식-163]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend"
 
 def frgnmem_trade_trend(
         fid_cond_scr_div_code: str,  # 화면분류코드
@@ -3430,6 +3440,9 @@ def frgnmem_trade_trend(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend"
+
+
     tr_id = "FHPST04320000"
 
     params = {
@@ -3441,7 +3454,7 @@ def frgnmem_trade_trend(
         "FID_VOL_CNT": fid_vol_cnt,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -3504,15 +3517,12 @@ def frgnmem_trade_trend(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 순위분석 > HTS조회상위20종목[국내주식-214]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/hts-top-view"
 
 def hts_top_view(
         tr_cont: str = "",
@@ -3547,13 +3557,17 @@ def hts_top_view(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/quotations/hts-top-view"
+
+
+
     tr_id = "HHMCM000100C0"
 
     # Request Query Parameter가 없으므로 빈 딕셔너리로 유지
     params = {}
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -3582,15 +3596,12 @@ def hts_top_view(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 투자계좌자산현황조회[v1_국내주식-048]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-account-balance"
 
 def inquire_account_balance(
     cano: str,  # [필수] 종합계좌번호 (ex. 12345678)
@@ -3624,6 +3635,9 @@ def inquire_account_balance(
     if acnt_prdt_cd == "":
         raise ValueError("acnt_prdt_cd is required (e.g. '19' or '21')")
 
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-account-balance"
+
+
     tr_id = "CTRP6548R"  # 투자계좌자산현황조회
 
     params = {
@@ -3633,7 +3647,7 @@ def inquire_account_balance(
         "BSPR_BF_DT_APLY_YN": bspr_bf_dt_aply_yn  # 기준가이전일자적용여부
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 - array 타입
@@ -3645,15 +3659,12 @@ def inquire_account_balance(
         logging.info("Data fetch complete.")
         return df1, df2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 호가/예상체결[v1_국내주식-011]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn"
 
 def inquire_asking_price_exp_ccn(
     env_dv: str,  # 실전모의구분 (real:실전, demo:모의)
@@ -3689,6 +3700,8 @@ def inquire_asking_price_exp_ccn(
 
     # TR_ID 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn"
+
         tr_id = "FHKST01010200"
     elif env_dv == "demo":
         tr_id = "FHKST01010200"
@@ -3700,7 +3713,7 @@ def inquire_asking_price_exp_ccn(
         "FID_INPUT_ISCD": fid_input_iscd  # 입력 종목코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) -> 호가정보
@@ -3711,15 +3724,12 @@ def inquire_asking_price_exp_ccn(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식잔고조회[v1_국내주식-006]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-balance"
 
 def inquire_balance(
     env_dv: str,  # 실전모의구분
@@ -3811,6 +3821,8 @@ def inquire_balance(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/trading/inquire-balance"
+
         tr_id = "TTTC8434R"
     elif env_dv == "demo":
         tr_id = "VTTC8434R"
@@ -3831,7 +3843,7 @@ def inquire_balance(
         "CTX_AREA_NK100": NK100
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리
@@ -3864,15 +3876,12 @@ def inquire_balance(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식잔고조회_실현손익[v1_국내주식-041]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-balance-rlz-pl"
 
 def inquire_balance_rlz_pl(
     cano: str,  # 종합계좌번호
@@ -3959,6 +3968,9 @@ def inquire_balance_rlz_pl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-balance-rlz-pl"
+
+
     tr_id = "TTTC8494R"  # 주식잔고조회_실현손익
 
     params = {
@@ -3976,7 +3988,7 @@ def inquire_balance_rlz_pl(
         "CTX_AREA_NK100": NK100
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리
@@ -4010,15 +4022,12 @@ def inquire_balance_rlz_pl(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 체결[v1_국내주식-009]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-ccnl"
 
 def inquire_ccnl(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -4053,6 +4062,8 @@ def inquire_ccnl(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-ccnl"
+
         tr_id = "FHKST01010300"
     elif env_dv == "demo":
         tr_id = "FHKST01010300"
@@ -4064,21 +4075,18 @@ def inquire_ccnl(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 신용매수가능조회[v1_국내주식-042]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-credit-psamount"
 
 def inquire_credit_psamount(
     cano: str,  # 종합계좌번호
@@ -4134,6 +4142,9 @@ def inquire_credit_psamount(
     if ovrs_icld_yn == "" or ovrs_icld_yn is None:
         raise ValueError("ovrs_icld_yn is required")
 
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-credit-psamount"
+
+
     tr_id = "TTTC8909R"
 
     params = {
@@ -4147,22 +4158,19 @@ def inquire_credit_psamount(
         "ORD_UNPR": ord_unpr
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식일별주문체결조회[v1_국내주식-005]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-daily-ccld"
 
 def inquire_daily_ccld(
     env_dv: str,  # [필수] 실전모의구분 (real:실전, demo:모의)
@@ -4282,6 +4290,8 @@ def inquire_daily_ccld(
     # tr_id 설정
     if env_dv == "real":
         if pd_dv == "before":
+            api_url = "/uapi/domestic-stock/v1/trading/inquire-daily-ccld"
+
             tr_id = "CTSC9215R"
         elif pd_dv == "inner":
             tr_id = "TTTC0081R"
@@ -4317,7 +4327,7 @@ def inquire_daily_ccld(
     if excg_id_dvsn_cd is not None:
         params["EXCG_ID_DVSN_CD"] = excg_id_dvsn_cd
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 (array) 처리
@@ -4351,15 +4361,12 @@ def inquire_daily_ccld(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식업종기간별시세(일_주_월_년)[v1_국내주식-021]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice"
 
 def inquire_daily_indexchartprice(
         fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -4451,6 +4458,8 @@ def inquire_daily_indexchartprice(
 
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real" or env_dv == "demo":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice"
+
         tr_id = "FHKUP03500100"  # 실전투자용 TR ID
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
@@ -4464,7 +4473,7 @@ def inquire_daily_indexchartprice(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -4512,15 +4521,12 @@ def inquire_daily_indexchartprice(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식기간별시세(일/주/월/년)[v1_국내주식-016]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
 
 def inquire_daily_itemchartprice(
     env_dv: str,  # 실전모의구분
@@ -4577,6 +4583,8 @@ def inquire_daily_itemchartprice(
 
     # TR_ID 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
+
         tr_id = "FHKST03010100"
     elif env_dv == "demo":
         tr_id = "FHKST03010100"
@@ -4592,7 +4600,7 @@ def inquire_daily_itemchartprice(
         "FID_ORG_ADJ_PRC": fid_org_adj_prc
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 처리 (object 타입이므로 DataFrame)
@@ -4603,15 +4611,12 @@ def inquire_daily_itemchartprice(
         
         return (output1_data, output2_data)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return (pd.DataFrame(), pd.DataFrame())
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 시간외일자별주가[v1_국내주식-026]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-daily-overtimeprice"
 
 def inquire_daily_overtimeprice(
     env_dv: str,                          # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -4647,6 +4652,8 @@ def inquire_daily_overtimeprice(
 
     # TR_ID 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-overtimeprice"
+
         tr_id = "FHPST02320000"
     elif env_dv == "demo":
         tr_id = "FHPST02320000"
@@ -4658,7 +4665,7 @@ def inquire_daily_overtimeprice(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) -> DataFrame
@@ -4669,15 +4676,12 @@ def inquire_daily_overtimeprice(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 식현재가 일자별[v1_국내주식-010]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-daily-price"
 
 def inquire_daily_price(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -4725,6 +4729,8 @@ def inquire_daily_price(
 
     # tr_id 설정 (실전/모의 모두 동일)
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-price"
+
         tr_id = "FHKST01010400"
     elif env_dv == "demo":
         tr_id = "FHKST01010400"
@@ -4738,22 +4744,19 @@ def inquire_daily_price(
         "FID_ORG_ADJ_PRC": fid_org_adj_prc
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output은 array 자료형이므로 DataFrame으로 변환
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목별일별매수매도체결량 [v1_국내주식-056]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-daily-trade-volume"
 
 def inquire_daily_trade_volume(
     fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
@@ -4791,6 +4794,9 @@ def inquire_daily_trade_volume(
     if fid_period_div_code == "":
         raise ValueError("fid_period_div_code is required (e.g. 'D')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-trade-volume"
+
+
     tr_id = "FHKST03010800"
 
     params = {
@@ -4801,7 +4807,7 @@ def inquire_daily_trade_volume(
         "FID_INPUT_DATE_2": fid_input_date_2
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) - 단일 레코드
@@ -4812,15 +4818,12 @@ def inquire_daily_trade_volume(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] ELW시세 > ELW 현재가 시세 [v1_국내주식-014]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-elw-price"
 
 def inquire_elw_price(
         fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
@@ -4880,6 +4883,8 @@ def inquire_elw_price(
 
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real" or env_dv == "demo":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-elw-price"
+
         tr_id = "FHKEW15010000"  # 실전투자용 TR ID
 
     else:
@@ -4892,7 +4897,7 @@ def inquire_elw_price(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -4927,15 +4932,12 @@ def inquire_elw_price(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내업종 구분별전체시세[v1_국내주식-066]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-index-category-price"
 
 def inquire_index_category_price(
         fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
@@ -5010,6 +5012,10 @@ def inquire_index_category_price(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-category-price"
+
+
+
     tr_id = "FHPUP02140000"
 
     params = {
@@ -5021,7 +5027,7 @@ def inquire_index_category_price(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -5062,15 +5068,12 @@ def inquire_index_category_price(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내업종 일별시세 [v1_국내주식-065]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-index-daily-price"
 
 def inquire_index_daily_price(
     fid_period_div_code: str,  # FID 기간 분류 코드
@@ -5130,6 +5133,10 @@ def inquire_index_daily_price(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-daily-price"
+
+    
+
     tr_id = "FHPUP02120000"
 
     params = {
@@ -5139,7 +5146,7 @@ def inquire_index_daily_price(
         "FID_INPUT_DATE_1": fid_input_date_1,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -5177,15 +5184,12 @@ def inquire_index_daily_price(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내업종 현재지수 [v1_국내주식-063]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-index-price"
 
 def inquire_index_price(
         fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
@@ -5233,6 +5237,8 @@ def inquire_index_price(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-price"
+
     tr_id = "FHPUP02100000"
 
     # 요청 파라미터 설정
@@ -5242,7 +5248,7 @@ def inquire_index_price(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 호출 성공 시 데이터 처리
     if res.isOK():
@@ -5276,15 +5282,12 @@ def inquire_index_price(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내업종 시간별지수(초)[국내주식-064]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-index-tickprice"
 
 def inquire_index_tickprice(
         fid_input_iscd: str,  # 입력 종목코드
@@ -5329,6 +5332,10 @@ def inquire_index_tickprice(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-tickprice"
+
+
+
     tr_id = "FHPUP02110100"
 
     params = {
@@ -5337,7 +5344,7 @@ def inquire_index_tickprice(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -5372,15 +5379,12 @@ def inquire_index_tickprice(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 업종/기타 > 국내업종 시간별지수(분)[국내주식-119]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-index-timeprice"
 
 def inquire_index_timeprice(
         fid_input_hour_1: str,  # ?입력 시간1
@@ -5431,6 +5435,10 @@ def inquire_index_timeprice(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-timeprice"
+
+
+
     tr_id = "FHPUP02110200"
 
     params = {
@@ -5440,7 +5448,7 @@ def inquire_index_timeprice(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -5472,15 +5480,12 @@ def inquire_index_timeprice(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 투자자[v1_국내주식-012]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-investor"
 
 def inquire_investor(
     env_dv: str,                    # [필수] 실전모의구분
@@ -5519,6 +5524,8 @@ def inquire_investor(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor"
+
         tr_id = "FHKST01010900"
     elif env_dv == "demo":
         tr_id = "FHKST01010900"
@@ -5530,20 +5537,17 @@ def inquire_investor(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         return pd.DataFrame(res.getBody().output)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 시장별 투자자매매동향(일별) [국내주식-075]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-investor-daily-by-market"
 
 def inquire_investor_daily_by_market(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. U:업종)
@@ -5582,6 +5586,9 @@ def inquire_investor_daily_by_market(
     if fid_input_iscd_1 == "":
         raise ValueError("fid_input_iscd_1 is required (e.g. 'KSP')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor-daily-by-market"
+
+
     tr_id = "FHPTJ04040000"  # 시장별 투자자매매동향(일별)
 
     params = {
@@ -5591,21 +5598,18 @@ def inquire_investor_daily_by_market(
         "FID_INPUT_ISCD_1": fid_input_iscd_1               # 입력 종목코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 시장별 투자자매매동향(시세)[v1_국내주식-074]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-investor-time-by-market"
 
 def inquire_investor_time_by_market(
     fid_input_iscd: str,    # [필수] 시장구분
@@ -5633,6 +5637,9 @@ def inquire_investor_time_by_market(
     if fid_input_iscd_2 == "":
         raise ValueError("fid_input_iscd_2 is required")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor-time-by-market"
+
+
     tr_id = "FHPTJ04030000"
 
     params = {
@@ -5640,21 +5647,18 @@ def inquire_investor_time_by_market(
         "FID_INPUT_ISCD_2": fid_input_iscd_2   # 업종구분
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 회원사[v1_국내주식-013]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-member"
 
 def inquire_member(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -5689,6 +5693,8 @@ def inquire_member(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-member"
+
         tr_id = "FHKST01010600"
     elif env_dv == "demo":
         tr_id = "FHKST01010600"
@@ -5700,21 +5706,18 @@ def inquire_member(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame([res.getBody().output])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 주식현재가 회원사 종목매매동향 [국내주식-197]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-member-daily"
 
 def inquire_member_daily(
     fid_cond_mrkt_div_code: str,  # [필수] 조건시장분류코드 (ex. 주식J)
@@ -5765,6 +5768,9 @@ def inquire_member_daily(
     if fid_input_date_2 == "":
         raise ValueError("fid_input_date_2 is required")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-member-daily"
+
+
     tr_id = "FHPST04540000"
 
     params = {
@@ -5776,22 +5782,19 @@ def inquire_member_daily(
         "FID_SCTN_CLS_CODE": fid_sctn_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식 시간외호가[국내주식-077]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-overtime-asking-price"
 
 def inquire_overtime_asking_price(
     fid_cond_mrkt_div_code: str,  # [필수] 시장 분류 코드 (ex. J:주식)
@@ -5819,6 +5822,9 @@ def inquire_overtime_asking_price(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (e.g. '123456')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-overtime-asking-price"
+
+
     tr_id = "FHPST02300400"  # 국내주식 시간외호가
 
     params = {
@@ -5826,21 +5832,18 @@ def inquire_overtime_asking_price(
         "FID_INPUT_ISCD": fid_input_iscd,                  # 종목코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame([res.getBody().output])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식 시간외현재가[국내주식-076]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-overtime-price"
 
 def inquire_overtime_price(
     fid_cond_mrkt_div_code: str,  # [필수] 시장 분류 코드 (ex. J: 주식)
@@ -5869,6 +5872,9 @@ def inquire_overtime_price(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (e.g. '005930')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-overtime-price"
+
+
     tr_id = "FHPST02300000"
 
     params = {
@@ -5876,22 +5882,19 @@ def inquire_overtime_price(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 기간별손익일별합산조회[v1_국내주식-052]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-period-profit"
 
 def inquire_period_profit(
     cano: str,  # 종합계좌번호
@@ -5970,6 +5973,9 @@ def inquire_period_profit(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-period-profit"
+
+
     tr_id = "TTTC8708R"
 
     params = {
@@ -5985,7 +5991,7 @@ def inquire_period_profit(
         "CTX_AREA_NK100": NK100
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (array)
@@ -6017,15 +6023,12 @@ def inquire_period_profit(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 기간별매매손익현황조회[v1_국내주식-060]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-period-trade-profit"
 
 def inquire_period_trade_profit(
     cano: str,  # 종합계좌번호
@@ -6098,6 +6101,9 @@ def inquire_period_trade_profit(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-period-trade-profit"
+
+
     tr_id = "TTTC8715R"  # 기간별매매손익현황조회
 
     params = {
@@ -6112,7 +6118,7 @@ def inquire_period_trade_profit(
         "CTX_AREA_NK100": NK100  # 연속조회키100
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data1 = pd.DataFrame(res.getBody().output1)
@@ -6143,15 +6149,12 @@ def inquire_period_trade_profit(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 시세[v1_국내주식-008]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-price"
 
 def inquire_price(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -6189,6 +6192,8 @@ def inquire_price(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-price"
+
         tr_id = "FHKST01010100"
     elif env_dv == "demo":
         tr_id = "FHKST01010100"
@@ -6200,21 +6205,18 @@ def inquire_price(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 시세2[v1_국내주식-054]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-price-2"
 
 def inquire_price_2(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -6242,6 +6244,9 @@ def inquire_price_2(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-price-2"
+
+
     tr_id = "FHPST01010000"  # 주식현재가 시세2
 
     params = {
@@ -6249,20 +6254,17 @@ def inquire_price_2(
         "FID_INPUT_ISCD": fid_input_iscd,                  # 입력 종목코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         return pd.DataFrame(res.getBody().output, index=[0])
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 매수가능조회[v1_국내주식-007]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-psbl-order"
 
 def inquire_psbl_order(
     env_dv: str,  # 실전모의구분
@@ -6336,6 +6338,8 @@ def inquire_psbl_order(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-order"
+
         tr_id = "TTTC8908R"
     elif env_dv == "demo":
         tr_id = "VTTC8908R"
@@ -6352,20 +6356,17 @@ def inquire_psbl_order(
         "OVRS_ICLD_YN": ovrs_icld_yn
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         return pd.DataFrame(res.getBody().output, index=[0])
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식정정취소가능주문조회[v1_국내주식-004]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/inquire-psbl-rvsecncl"
 
 def inquire_psbl_rvsecncl(
     cano: str,  # 종합계좌번호
@@ -6423,6 +6424,9 @@ def inquire_psbl_rvsecncl(
         else:
             return dataframe
 
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-rvsecncl"
+
+
     tr_id = "TTTC0084R"  # 주식정정취소가능주문조회
 
     params = {
@@ -6434,7 +6438,7 @@ def inquire_psbl_rvsecncl(
         "CTX_AREA_NK100": NK100  # 연속조회키100
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -6458,15 +6462,12 @@ def inquire_psbl_rvsecncl(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식일별분봉조회 [국내주식-213]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-time-dailychartprice"
 
 def inquire_time_dailychartprice(
     fid_cond_mrkt_div_code: str,  # 시장 분류 코드
@@ -6514,6 +6515,9 @@ def inquire_time_dailychartprice(
     if fid_input_date_1 == "":
         raise ValueError("fid_input_date_1 is required (e.g. '20241023')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-dailychartprice"
+
+
     tr_id = "FHKST03010230"
 
     params = {
@@ -6525,7 +6529,7 @@ def inquire_time_dailychartprice(
         "FID_FAKE_TICK_INCU_YN": fid_fake_tick_incu_yn
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) -> DataFrame
@@ -6536,15 +6540,12 @@ def inquire_time_dailychartprice(
         
         return output1, output2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 업종 분봉조회[v1_국내주식-045]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-time-indexchartprice"
 
 def inquire_time_indexchartprice(
         fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
@@ -6619,6 +6620,10 @@ def inquire_time_indexchartprice(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-indexchartprice"
+
+
+
     tr_id = "FHKUP03500200"
 
     params = {
@@ -6629,7 +6634,7 @@ def inquire_time_indexchartprice(
         "FID_PW_DATA_INCU_YN": fid_pw_data_incu_yn,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # Output1 처리
@@ -6692,15 +6697,12 @@ def inquire_time_indexchartprice(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 시장별 투자자매매동향(일별) [국내주식-075]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice"
 
 def inquire_time_itemchartprice(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -6757,6 +6759,8 @@ def inquire_time_itemchartprice(
 
     # tr_id 설정 (실전/모의 동일)
     if env_dv == "real" or env_dv == "demo":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice"
+
         tr_id = "FHKST03010200"
     else:
         raise ValueError("env_dv can only be real or demo")
@@ -6769,7 +6773,7 @@ def inquire_time_itemchartprice(
         "FID_ETC_CLS_CODE": fid_etc_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) -> DataFrame (1행)
@@ -6780,15 +6784,12 @@ def inquire_time_itemchartprice(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 당일시간대별체결[v1_국내주식-023]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-time-itemconclusion"
 
 def inquire_time_itemconclusion(
     env_dv: str,                    # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -6829,6 +6830,8 @@ def inquire_time_itemconclusion(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-itemconclusion"
+
         tr_id = "FHPST01060000"
     elif env_dv == "demo":
         tr_id = "FHPST01060000"
@@ -6841,7 +6844,7 @@ def inquire_time_itemconclusion(
         "FID_INPUT_HOUR_1": fid_input_hour_1
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 처리 (object -> DataFrame)
@@ -6852,15 +6855,12 @@ def inquire_time_itemconclusion(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 주식현재가 시간외시간별체결[v1_국내주식-025]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-time-overtimeconclusion"
 
 def inquire_time_overtimeconclusion(
     env_dv: str,  # [필수] 실전모의구분 (ex. real:실전, demo:모의) 
@@ -6901,6 +6901,8 @@ def inquire_time_overtimeconclusion(
 
     # TR_ID 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-overtimeconclusion"
+
         tr_id = "FHPST02310000"
     elif env_dv == "demo":
         tr_id = "FHPST02310000"
@@ -6913,7 +6915,7 @@ def inquire_time_overtimeconclusion(
         "FID_HOUR_CLS_CODE": fid_hour_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) -> DataFrame
@@ -6924,15 +6926,12 @@ def inquire_time_overtimeconclusion(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 변동성완화장치(VI) 현황[v1_국내주식-055]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/inquire-vi-status"
 
 def inquire_vi_status(
         fid_div_cls_code: str,  # FID 분류 구분 코드
@@ -7013,6 +7012,10 @@ def inquire_vi_status(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-vi-status"
+
+
+
     tr_id = "FHPST01390000"
 
     params = {
@@ -7027,7 +7030,7 @@ def inquire_vi_status(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -7064,15 +7067,12 @@ def inquire_vi_status(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식통합증거금 현황 [국내주식-191]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/intgr-margin"
 
 def intgr_margin(
     cano: str,  # [필수] 종합계좌번호 (ex. 12345678)
@@ -7118,6 +7118,9 @@ def intgr_margin(
     if fwex_ctrt_frcr_dvsn_cd == "":
         raise ValueError("fwex_ctrt_frcr_dvsn_cd is required (e.g. '01' or '02')")
 
+    api_url = "/uapi/domestic-stock/v1/trading/intgr-margin"
+
+
     tr_id = "TTTC0869R"
 
     params = {
@@ -7128,21 +7131,18 @@ def intgr_margin(
         "FWEX_CTRT_FRCR_DVSN_CD": fwex_ctrt_frcr_dvsn_cd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame([res.getBody().output])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 관심종목 그룹조회 [국내주식-204]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/intstock-grouplist"
 
 def intstock_grouplist(
     type: str,                    # [필수] 관심종목구분코드 (ex. 1)
@@ -7180,6 +7180,9 @@ def intstock_grouplist(
     if user_id == "":
         raise ValueError("user_id is required")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/intstock-grouplist"
+
+
     tr_id = "HHKCM113004C7"  # 관심종목 그룹조회
 
     params = {
@@ -7188,21 +7191,18 @@ def intstock_grouplist(
         "USER_ID": user_id                 # 사용자 ID
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output2)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 관심종목(멀티종목) 시세조회 [국내주식-205]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/intstock-multprice"
 
 def intstock_multprice(
     fid_cond_mrkt_div_code_1: str,  # [필수] 조건 시장 분류 코드1 (ex. J)
@@ -7355,6 +7355,9 @@ def intstock_multprice(
     if fid_input_iscd_1 == "":
         raise ValueError("fid_input_iscd_1 is required (e.g. '123456')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/intstock-multprice"
+
+
     tr_id = "FHKST11300006"  # 관심종목(멀티종목) 시세조회
 
     params = {
@@ -7480,22 +7483,19 @@ def intstock_multprice(
     if fid_input_iscd_30 is not None:
         params["FID_INPUT_ISCD_30"] = fid_input_iscd_30
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 관심종목 그룹별 종목조회 [국내주식-203]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/intstock-stocklist-by-group"
 
 def intstock_stocklist_by_group(
     type: str,                    # 관심종목구분코드 (ex. 1)
@@ -7549,6 +7549,9 @@ def intstock_stocklist_by_group(
     if fid_etc_cls_code == "":
         raise ValueError("fid_etc_cls_code is required (e.g. '4')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/intstock-stocklist-by-group"
+
+
     tr_id = "HHKCM113004C6"  # 관심종목 그룹별 종목조회
 
     params = {
@@ -7562,7 +7565,7 @@ def intstock_stocklist_by_group(
         "CNTG_CLS_CODE": cntg_cls_code          # 체결 구분 코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 데이터프레임 생성
@@ -7574,15 +7577,12 @@ def intstock_stocklist_by_group(
         logging.info("Data fetch complete.")
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국국내주식 증권사별 투자의견[국내주식-189]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/invest-opbysec"
 
 def invest_opbysec(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -7662,6 +7662,9 @@ def invest_opbysec(
 
     # API 호출 URL 및 거래 ID 설정
 
+    api_url = "/uapi/domestic-stock/v1/quotations/invest-opbysec"
+
+
     tr_id = "FHKST663400C0"
 
     # API 요청 파라미터 설정
@@ -7675,7 +7678,7 @@ def invest_opbysec(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -7711,15 +7714,12 @@ def invest_opbysec(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내주식 종목투자의견[국내주식-188]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/invest-opinion"
 
 def invest_opinion(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
@@ -7792,6 +7792,9 @@ def invest_opinion(
 
     # API 호출 URL 및 거래 ID 설정
 
+    api_url = "/uapi/domestic-stock/v1/ranking/invest-opinion"
+
+
     tr_id = "FHKST663300C0"
 
     # 요청 파라미터 설정
@@ -7804,7 +7807,7 @@ def invest_opinion(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -7840,15 +7843,12 @@ def invest_opinion(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 프로그램매매 투자자매매동향(당일) [국내주식-116]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/investor-program-trade-today"
 
 def investor_program_trade_today(
     mrkt_div_cls_code: str  # [필수] 시장 구분 코드 (ex. 1:코스피, 4:코스닥)
@@ -7871,27 +7871,27 @@ def investor_program_trade_today(
     if mrkt_div_cls_code == "":
         raise ValueError("mrkt_div_cls_code is required (e.g. '1' or '4')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/investor-program-trade-today"
+
+
     tr_id = "HHPPG046600C1"
 
     params = {
         "MRKT_DIV_CLS_CODE": mrkt_div_cls_code
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output1)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목별 외인기관 추정가집계[v1_국내주식-046]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/investor-trend-estimate"
 
 def investor_trend_estimate(
     mksc_shrn_iscd: str  # [필수] 종목코드 (ex. 123456)
@@ -7918,28 +7918,28 @@ def investor_trend_estimate(
     if mksc_shrn_iscd == "":
         raise ValueError("mksc_shrn_iscd is required (ex. '123456')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/investor-trend-estimate"
+
+
     tr_id = "HHPTJ04160200"
 
     params = {
         "MKSC_SHRN_ISCD": mksc_shrn_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output2)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기타정보 > 예탁원정보(무상증자일정)[국내주식-144]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/bonus-issue"
 
 def ksdinfo_bonus_issue(
         cts: str,  # CTS
@@ -7991,6 +7991,10 @@ def ksdinfo_bonus_issue(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/bonus-issue"
+
+
+
     tr_id = "HHKDB669101C0"
 
     params = {
@@ -8001,7 +8005,7 @@ def ksdinfo_bonus_issue(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -8034,15 +8038,12 @@ def ksdinfo_bonus_issue(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 예탁원정보(자본감소일정) [국내주식-149]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/cap-dcrs"
 
 def ksdinfo_cap_dcrs(
         cts: str,  # CTS
@@ -8093,6 +8094,9 @@ def ksdinfo_cap_dcrs(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/cap-dcrs"
+
+
     tr_id = "HHKDB669106C0"
 
     params = {
@@ -8103,7 +8107,7 @@ def ksdinfo_cap_dcrs(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -8136,15 +8140,12 @@ def ksdinfo_cap_dcrs(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기타정보 > 예탁원정보(배당일정)[국내주식-145]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/dividend"
 
 def ksdinfo_dividend(
         cts: str,  # CTS
@@ -8204,6 +8205,10 @@ def ksdinfo_dividend(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/dividend"
+
+
+
     tr_id = "HHKDB669102C0"
 
     params = {
@@ -8216,7 +8221,7 @@ def ksdinfo_dividend(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -8253,15 +8258,12 @@ def ksdinfo_dividend(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 예탁원정보(실권주일정)[국내주식-152]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/forfeit"
 
 def ksdinfo_forfeit(
     sht_cd: str,  # 종목코드
@@ -8314,6 +8316,10 @@ def ksdinfo_forfeit(
         return dataframe if dataframe is not None else pd.DataFrame()
     
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/forfeit"
+
+    
+
     tr_id = "HHKDB669109C0"
 
     params = {
@@ -8324,7 +8330,7 @@ def ksdinfo_forfeit(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -8357,15 +8363,12 @@ def ksdinfo_forfeit(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 예탁원정보(상장정보일정)[국내주식-150]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/list-info"
 
 def ksdinfo_list_info(
         sht_cd: str,  # 종목코드
@@ -8417,6 +8420,9 @@ def ksdinfo_list_info(
 
     # API 호출 URL 및 ID 설정
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/list-info"
+
+
     tr_id = "HHKDB669107C0"
 
     # 요청 파라미터 설정
@@ -8428,7 +8434,7 @@ def ksdinfo_list_info(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -8463,15 +8469,12 @@ def ksdinfo_list_info(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 예탁원정보(의무예탁일정) [국내주식-153]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/mand-deposit"
 
 def ksdinfo_mand_deposit(
         t_dt: str,  # 조회일자To
@@ -8524,6 +8527,9 @@ def ksdinfo_mand_deposit(
 
     # API 호출 URL 및 거래 ID 설정
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/mand-deposit"
+
+
     tr_id = "HHKDB669110C0"
 
     # 요청 파라미터 설정
@@ -8535,7 +8541,7 @@ def ksdinfo_mand_deposit(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 호출 성공 시 데이터 처리
     if res.isOK():
@@ -8573,15 +8579,12 @@ def ksdinfo_mand_deposit(
     else:
         # API 호출 실패 시 에러 로그 출력
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 예탁원정보(합병_분할일정)[국내주식-147]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/merger-split"
 
 def ksdinfo_merger_split(
         cts: str,  # CTS
@@ -8633,6 +8636,10 @@ def ksdinfo_merger_split(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/merger-split"
+
+
+
     tr_id = "HHKDB669104C0"
 
     params = {
@@ -8643,7 +8650,7 @@ def ksdinfo_merger_split(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -8677,15 +8684,12 @@ def ksdinfo_merger_split(
     else:
         # API 호출 실패 시 에러 로그
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 예탁원정보(유상증자일정)[국내주식-143]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/paidin-capin"
 
 def ksdinfo_paidin_capin(
         cts: str,  # CTS
@@ -8743,6 +8747,10 @@ def ksdinfo_paidin_capin(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/paidin-capin"
+
+
+
     tr_id = "HHKDB669100C0"
 
     params = {
@@ -8754,7 +8762,7 @@ def ksdinfo_paidin_capin(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -8785,15 +8793,12 @@ def ksdinfo_paidin_capin(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기타정보 > 예탁원정보(공모주청약일정)[국내주식-151]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/pub-offer"
 
 def ksdinfo_pub_offer(
     sht_cd: str,  # 종목코드
@@ -8842,6 +8847,10 @@ def ksdinfo_pub_offer(
         return dataframe if dataframe is not None else pd.DataFrame()
     
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/pub-offer"
+
+    
+
     tr_id = "HHKDB669108C0"
 
     params = {
@@ -8852,7 +8861,7 @@ def ksdinfo_pub_offer(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -8885,15 +8894,12 @@ def ksdinfo_pub_offer(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기타정보 > 예탁원정보(주식매수청구일정)[국내주식-146]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/purreq"
 
 def ksdinfo_purreq(
         sht_cd: str,  # 종목코드
@@ -8944,6 +8950,10 @@ def ksdinfo_purreq(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/purreq"
+
+
+
     tr_id = "HHKDB669103C0"
 
     params = {
@@ -8954,7 +8964,7 @@ def ksdinfo_purreq(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -8990,15 +9000,12 @@ def ksdinfo_purreq(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 예탁원정보(액면교체일정)[국내주식-148]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/rev-split"
 
 def ksdinfo_rev_split(
         sht_cd: str,  # 종목코드
@@ -9056,6 +9063,10 @@ def ksdinfo_rev_split(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/rev-split"
+
+
+
     tr_id = "HHKDB669105C0"
 
     params = {
@@ -9067,7 +9078,7 @@ def ksdinfo_rev_split(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -9101,15 +9112,12 @@ def ksdinfo_rev_split(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기타정보 > 예탁원정보(주주총회일정)[국내주식-154]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ksdinfo/sharehld-meet"
 
 def ksdinfo_sharehld_meet(
     cts: str,  # CTS
@@ -9162,6 +9170,10 @@ def ksdinfo_sharehld_meet(
         return dataframe if dataframe is not None else pd.DataFrame()
     
 
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/sharehld-meet"
+
+    
+
     tr_id = "HHKDB669111C0"
 
     params = {
@@ -9172,7 +9184,7 @@ def ksdinfo_sharehld_meet(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output1'):
@@ -9202,15 +9214,12 @@ def ksdinfo_sharehld_meet(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 당사 대주가능 종목 [국내주식-195]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/lendable-by-company"
 
 def lendable_by_company(
     excg_dvsn_cd: str,  # 거래소구분코드
@@ -9272,6 +9281,9 @@ def lendable_by_company(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    api_url = "/uapi/domestic-stock/v1/quotations/lendable-by-company"
+
+    
     tr_id = "CTSC2702R"
 
     params = {
@@ -9283,7 +9295,7 @@ def lendable_by_company(
         "CTX_AREA_NK100": ctx_area_nk100,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -9347,15 +9359,12 @@ def lendable_by_company(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 순위분석 > 국내주식 시가총액 상위 [v1_국내주식-091]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/market-cap"
 
 def market_cap(
         fid_input_price_2: str,  # 입력 가격2
@@ -9419,6 +9428,9 @@ def market_cap(
     if fid_trgt_exls_cls_code != "0":
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
+    api_url = "/uapi/domestic-stock/v1/ranking/market-cap"
+
+
     tr_id = "FHPST01740000"
 
     params = {
@@ -9434,7 +9446,7 @@ def market_cap(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -9465,15 +9477,12 @@ def market_cap(
             return dataframe
     else:
         # 오류 출력
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 국내선물 영업일조회 [국내주식-160]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/market-time"
 
 def market_time() -> pd.DataFrame:
     """
@@ -9488,25 +9497,25 @@ def market_time() -> pd.DataFrame:
         >>> print(df)
     """
 
+    api_url = "/uapi/domestic-stock/v1/quotations/market-time"
+
+
     tr_id = "HHMCM000002C0"  # 국내선물 영업일조회
 
     params = {}
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         result = pd.DataFrame([res.getBody().output1])
         return result
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 시장가치 순위[v1_국내주식-096]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/market-value"
 
 def market_value(
         fid_trgt_cls_code: str,  # 대상 구분 코드
@@ -9589,6 +9598,10 @@ def market_value(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/market-value"
+
+
+
     tr_id = "FHPST01790000"
 
     params = {
@@ -9608,7 +9621,7 @@ def market_value(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -9650,15 +9663,12 @@ def market_value(
             return dataframe
     else:
         # 오류 처리
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내 증시자금 종합 [국내주식-193]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/mktfunds"
 
 def mktfunds(
         fid_input_date_1: str = ""
@@ -9681,28 +9691,28 @@ def mktfunds(
         >>> print(df)
     """
 
+    api_url = "/uapi/domestic-stock/v1/quotations/mktfunds"
+
+
     tr_id = "FHKST649100C0"
 
     params = {
         "FID_INPUT_DATE_1": fid_input_date_1
     }
 
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
 
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 신고_신저근접종목 상위[v1_국내주식-105]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/near-new-highlow"
 
 def near_new_highlow(
         fid_aply_rang_vol: str,  # 적용 범위 거래량
@@ -9780,6 +9790,10 @@ def near_new_highlow(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/near-new-highlow"
+
+
+
     tr_id = "FHPST01870000"
 
     params = {
@@ -9798,7 +9812,7 @@ def near_new_highlow(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -9839,15 +9853,12 @@ def near_new_highlow(
             return dataframe
     else:
         # 오류 발생 시 처리
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 종합 시황/공시(제목) [국내주식-141]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/news-title"
 
 def news_title(
         fid_news_ofer_entp_code: str,  # 뉴스 제공 업체 코드
@@ -9904,6 +9915,8 @@ def news_title(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API URL 및 거래 ID 설정
+    api_url = "/uapi/domestic-stock/v1/quotations/news-title"
+
     tr_id = "FHKST01011800"
 
     # 요청 파라미터 설정
@@ -9919,7 +9932,7 @@ def news_title(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -9958,15 +9971,12 @@ def news_title(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식주문(현금)[v1_국내주식-001]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/order-cash"
 
 def order_cash(
     env_dv: str,  # 실전모의구분 (real:실전, demo:모의)
@@ -10049,6 +10059,8 @@ def order_cash(
     # tr_id 설정
     if env_dv == "real":
         if ord_dv == "sell":
+            api_url = "/uapi/domestic-stock/v1/trading/order-cash"
+
             tr_id = "TTTC0011U"
         elif ord_dv == "buy":
             tr_id = "TTTC0012U"
@@ -10076,21 +10088,18 @@ def order_cash(
         "CNDT_PRIC": cndt_pric  # 조건가격
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
+    res = ka._url_fetch(api_url, tr_id, "", params, postFlag=True)
     
     if res.isOK():
         current_data = pd.DataFrame([res.getBody().output])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식주문(신용)[v1_국내주식-002]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/order-credit"
 
 def order_credit(
     ord_dv: str,           # 매수매도구분 (buy:매수, sell:매도)
@@ -10191,6 +10200,8 @@ def order_credit(
 
     # tr_id 설정
     if ord_dv == "buy":
+        api_url = "/uapi/domestic-stock/v1/trading/order-credit"
+
         tr_id = "TTTC0052U"
     elif ord_dv == "sell":
         tr_id = "TTTC0051U"
@@ -10242,22 +10253,19 @@ def order_credit(
     if cndt_pric:
         params["CNDT_PRIC"] = cndt_pric
     
-    res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
+    res = ka._url_fetch(api_url, tr_id, "", params, postFlag=True)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식예약주문[v1_국내주식-017]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/order-resv"
 
 def order_resv(
     cano: str,
@@ -10352,6 +10360,9 @@ def order_resv(
     if ord_objt_cblc_dvsn_cd == "" or ord_objt_cblc_dvsn_cd is None:
         raise ValueError("ord_objt_cblc_dvsn_cd is required (e.g. '10: 현금, 12~28: 각종 대출/상환코드')")
 
+    api_url = "/uapi/domestic-stock/v1/trading/order-resv"
+
+
     tr_id = "CTSC0008U"
 
     params = {
@@ -10372,21 +10383,18 @@ def order_resv(
     if ldng_dt:
         params["LDNG_DT"] = ldng_dt
     
-    res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
+    res = ka._url_fetch(api_url, tr_id, "", params, postFlag=True)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식예약주문조회[v1_국내주식-020]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/order-resv-ccnl"
 
 def order_resv_ccnl(
     rsvn_ord_ord_dt: str,       # [필수] 예약주문시작일자
@@ -10472,6 +10480,9 @@ def order_resv_ccnl(
         else:
             return dataframe
 
+    api_url = "/uapi/domestic-stock/v1/trading/order-resv-ccnl"
+
+
     tr_id = "CTSC0004R"  # 주식예약주문조회
 
     params = {
@@ -10489,7 +10500,7 @@ def order_resv_ccnl(
         "CTX_AREA_NK200": NK200                     # 연속조회키200
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -10515,15 +10526,12 @@ def order_resv_ccnl(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식예약주문정정취소[v1_국내주식-018,019]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/order-resv-rvsecncl"
 
 def order_resv_rvsecncl(
     cano: str,  # [필수] 종합계좌번호
@@ -10596,6 +10604,8 @@ def order_resv_rvsecncl(
 
     # tr_id 설정
     if ord_type == "cancel":
+        api_url = "/uapi/domestic-stock/v1/trading/order-resv-rvsecncl"
+
         tr_id = "CTSC0009U"
     elif ord_type == "modify":
         tr_id = "CTSC0013U"
@@ -10630,21 +10640,18 @@ def order_resv_rvsecncl(
     if ctal_tlno:
         params["CTAL_TLNO"] = ctal_tlno
     
-    res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
+    res = ka._url_fetch(api_url, tr_id, "", params, postFlag=True)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 주식주문(정정취소)[v1_국내주식-003]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/order-rvsecncl"
 
 def order_rvsecncl(
     env_dv: str,                    # [필수] 실전모의구분 (ex. real:실전, demo:모의)
@@ -10728,6 +10735,8 @@ def order_rvsecncl(
 
     # tr_id 설정
     if env_dv == "real":
+        api_url = "/uapi/domestic-stock/v1/trading/order-rvsecncl"
+
         tr_id = "TTTC0013U"
     elif env_dv == "demo":
         tr_id = "VTTC0013U"
@@ -10751,20 +10760,17 @@ def order_rvsecncl(
     if cndt_pric:
         params["CNDT_PRIC"] = cndt_pric
     
-    res = ka._url_fetch(API_URL, tr_id, "", params, postFlag=True)
+    res = ka._url_fetch(api_url, tr_id, "", params, postFlag=True)
     
     if res.isOK():
         return pd.DataFrame(res.getBody().output)
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내주식 시간외예상체결등락률 [국내주식-140]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/overtime-exp-trans-fluct"
 
 def overtime_exp_trans_fluct(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. J:주식)
@@ -10813,6 +10819,9 @@ def overtime_exp_trans_fluct(
     if fid_div_cls_code == "":
         raise ValueError("fid_div_cls_code is required (e.g. '0')")
 
+    api_url = "/uapi/domestic-stock/v1/ranking/overtime-exp-trans-fluct"
+
+
     tr_id = "FHKST11860000"  # 국내주식 시간외예상체결등락률
 
     params = {
@@ -10826,22 +10835,19 @@ def overtime_exp_trans_fluct(
         "FID_INPUT_VOL_1": fid_input_vol_1
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식 시간외등락율순위[국내주식-138]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/overtime-fluctuation"
 
 def overtime_fluctuation(
     fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -10921,6 +10927,10 @@ def overtime_fluctuation(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
 
+    api_url = "/uapi/domestic-stock/v1/ranking/overtime-fluctuation"
+
+    
+
     tr_id = "FHPST02340000"
 
     params = {
@@ -10936,7 +10946,7 @@ def overtime_fluctuation(
         "FID_TRGT_EXLS_CLS_CODE": fid_trgt_exls_cls_code,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -10984,15 +10994,12 @@ def overtime_fluctuation(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 시간외거래량순위[국내주식-139]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/overtime-volume"
 
 def overtime_volume(
         fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -11072,6 +11079,10 @@ def overtime_volume(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/overtime-volume"
+
+
+
     tr_id = "FHPST02350000"
 
     params = {
@@ -11086,7 +11097,7 @@ def overtime_volume(
         "FID_TRGT_EXLS_CLS_CODE": fid_trgt_exls_cls_code,
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # output1 처리
@@ -11135,15 +11146,12 @@ def overtime_volume(
             return dataframe1, dataframe2
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내주식 매물대/거래비중 [국내주식-196]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/pbar-tratio"
 
 def pbar_tratio(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. J)
@@ -11180,6 +11188,9 @@ def pbar_tratio(
     if fid_cond_scr_div_code == "":
         raise ValueError("fid_cond_scr_div_code is required (e.g. '20113')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/pbar-tratio"
+
+
     tr_id = "FHPST01130000"
 
     params = {
@@ -11189,7 +11200,7 @@ def pbar_tratio(
         "FID_INPUT_HOUR_1": fid_input_hour_1
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         # output1 (object) - 단일 객체를 DataFrame으로 변환
@@ -11200,15 +11211,12 @@ def pbar_tratio(
         
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 잔고조회[v1_국내주식-036]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/pension/inquire-balance"
 
 def pension_inquire_balance(
     cano: str,                              # [필수] 종합계좌번호 (ex. 12345678)
@@ -11271,6 +11279,9 @@ def pension_inquire_balance(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-balance"
+
+
     tr_id = "TTTC2208R"  # 퇴직연금 잔고조회
 
     params = {
@@ -11282,7 +11293,7 @@ def pension_inquire_balance(
         "CTX_AREA_NK100": NK100            # 연속조회키100
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         # output1 처리 (array)
@@ -11313,15 +11324,12 @@ def pension_inquire_balance(
             logging.info("Data fetch complete.")
             return dataframe1, dataframe2
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 미체결내역[v1_국내주식-033]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/pension/inquire-daily-ccld"
 
 def pension_inquire_daily_ccld(
     cano: str,  # 종합계좌번호
@@ -11389,6 +11397,9 @@ def pension_inquire_daily_ccld(
         else:
             return dataframe
 
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-daily-ccld"
+
+
     tr_id = "TTTC2201R"  # 퇴직연금 미체결내역
 
     params = {
@@ -11402,7 +11413,7 @@ def pension_inquire_daily_ccld(
         "CTX_AREA_NK100": NK100
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -11426,15 +11437,12 @@ def pension_inquire_daily_ccld(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 예수금조회[v1_국내주식-035]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/pension/inquire-deposit"
 
 def pension_inquire_deposit(
     cano: str,              # 종합계좌번호 (12345678)
@@ -11467,6 +11475,9 @@ def pension_inquire_deposit(
     if acca_dvsn_cd == "":
         raise ValueError("acca_dvsn_cd is required (e.g. '00')")
 
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-deposit"
+
+
     tr_id = "TTTC0506R"  # 퇴직연금 예수금조회
 
     params = {
@@ -11475,21 +11486,18 @@ def pension_inquire_deposit(
         "ACCA_DVSN_CD": acca_dvsn_cd     # 적립금구분코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame([res.getBody().output])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 체결기준잔고[v1_국내주식-032]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/pension/inquire-present-balance"
 
 def pension_inquire_present_balance(
         cano: str,  # 종합계좌번호
@@ -11530,6 +11538,9 @@ def pension_inquire_present_balance(
     if user_dvsn_cd == "":
         raise ValueError("user_dvsn_cd is required (e.g. '00')")
 
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-present-balance"
+
+
     tr_id = "TTTC2202R"  # 퇴직연금 체결기준잔고
 
     params = {
@@ -11540,7 +11551,7 @@ def pension_inquire_present_balance(
         "CTX_AREA_NK100": NK100  # 연속조회키100
     }
 
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
 
     if res.isOK():
         # output1 (array) - 보유종목 정보
@@ -11551,15 +11562,12 @@ def pension_inquire_present_balance(
 
         return output1_data, output2_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame(), pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 퇴직연금 매수가능조회[v1_국내주식-034]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/pension/inquire-psbl-order"
 
 def pension_inquire_psbl_order(
     cano: str,                      # [필수] 종합계좌번호 (ex. 12345678)
@@ -11622,6 +11630,9 @@ def pension_inquire_psbl_order(
     if ord_dvsn == "":
         raise ValueError("ord_dvsn is required (e.g. '00: 지정가, 01: 시장가')")
 
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-psbl-order"
+
+
     tr_id = "TTTC0503R"
 
     params = {
@@ -11634,21 +11645,18 @@ def pension_inquire_psbl_order(
         "ORD_DVSN": ord_dvsn
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output, index=[0])
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 주문/계좌 > 기간별계좌권리현황조회 [국내주식-211]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/trading/period-rights"
 
 def period_rights(
     inqr_dvsn: str,  # [필수] 조회구분 (ex. 03)
@@ -11720,6 +11728,9 @@ def period_rights(
         else:
             return dataframe
 
+    api_url = "/uapi/domestic-stock/v1/trading/period-rights"
+
+
     tr_id = "CTRGA011R"  # 기간별계좌권리현황조회
 
     params = {
@@ -11737,7 +11748,7 @@ def period_rights(
         "CTX_AREA_FK100": FK100
     }
     
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
@@ -11763,15 +11774,12 @@ def period_rights(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식 우선주_괴리율 상위[v1_국내주식-094]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio"
 
 def prefer_disparate_ratio(
         fid_vol_cnt: str,  # 거래량 수
@@ -11851,6 +11859,10 @@ def prefer_disparate_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio"
+
+
+
     tr_id = "FHPST01770000"
 
     params = {
@@ -11866,7 +11878,7 @@ def prefer_disparate_ratio(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -11903,15 +11915,12 @@ def prefer_disparate_ratio(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 수익자산지표 순위[v1_국내주식-090]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/profit-asset-index"
 
 def profit_asset_index(
         fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -11996,6 +12005,10 @@ def profit_asset_index(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/profit-asset-index"
+
+
+
     tr_id = "FHPST01730000"
 
     params = {
@@ -12015,7 +12028,7 @@ def profit_asset_index(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -12057,15 +12070,12 @@ def profit_asset_index(
             return dataframe
     else:
         # 오류 처리
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목별 프로그램매매추이(체결)[v1_국내주식-044]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/program-trade-by-stock"
 
 def program_trade_by_stock(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. J:KRX,NX:NXT,UN:통합)
@@ -12094,6 +12104,9 @@ def program_trade_by_stock(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (ex. 123456)")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/program-trade-by-stock"
+
+
     tr_id = "FHPPG04650101"  # 종목별 프로그램매매추이(체결)
 
     params = {
@@ -12101,22 +12114,19 @@ def program_trade_by_stock(
         "FID_INPUT_ISCD": fid_input_iscd                   # 종목코드
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목별 프로그램매매추이(일별) [국내주식-113]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/program-trade-by-stock-daily"
 
 def program_trade_by_stock_daily(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. J:KRX,NX:NXT,UN:통합)
@@ -12146,6 +12156,9 @@ def program_trade_by_stock_daily(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (ex. 123456)")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/program-trade-by-stock-daily"
+
+
     tr_id = "FHPPG04650201"
 
     params = {
@@ -12154,22 +12167,19 @@ def program_trade_by_stock_daily(
         "FID_INPUT_DATE_1": fid_input_date_1
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목조건검색조회 [국내주식-039]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/psearch-result"
 
 def psearch_result(
     user_id: str,  # 사용자 HTS ID
@@ -12207,6 +12217,9 @@ def psearch_result(
     if seq == "":
         raise ValueError("seq is required (e.g. '종목조건검색 목록조회 API의 output인 'seq'을 이용')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/psearch-result"
+
+
     tr_id = "HHKST03900400"  # 종목조건검색조회
 
     params = {
@@ -12214,21 +12227,18 @@ def psearch_result(
         "seq": seq           # 사용자조건 키값
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output2)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목조건검색 목록조회[국내주식-038]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/psearch-title"
 
 def psearch_title(
     user_id: str  # [필수] 사용자 HTS ID (ex. U:업종)
@@ -12259,28 +12269,28 @@ def psearch_title(
     if user_id == "":
         raise ValueError("user_id is required (e.g. 'U:업종')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/psearch-title"
+
+
     tr_id = "HHKST03900300"  # 종목조건검색 목록조회
 
     params = {
         "user_id": user_id  # 사용자 HTS ID
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output2)
         logging.info("Data fetch complete.")
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 국내주식 호가잔량 순위[국내주식-089]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/quote-balance"
 
 def quote_balance(
         fid_vol_cnt: str,  # 거래량 수
@@ -12350,6 +12360,10 @@ def quote_balance(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/quote-balance"
+
+
+
     tr_id = "FHPST01720000"
 
     params = {
@@ -12366,7 +12380,7 @@ def quote_balance(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -12405,15 +12419,12 @@ def quote_balance(
             return dataframe
     else:
         # 오류 출력
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 상품기본조회[v1_국내주식-029]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/search-info"
 
 def search_info(
     pdno: str,  # 상품번호
@@ -12462,6 +12473,9 @@ def search_info(
 
     # API 호출 URL 및 거래 ID 설정
 
+    api_url = "/uapi/domestic-stock/v1/quotations/search-info"
+
+
     tr_id = "CTPF1604R"
 
     # 요청 파라미터 설정
@@ -12471,7 +12485,7 @@ def search_info(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -12505,15 +12519,12 @@ def search_info(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 종목정보 > 주식기본조회[v1_국내주식-067]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/search-stock-info"
 
 def search_stock_info(
         prdt_type_cd: str,  # 상품유형코드
@@ -12560,6 +12571,9 @@ def search_stock_info(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-stock/v1/quotations/search-stock-info"
+
+
     tr_id = "CTPF1002R"
 
     params = {
@@ -12568,7 +12582,7 @@ def search_stock_info(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -12601,15 +12615,12 @@ def search_stock_info(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 공매도 상위종목[국내주식-133]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/short-sale"
 
 def short_sale(
         fid_aply_rang_vol: str,  # FID 적용 범위 거래량
@@ -12688,6 +12699,9 @@ def short_sale(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    api_url = "/uapi/domestic-stock/v1/ranking/short-sale"
+
+
     tr_id = "FHPST04820000"
 
     params = {
@@ -12704,7 +12718,7 @@ def short_sale(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -12740,15 +12754,12 @@ def short_sale(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 관심종목등록 상위[v1_국내주식-102]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/top-interest-stock"
 
 def top_interest_stock(
         fid_input_iscd_2: str,  # 입력 종목코드2
@@ -12831,6 +12842,10 @@ def top_interest_stock(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/top-interest-stock"
+
+
+
     tr_id = "FHPST01800000"
 
     params = {
@@ -12848,7 +12863,7 @@ def top_interest_stock(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -12885,15 +12900,12 @@ def top_interest_stock(
             return dataframe
     else:
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 당사매매종목 상위[v1_국내주식-104]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/traded-by-company"
 
 def traded_by_company(
         fid_trgt_exls_cls_code: str,  # 대상 제외 구분 코드
@@ -12994,6 +13006,10 @@ def traded_by_company(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/traded-by-company"
+
+
+
     tr_id = "FHPST01860000"
 
     params = {
@@ -13012,7 +13028,7 @@ def traded_by_company(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -13052,15 +13068,12 @@ def traded_by_company(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 시세분석 > 국내주식 체결금액별 매매비중 [국내주식-192]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/quotations/tradprt-byamt"
 
 def tradprt_byamt(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. J)
@@ -13093,6 +13106,9 @@ def tradprt_byamt(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (e.g. '123456')")
 
+    api_url = "/uapi/domestic-stock/v1/quotations/tradprt-byamt"
+
+
     tr_id = "FHKST111900C0"
 
     params = {
@@ -13101,21 +13117,18 @@ def tradprt_byamt(
         "FID_INPUT_ISCD": fid_input_iscd
     }
     
-    res = ka._url_fetch(API_URL, tr_id, "", params)
+    res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
         current_data = pd.DataFrame(res.getBody().output)
         return current_data
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 조건검색 > 국내주식 체결강도 상위[v1_국내주식-101]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/volume-power"
 
 def volume_power(
         fid_trgt_exls_cls_code: str,  # 대상 제외 구분 코드
@@ -13195,6 +13208,10 @@ def volume_power(
         return dataframe if dataframe is not None else pd.DataFrame()
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/volume-power"
+
+
+
     tr_id = "FHPST01680000"
 
     params = {
@@ -13210,7 +13227,7 @@ def volume_power(
     }
 
     # API 호출
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
@@ -13247,15 +13264,12 @@ def volume_power(
     else:
         # API 에러 처리
         logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
 ##############################################################################################
 # [국내주식] 기본시세 > 거래량순위[v1_국내주식-047]
 ##############################################################################################
-
-# 상수 정의
-API_URL = "/uapi/domestic-stock/v1/ranking/volume-rank"
 
 def volume_rank(
         fid_cond_mrkt_div_code: str,  # 필수, 조건 시장 분류 코드
@@ -13322,6 +13336,10 @@ def volume_rank(
     #     raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
 
+    api_url = "/uapi/domestic-stock/v1/ranking/volume-rank"
+
+
+
     tr_id = "FHPST01710000"  # 거래량순위
 
     params = {
@@ -13338,7 +13356,7 @@ def volume_rank(
         "FID_INPUT_DATE_1": fid_input_date_1
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -13366,6 +13384,6 @@ def volume_rank(
             print("The End")
             return dataframe
     else:
-        res.printError(API_URL)
+        res.printError(api_url)
         return pd.DataFrame()
 
