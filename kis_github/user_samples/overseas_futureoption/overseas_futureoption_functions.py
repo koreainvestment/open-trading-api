@@ -90,10 +90,12 @@ def daily_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDFC55020100"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/daily-ccnl"
 
-    
-    tr_id = "HHDFC55020100"
+
 
     params = {
         "SRS_CD": srs_cd,
@@ -222,10 +224,12 @@ def inquire_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDFC86000000"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/inquire-asking-price"
 
-    
-    tr_id = "HHDFC86000000"
+
 
     params = {
         "SRS_CD": srs_cd,
@@ -365,10 +369,12 @@ def inquire_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "OTFM3116R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/inquire-ccld"
 
-    
-    tr_id = "OTFM3116R"
+
 
     params = {
         "CANO": cano,
@@ -515,10 +521,12 @@ def inquire_daily_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "OTFM3122R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/inquire-daily-ccld"
 
-    
-    tr_id = "OTFM3122R"
+
 
     params = {
         "CANO": cano,
@@ -693,10 +701,12 @@ def inquire_daily_order(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "OTFM3120R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/inquire-daily-order"
 
-    
-    tr_id = "OTFM3120R"
+
 
     params = {
         "CANO": cano,
@@ -813,10 +823,12 @@ def inquire_deposit(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "OTFM1411R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/inquire-deposit"
 
-    
-    tr_id = "OTFM1411R"
+
 
     params = {
         "CANO": cano,
@@ -948,10 +960,12 @@ def inquire_period_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "OTFM3118R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/inquire-period-ccld"
 
-    
-    tr_id = "OTFM3118R"
+
 
     params = {
         "INQR_TERM_FROM_DT": inqr_term_from_dt,
@@ -1115,9 +1129,12 @@ def inquire_period_trans(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
+    tr_id = "OTFM3114R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/inquire-period-trans"
 
-    tr_id = "OTFM3114R"
+
 
     params = {
         "INQR_TERM_FROM_DT": inqr_term_from_dt,
@@ -1212,10 +1229,12 @@ def inquire_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "HHDFC55010000"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/inquire-price"
 
-    
-    tr_id = "HHDFC55010000"
+
 
     params = {
         "SRS_CD": srs_cd,
@@ -1321,10 +1340,12 @@ def inquire_psamount(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "OTFM3304R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/inquire-psamount"
 
 
-    tr_id = "OTFM3304R"
 
     params = {
         "CANO": cano,
@@ -1451,10 +1472,12 @@ def inquire_time_futurechartprice(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDFC55020400"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/inquire-time-futurechartprice"
 
-    
-    tr_id = "HHDFC55020400"
+
 
     params = {
         "SRS_CD": srs_cd,
@@ -1619,10 +1642,12 @@ def inquire_time_optchartprice(
             return (dataframe1 if dataframe1 is not None else pd.DataFrame(), 
                    dataframe2 if dataframe2 is not None else pd.DataFrame())
 
+    tr_id = "HHDFO55020100"  # 해외옵션 분봉조회
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/inquire-time-optchartprice"
 
 
-    tr_id = "HHDFO55020100"  # 해외옵션 분봉조회
 
     params = {
         "SRS_CD": srs_cd,  # 종목코드
@@ -1729,10 +1754,12 @@ def inquire_unpd(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "OTFM1412R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/inquire-unpd"
 
-    
-    tr_id = "OTFM1412R"
+
 
     params = {
         "CANO": cano,
@@ -1839,10 +1866,12 @@ def investor_unpd_trend(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDDB95030000"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/investor-unpd-trend"
 
-    
-    tr_id = "HHDDB95030000"
+
 
     params = {
         "PROD_ISCD": prod_iscd,
@@ -1976,10 +2005,12 @@ def margin_detail(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "OTFM3115R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/margin-detail"
 
-    
-    tr_id = "OTFM3115R"
+
 
     params = {
         "CANO": cano,
@@ -2084,10 +2115,12 @@ def market_time(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "OTFM2229R"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/market-time"
 
-    
-    tr_id = "OTFM2229R"
+
 
     params = {
         "FM_PDGR_CD": fm_pdgr_cd,
@@ -2217,10 +2250,12 @@ def monthly_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
-    url = api_url
+    tr_id = "HHDFC55020300"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/monthly-ccnl"
 
-    tr_id = "HHDFC55020300"
+
 
     params = {
         "SRS_CD": srs_cd,
@@ -2349,10 +2384,12 @@ def opt_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDFO86000000"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/opt-asking-price"
 
-    
-    tr_id = "HHDFO86000000"
+
 
     params = {
         "SRS_CD": srs_cd,
@@ -2489,10 +2526,12 @@ def opt_daily_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFO55020100"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/opt-daily-ccnl"
 
 
-    tr_id = "HHDFO55020100"
 
     params = {
         "SRS_CD": srs_cd,
@@ -2583,10 +2622,12 @@ def opt_detail(
     if srs_cd == "":
         raise ValueError("srs_cd is required (e.g. 'C5500')")
 
+    tr_id = "HHDFO55010100"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/opt-detail"
 
 
-    tr_id = "HHDFO55010100"
 
     params = {
         "SRS_CD": srs_cd
@@ -2680,10 +2721,12 @@ def opt_monthly_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFO55020300"  # 해외옵션 체결추이(월간)
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/opt-monthly-ccnl"
 
 
-    tr_id = "HHDFO55020300"  # 해외옵션 체결추이(월간)
 
     params = {
         "SRS_CD": srs_cd,
@@ -2768,10 +2811,12 @@ def opt_price(
     if srs_cd == "":
         raise ValueError("srs_cd is required")
     
+    tr_id = "HHDFO55010000"  # 해외옵션종목현재가
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/opt-price"
 
-    
-    tr_id = "HHDFO55010000"  # 해외옵션종목현재가
+
 
     params = {
         "SRS_CD": srs_cd  # 종목코드
@@ -2873,10 +2918,12 @@ def opt_tick_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFO55020200"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/opt-tick-ccnl"
 
 
-    tr_id = "HHDFO55020200"
 
     params = {
         "SRS_CD": srs_cd,
@@ -3004,10 +3051,12 @@ def opt_weekly_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFO55020000"  # 해외옵션 체결추이(주간)
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/opt-weekly-ccnl"
 
 
-    tr_id = "HHDFO55020000"  # 해외옵션 체결추이(주간)
 
     params = {
         "SRS_CD": srs_cd,  # 종목코드
@@ -3148,10 +3197,12 @@ def order(
         logger.error("ccld_cndt_cd is required. (e.g. '6')")
         raise ValueError("ccld_cndt_cd is required. (e.g. '6')")
 
-    url = api_url
+    tr_id = "OTFM3001U"
+
+
     api_url = "/uapi/overseas-futureoption/v1/trading/order"
 
-    tr_id = "OTFM3001U"
+
 
     params = {
         "CANO": cano,
@@ -3265,14 +3316,17 @@ def order_rvsecncl(
         raise ValueError("orgn_odno is required. (e.g. '00360686')")
 
     if ord_dv == "0":
-        api_url = "/uapi/overseas-futureoption/v1/trading/order-rvsecncl"
-
         tr_id = "OTFM3002U"
     elif ord_dv == "1":
         tr_id = "OTFM3003U"
     else:
         logger.error("ord_dv is required. (e.g. '0' or '1')")
         raise ValueError("ord_dv is required. (e.g. '0' or '1')")
+
+
+    api_url = "/uapi/overseas-futureoption/v1/trading/order-rvsecncl"
+
+
 
     params = {
         "CANO": cano,
@@ -3358,12 +3412,13 @@ def search_contract_detail(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
-    api_url = "/uapi/overseas-futureoption/v1/quotations/search-contract-detail"
-
-    
     tr_id = "HHDFC55200000"
 
     # 기본 파라미터
+
+    api_url = "/uapi/overseas-futureoption/v1/quotations/search-contract-detail"
+
+
     params = {
         "QRY_CNT": qry_cnt,
     }
@@ -3509,10 +3564,12 @@ def search_opt_detail(
     if srs_cd_01 == "":
         raise ValueError("srs_cd_01 is required")
 
+    tr_id = "HHDFO55200000"  # 해외옵션 상품기본정보
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/search-opt-detail"
 
 
-    tr_id = "HHDFO55200000"  # 해외옵션 상품기본정보
 
     params = {
         "QRY_CNT": qry_cnt,
@@ -3628,10 +3685,12 @@ def stock_detail(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "HHDFC55010100"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/stock-detail"
 
-    
-    tr_id = "HHDFC55010100"
+
 
     params = {
         "SRS_CD": srs_cd,
@@ -3748,10 +3807,12 @@ def tick_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDFC55020200"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/tick-ccnl"
 
-    
-    tr_id = "HHDFC55020200"
+
 
     params = {
         "SRS_CD": srs_cd,
@@ -3906,10 +3967,12 @@ def weekly_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDFC55020000"
+
+
     api_url = "/uapi/overseas-futureoption/v1/quotations/weekly-ccnl"
 
-    
-    tr_id = "HHDFC55020000"
+
 
     params = {
         "SRS_CD": srs_cd,

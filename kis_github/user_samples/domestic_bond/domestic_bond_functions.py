@@ -22,8 +22,8 @@ def avg_unit(
         pdno: str,  # 상품번호
         prdt_type_cd: str,  # 상품유형코드
         vrfc_kind_cd: str,  # 검증종류코드
-        ctx_area_nk30: str,  # 연속조회키30
-        ctx_area_fk100: str,  # 연속조회검색조건100
+        NK30: str = "",  # 연속조회키30
+        FK100: str = "",  # 연속조회검색조건100
         dataframe1: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output1)
         dataframe2: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output2)
         dataframe3: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output3)
@@ -42,8 +42,8 @@ def avg_unit(
         pdno (str): 상품번호, 공백: 전체, 특정종목 조회시 : 종목코드
         prdt_type_cd (str): 상품유형코드 (예: '302')
         vrfc_kind_cd (str): 검증종류코드 (예: '00')
-        ctx_area_nk30 (str): 연속조회키30, 공백 허용
-        ctx_area_fk100 (str): 연속조회검색조건100, 공백 허용
+        NK30 (str): 연속조회키30, 공백 허용
+        FK100 (str): 연속조회검색조건100, 공백 허용
         dataframe1 (Optional[pd.DataFrame]): 누적 데이터프레임 (output1)
         dataframe2 (Optional[pd.DataFrame]): 누적 데이터프레임 (output2)
         dataframe3 (Optional[pd.DataFrame]): 누적 데이터프레임 (output3)
@@ -61,8 +61,6 @@ def avg_unit(
         ...     pdno='KR2033022D33',
         ...     prdt_type_cd='302',
         ...     vrfc_kind_cd='00',
-        ...     ctx_area_nk30='',
-        ...     ctx_area_fk100=''
         ... )
         >>> print(df1)
         >>> print(df2)
@@ -94,10 +92,12 @@ def avg_unit(
             dataframe3 if dataframe3 is not None else pd.DataFrame()
         )
 
+    tr_id = "CTPF2005R"
+
+
     api_url = "/uapi/domestic-bond/v1/quotations/avg-unit"
 
 
-    tr_id = "CTPF2005R"
 
     params = {
         "INQR_STRT_DT": inqr_strt_dt,
@@ -105,8 +105,8 @@ def avg_unit(
         "PDNO": pdno,
         "PRDT_TYPE_CD": prdt_type_cd,
         "VRFC_KIND_CD": vrfc_kind_cd,
-        "CTX_AREA_NK30": ctx_area_nk30,
-        "CTX_AREA_FK100": ctx_area_fk100,
+        "CTX_AREA_NK30": NK30,
+        "CTX_AREA_FK100": FK100,
     }
 
     res = ka._url_fetch(api_url, tr_id, tr_cont, params)
@@ -114,8 +114,8 @@ def avg_unit(
     if res.isOK():
         # 연속조회 정보 업데이트
         tr_cont = res.getHeader().tr_cont
-        ctx_area_nk30 = res.getBody().ctx_area_nk30
-        ctx_area_fk100 = res.getBody().ctx_area_fk100
+        NK30 = res.getBody().ctx_area_nk30
+        FK100 = res.getBody().ctx_area_fk100
 
         # output1 데이터 처리
         current_data1 = pd.DataFrame(res.getBody().output1)
@@ -147,8 +147,8 @@ def avg_unit(
                 pdno,
                 prdt_type_cd,
                 vrfc_kind_cd,
-                ctx_area_nk30,
-                ctx_area_fk100,
+                NK30,
+                FK100,
                 dataframe1,
                 dataframe2,
                 dataframe3,
@@ -214,9 +214,12 @@ def buy(
         ... )
         >>> print(df)
     """
+    tr_id = "TTTC0952U"
+
+
     api_url = "/uapi/domestic-bond/v1/trading/buy"
 
-    tr_id = "TTTC0952U"
+
 
     params = {
         "CANO": cano,
@@ -301,10 +304,12 @@ def inquire_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "FHKBJ773401C0"
+
+
     api_url = "/uapi/domestic-bond/v1/quotations/inquire-asking-price"
 
 
-    tr_id = "FHKBJ773401C0"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -360,8 +365,8 @@ def inquire_balance(
         inqr_cndt: str,  # 조회조건
         pdno: str,  # 상품번호
         buy_dt: str,  # 매수일자
-        ctx_area_fk200: str,  # 연속조회검색조건200
-        ctx_area_nk200: str,  # 연속조회키200
+        FK200: str = "",  # 연속조회검색조건200
+        NK200: str = "",  # 연속조회키200
         tr_cont: str = "",  # 연속 거래 여부
         dataframe: Optional[pd.DataFrame] = None,  # 누적 데이터프레임
         depth: int = 0,  # 현재 재귀 깊이
@@ -378,8 +383,8 @@ def inquire_balance(
         inqr_cndt (str): 조회조건 (00: 전체, 01: 상품번호단위)
         pdno (str): 상품번호 (공백 허용)
         buy_dt (str): 매수일자 (공백 허용)
-        ctx_area_fk200 (str): 연속조회검색조건200
-        ctx_area_nk200 (str): 연속조회키200
+        FK200 (str): 연속조회검색조건200
+        NK200 (str): 연속조회키200
         tr_cont (str): 연속 거래 여부 (기본값: "")
         dataframe (Optional[pd.DataFrame]): 누적 데이터프레임
         depth (int): 현재 재귀 깊이
@@ -395,8 +400,6 @@ def inquire_balance(
         ...     inqr_cndt='00',
         ...     pdno='',
         ...     buy_dt='',
-        ...     ctx_area_fk200='',
-        ...     ctx_area_nk200=''
         ... )
         >>> print(df)
     """
@@ -421,10 +424,12 @@ def inquire_balance(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "CTSC8407R"
+
+
     api_url = "/uapi/domestic-bond/v1/trading/inquire-balance"
 
 
-    tr_id = "CTSC8407R"
 
     params = {
         "CANO": cano,
@@ -432,8 +437,8 @@ def inquire_balance(
         "INQR_CNDT": inqr_cndt,
         "PDNO": pdno,
         "BUY_DT": buy_dt,
-        "CTX_AREA_FK200": ctx_area_fk200,
-        "CTX_AREA_NK200": ctx_area_nk200,
+        "CTX_AREA_FK200": FK200,
+        "CTX_AREA_NK200": NK200,
     }
 
     # API 호출
@@ -454,6 +459,8 @@ def inquire_balance(
             dataframe = current_data
 
         tr_cont = res.getHeader().tr_cont
+        NK200 = res.getBody().ctx_area_nk200
+        FK200 = res.getBody().ctx_area_fk200
 
         if tr_cont == "M":
             logger.info("Calling next page...")
@@ -464,8 +471,8 @@ def inquire_balance(
                 inqr_cndt,
                 pdno,
                 buy_dt,
-                ctx_area_fk200,
-                ctx_area_nk200,
+                FK200,
+                NK200,
                 "N", dataframe, depth + 1, max_depth
             )
         else:
@@ -522,12 +529,13 @@ def inquire_ccnl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    api_url = "/uapi/domestic-bond/v1/quotations/inquire-ccnl"
-
-
     tr_id = "FHKBJ773403C0"
 
     # API 요청 파라미터 설정
+
+    api_url = "/uapi/domestic-bond/v1/quotations/inquire-ccnl"
+
+
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_INPUT_ISCD": fid_input_iscd,
@@ -661,10 +669,12 @@ def inquire_daily_ccld(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
+    tr_id = "CTSC8013R"
+
+
     api_url = "/uapi/domestic-bond/v1/trading/inquire-daily-ccld"
 
 
-    tr_id = "CTSC8013R"
 
     params = {
         "CANO": cano,
@@ -725,6 +735,8 @@ def inquire_daily_ccld(
             if dataframe2 is None:
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
+        ctx_area_nk200 = res.getBody().ctx_area_nk200
+        ctx_area_fk200 = res.getBody().ctx_area_fk200
 
         if tr_cont in ["M", "F"]:
             logger.info("Calling next page...")
@@ -796,10 +808,12 @@ def inquire_daily_itemchartprice(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "FHKBJ773701C0"
+
+
     api_url = "/uapi/domestic-bond/v1/quotations/inquire-daily-itemchartprice"
 
 
-    tr_id = "FHKBJ773701C0"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -892,10 +906,12 @@ def inquire_daily_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "FHKBJ773404C0"
+
+
     api_url = "/uapi/domestic-bond/v1/quotations/inquire-daily-price"
 
 
-    tr_id = "FHKBJ773404C0"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -987,10 +1003,12 @@ def inquire_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "FHKBJ773400C0"
+
+
     api_url = "/uapi/domestic-bond/v1/quotations/inquire-price"
 
 
-    tr_id = "FHKBJ773400C0"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1092,10 +1110,12 @@ def inquire_psbl_order(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "TTTC8910R"
+
+
     api_url = "/uapi/domestic-bond/v1/trading/inquire-psbl-order"
 
 
-    tr_id = "TTTC8910R"
 
     params = {
         "CANO": cano,
@@ -1206,10 +1226,12 @@ def inquire_psbl_rvsecncl(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "CTSC8035R"
+
+
     api_url = "/uapi/domestic-bond/v1/trading/inquire-psbl-rvsecncl"
 
-    
-    tr_id = "CTSC8035R"
+
 
     params = {
         "CANO": cano,
@@ -1237,6 +1259,8 @@ def inquire_psbl_rvsecncl(
             dataframe = current_data
             
         tr_cont = res.getHeader().tr_cont
+        ctx_area_nk200 = res.getBody().ctx_area_nk200
+        ctx_area_fk200 = res.getBody().ctx_area_fk200
         
         if tr_cont == "M":
             logger.info("Calling next page...")
@@ -1310,10 +1334,12 @@ def inquire_psbl_sell(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "TTTC8408R"
+
+
     api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-sell"
 
 
-    tr_id = "TTTC8408R"
 
     params = {
         "CANO": cano,
@@ -1407,11 +1433,13 @@ def issue_info(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    api_url = "/uapi/domestic-bond/v1/quotations/issue-info"
-
     tr_id = "CTPF1101R"
 
     # 요청 파라미터 설정
+
+    api_url = "/uapi/domestic-bond/v1/quotations/issue-info"
+
+
     params = {
         "PDNO": pdno,
         "PRDT_TYPE_CD": prdt_type_cd,
@@ -1507,9 +1535,12 @@ def order_rvsecncl(
         ... )
         >>> print(df)
     """
+    tr_id = "TTTC0953U"
+
+
     api_url = "/uapi/domestic-bond/v1/trading/order-rvsecncl"
 
-    tr_id = "TTTC0953U"
+
 
     params = {
         "CANO": cano,
@@ -1597,10 +1628,12 @@ def search_bond_info(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "CTPF1114R"
+
+
     api_url = "/uapi/domestic-bond/v1/quotations/search-bond-info"
 
 
-    tr_id = "CTPF1114R"
 
     params = {
         "PDNO": pdno,
@@ -1703,9 +1736,12 @@ def sell(
         ... )
         >>> print(df)
     """
+    tr_id = "TTTC0958U"
+
+
     api_url = "/uapi/domestic-bond/v1/trading/sell"
 
-    tr_id = "TTTC0958U"
+
 
     params = {
         "CANO": cano,

@@ -65,10 +65,12 @@ def algo_ordno(
         else:
             return dataframe
 
+    tr_id = "TTTS6058R"  # 해외주식 지정가주문번호조회
+
+
     api_url = "/uapi/overseas-stock/v1/trading/algo-ordno"
 
 
-    tr_id = "TTTS6058R"  # 해외주식 지정가주문번호조회
 
     params = {
         "CANO": cano,                    # 종합계좌번호
@@ -186,14 +188,17 @@ def daytime_order(
         raise ValueError("ord_dvsn is required. (e.g. '00')")
 
     if order_dv == "buy":
-        api_url = "/uapi/overseas-stock/v1/trading/daytime-order"
-
         tr_id = "TTTS6036U"
     elif order_dv == "sell":
         tr_id = "TTTS6037U"
     else:
         logger.error("Invalid order_dv. (e.g. 'buy' or 'sell')")
         raise ValueError("Invalid order_dv. (e.g. 'buy' or 'sell')")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/daytime-order"
+
+
 
     params = {
         "CANO": cano,
@@ -314,10 +319,12 @@ def daytime_order_rvsecncl(
         logger.error("ord_svr_dvsn_cd is required. (e.g. '0')")
         raise ValueError("ord_svr_dvsn_cd is required. (e.g. '0')")
 
+    tr_id = "TTTS6038U"
+
+
     api_url = "/uapi/overseas-stock/v1/trading/daytime-order-rvsecncl"
 
 
-    tr_id = "TTTS6038U"
 
     params = {
         "CANO": cano,
@@ -402,10 +409,12 @@ def foreign_margin(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "TTTC2101R"
+
+
     api_url = "/uapi/overseas-stock/v1/trading/foreign-margin"
 
-    
-    tr_id = "TTTC2101R"
+
 
     params = {
         "CANO": cano,
@@ -507,10 +516,12 @@ def inquire_algo_ccnl(
             dataframe3 = pd.DataFrame()
         return dataframe, dataframe3
 
+    tr_id = "TTTS6059R"  # 해외주식 지정가체결내역조회
+
+
     api_url = "/uapi/overseas-stock/v1/trading/inquire-algo-ccnl"
 
 
-    tr_id = "TTTS6059R"  # 해외주식 지정가체결내역조회
 
     params = {
         "CANO": cano,  # 계좌번호
@@ -566,8 +577,8 @@ def inquire_balance(
     acnt_prdt_cd: str,  # 계좌상품코드
     ovrs_excg_cd: str,  # 해외거래소코드
     tr_crcy_cd: str,  # 거래통화코드
-    FK200: str,  # 연속조회검색조건200
-    NK200: str,  # 연속조회키200
+    FK200: str = "",  # 연속조회검색조건200
+    NK200: str = "",  # 연속조회키200
     env_dv: str = "real",  # 실전모의구분
     dataframe1: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output1)
     dataframe2: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output2)
@@ -630,13 +641,16 @@ def inquire_balance(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
-        api_url = "/uapi/overseas-stock/v1/trading/inquire-balance"
-
         tr_id = "TTTS3012R"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTTS3012R"  # 모의투자용 TR ID
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-balance"
+
+
 
     params = {
         "CANO": cano,
@@ -736,8 +750,8 @@ def inquire_ccnl(
     ord_dt: str,  # 주문일자
     ord_gno_brno: str,  # 주문채번지점번호
     odno: str,  # 주문번호
-    NK200: str,  # 연속조회키200
-    FK200: str,  # 연속조회검색조건200
+    NK200: str = "",  # 연속조회키200
+    FK200: str = "",  # 연속조회검색조건200
     env_dv: str = "real",  # 실전모의구분
     tr_cont: str = "",
     dataframe: Optional[pd.DataFrame] = None,
@@ -825,13 +839,16 @@ def inquire_ccnl(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
-        api_url = "/uapi/overseas-stock/v1/trading/inquire-ccnl"
-
         tr_id = "TTTS3035R"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTTS3035R"  # 모의투자용 TR ID
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-ccnl"
+
+
 
     params = {
         "CANO": cano,
@@ -968,10 +985,12 @@ def inquire_nccs(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "TTTS3018R"
+
+
     api_url = "/uapi/overseas-stock/v1/trading/inquire-nccs"
 
-    
-    tr_id = "TTTS3018R"
+
 
     params = {
         "CANO": cano,
@@ -1100,10 +1119,12 @@ def inquire_paymt_stdr_balance(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame(), dataframe3 if dataframe3 is not None else pd.DataFrame()
     
+    tr_id = "CTRP6010R"
+
+
     api_url = "/uapi/overseas-stock/v1/trading/inquire-paymt-stdr-balance"
 
-    
-    tr_id = "CTRP6010R"
+
 
     params = {
         "CANO": cano,
@@ -1304,10 +1325,12 @@ def inquire_period_profit(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "TTTS3039R"
+
+
     api_url = "/uapi/overseas-stock/v1/trading/inquire-period-profit"
 
-    
-    tr_id = "TTTS3039R"
+
 
     params = {
         "CANO": cano,
@@ -1493,10 +1516,12 @@ def inquire_period_trans(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "CTOS4001R"
+
+
     api_url = "/uapi/overseas-stock/v1/trading/inquire-period-trans"
 
-    
-    tr_id = "CTOS4001R"
+
 
     params = {
         "CANO": cano,
@@ -1674,13 +1699,16 @@ def inquire_present_balance(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
-        api_url = "/uapi/overseas-stock/v1/trading/inquire-present-balance"
-
         tr_id = "CTRP6504R"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTRP6504R"  # 모의투자용 TR ID
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-present-balance"
+
+
 
     params = {
         "CANO": cano,
@@ -1857,13 +1885,16 @@ def inquire_psamount(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
-        api_url = "/uapi/overseas-stock/v1/trading/inquire-psamount"
-
         tr_id = "TTTS3007R"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTTS3007R"  # 모의투자용 TR ID
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/inquire-psamount"
+
+
 
     params = {
         "CANO": cano,
@@ -1965,10 +1996,12 @@ def market_cap(
         else:
             return dataframe1, dataframe2
 
+    tr_id = "HHDFS76350100"  # 해외주식 시가총액순위
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/market-cap"
 
 
-    tr_id = "HHDFS76350100"  # 해외주식 시가총액순위
 
     params = {
         "EXCD": excd,  # 거래소명
@@ -2077,10 +2110,12 @@ def new_highlow(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76300000"  # 해외주식 신고/신저가
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/new-highlow"
 
 
-    tr_id = "HHDFS76300000"  # 해외주식 신고/신저가
 
     params = {
         "EXCD": excd,
@@ -2216,8 +2251,6 @@ def order(
     # TR ID 설정 (매수/매도 및 거래소별)
     if ord_dv == "buy":
         if ovrs_excg_cd in ("NASD", "NYSE", "AMEX"):
-            api_url = "/uapi/overseas-stock/v1/trading/order"
-
             tr_id = "TTTT1002U"  # 미국 매수 주문 [모의투자] VTTT1002U
         elif ovrs_excg_cd == "SEHK":
             tr_id = "TTTS1002U"  # 홍콩 매수 주문 [모의투자] VTTS1002U
@@ -2260,6 +2293,11 @@ def order(
     elif env_dv != "real":
         logger.error("env_dv can only be 'real' or 'demo'")
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/order"
+
+
 
     params = {
         "CANO": cano,
@@ -2417,8 +2455,6 @@ def order_resv(
     # tr_id 설정
     if env_dv == "real":
         if ord_dv == "usBuy":
-            api_url = "/uapi/overseas-stock/v1/trading/order-resv"
-
             tr_id = "TTTT3014U"
         elif ord_dv == "usSell":
             tr_id = "TTTT3016U"
@@ -2437,6 +2473,11 @@ def order_resv(
             raise ValueError("ord_dv can only be 'usBuy', 'usSell' or 'asia'")
     else:
         raise ValueError("env_dv is required (e.g. 'real' or 'demo')")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/order-resv"
+
+
 
     params = {
         "CANO": cano,
@@ -2484,7 +2525,7 @@ def order_resv_ccnl(
     nat_dv: str,  # [필수] 국가구분 (ex. us:미국)
     cano: str,    # [필수] 종합계좌번호 (ex. 12345678)
     acnt_prdt_cd: str,  # [필수] 계좌상품코드 (ex. 01)
-    rsyn_ord_rcit_dt: str,  # [필수] 해외주문접수일자
+    rsvn_ord_rcit_dt: str,  # [필수] 해외주문접수일자
     ovrs_rsvn_odno: str     # [필수] 해외예약주문번호 (ex. 해외주식_예약주문접수 API Output ODNO(주문번호) 참고)
 ) -> pd.DataFrame:
     """
@@ -2502,14 +2543,14 @@ def order_resv_ccnl(
         nat_dv (str): [필수] 국가구분 (ex. us:미국)
         cano (str): [필수] 종합계좌번호 (ex. 12345678)
         acnt_prdt_cd (str): [필수] 계좌상품코드 (ex. 01)
-        rsyn_ord_rcit_dt (str): [필수] 해외주문접수일자
+        rsvn_ord_rcit_dt (str): [필수] 해외주문접수일자
         ovrs_rsvn_odno (str): [필수] 해외예약주문번호 (ex. 해외주식_예약주문접수 API Output ODNO(주문번호) 참고)
 
     Returns:
         pd.DataFrame: 해외주식 예약주문접수취소 결과 데이터
         
     Example:
-        >>> df = order_resv_ccnl(env_dv="real", nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rsyn_ord_rcit_dt="20220810", ovrs_rsvn_odno="0030008244")
+        >>> df = order_resv_ccnl(env_dv="real", nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rsvn_ord_rcit_dt="20220810", ovrs_rsvn_odno="0030008244")
         >>> print(df)
     """
 
@@ -2525,8 +2566,8 @@ def order_resv_ccnl(
     if acnt_prdt_cd == "":
         raise ValueError("acnt_prdt_cd is required (e.g. '01')")
     
-    if rsyn_ord_rcit_dt == "":
-        raise ValueError("rsyn_ord_rcit_dt is required")
+    if rsvn_ord_rcit_dt == "":
+        raise ValueError("rsvn_ord_rcit_dt is required")
     
     if ovrs_rsvn_odno == "":
         raise ValueError("ovrs_rsvn_odno is required")
@@ -2534,8 +2575,6 @@ def order_resv_ccnl(
     # tr_id 설정
     if env_dv == "real":
         if nat_dv == "us":
-            api_url = "/uapi/overseas-stock/v1/trading/order-resv-ccnl"
-
             tr_id = "TTTT3017U"
         else:
             raise ValueError("nat_dv can only be 'us'")
@@ -2547,10 +2586,15 @@ def order_resv_ccnl(
     else:
         raise ValueError("env_dv is required (e.g. 'real' or 'demo')")
 
+
+    api_url = "/uapi/overseas-stock/v1/trading/order-resv-ccnl"
+
+
+
     params = {
         "CANO": cano,
         "ACNT_PRDT_CD": acnt_prdt_cd,
-        "RSYN_ORD_RCIT_DT": rsyn_ord_rcit_dt,
+        "rsvn_ord_rcit_dt": rsvn_ord_rcit_dt,
         "OVRS_RSVN_ODNO": ovrs_rsvn_odno
     }
     
@@ -2646,13 +2690,16 @@ def order_resv_list(
 
     # tr_id 설정
     if nat_dv == "us":
-        api_url = "/uapi/overseas-stock/v1/trading/order-resv-list"
-
         tr_id = "TTTT3039R"
     elif nat_dv == "asia":
         tr_id = "TTTS3014R"
     else:
         raise ValueError("nat_dv can only be 'us' or 'asia'")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/order-resv-list"
+
+
 
     params = {
         "CANO": cano,
@@ -2778,13 +2825,16 @@ def order_rvsecncl(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real":
-        api_url = "/uapi/overseas-stock/v1/trading/order-rvsecncl"
-
         tr_id = "TTTT1004U"  # 실전투자용 TR ID
     elif env_dv == "demo":
         tr_id = "VTTT1004U"  # 모의투자용 TR ID
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-stock/v1/trading/order-rvsecncl"
+
+
 
     params = {
         "CANO": cano,
@@ -2884,10 +2934,12 @@ def price_fluct(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76260000"  # 해외주식 가격급등락
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/price-fluct"
 
 
-    tr_id = "HHDFS76260000"  # 해외주식 가격급등락
 
     params = {
         "EXCD": excd,
@@ -2988,10 +3040,12 @@ def trade_growth(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76330000"  # 해외주식 거래증가율순위
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/trade-growth"
 
 
-    tr_id = "HHDFS76330000"  # 해외주식 거래증가율순위
 
     params = {
         "EXCD": excd,
@@ -3093,10 +3147,12 @@ def trade_pbmn(
         else:
             return dataframe1, dataframe2
 
+    tr_id = "HHDFS76320010"  # 해외주식 거래대금순위
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/trade-pbmn"
 
 
-    tr_id = "HHDFS76320010"  # 해외주식 거래대금순위
 
     params = {
         "EXCD": excd,  # 거래소명
@@ -3203,10 +3259,12 @@ def trade_turnover(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76340000"  # 해외주식 거래회전율순위
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/trade-turnover"
 
 
-    tr_id = "HHDFS76340000"  # 해외주식 거래회전율순위
 
     params = {
         "EXCD": excd,          # 거래소명
@@ -3311,10 +3369,12 @@ def trade_vol(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76310010"  # 해외주식 거래량순위
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/trade-vol"
 
 
-    tr_id = "HHDFS76310010"  # 해외주식 거래량순위
 
     params = {
         "EXCD": excd,
@@ -3420,10 +3480,12 @@ def updown_rate(
         else:
             return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
+    tr_id = "HHDFS76290000"
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/updown-rate"
 
 
-    tr_id = "HHDFS76290000"
 
     params = {
         "EXCD": excd,
@@ -3525,10 +3587,12 @@ def volume_power(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76280000"
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/volume-power"
 
 
-    tr_id = "HHDFS76280000"
 
     params = {
         "EXCD": excd,
@@ -3628,10 +3692,12 @@ def volume_surge(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76270000"  # 해외주식 거래량급증
+
+
     api_url = "/uapi/overseas-stock/v1/ranking/volume-surge"
 
 
-    tr_id = "HHDFS76270000"  # 해외주식 거래량급증
 
     params = {
         "EXCD": excd,  # 거래소명

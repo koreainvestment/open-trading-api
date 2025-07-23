@@ -118,7 +118,7 @@ print(df)
 # [국내주식] ELW시세 - ELW 기초자산별 종목시세[국내주식-186]
 ##############################################################################################
 
-df = udrl_asset_price(fid_cond_mrkt_div_code="W", fid_cond_scr_div_code="11541", fid_mrkt_cls_code="A", fid_input_iscd="00000", fid_unas_input_iscd="", fid_vol_cnt="1000", fid_trgt_exls_cls_code="0", fid_input_price_1="1000", fid_input_price_2="5000", fid_input_vol_1="100", fid_input_vol_2="1000", fid_input_rmnn_dynu_1="30", fid_input_rmnn_dynu_2="90", fid_option="", fid_input_option_1="", fid_input_option_2="")
+df = udrl_asset_price(fid_cond_mrkt_div_code="W", fid_cond_scr_div_code="11541", fid_mrkt_cls_code="A", fid_input_iscd="00000", fid_unas_input_iscd="0001", fid_vol_cnt="1000", fid_trgt_exls_cls_code="0", fid_input_price_1="1000", fid_input_price_2="5000", fid_input_vol_1="100", fid_input_vol_2="1000", fid_input_rmnn_dynu_1="30", fid_input_rmnn_dynu_2="90", fid_option="0", fid_input_option_1="", fid_input_option_2="")
 print(df)
 
 ##############################################################################################

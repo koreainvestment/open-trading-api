@@ -64,10 +64,12 @@ def display_board_callput(
     if fid_mrkt_cls_code1 == "":
         raise ValueError("fid_mrkt_cls_code1 is required (e.g. 'PO')")
 
+    tr_id = "FHPIF05030100"
+
+
     api_url = "/uapi/domestic-futureoption/v1/quotations/display-board-callput"
 
 
-    tr_id = "FHPIF05030100"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -124,10 +126,12 @@ def display_board_futures(
     if fid_cond_mrkt_cls_code == "":
         raise ValueError("fid_cond_mrkt_cls_code is required (e.g. 'MKI')")
 
+    tr_id = "FHPIF05030200"
+
+
     api_url = "/uapi/domestic-futureoption/v1/quotations/display-board-futures"
 
 
-    tr_id = "FHPIF05030200"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -172,10 +176,12 @@ def display_board_option_list(
     if fid_cond_scr_div_code == "":
         raise ValueError("fid_cond_scr_div_code is required (e.g. '509')")
 
+    tr_id = "FHPIO056104C0"
+
+
     api_url = "/uapi/domestic-futureoption/v1/quotations/display-board-option-list"
 
 
-    tr_id = "FHPIO056104C0"
 
     params = {
         "FID_COND_SCR_DIV_CODE": fid_cond_scr_div_code,
@@ -231,10 +237,12 @@ def display_board_top(
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required (e.g. '101V06')")
 
+    tr_id = "FHPIF05030000"
+
+
     api_url = "/uapi/domestic-futureoption/v1/quotations/display-board-top"
 
 
-    tr_id = "FHPIF05030000"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -287,10 +295,12 @@ def exp_price_trend(
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'F')")
 
+    tr_id = "FHPIF05110100"  # 선물옵션 일중예상체결추이
+
+
     api_url = "/uapi/domestic-futureoption/v1/quotations/exp-price-trend"
 
 
-    tr_id = "FHPIF05110100"  # 선물옵션 일중예상체결추이
 
     params = {
         "FID_INPUT_ISCD": fid_input_iscd,  # 입력 종목코드
@@ -349,13 +359,16 @@ def inquire_asking_price(
 
     # TR_ID 설정
     if env_dv == "real":
-        api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-asking-price"
-
         tr_id = "FHMIF10010000"
     elif env_dv == "demo":
         tr_id = "FHMIF10010000"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-asking-price"
+
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -445,13 +458,16 @@ def inquire_balance(
 
     # tr_id 설정
     if env_dv == "real":
-        api_url = "/uapi/domestic-futureoption/v1/trading/inquire-balance"
-
         tr_id = "CTFO6118R"
     elif env_dv == "demo":
         tr_id = "VTFO6118R"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-balance"
+
+
 
     params = {
         "CANO": cano,
@@ -554,10 +570,12 @@ def inquire_balance_settlement_pl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "CTFO6117R"
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/inquire-balance-settlement-pl"
 
 
-    tr_id = "CTFO6117R"
 
     params = {
         "CANO": cano,
@@ -664,10 +682,12 @@ def inquire_balance_valuation_pl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "CTFO6159R"  # 선물옵션 잔고평가손익내역
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/inquire-balance-valuation-pl"
 
 
-    tr_id = "CTFO6159R"  # 선물옵션 잔고평가손익내역
 
     params = {
         "CANO": cano,
@@ -805,8 +825,6 @@ def inquire_ccnl(
 
     # tr_id 설정
     if env_dv == "real":
-        api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ccnl"
-
         tr_id = "TTTO5201R"
     elif env_dv == "demo":
         tr_id = "VTTO5201R"
@@ -814,6 +832,10 @@ def inquire_ccnl(
         raise ValueError("env_dv can only be 'real' or 'demo'")
 
     # 파라미터 설정
+
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ccnl"
+
+
     params = {
         "CANO": cano,
         "ACNT_PRDT_CD": acnt_prdt_cd,
@@ -934,10 +956,12 @@ def inquire_ccnl_bstime(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "CTFO5139R"
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ccnl-bstime"
 
 
-    tr_id = "CTFO5139R"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -993,8 +1017,8 @@ def inquire_daily_amount_fee(
     acnt_prdt_cd: str,                           # [필수] 계좌상품코드 (ex. 03)
     inqr_strt_day: str,                          # [필수] 조회시작일 (ex. 20240401)
     inqr_end_day: str,                           # [필수] 조회종료일 (ex. 20240625)
-    fk200: str = "",                             # 연속조회검색조건200
-    nk200: str = "",                             # 연속조회키200
+    FK200: str = "",                             # 연속조회검색조건200
+    NK200: str = "",                             # 연속조회키200
     tr_cont: str = "",                           # 연속거래여부
     dataframe1: Optional[pd.DataFrame] = None,    # 누적 데이터프레임1
     dataframe2: Optional[pd.DataFrame] = None,    # 누적 데이터프레임2
@@ -1009,8 +1033,8 @@ def inquire_daily_amount_fee(
         acnt_prdt_cd (str): [필수] 계좌상품코드 (ex. 03)
         inqr_strt_day (str): [필수] 조회시작일 (ex. 20240401)
         inqr_end_day (str): [필수] 조회종료일 (ex. 20240625)
-        fk200 (str): 연속조회검색조건200
-        nk200 (str): 연속조회키200
+        FK200 (str): 연속조회검색조건200
+        NK200 (str): 연속조회키200
         tr_cont (str): 연속거래여부
         dataframe1 (Optional[pd.DataFrame]): 누적 데이터프레임1
         dataframe2 (Optional[pd.DataFrame]): 누적 데이터프레임2
@@ -1046,18 +1070,20 @@ def inquire_daily_amount_fee(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "CTFO6119R"  # 선물옵션기간약정수수료일별
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/inquire-daily-amount-fee"
 
 
-    tr_id = "CTFO6119R"  # 선물옵션기간약정수수료일별
 
     params = {
         "CANO": cano,                       # 종합계좌번호
         "ACNT_PRDT_CD": acnt_prdt_cd,      # 계좌상품코드
         "INQR_STRT_DAY": inqr_strt_day,    # 조회시작일
         "INQR_END_DAY": inqr_end_day,      # 조회종료일
-        "CTX_AREA_FK200": fk200,           # 연속조회검색조건200
-        "CTX_AREA_NK200": nk200            # 연속조회키200
+        "CTX_AREA_FK200": FK200,           # 연속조회검색조건200
+        "CTX_AREA_NK200": NK200            # 연속조회키200
     }
     
     res = ka._url_fetch(api_url, tr_id, tr_cont, params)
@@ -1078,14 +1104,14 @@ def inquire_daily_amount_fee(
             dataframe2 = current_data2
             
         tr_cont = res.getHeader().tr_cont
-        fk200 = res.getBody().ctx_area_fk200
-        nk200 = res.getBody().ctx_area_nk200
+        FK200 = res.getBody().ctx_area_fk200
+        NK200 = res.getBody().ctx_area_nk200
         
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_daily_amount_fee(
-                cano, acnt_prdt_cd, inqr_strt_day, inqr_end_day, fk200, nk200, "N", dataframe1, dataframe2, depth + 1, max_depth
+                cano, acnt_prdt_cd, inqr_strt_day, inqr_end_day, FK200, NK200, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
         else:
             logging.info("Data fetch complete.")
@@ -1156,13 +1182,16 @@ def inquire_daily_fuopchartprice(
 
     # tr_id 설정
     if env_dv == "real":
-        api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-daily-fuopchartprice"
-
         tr_id = "FHKIF03020100"
     elif env_dv == "demo":
         tr_id = "FHKIF03020100"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-daily-fuopchartprice"
+
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1215,10 +1244,12 @@ def inquire_deposit(
     if acnt_prdt_cd == "":
         raise ValueError("acnt_prdt_cd is required")
 
+    tr_id = "CTRP6550R"  # 선물옵션 총자산현황
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/inquire-deposit"
 
 
-    tr_id = "CTRP6550R"  # 선물옵션 총자산현황
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -1299,10 +1330,12 @@ def inquire_ngt_balance(
             dataframe2 if dataframe2 is not None else pd.DataFrame()
         )
 
+    tr_id = "CTFN6118R"
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ngt-balance"
 
 
-    tr_id = "CTFN6118R"
 
     params = {
         "CANO": cano,
@@ -1434,10 +1467,12 @@ def inquire_ngt_ccnl(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "STTN5201R"
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/inquire-ngt-ccnl"
 
 
-    tr_id = "STTN5201R"
 
     params = {
         "CANO": cano,
@@ -1540,13 +1575,16 @@ def inquire_price(
 
     # tr_id 설정
     if env_dv == "real":
-        api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-price"
-
         tr_id = "FHMIF10000000"
     elif env_dv == "demo":
         tr_id = "FHMIF10000000"
     else:
         raise ValueError("env_dv can only be real or demo")
+
+
+    api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-price"
+
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1625,10 +1663,12 @@ def inquire_psbl_ngt_order(
     if ord_dvsn_cd == "" or ord_dvsn_cd is None:
         raise ValueError("ord_dvsn_cd is required (e.g. '01', '02', '03', '04', '10', '11', '12', '13', '14', '15')")
 
+    tr_id = "STTN5105R"
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/inquire-psbl-ngt-order"
 
 
-    tr_id = "STTN5105R"
 
     params = {
         "CANO": cano,
@@ -1707,13 +1747,16 @@ def inquire_psbl_order(
 
     # tr_id 설정
     if env_dv == "real":
-        api_url = "/uapi/domestic-futureoption/v1/trading/inquire-psbl-order"
-
         tr_id = "TTTO5105R"
     elif env_dv == "demo":
         tr_id = "VTTO5105R"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/domestic-futureoption/v1/trading/inquire-psbl-order"
+
+
 
     params = {
         "CANO": cano,
@@ -1792,10 +1835,12 @@ def inquire_time_fuopchartprice(
     if fid_input_hour_1 == "":
         raise ValueError("fid_input_hour_1 is required (e.g. '100000')")
 
+    tr_id = "FHKIF03020200"  # 선물옵션 분봉조회
+
+
     api_url = "/uapi/domestic-futureoption/v1/quotations/inquire-time-fuopchartprice"
 
 
-    tr_id = "FHKIF03020200"  # 선물옵션 분봉조회
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1857,10 +1902,12 @@ def ngt_margin_detail(
     if mgna_dvsn_cd == "":
         raise ValueError("mgna_dvsn_cd is required (e.g. '01:위탁, 02:유지')")
 
+    tr_id = "CTFN7107R"  # (야간)선물옵션 증거금 상세
+
+
     api_url = "/uapi/domestic-futureoption/v1/trading/ngt-margin-detail"
 
 
-    tr_id = "CTFN7107R"  # (야간)선물옵션 증거금 상세
 
     params = {
         "CANO": cano,
@@ -1975,8 +2022,6 @@ def order(
     # tr_id 설정
     if env_dv == "real":
         if ord_dv == "day":
-            api_url = "/uapi/domestic-futureoption/v1/trading/order"
-
             tr_id = "TTTO1101U"
         elif ord_dv == "night":
             tr_id = "STTN1101U"
@@ -1989,6 +2034,11 @@ def order(
             raise ValueError("ord_dv can only be 'day' for demo environment")
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/domestic-futureoption/v1/trading/order"
+
+
 
     params = {
         "ORD_PRCS_DVSN_CD": ord_prcs_dvsn_cd,
@@ -2072,8 +2122,6 @@ def order_rvsecncl(
     # tr_id 설정
     if env_dv == "real":
         if day_dv == "day":
-            api_url = "/uapi/domestic-futureoption/v1/trading/order-rvsecncl"
-
             tr_id = "TTTO1103U"
         elif day_dv == "night":
             tr_id = "TTTN1103U"
@@ -2086,6 +2134,11 @@ def order_rvsecncl(
             raise ValueError("day_dv can only be 'day' for demo environment")
     else:
         raise ValueError("env_dv is required (e.g. 'real' or 'demo')")
+
+
+    api_url = "/uapi/domestic-futureoption/v1/trading/order-rvsecncl"
+
+
 
     params = {
         "ORD_PRCS_DVSN_CD": ord_prcs_dvsn_cd,

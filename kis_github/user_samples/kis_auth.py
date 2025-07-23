@@ -6,33 +6,32 @@
 # ====|  API 호출 공통 함수 포함                                  |=====================
 
 
-import os
-import time, copy
-import logging
-
-# pip install PyYAML (패키지설치)
-import yaml
-
-# pip install requests (패키지설치)
-import requests
-import json
-
-# 웹 소켓 모듈을 선언한다.
-import websockets
 import asyncio
-
+import copy
+import json
+import logging
+import os
+import time
+from base64 import b64decode
+from collections import namedtuple
+from collections.abc import Callable
+from datetime import datetime
 from io import StringIO
 
 import pandas as pd
 
-from collections import namedtuple
-from collections.abc import Callable
-from datetime import datetime
+# pip install requests (패키지설치)
+import requests
 
+# 웹 소켓 모듈을 선언한다.
+import websockets
+
+# pip install PyYAML (패키지설치)
+import yaml
 from Crypto.Cipher import AES
+
 # pip install pycryptodome
 from Crypto.Util.Padding import unpad
-from base64 import b64decode
 
 clearConsole = lambda: os.system("cls" if os.name in ("nt", "dos") else "clear")
 
@@ -41,7 +40,9 @@ config_root = os.path.join(os.path.expanduser("~"), "KIS", "config")
 # config_root = "$HOME/KIS/config/"  # 토큰 파일이 저장될 폴더, 제3자가 찾지 어렵도록 경로 설정하시기 바랍니다.
 # token_tmp = config_root + 'KIS000000'  # 토큰 로컬저장시 파일 이름 지정, 파일이름을 토큰값이 유추가능한 파일명은 삼가바랍니다.
 # token_tmp = config_root + 'KIS' + datetime.today().strftime("%Y%m%d%H%M%S")  # 토큰 로컬저장시 파일명 년월일시분초
-token_tmp = os.path.join(config_root, f"KIS{datetime.today().strftime("%Y%m%d")}")  # 토큰 로컬저장시 파일명 년월일
+token_tmp = os.path.join(
+    config_root, f"KIS{datetime.today().strftime("%Y%m%d")}"
+)  # 토큰 로컬저장시 파일명 년월일
 
 # 접근토큰 관리하는 파일 존재여부 체크, 없으면 생성
 if os.path.exists(token_tmp) == False:
@@ -97,7 +98,7 @@ def read_token():
         else:
             # print('Need new token: ', tkg_tmp['valid-date'])
             return None
-    except Exception as e:
+    except Exception:
         # print('read token error: ', e)
         return None
 
@@ -112,7 +113,8 @@ def _getBaseHeader():
 # 가져오기 : 앱키, 앱시크리트, 종합계좌번호(계좌번호 중 숫자8자리), 계좌상품코드(계좌번호 중 숫자2자리), 토큰, 도메인
 def _setTRENV(cfg):
     nt1 = namedtuple(
-        "KISEnv", ["my_app", "my_sec", "my_acct", "my_prod", "my_token", "my_url", "my_url_ws"]
+        "KISEnv",
+        ["my_app", "my_sec", "my_acct", "my_prod", "my_token", "my_url", "my_url_ws"],
     )
     d = {
         "my_app": cfg["my_app"],  # 앱키
@@ -357,6 +359,7 @@ class APIResp:
 
     # end of class APIResp
 
+
 class APIRespError(APIResp):
     def __init__(self, status_code, error_text):
         # 부모 생성자 호출하지 않고 직접 초기화
@@ -364,37 +367,40 @@ class APIRespError(APIResp):
         self.error_text = error_text
         self._error_code = str(status_code)
         self._error_message = error_text
-    
+
     def isOK(self):
         return False
-    
+
     def getErrorCode(self):
         return self._error_code
-    
+
     def getErrorMessage(self):
         return self._error_message
-    
+
     def getBody(self):
         # 빈 객체 리턴 (속성 접근 시 AttributeError 방지)
         class EmptyBody:
             def __getattr__(self, name):
                 return None
+
         return EmptyBody()
-    
+
     def getHeader(self):
         # 빈 객체 리턴
         class EmptyHeader:
             tr_cont = ""
+
             def __getattr__(self, name):
                 return ""
+
         return EmptyHeader()
-    
+
     def printAll(self):
         print(f"=== ERROR RESPONSE ===")
         print(f"Status Code: {self.status_code}")
         print(f"Error Message: {self.error_text}")
         print(f"======================")
-    
+
     def printError(self, url=""):
         print(f"Error Code : {self.status_code} | {self.error_text}")
         if url:
@@ -405,7 +411,7 @@ class APIRespError(APIResp):
 
 
 def _url_fetch(
-        api_url, ptr_id, tr_cont, params, appendHeaders=None, postFlag=False, hashFlag=True
+    api_url, ptr_id, tr_cont, params, appendHeaders=None, postFlag=False, hashFlag=True
 ):
     url = f"{getTREnv().my_url}{api_url}"
 
@@ -467,9 +473,7 @@ def _getBaseHeader_ws():
 
 
 def auth_ws(svr="prod", product=_cfg["my_prod"]):
-    p = {
-        "grant_type": "client_credentials"
-    }
+    p = {"grant_type": "client_credentials"}
     if svr == "prod":
         ak1 = "my_app"
         ak2 = "my_sec"
@@ -481,9 +485,7 @@ def auth_ws(svr="prod", product=_cfg["my_prod"]):
     p["secretkey"] = _cfg[ak2]
 
     url = f"{_cfg[svr]}/oauth2/Approval"
-    res = requests.post(
-        url, data=json.dumps(p), headers=_getBaseHeader()
-    )  # 토큰 발급
+    res = requests.post(url, data=json.dumps(p), headers=_getBaseHeader())  # 토큰 발급
     rescode = res.status_code
     if rescode == 200:  # 토큰 정상 발급
         approval_key = _getResultObject(res.json()).approval_key
@@ -529,10 +531,7 @@ def data_fetch(tr_id, tr_type, params, appendHeaders=None) -> dict:
     }
     inp.update(params)
 
-    return {
-        "header": headers,
-        "body": {"input": inp}
-    }
+    return {"header": headers, "body": {"input": inp}}
 
 
 # iv, ekey, encrypt 는 각 기능 메소드 파일에 저장할 수 있도록 dict에서 return 하도록
@@ -546,29 +545,42 @@ def system_resp(data):
 
     rdic = json.loads(data)
 
-    tr_id = rdic['header']['tr_id']
+    tr_id = rdic["header"]["tr_id"]
     if tr_id != "PINGPONG":
-        tr_key = rdic['header']['tr_key']
-        encrypt = rdic['header']['encrypt']
+        tr_key = rdic["header"]["tr_key"]
+        encrypt = rdic["header"]["encrypt"]
     if rdic.get("body", None) is not None:
         isOk = True if rdic["body"]["rt_cd"] == "0" else False
         tr_msg = rdic["body"]["msg1"]
         # 복호화를 위한 key 를 추출
-        if 'output' in rdic["body"]:
+        if "output" in rdic["body"]:
             iv = rdic["body"]["output"]["iv"]
             ekey = rdic["body"]["output"]["key"]
         isUnSub = True if tr_msg[:5] == "UNSUB" else False
     else:
         isPingPong = True if tr_id == "PINGPONG" else False
 
-    nt2 = namedtuple('SysMsg', ['isOk', 'tr_id', 'tr_key', 'isUnSub', 'isPingPong', "tr_msg", "iv", "ekey", "encrypt"])
+    nt2 = namedtuple(
+        "SysMsg",
+        [
+            "isOk",
+            "tr_id",
+            "tr_key",
+            "isUnSub",
+            "isPingPong",
+            "tr_msg",
+            "iv",
+            "ekey",
+            "encrypt",
+        ],
+    )
     d = {
-        'isOk': isOk,
-        'tr_id': tr_id,
-        'tr_key': tr_key,
+        "isOk": isOk,
+        "tr_id": tr_id,
+        "tr_key": tr_key,
         "tr_msg": tr_msg,
-        'isUnSub': isUnSub,
-        'isPingPong': isPingPong,
+        "isUnSub": isUnSub,
+        "isPingPong": isPingPong,
         "iv": iv,
         "ekey": ekey,
         "encrypt": encrypt,
@@ -581,7 +593,7 @@ def aes_cbc_base64_dec(key, iv, cipher_text):
     if key is None or iv is None:
         raise AttributeError("key and iv cannot be None")
 
-    cipher = AES.new(key.encode('utf-8'), AES.MODE_CBC, iv.encode('utf-8'))
+    cipher = AES.new(key.encode("utf-8"), AES.MODE_CBC, iv.encode("utf-8"))
     return bytes.decode(unpad(cipher.decrypt(b64decode(cipher_text)), AES.block_size))
 
 
@@ -590,10 +602,10 @@ open_map: dict = {}
 
 
 def add_open_map(
-        name: str,
-        request: Callable[[str, str, ...], (dict, list[str])],
-        data: str | list[str],
-        kwargs: dict = None,
+    name: str,
+    request: Callable[[str, str, ...], (dict, list[str])],
+    data: str | list[str],
+    kwargs: dict = None,
 ):
     if open_map.get(name, None) is None:
         open_map[name] = {
@@ -612,19 +624,14 @@ data_map: dict = {}
 
 
 def add_data_map(
-        tr_id: str,
-        columns: list = None,
-        encrypt: str = None,
-        key: str = None,
-        iv: str = None,
+    tr_id: str,
+    columns: list = None,
+    encrypt: str = None,
+    key: str = None,
+    iv: str = None,
 ):
     if data_map.get(tr_id, None) is None:
-        data_map[tr_id] = {
-            "columns": [],
-            "encrypt": False,
-            "key": None,
-            "iv": None
-        }
+        data_map[tr_id] = {"columns": [], "encrypt": False, "key": None, "iv": None}
 
     if columns is not None:
         data_map[tr_id]["columns"] = columns
@@ -641,7 +648,9 @@ def add_data_map(
 
 class KISWebSocket:
     api_url: str = ""
-    on_result: Callable[[websockets.ClientConnection, str, pd.DataFrame, dict], None] = None
+    on_result: Callable[
+        [websockets.ClientConnection, str, pd.DataFrame, dict], None
+    ] = None
 
     retry_count: int = 0
     amx_retries: int = 0
@@ -670,13 +679,17 @@ class KISWebSocket:
                 if dm.get("encrypt", None) == "Y":
                     d = aes_cbc_base64_dec(dm["key"], dm["iv"], d)
 
-                df = pd.read_csv(StringIO(d), header=None, sep="^", names=dm["columns"], dtype=object)
+                df = pd.read_csv(
+                    StringIO(d), header=None, sep="^", names=dm["columns"], dtype=object
+                )
 
             else:
                 rsp = system_resp(raw)
 
                 tr_id = rsp.tr_id
-                add_data_map(tr_id=rsp.tr_id, encrypt=rsp.encrypt, key=rsp.ekey, iv=rsp.iv)
+                add_data_map(
+                    tr_id=rsp.tr_id, encrypt=rsp.encrypt, key=rsp.ekey, iv=rsp.iv
+                )
 
                 if rsp.isPingPong:
                     print(f"### RECV [PINGPONG] [{raw}]")
@@ -697,7 +710,9 @@ class KISWebSocket:
                 async with websockets.connect(url) as ws:
                     # request subscribe
                     for name, obj in open_map.items():
-                        await self.send_multiple(ws, obj["func"], "1", obj["items"], obj["kwargs"])
+                        await self.send_multiple(
+                            ws, obj["func"], "1", obj["items"], obj["kwargs"]
+                        )
 
                     # subscriber
                     await asyncio.gather(
@@ -711,12 +726,12 @@ class KISWebSocket:
     # func
     @classmethod
     async def send(
-            cls,
-            ws: websockets.ClientConnection,
-            request: Callable[[str, str, ...], (dict, list[str])],
-            tr_type: str,
-            data: str,
-            kwargs: dict = None,
+        cls,
+        ws: websockets.ClientConnection,
+        request: Callable[[str, str, ...], (dict, list[str])],
+        tr_type: str,
+        data: str,
+        kwargs: dict = None,
     ):
         k = {} if kwargs is None else kwargs
         msg, columns = request(tr_type, data, **k)
@@ -726,15 +741,15 @@ class KISWebSocket:
         logging.info("send message >> %s" % json.dumps(msg))
 
         await ws.send(json.dumps(msg))
-        ka.smart_sleep()
+        smart_sleep()
 
     async def send_multiple(
-            self,
-            ws: websockets.ClientConnection,
-            request: Callable[[str, str, ...], (dict, list[str])],
-            tr_type: str,
-            data: list | str,
-            kwargs: dict = None,
+        self,
+        ws: websockets.ClientConnection,
+        request: Callable[[str, str, ...], (dict, list[str])],
+        tr_type: str,
+        data: list | str,
+        kwargs: dict = None,
     ):
         if type(data) is str:
             await self.send(ws, request, tr_type, data, kwargs)
@@ -746,23 +761,28 @@ class KISWebSocket:
 
     @classmethod
     def subscribe(
-            cls,
-            request: Callable[[str, str, ...], (dict, list[str])],
-            data: list | str,
-            kwargs: dict = None,
+        cls,
+        request: Callable[[str, str, ...], (dict, list[str])],
+        data: list | str,
+        kwargs: dict = None,
     ):
         add_open_map(request.__name__, request, data, kwargs)
 
     def unsubscribe(
-            self,
-            ws: websockets.ClientConnection,
-            request: Callable[[str, str, ...], (dict, list[str])],
-            data: list | str,
+        self,
+        ws: websockets.ClientConnection,
+        request: Callable[[str, str, ...], (dict, list[str])],
+        data: list | str,
     ):
         self.send_multiple(ws, request, "2", data)
 
     # start
-    def start(self, on_result: Callable[[websockets.ClientConnection, str, pd.DataFrame, dict], None]):
+    def start(
+        self,
+        on_result: Callable[
+            [websockets.ClientConnection, str, pd.DataFrame, dict], None
+        ],
+    ):
         self.on_result = on_result
         try:
             asyncio.run(self.__runner())

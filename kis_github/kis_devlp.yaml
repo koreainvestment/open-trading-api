@@ -7,6 +7,9 @@ my_sec: "앱키 시크릿"
 paper_app: "모의투자 앱키"
 paper_sec: "모의투자 앱키 시크릿"
 
+# HTS ID
+my_hts_id: "사용자 HTS ID"
+
 #계좌번호 앞 8자리
 my_acct_stock: "증권계좌 8자리"
 my_acct_future: "선물옵션계좌 8자리"

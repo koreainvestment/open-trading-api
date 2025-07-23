@@ -35,14 +35,14 @@ print(df2)
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 당일주문내역조회 [v1_해외선물-004]
 ##############################################################################################
 
-df = inquire_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="", ctx_area_fk200="", ctx_area_nk200="")
+df = inquire_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ccld_nccs_dvsn="01", sll_buy_dvsn_cd="%%", fuop_dvsn="00", ctx_area_fk200="", ctx_area_nk200="")
 print(df)
 
 ##############################################################################################
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 일별체결내역[해외선물-011]
 ##############################################################################################
 
-df1, df2 = inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_dt="20250101", end_dt="20250131", fuop_dvsn_cd="", fm_pdgr_cd="", crcy_cd="%%%", fm_item_ftng_yn="N", sll_buy_dvsn_cd="%%", ctx_area_fk200="", ctx_area_nk200="")
+df1, df2 = inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, strt_dt="20250101", end_dt="20250131", fuop_dvsn_cd="00", fm_pdgr_cd="", crcy_cd="%%%", fm_item_ftng_yn="N", sll_buy_dvsn_cd="%%", ctx_area_fk200="", ctx_area_nk200="")
 print(df1)
 print(df2)
 
@@ -124,14 +124,14 @@ print(df2)
 # [해외선물옵션] 주문/계좌 > 해외선물옵션 증거금상세 [해외선물-032]
 ##############################################################################################
 
-df = margin_detail(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, crcy_cd="", inqr_dt="")
+df = margin_detail(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, crcy_cd="USD", inqr_dt="20250701")
 print(df)
 
 ##############################################################################################
 # [해외선물옵션] 기본시세 > 해외선물옵션 장운영시간 [해외선물-030]
 ##############################################################################################
 
-df = market_time(fm_pdgr_cd="", fm_clas_cd="", fm_excg_cd="CME", opt_yn="", ctx_area_nk200="", ctx_area_fk200="")
+df = market_time(fm_pdgr_cd="", fm_clas_cd="", fm_excg_cd="CME", opt_yn="N", ctx_area_nk200="", ctx_area_fk200="")
 print(df)
 
 ##############################################################################################

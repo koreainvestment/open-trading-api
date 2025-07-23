@@ -19,7 +19,7 @@ trenv = ka.getTREnv()
 # [장내채권] 기본시세 > 장내채권 평균단가조회 [국내채권-158]
 ##############################################################################################
 
-df1, df2, df3 = avg_unit(inqr_strt_dt="20250101", inqr_end_dt="20250131", pdno="KR2033022D33", prdt_type_cd="302", vrfc_kind_cd="00", ctx_area_nk30="", ctx_area_fk100="")
+df1, df2, df3 = avg_unit(inqr_strt_dt="20250101", inqr_end_dt="20250131", pdno="KR2033022D33", prdt_type_cd="302", vrfc_kind_cd="00")
 print(df1)
 print(df2)
 print(df3)
@@ -54,7 +54,7 @@ print(df)
 # [장내채권] 주문/계좌 > 장내채권 잔고조회 [국내주식-198]
 ##############################################################################################
 
-df = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_cndt="00", pdno="", buy_dt="", ctx_area_fk200="", ctx_area_nk200="")
+df = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_cndt="00", pdno="", buy_dt="")
 print(df)
 
 ##############################################################################################
@@ -144,7 +144,7 @@ print(result)
 # [장내채권] 기본시세 > 장내채권 검색조건 [국내주식-129]
 ##############################################################################################
 
-df = search_bond_info(pdno="", prdt_type_cd="302")
+df = search_bond_info(pdno="KR2033022D33", prdt_type_cd="302")
 print(df)
 
 ##############################################################################################

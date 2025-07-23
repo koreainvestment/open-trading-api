@@ -58,10 +58,12 @@ def brknews_title(
     if fid_cond_scr_div_code == "":
         raise ValueError("fid_cond_scr_div_code is required (e.g. '11801')")
 
+    tr_id = "FHKST01011801"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/brknews-title"
 
 
-    tr_id = "FHKST01011801"
 
     params = {
         "FID_NEWS_OFER_ENTP_CODE": fid_news_ofer_entp_code,
@@ -158,10 +160,12 @@ def colable_by_company(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "CTLN4050R"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/colable-by-company"
 
 
-    tr_id = "CTLN4050R"
 
     params = {
         "PDNO": pdno,
@@ -224,8 +228,8 @@ def colable_by_company(
 
 def countries_holiday(
     trad_dt: str,  # 기준일자
-    ctx_area_nk: str,  # 연속조회키
-    ctx_area_fk: str,  # 연속조회검색조건
+    NK: str = "",  # 연속조회키
+    FK: str = "",  # 연속조회검색조건
     tr_cont: str = "",  # 연속 거래 여부
     dataframe: Optional[pd.DataFrame] = None,  # 누적 데이터프레임
     depth: int = 0,  # 현재 재귀 깊이
@@ -262,15 +266,17 @@ def countries_holiday(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "CTOS5011R"
+
+
     api_url = "/uapi/overseas-stock/v1/quotations/countries-holiday"
 
-    
-    tr_id = "CTOS5011R"
+
 
     params = {
         "TRAD_DT": trad_dt,
-        "CTX_AREA_NK": ctx_area_nk,
-        "CTX_AREA_FK": ctx_area_fk,
+        "CTX_AREA_NK": NK,
+        "CTX_AREA_FK": FK,
     }
 
     # API 호출
@@ -293,14 +299,16 @@ def countries_holiday(
         
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
+        NK = res.getBody().ctx_area_nk
+        FK = res.getBody().ctx_area_fk
         
         if tr_cont == "M":
             logger.info("Calling next page...")
             ka.smart_sleep()
             return countries_holiday(
                 trad_dt,
-                ctx_area_nk,
-                ctx_area_fk,
+                NK,
+                FK,
                 "N", dataframe, depth + 1, max_depth
             )
         else:
@@ -380,12 +388,15 @@ def dailyprice(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real" or env_dv == "demo":
-        api_url = "/uapi/overseas-price/v1/quotations/dailyprice"
-
         tr_id = "HHDFS76240000"  # 실전/모의투자 공통 TR ID
     else:
         logger.error("env_dv can only be 'real' or 'demo'")
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-price/v1/quotations/dailyprice"
+
+
 
     params = {
         "AUTH": auth,
@@ -513,10 +524,12 @@ def industry_price(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76370100"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/industry-price"
 
 
-    tr_id = "HHDFS76370100"
 
     params = {
         "EXCD": excd,
@@ -612,10 +625,12 @@ def industry_theme(
             dataframe2 = pd.DataFrame()
         return dataframe1, dataframe2
 
+    tr_id = "HHDFS76370000"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/industry-theme"
 
 
-    tr_id = "HHDFS76370000"
 
     params = {
         "EXCD": excd,
@@ -710,10 +725,12 @@ def inquire_asking_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame(), dataframe3 if dataframe3 is not None else pd.DataFrame()
     
+    tr_id = "HHDFS76200100"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/inquire-asking-price"
 
-    
-    tr_id = "HHDFS76200100"
+
 
     params = {
         "AUTH": auth,
@@ -856,10 +873,12 @@ def inquire_ccnl(
         else:
             return dataframe
 
+    tr_id = "HHDFS76200300"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/inquire-ccnl"
 
 
-    tr_id = "HHDFS76200300"
 
     params = {
         "EXCD": excd,
@@ -969,11 +988,14 @@ def inquire_daily_chartprice(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real" or env_dv == "demo":
-        api_url = "/uapi/overseas-price/v1/quotations/inquire-daily-chartprice"
-
         tr_id = "FHKST03030100"  # 실전투자용 TR ID
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-price/v1/quotations/inquire-daily-chartprice"
+
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1151,10 +1173,12 @@ def inquire_search(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDFS76410000"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/inquire-search"
 
-    
-    tr_id = "HHDFS76410000"
+
 
     params = {
         "AUTH": auth,
@@ -1337,10 +1361,12 @@ def inquire_time_indexchartprice(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "FHKST03030200"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice"
 
-    
-    tr_id = "FHKST03030200"
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1485,10 +1511,12 @@ def inquire_time_itemchartprice(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
     
+    tr_id = "HHDFS76950200"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/inquire-time-itemchartprice"
 
-    
-    tr_id = "HHDFS76950200"
+
 
     params = {
         "AUTH": auth,
@@ -1621,10 +1649,12 @@ def news_title(
         else:
             return dataframe
 
+    tr_id = "HHPSTH60100C1"  # 해외뉴스종합(제목)
+
+
     api_url = "/uapi/overseas-price/v1/quotations/news-title"
 
 
-    tr_id = "HHPSTH60100C1"  # 해외뉴스종합(제목)
 
     params = {
         "INFO_GB": info_gb,           # 뉴스구분
@@ -1728,10 +1758,12 @@ def period_rights(
         else:
             return dataframe
 
+    tr_id = "CTRGT011R"  # 해외주식 기간별권리조회
+
+
     api_url = "/uapi/overseas-price/v1/quotations/period-rights"
 
 
-    tr_id = "CTRGT011R"  # 해외주식 기간별권리조회
 
     params = {
         "RGHT_TYPE_CD": rght_type_cd,      # 권리유형코드
@@ -1827,12 +1859,15 @@ def price(
     
     # TR ID 설정 (모의투자 지원 로직)
     if env_dv == "real" or env_dv == "demo":
-        api_url = "/uapi/overseas-price/v1/quotations/price"
-
         tr_id = "HHDFS00000300"  # 실전투자, 모의투자 공통 TR ID
     else:
         logger.error("Invalid env_dv value: %s. Must be 'real' or 'demo'.", env_dv)
         raise ValueError("env_dv must be 'real' or 'demo'")
+
+
+    api_url = "/uapi/overseas-price/v1/quotations/price"
+
+
 
     params = {
         "AUTH": auth,
@@ -1924,10 +1959,12 @@ def price_detail(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
     
+    tr_id = "HHDFS76200200"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/price-detail"
 
-    
-    tr_id = "HHDFS76200200"
+
 
     params = {
         "AUTH": auth,
@@ -2010,10 +2047,12 @@ def rights_by_ice(
     if symb == "":
         raise ValueError("symb is required")
 
+    tr_id = "HHDFS78330900"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/rights-by-ice"
 
 
-    tr_id = "HHDFS78330900"
 
     params = {
         "NCOD": ncod,     # 국가코드
@@ -2077,10 +2116,12 @@ def search_info(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
+    tr_id = "CTPF1702R"
+
+
     api_url = "/uapi/overseas-price/v1/quotations/search-info"
 
 
-    tr_id = "CTPF1702R"
 
     params = {
         "PRDT_TYPE_CD": prdt_type_cd,

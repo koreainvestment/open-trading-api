@@ -26,7 +26,7 @@ print(result)
 # [해외주식] 주문/계좌 > 해외주식 미국주간주문 [v1_해외주식-026]
 ##############################################################################################
 
-df = daytime_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.50", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00")
+df = daytime_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,order_dv="buy", ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.50", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00")
 print(df)
 
 ##############################################################################################
@@ -55,14 +55,14 @@ print(result3)
 # [해외주식] 주문/계좌 > 해외주식 잔고 [v1_해외주식-006]
 ##############################################################################################
 
-df = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", tr_crcy_cd="USD", ctx_area_fk200="", ctx_area_nk200="")
+df = inquire_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", tr_crcy_cd="USD")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 주문체결내역 [v1_해외주식-007]
 ##############################################################################################
 
-df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="", ord_strt_dt="20250101", ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="", sort_sqn="DS", ord_dt="", ord_gno_brno="", odno="", ctx_area_nk200="", ctx_area_fk200="", env_dv="real")
+df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="", ord_strt_dt="20250101", ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="NASD", sort_sqn="DS", ord_dt="", ord_gno_brno="", odno="", env_dv="real")
 print(df)
 
 ##############################################################################################
@@ -153,7 +153,7 @@ result = order_resv_ccnl(
             nat_dv="us", 
             cano=trenv.my_acct,
             acnt_prdt_cd=trenv.my_prod,
-            rsyn_ord_rcit_dt="20250610",
+            rsvn_ord_rcit_dt="20250610",
             ovrs_rsvn_odno="0030008244"
         )
 print(result)
@@ -169,7 +169,7 @@ print(df)
 # [해외주식] 주문/계좌 > 해외주식 정정취소주문[v1_해외주식-003]
 ################################################################################
 
-df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NYSE", pdno="", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="", ord_svr_dvsn_cd="0", env_dv="real")
+df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NYSE", pdno="BA", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="", ord_svr_dvsn_cd="0", env_dv="real")
 print(df)
 
 ##############################################################################################

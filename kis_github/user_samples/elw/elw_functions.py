@@ -58,10 +58,16 @@ def compare_stocks(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    api_url = "/uapi/elw/v1/quotations/compare-stocks"
 
 
     tr_id = "FHKEW151701C0"
+
+
+
+    api_url = "/uapi/elw/v1/quotations/compare-stocks"
+
+
+
 
     params = {
         "FID_COND_SCR_DIV_CODE": fid_cond_scr_div_code,
@@ -114,64 +120,64 @@ def cond_search(
     fid_cond_scr_div_code: str,  # 조건화면분류코드 (필수)
     fid_rank_sort_cls_code: str,  # 순위정렬구분코드 (필수)
     fid_input_cnt_1: str,  # 입력수1 (필수)
-    fid_rank_sort_cls_code_2: str,  # 순위정렬구분코드2 (선택)
-    fid_input_cnt_2: str,  # 입력수2 (선택)
-    fid_rank_sort_cls_code_3: str,  # 순위정렬구분코드3 (선택)
-    fid_input_cnt_3: str,  # 입력수3 (선택)
-    fid_trgt_cls_code: str,  # 대상구분코드 (선택)
-    fid_input_iscd: str,  # 입력종목코드 (선택 - 전체 허용)
-    fid_unas_input_iscd: str,  # 기초자산입력종목코드 (선택)
-    fid_mrkt_cls_code: str,  # 시장구분코드 (선택 - 전체 허용)
-    fid_input_date_1: str,  # 입력날짜1 (선택 - 전체 허용)
-    fid_input_date_2: str,  # 입력날짜2 (선택 - 전체 허용)
-    fid_input_iscd_2: str,  # 입력종목코드2 (선택)
-    fid_etc_cls_code: str,  # 기타구분코드 (선택 - 전체 허용)
-    fid_input_rmnn_dynu_1: str,  # 입력잔존일수1 (선택 - 이상값)
-    fid_input_rmnn_dynu_2: str,  # 입력잔존일수2 (선택 - 이하값)
-    fid_prpr_cnt1: str,  # 현재가수1 (선택 - 이상값)
-    fid_prpr_cnt2: str,  # 현재가수2 (선택 - 이하값)
-    fid_rsfl_rate1: str,  # 등락비율1 (선택 - 이상값)
-    fid_rsfl_rate2: str,  # 등락비율2 (선택 - 이하값)
-    fid_vol1: str,  # 거래량1 (선택 - 이상값)
-    fid_vol2: str,  # 거래량2 (선택 - 이하값)
-    fid_aply_rang_prc_1: str,  # 적용범위가격1 (선택)
-    fid_aply_rang_prc_2: str,  # 적용범위가격2 (선택)
-    fid_lvrg_val1: str,  # 레버리지값1 (선택)
-    fid_lvrg_val2: str,  # 레버리지값2 (선택)
-    fid_vol3: str,  # 거래량3 (선택)
-    fid_vol4: str,  # 거래량4 (선택)
-    fid_ints_vltl1: str,  # 내재변동성1 (선택 - 이상값)
-    fid_ints_vltl2: str,  # 내재변동성2 (선택 - 이하값)
-    fid_prmm_val1: str,  # 프리미엄값1 (선택 - 이상값)
-    fid_prmm_val2: str,  # 프리미엄값2 (선택 - 이하값)
-    fid_gear1: str,  # 기어링1 (선택 - 이상값)
-    fid_gear2: str,  # 기어링2 (선택 - 이하값)
-    fid_prls_qryr_rate1: str,  # 손익분기비율1 (선택 - 이상값)
-    fid_prls_qryr_rate2: str,  # 손익분기비율2 (선택 - 이하값)
-    fid_delta1: str,  # 델타1 (선택 - 이상값)
-    fid_delta2: str,  # 델타2 (선택 - 이하값)
-    fid_acpr1: str,  # 행사가1 (선택)
-    fid_acpr2: str,  # 행사가2 (선택)
-    fid_stck_cnvr_rate1: str,  # 주식전환비율1 (선택 - 이상값)
-    fid_stck_cnvr_rate2: str,  # 주식전환비율2 (선택 - 이하값)
-    fid_div_cls_code: str,  # 분류구분코드 (선택)
-    fid_prit1: str,  # 패리티1 (선택 - 이상값)
-    fid_prit2: str,  # 패리티2 (선택 - 이하값)
-    fid_cfp1: str,  # 자본지지점1 (선택 - 이상값)
-    fid_cfp2: str,  # 자본지지점2 (선택 - 이하값)
-    fid_input_nmix_price_1: str,  # 지수가격1 (선택 - 이상값)
-    fid_input_nmix_price_2: str,  # 지수가격2 (선택 - 이하값)
-    fid_egea_val1: str,  # E기어링값1 (선택 - 이상값)
-    fid_egea_val2: str,  # E기어링값2 (선택 - 이하값)
-    fid_input_dvdn_ert: str,  # 배당수익율 (선택 - 이상값)
-    fid_input_hist_vltl: str,  # 역사적변동성 (선택 - 이하값)
-    fid_theta1: str,  # 세타1 (선택 - 이상값)
-    fid_theta2: str,  # 세타2 (선택 - 이하값)
+    fid_rank_sort_cls_code_2: Optional[str] = "",  # 순위정렬구분코드2 (선택)
+    fid_input_cnt_2: Optional[str] = "",  # 입력수2 (선택)
+    fid_rank_sort_cls_code_3: Optional[str] = "",  # 순위정렬구분코드3 (선택)
+    fid_input_cnt_3: Optional[str] = "",  # 입력수3 (선택)
+    fid_trgt_cls_code: Optional[str] = "",  # 대상구분코드 (선택)
+    fid_input_iscd: Optional[str] = "",  # 입력종목코드 (선택 - 전체 허용)
+    fid_unas_input_iscd: Optional[str] = "",  # 기초자산입력종목코드 (선택)
+    fid_mrkt_cls_code: Optional[str] = "",  # 시장구분코드 (선택 - 전체 허용)
+    fid_input_date_1: Optional[str] = "",  # 입력날짜1 (선택 - 전체 허용)
+    fid_input_date_2: Optional[str] = "",  # 입력날짜2 (선택 - 전체 허용)
+    fid_input_iscd_2: Optional[str] = "",  # 입력종목코드2 (선택)
+    fid_etc_cls_code: Optional[str] = "",  # 기타구분코드 (선택 - 전체 허용)
+    fid_input_rmnn_dynu_1: Optional[str] = "",  # 입력잔존일수1 (선택 - 이상값)
+    fid_input_rmnn_dynu_2: Optional[str] = "",  # 입력잔존일수2 (선택 - 이하값)
+    fid_prpr_cnt1: Optional[str] = "",  # 현재가수1 (선택 - 이상값)
+    fid_prpr_cnt2: Optional[str] = "",  # 현재가수2 (선택 - 이하값)
+    fid_rsfl_rate1: Optional[str] = "",  # 등락비율1 (선택 - 이상값)
+    fid_rsfl_rate2: Optional[str] = "",  # 등락비율2 (선택 - 이하값)
+    fid_vol1: Optional[str] = "",  # 거래량1 (선택 - 이상값)
+    fid_vol2: Optional[str] = "",  # 거래량2 (선택 - 이하값)
+    fid_aply_rang_prc_1: Optional[str] = "",  # 적용범위가격1 (선택)
+    fid_aply_rang_prc_2: Optional[str] = "",  # 적용범위가격2 (선택)
+    fid_lvrg_val1: Optional[str] = "",  # 레버리지값1 (선택)
+    fid_lvrg_val2: Optional[str] = "",  # 레버리지값2 (선택)
+    fid_vol3: Optional[str] = "",  # 거래량3 (선택)
+    fid_vol4: Optional[str] = "",  # 거래량4 (선택)
+    fid_ints_vltl1: Optional[str] = "",  # 내재변동성1 (선택 - 이상값)
+    fid_ints_vltl2: Optional[str] = "",  # 내재변동성2 (선택 - 이하값)
+    fid_prmm_val1: Optional[str] = "",  # 프리미엄값1 (선택 - 이상값)
+    fid_prmm_val2: Optional[str] = "",  # 프리미엄값2 (선택 - 이하값)
+    fid_gear1: Optional[str] = "",  # 기어링1 (선택 - 이상값)
+    fid_gear2: Optional[str] = "",  # 기어링2 (선택 - 이하값)
+    fid_prls_qryr_rate1: Optional[str] = "",  # 손익분기비율1 (선택 - 이상값)
+    fid_prls_qryr_rate2: Optional[str] = "",  # 손익분기비율2 (선택 - 이하값)
+    fid_delta1: Optional[str] = "",  # 델타1 (선택 - 이상값)
+    fid_delta2: Optional[str] = "",  # 델타2 (선택 - 이하값)
+    fid_acpr1: Optional[str] = "",  # 행사가1 (선택)
+    fid_acpr2: Optional[str] = "",  # 행사가2 (선택)
+    fid_stck_cnvr_rate1: Optional[str] = "",  # 주식전환비율1 (선택 - 이상값)
+    fid_stck_cnvr_rate2: Optional[str] = "",  # 주식전환비율2 (선택 - 이하값)
+    fid_div_cls_code: Optional[str] = "",  # 분류구분코드 (선택)
+    fid_prit1: Optional[str] = "",  # 패리티1 (선택 - 이상값)
+    fid_prit2: Optional[str] = "",  # 패리티2 (선택 - 이하값)
+    fid_cfp1: Optional[str] = "",  # 자본지지점1 (선택 - 이상값)
+    fid_cfp2: Optional[str] = "",  # 자본지지점2 (선택 - 이하값)
+    fid_input_nmix_price_1: Optional[str] = "",  # 지수가격1 (선택 - 이상값)
+    fid_input_nmix_price_2: Optional[str] = "",  # 지수가격2 (선택 - 이하값)
+    fid_egea_val1: Optional[str] = "",  # E기어링값1 (선택 - 이상값)
+    fid_egea_val2: Optional[str] = "",  # E기어링값2 (선택 - 이하값)
+    fid_input_dvdn_ert: Optional[str] = "",  # 배당수익율 (선택 - 이상값)
+    fid_input_hist_vltl: Optional[str] = "",  # 역사적변동성 (선택 - 이하값)
+    fid_theta1: Optional[str] = "",  # 세타1 (선택 - 이상값)
+    fid_theta2: Optional[str] = "",  # 세타2 (선택 - 이하값)
     tr_cont: str = "",  # 연속 거래 여부
     dataframe: Optional[pd.DataFrame] = None,  # 누적 데이터프레임
     depth: int = 0,  # 현재 재귀 깊이
     max_depth: int = 10  # 최대 재귀 깊이
-) -> Optional[pd.DataFrame]:
+) -> pd.DataFrame:
     """
     ELW 종목검색 API를 호출하여 조건에 맞는 ELW 종목 정보를 조회합니다.
     
@@ -262,11 +268,14 @@ def cond_search(
         return dataframe if dataframe is not None else pd.DataFrame()
     
     # API 호출 정보 설정
-    api_url = "/uapi/elw/v1/quotations/cond-search"
+
+    # 요청 파라미터 설정
 
     tr_id = "FHKEW15100000"
 
-    # 요청 파라미터 설정
+    api_url = "/uapi/elw/v1/quotations/cond-search"
+
+
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_COND_SCR_DIV_CODE": fid_cond_scr_div_code,
@@ -533,11 +542,17 @@ def expiration_stocks(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/quotations/expiration-stocks"
 
     
+
     tr_id = "FHKEW154700C0"
+
+    
+
+    api_url = "/uapi/elw/v1/quotations/expiration-stocks"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -693,11 +708,17 @@ def indicator(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/ranking/indicator"
 
     
+
     tr_id = "FHPEW02790000"
+
+    
+
+    api_url = "/uapi/elw/v1/ranking/indicator"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -802,11 +823,17 @@ def indicator_trend_ccnl(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/quotations/indicator-trend-ccnl"
 
     
+
     tr_id = "FHPEW02740100"
+
+    
+
+    api_url = "/uapi/elw/v1/quotations/indicator-trend-ccnl"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -896,11 +923,17 @@ def indicator_trend_daily(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/quotations/indicator-trend-daily"
 
     
+
     tr_id = "FHPEW02740200"
+
+    
+
+    api_url = "/uapi/elw/v1/quotations/indicator-trend-daily"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1009,12 +1042,14 @@ def indicator_trend_minute(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    url = api_url
-    api_url = "/uapi/elw/v1/quotations/indicator-trend-minute"
+
+    # 요청 파라미터 설정
 
     tr_id = "FHPEW02740300"
 
-    # 요청 파라미터 설정
+    api_url = "/uapi/elw/v1/quotations/indicator-trend-minute"
+
+
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_INPUT_ISCD": fid_input_iscd,
@@ -1023,7 +1058,7 @@ def indicator_trend_minute(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 호출 성공 여부 확인
     if res.isOK():
@@ -1114,11 +1149,17 @@ def lp_trade_trend(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/quotations/lp-trade-trend"
 
     
+
     tr_id = "FHPEW03760000"
+
+    
+
+    api_url = "/uapi/elw/v1/quotations/lp-trade-trend"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1251,11 +1292,17 @@ def newly_listed(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/quotations/newly-listed"
 
     
+
     tr_id = "FHKEW154800C0"
+
+    
+
+    api_url = "/uapi/elw/v1/quotations/newly-listed"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1414,10 +1461,16 @@ def quick_change(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    api_url = "/uapi/elw/v1/ranking/quick-change"
 
 
     tr_id = "FHPEW02870000"
+
+
+
+    api_url = "/uapi/elw/v1/ranking/quick-change"
+
+
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1584,11 +1637,17 @@ def sensitivity(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/ranking/sensitivity"
 
     
+
     tr_id = "FHPEW02850000"
+
+    
+
+    api_url = "/uapi/elw/v1/ranking/sensitivity"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1697,11 +1756,17 @@ def sensitivity_trend_ccnl(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/quotations/sensitivity-trend-ccnl"
 
     
+
     tr_id = "FHPEW02830100"
+
+    
+
+    api_url = "/uapi/elw/v1/quotations/sensitivity-trend-ccnl"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1797,11 +1862,14 @@ def sensitivity_trend_daily(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    api_url = "/uapi/elw/v1/quotations/sensitivity-trend-daily"
+
+    # 요청 파라미터 설정
 
     tr_id = "FHPEW02830200"
 
-    # 요청 파라미터 설정
+    api_url = "/uapi/elw/v1/quotations/sensitivity-trend-daily"
+
+
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_INPUT_ISCD": fid_input_iscd,
@@ -1900,10 +1968,16 @@ def udrl_asset_list(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    api_url = "/uapi/elw/v1/quotations/udrl-asset-list"
 
 
     tr_id = "FHKEW154100C0"
+
+
+
+    api_url = "/uapi/elw/v1/quotations/udrl-asset-list"
+
+
+
 
     params = {
         "FID_COND_SCR_DIV_CODE": fid_cond_scr_div_code,
@@ -2062,10 +2136,16 @@ def udrl_asset_price(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    api_url = "/uapi/elw/v1/quotations/udrl-asset-price"
 
 
     tr_id = "FHKEW154101C0"
+
+
+
+    api_url = "/uapi/elw/v1/quotations/udrl-asset-price"
+
+
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -2247,10 +2327,16 @@ def updown_rate(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    api_url = "/uapi/elw/v1/ranking/updown-rate"
 
 
     tr_id = "FHPEW02770000"
+
+
+
+    api_url = "/uapi/elw/v1/ranking/updown-rate"
+
+
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -2366,19 +2452,21 @@ def volatility_trend_ccnl(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     # API 호출 URL 및 거래 ID 설정
-    url = api_url
-    api_url = "/uapi/elw/v1/quotations/volatility-trend-ccnl"
+
+    # 요청 파라미터 설정
 
     tr_id = "FHPEW02840100"
 
-    # 요청 파라미터 설정
+    api_url = "/uapi/elw/v1/quotations/volatility-trend-ccnl"
+
+
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_INPUT_ISCD": fid_input_iscd,
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -2463,11 +2551,17 @@ def volatility_trend_daily(
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
-    
-    api_url = "/uapi/elw/v1/quotations/volatility-trend-daily"
 
     
+
     tr_id = "FHPEW02840200"
+
+    
+
+    api_url = "/uapi/elw/v1/quotations/volatility-trend-daily"
+
+
+    
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -2580,12 +2674,14 @@ def volatility_trend_minute(
         return dataframe if dataframe is not None else pd.DataFrame()
     
     # API 호출 URL 및 거래 ID 설정
-    url = api_url
-    api_url = "/uapi/elw/v1/quotations/volatility-trend-minute"
+
+    # 요청 파라미터 설정
 
     tr_id = "FHPEW02840300"
 
-    # 요청 파라미터 설정
+    api_url = "/uapi/elw/v1/quotations/volatility-trend-minute"
+
+
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_INPUT_ISCD": fid_input_iscd,
@@ -2594,7 +2690,7 @@ def volatility_trend_minute(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -2683,19 +2779,21 @@ def volatility_trend_tick(
         return dataframe if dataframe is not None else pd.DataFrame()
     
     # API 호출 URL 및 거래 ID 설정
-    url = api_url
-    api_url = "/uapi/elw/v1/quotations/volatility-trend-tick"
+
+    # 요청 파라미터 설정
 
     tr_id = "FHPEW02840400"
 
-    # 요청 파라미터 설정
+    api_url = "/uapi/elw/v1/quotations/volatility-trend-tick"
+
+
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_INPUT_ISCD": fid_input_iscd,
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     # API 응답 처리
     if res.isOK():
@@ -2840,10 +2938,16 @@ def volume_rank(
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
         return dataframe if dataframe is not None else pd.DataFrame()
 
-    url = api_url
-    api_url = "/uapi/elw/v1/ranking/volume-rank"
+
 
     tr_id = "FHPEW02780000"
+
+
+
+    api_url = "/uapi/elw/v1/ranking/volume-rank"
+
+
+
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -2864,7 +2968,7 @@ def volume_rank(
     }
 
     # API 호출
-    res = ka._url_fetch(url, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         # 응답 데이터 처리
