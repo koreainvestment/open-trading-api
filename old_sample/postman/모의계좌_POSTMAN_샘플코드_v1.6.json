@@ -1,0 +1,5634 @@
+{
+	"info": {
+		"_postman_id": "2645f167-29d0-4a00-aedc-04b7e47eae13",
+		"name": "모의투자(모의Env)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22257223",
+		"_collection_link": "https://truefriend-openapi.postman.co/workspace/%ED%95%9C%ED%88%ACAPI_TEST~de90589e-fb42-46d5-b9c4-ced0d1b7d0df/collection/22257223-2645f167-29d0-4a00-aedc-04b7e47eae13?action=share&source=collection_link&creator=22257223"
+	},
+	"item": [
+		{
+			"name": "OAuth",
+			"item": [
+				{
+					"name": "V_웹소켓접속키발급",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"console.log(jsonData)\r",
+									"\r",
+									"if (jsonData) { \r",
+									"    pm.environment.set(\"V_APPROVAL_KEY\", jsonData.approval_key); \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grant_type\": \"client_credentials\",\r\n    \"appkey\": \"{{VTS_APPKEY}}\",\r\n    \"secretkey\": \"{{VTS_APPSECRET}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VTS}}/oauth2/Approval",
+							"host": [
+								"{{VTS}}"
+							],
+							"path": [
+								"oauth2",
+								"Approval"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V_토큰발급",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"console.log(jsonData)\r",
+									"\r",
+									"if (jsonData) { \r",
+									"    pm.environment.set(\"VTS_TOKEN\", jsonData.access_token); \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grant_type\": \"client_credentials\",\r\n    \"appkey\": \"{{VTS_APPKEY}}\",\r\n    \"appsecret\": \"{{VTS_APPSECRET}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VTS}}/oauth2/tokenP",
+							"host": [
+								"{{VTS}}"
+							],
+							"path": [
+								"oauth2",
+								"tokenP"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V_토큰폐기",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"appkey\": \"{{VTS_APPKEY}}\",\r\n    \"appsecret\": \"{{VTS_APPSECRET}}\",\r\n    \"token\": \"{{VTS_TOKEN}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VTS}}/oauth2/revokeP",
+							"host": [
+								"{{VTS}}"
+							],
+							"path": [
+								"oauth2",
+								"revokeP"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V_해쉬키생성",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"console.log(jsonData)\r",
+									"\r",
+									"if (jsonData) { \r",
+									"    pm.environment.set(\"VTS_HASH\", jsonData.HASH); \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text",
+								"description": "application/json; charset=utf-8"
+							},
+							{
+								"key": "appkey",
+								"value": "{{VTS_APPKEY}}",
+								"type": "text",
+								"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+							},
+							{
+								"key": "appsecret",
+								"value": "{{VTS_APPSECRET}}",
+								"type": "text",
+								"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"CANO\": \"{{CANO}}\",\r\n\t\"ACNT_PRDT_CD\": \"01\",\r\n\t\"PDNO\": \"071050\",\r\n\t\"ORD_DVSN\": \"01\",\r\n\t\"ORD_QTY\": \"1\",\r\n\t\"ORD_UNPR\": \"0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VTS}}/uapi/hashkey",
+							"host": [
+								"{{VTS}}"
+							],
+							"path": [
+								"uapi",
+								"hashkey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V_토큰발급(선물옵션)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"console.log(jsonData)\r",
+									"\r",
+									"if (jsonData) { \r",
+									"    pm.environment.set(\"VTT_TOKEN\", jsonData.access_token); \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grant_type\": \"client_credentials\",\r\n    \"appkey\": \"{{VTT_APPKEY}}\",\r\n    \"appsecret\": \"{{VTT_APPSECRET}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VTS}}/oauth2/tokenP",
+							"host": [
+								"{{VTS}}"
+							],
+							"path": [
+								"oauth2",
+								"tokenP"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V_토큰폐기(선물옵션)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"appkey\": \"{{VTT_APPKEY}}\",\r\n    \"appsecret\": \"{{VTT_APPSECRET}}\",\r\n    \"token\": \"{{VTT_TOKEN}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VTS}}/oauth2/revokeP",
+							"host": [
+								"{{VTS}}"
+							],
+							"path": [
+								"oauth2",
+								"revokeP"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "V_해쉬키생성(선물옵션)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);\r",
+									"\r",
+									"console.log(jsonData)\r",
+									"\r",
+									"if (jsonData) { \r",
+									"    pm.environment.set(\"VTT_HASH\", jsonData.HASH); \r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/json",
+								"type": "text",
+								"description": "application/json; charset=utf-8"
+							},
+							{
+								"key": "appkey",
+								"value": "{{VTT_APPKEY}}",
+								"type": "text",
+								"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+							},
+							{
+								"key": "appsecret",
+								"value": "{{VTT_APPSECRET}}",
+								"type": "text",
+								"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"CANO\": \"{{CANO_T}}\",\r\n\t\"ACNT_PRDT_CD\": \"03\",\r\n\t\"PDNO\": \"071050\",\r\n\t\"ORD_DVSN\": \"01\",\r\n\t\"ORD_QTY\": \"1\",\r\n\t\"ORD_UNPR\": \"0\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VTS}}/uapi/hashkey",
+							"host": [
+								"{{VTS}}"
+							],
+							"path": [
+								"uapi",
+								"hashkey"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "국내주식",
+			"item": [
+				{
+					"name": "[국내주식] 기본시세",
+					"item": [
+						{
+							"name": "V_주식현재가 시세",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST01010100",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHKST01010100 : 주식현재가 시세"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-price?fid_cond_mrkt_div_code=J&fid_input_iscd=005930",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-price"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장 분류 코드 (J : 주식, ETF, ETN)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목코드 (6자리)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가 체결(최근30건)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": " application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": " Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": " {{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": " {{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": " FHKST01010300",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHKST01010300 : 주식현재가 체결"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-ccnl?fid_cond_mrkt_div_code=J&fid_input_iscd=005930",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-ccnl"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장 분류 코드 (J : 주식, ETF, ETN)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목코드 (6자리)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가 일자별",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST01010400",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHKST01010400 : 주식현재가 일자별"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-daily-price?fid_cond_mrkt_div_code=J&fid_input_iscd=005930&fid_period_div_code=D&fid_org_adj_prc=1",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-daily-price"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장 분류 코드 (J : 주식, ETF, ETN)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목코드 (6자리)"
+										},
+										{
+											"key": "fid_period_div_code",
+											"value": "D",
+											"description": "기간 분류 코드\nD : (일)최근 30거래일\nW : (주)최근 30주\nM : (월)최근 30개월"
+										},
+										{
+											"key": "fid_org_adj_prc",
+											"value": "1",
+											"description": "수정주가 원주가 가격\n0 : 수정주가반영\n1 : 수정주가미반영\n* 수정주가는 액면분할/액면병합 등 권리 발생 시 과거 시세를 현재 주가에 맞게 보정한 가격"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가 호가 예상체결",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST01010200",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHKST01010200 : 주식현재가 호가 예상체결"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn?fid_cond_mrkt_div_code=J&fid_input_iscd=005930",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-asking-price-exp-ccn"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장분류코드 (J : 주식, ETF, ETN)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목번호 (6자리)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가 투자자",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST01010900",
+										"type": "text",
+										"description": "[실전/모의투자]\nFHKST01010900 : 주식현재가 투자자"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-investor?fid_cond_mrkt_div_code=J&fid_input_iscd=005930",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-investor"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장분류코드 (J : 주식, ETF, ETN)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목번호 (6자리)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가 회원사",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST01010600",
+										"type": "text",
+										"description": "[실전/모의투자]\nFHKST01010600 : 주식현재가 회원사"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-member?fid_cond_mrkt_div_code=J&fid_input_iscd=005930",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-member"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장분류코드 (J : 주식, ETF, ETN)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목번호 (6자리)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가  ELW현재가 시세",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKEW15010000",
+										"type": "text",
+										"description": "[실전/모의투자]\nFHKEW15010000 : ELW현재가 시세"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-elw-price?fid_cond_mrkt_div_code=W&fid_input_iscd=57H714",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-elw-price"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "W",
+											"description": "시장분류코드 (W : ELW)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "57H714",
+											"description": "종목번호 (6자리)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_국내주식기간별시세(일/주/월/년)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST03010100",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHKST03010100"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice?fid_cond_mrkt_div_code=J&fid_input_iscd=005930&fid_input_date_1=20220101&fid_input_date_2=20220809&fid_period_div_code=D&fid_org_adj_prc=1",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-daily-itemchartprice"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장 분류 코드 (J : 주식)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목번호 (6자리)"
+										},
+										{
+											"key": "fid_input_date_1",
+											"value": "20220101",
+											"description": "시작일자 (20220501)\n(한 번의 호출에 최대 100건의 데이터 수신, 다음 데이터를 받아오려면 OUTPUT 값의 가장 과거 일자의 1일 전 날짜를 FID_INPUT_DATE_2에 넣어 재호출)"
+										},
+										{
+											"key": "fid_input_date_2",
+											"value": "20220809",
+											"description": "종료일자 (20220530)"
+										},
+										{
+											"key": "fid_period_div_code",
+											"value": "D",
+											"description": "기간분류코드 (D:일봉, W:주봉, M:월봉, Y:년봉)"
+										},
+										{
+											"key": "fid_org_adj_prc",
+											"value": "1",
+											"description": "수정주가 원주가 가격여부 (0:수정주가 1:원주가)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_국내주식업종기간별시세(일/주/월/년)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKUP03500100",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHKUP03500100"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice?fid_cond_mrkt_div_code=U&fid_input_iscd=0001&fid_input_date_1=20220101&fid_input_date_2=20220722&fid_period_div_code=D",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-daily-indexchartprice"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "U",
+											"description": "시장 분류 코드 (U : 업종)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "0001",
+											"description": "0001 : 종합\n0002 : 대형주\n...\n포탈 (FAQ : 종목정보 다운로드 - 업종코드 참조)"
+										},
+										{
+											"key": "fid_input_date_1",
+											"value": "20220101",
+											"description": "시작일자 (20220501) \n(한 번의 호출에 최대 50건의 데이터 수신, 다음 데이터를 받아오려면 OUTPUT 값의 가장 과거 일자의 1일 전 날짜를 FID_INPUT_DATE_2에 넣어 재호출)"
+										},
+										{
+											"key": "fid_input_date_2",
+											"value": "20220722",
+											"description": "종료일자 (20220530)"
+										},
+										{
+											"key": "fid_period_div_code",
+											"value": "D",
+											"description": "기간분류코드 (D:일봉, W:주봉, M:월봉, Y:년봉)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가 당일시간대별체결",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHPST01060000",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHPST01060000"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-time-itemconclusion?fid_cond_mrkt_div_code=J&fid_input_iscd=005930&fid_input_hour_1=155000",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-time-itemconclusion"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장분류코드 (J:주식)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목코드 (6자리)"
+										},
+										{
+											"key": "fid_input_hour_1",
+											"value": "155000",
+											"description": "기준시간 (6자리; HH:MM:SS)\nex) 155000 입력시 15시 50분 00초 기준 이전 체결 내역이 조회됨"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가 시간외 시간별체결",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHPST02310000",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHPST02310000"
+									},
+									{
+										"key": "custtype",
+										"value": "P",
+										"type": "text",
+										"description": "P : 개인, B : 제휴사"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-time-overtimeconclusion?fid_cond_mrkt_div_code=J&fid_input_iscd=005930&fid_hour_cls_code=1",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-time-overtimeconclusion"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장분류코드 (J:주식)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목코드 (6자리)"
+										},
+										{
+											"key": "fid_hour_cls_code",
+											"value": "1",
+											"description": "시간구분코드 (1:시간외)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식현재가 시간외 일자별주가",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHPST02320000",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHPST02320000"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-daily-overtimeprice?fid_cond_mrkt_div_code=J&fid_input_iscd=005930",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-daily-overtimeprice"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "J",
+											"description": "시장분류코드 (J:주식)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "005930",
+											"description": "종목코드 (6자리)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식당일분봉조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST03010200",
+										"type": "text",
+										"description": "[모의투자/실전투자]\nFHKST03010100"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice?FID_ETC_CLS_CODE=&FID_COND_MRKT_DIV_CODE=J&FID_INPUT_ISCD=005930&FID_INPUT_HOUR_1=092800&FID_PW_DATA_INCU_YN=Y",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"quotations",
+										"inquire-time-itemchartprice"
+									],
+									"query": [
+										{
+											"key": "FID_ETC_CLS_CODE",
+											"value": "",
+											"description": "기타 구분 코드(\"\")"
+										},
+										{
+											"key": "FID_COND_MRKT_DIV_CODE",
+											"value": "J",
+											"description": "시장 분류 코드(J : 주식)"
+										},
+										{
+											"key": "FID_INPUT_ISCD",
+											"value": "005930",
+											"description": "종목코드(6자리)"
+										},
+										{
+											"key": "FID_INPUT_HOUR_1",
+											"value": "092800",
+											"description": "조회 시작일자(HHMMSS)"
+										},
+										{
+											"key": "FID_PW_DATA_INCU_YN",
+											"value": "Y",
+											"description": "과거 데이터 포함 여부(Y/N)"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "[국내주식] 주문/계좌",
+					"item": [
+						{
+							"name": "V_주식주문(현금)",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTC0802U",
+										"type": "text",
+										"description": "[실전투자]\nTTTC0802U : 주식 현금 매수 주문\nTTTC0801U : 주식 현금 매도 주문\n[모의투자]\nVTTC0802U : 주식 현금 매수 주문\nVTTC0801U : 주식 현금 매도 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"PDNO\": \"005930\",\r\n    \"ORD_DVSN\": \"00\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"ORD_UNPR\": \"55000\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/trading/order-cash",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"trading",
+										"order-cash"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식주문(정정취소)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTC0803U",
+										"type": "text",
+										"description": "[실전투자]\nTTTC0803U : 주식 정정 취소 주문\n[모의투자]\nVTTC0803U : 주식 정정 취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"KRX_FWDG_ORD_ORGNO\": \"00950\",\r\n    \"ORGN_ODNO\": \"6635\",\r\n    \"ORD_DVSN\": \"00\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"ORD_UNPR\": \"55000\",\r\n    \"QTY_ALL_ORD_YN\": \"Y\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/trading/order-rvsecncl",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"trading",
+										"order-rvsecncl"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식일별주문체결조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTSC9115R",
+										"type": "text",
+										"description": "[실전투자]\nTTTC8001R : 주식 일별 주문 체결 조회(3개월이내)\nCTSC9115R : 주식 일별 주문 체결 조회(3개월이전)\n\n[모의투자]\nVTTC8001R : 주식 일별 주문 체결 조회(3개월이내)\nVTSC9115R : 주식 일별 주문 체결 조회(3개월이전)\n* 일별 조회로, 당일 주문내역은 지연될 수 있습니다."
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/trading/inquire-daily-ccld?CANO={{CANO}}&ACNT_PRDT_CD=01&INQR_STRT_DT=20220801&INQR_END_DT=20220810&SLL_BUY_DVSN_CD=00&INQR_DVSN=00&PDNO=005930&CCLD_DVSN=00&ORD_GNO_BRNO=&ODNO=&INQR_DVSN_3=00&INQR_DVSN_1=&CTX_AREA_FK100=&CTX_AREA_NK100=",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"trading",
+										"inquire-daily-ccld"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "01",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "INQR_STRT_DT",
+											"value": "20220801",
+											"description": "조회시작일자(YYYYMMDD)"
+										},
+										{
+											"key": "INQR_END_DT",
+											"value": "20220810",
+											"description": "조회종료일자(YYYYMMDD)"
+										},
+										{
+											"key": "SLL_BUY_DVSN_CD",
+											"value": "00",
+											"description": "매도매수구분코드\n00 : 전체\n01 : 매도\n02 : 매수"
+										},
+										{
+											"key": "INQR_DVSN",
+											"value": "00",
+											"description": "조회구분\n00 : 역순\n01 : 정순"
+										},
+										{
+											"key": "PDNO",
+											"value": "005930",
+											"description": "종목번호(6자리)"
+										},
+										{
+											"key": "CCLD_DVSN",
+											"value": "00",
+											"description": "체결구분\n00 : 전체\n01 : 체결\n02 : 미체결"
+										},
+										{
+											"key": "ORD_GNO_BRNO",
+											"value": "",
+											"description": "주문시 한국투자증권 시스템에서 지정된 영업점코드"
+										},
+										{
+											"key": "ODNO",
+											"value": "",
+											"description": "주문시 한국투자증권 시스템에서 채번된 주문번호"
+										},
+										{
+											"key": "INQR_DVSN_3",
+											"value": "00",
+											"description": "조회구분3\n00 : 전체\n01 : 현금\n02 : 융자\n03 : 대출\n04 : 대주"
+										},
+										{
+											"key": "INQR_DVSN_1",
+											"value": "",
+											"description": "조회구분1\n공란 : 전체\n1 : ELW\n2 : 프리보드"
+										},
+										{
+											"key": "CTX_AREA_FK100",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_FK100 값 : 다음페이지 조회시(2번째부터)"
+										},
+										{
+											"key": "CTX_AREA_NK100",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_NK100 값 : 다음페이지 조회시(2번째부터)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_주식잔고조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTC8434R",
+										"type": "text",
+										"description": "[실전투자]\nTTTC8434R : 주식 잔고 조회\n\n[모의투자]\nVTTC8434R : 주식 잔고 조회"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "text"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/trading/inquire-balance?CANO={{CANO}}&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"trading",
+										"inquire-balance"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "01",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "AFHR_FLPR_YN",
+											"value": "N",
+											"description": "시간외단일가여부\nN : 기본값\nY : 시간외단일가"
+										},
+										{
+											"key": "OFL_YN",
+											"value": "",
+											"description": "공란(Default)"
+										},
+										{
+											"key": "INQR_DVSN",
+											"value": "01",
+											"description": "조회구분\n01 : 대출일별\n02 : 종목별"
+										},
+										{
+											"key": "UNPR_DVSN",
+											"value": "01",
+											"description": "단가구분\n01 : 기본값"
+										},
+										{
+											"key": "FUND_STTL_ICLD_YN",
+											"value": "N",
+											"description": "펀드결제분포함여부\nN : 포함하지 않음\nY : 포함"
+										},
+										{
+											"key": "FNCG_AMT_AUTO_RDPT_YN",
+											"value": "N",
+											"description": "융자금액자동상환여부\nN : 기본값"
+										},
+										{
+											"key": "PRCS_DVSN",
+											"value": "00",
+											"description": "처리구분\n00 : 전일매매포함\n01 : 전일매매미포함"
+										},
+										{
+											"key": "CTX_AREA_FK100",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_FK100 값 : 다음페이지 조회시(2번째부터)"
+										},
+										{
+											"key": "CTX_AREA_NK100",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_NK100 값 : 다음페이지 조회시(2번째부터)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_매수가능조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTC8908R",
+										"type": "text",
+										"description": "[실전투자]\nTTTC8908R : 매수 가능 조회\n\n[모의투자]\nVTTC8908R : 매수 가능 조회"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-stock/v1/trading/inquire-psbl-order?CANO={{CANO}}&ACNT_PRDT_CD=01&PDNO=005930&ORD_UNPR=55000&ORD_DVSN=01&OVRS_ICLD_YN=N&CMA_EVLU_AMT_ICLD_YN=N",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-stock",
+										"v1",
+										"trading",
+										"inquire-psbl-order"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "01",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "PDNO",
+											"value": "005930",
+											"description": "종목번호 (6자리)"
+										},
+										{
+											"key": "ORD_UNPR",
+											"value": "55000",
+											"description": "주문단가(1주당 가격)"
+										},
+										{
+											"key": "ORD_DVSN",
+											"value": "01",
+											"description": "주문구분\n00 : 지정가\n01 : 시장가\n02 : 조건부지정가\n03 : 최유리지정가\n04 : 최우선지정가\n05 : 장전 시간외\n06 : 장후 시간외\n07 : 시간외 단일가\n08 : 자기주식\n09 : 자기주식S-Option\n10 : 자기주식금전신탁\n11 : IOC지정가 (즉시체결,잔량취소)\n12 : FOK지정가 (즉시체결,전량취소)\n13 : IOC시장가 (즉시체결,잔량취소)\n14 : FOK시장가 (즉시체결,전량취소)\n15 : IOC최유리 (즉시체결,잔량취소)\n16 : FOK최유리 (즉시체결,전량취소)\n51 : 장중대량\n52 : 장중바스켓\n62 : 장개시전 시간외대량\n63 : 장개시전 시간외바스켓\n67 : 장개시전 금전신탁자사주\n69 : 장개시전 자기주식\n72 : 시간외대량\n77 : 시간외자사주신탁\n79 : 시간외대량자기주식\n80 : 바스켓"
+										},
+										{
+											"key": "OVRS_ICLD_YN",
+											"value": "N",
+											"description": "CMA평가금액포함여부\nY : 포함\nN : 포함하지 않음"
+										},
+										{
+											"key": "CMA_EVLU_AMT_ICLD_YN",
+											"value": "N",
+											"description": "해외포함여부\nY : 포함\nN : 포함하지 않음"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "국내선물옵션",
+			"item": [
+				{
+					"name": "[국내선물옵션] 주문/계좌",
+					"item": [
+						{
+							"name": "V_선물옵션 주문",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTT_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTT_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTT_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTO1101U",
+										"type": "text",
+										"description": "[실전투자]\nTTTO1101U : 선물 옵션 매수 매도 주문 주간\nJTCE1001U : 선물 옵션 매수 매도 주문 야간\n\n[모의투자]\nVTTO1101U : 선물 옵션 매수 매도 주문 주간\nVTCE1001U : 선물 옵션 매수 매도 주문 야간"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTT_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ORD_PRCS_DVSN_CD\": \"02\",\r\n    \"CANO\": \"{{CANO_T}}\",\r\n    \"ACNT_PRDT_CD\": \"03\",\r\n    \"SLL_BUY_DVSN_CD\": \"02\",\r\n    \"SHTN_PDNO\": \"101S09\",\r\n    \"ORD_QTY\": \"10\",\r\n    \"UNIT_PRICE\": \"300\",\r\n    \"NMPR_TYPE_CD\": \"01\",\r\n    \"KRX_NMPR_CNDT_CD\": \"0\",\r\n    \"ORD_DVSN_CD\": \"01\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-futureoption/v1/trading/order",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-futureoption",
+										"v1",
+										"trading",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_선물옵션 정정취소주문",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTT_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTT_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTT_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appKey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appSecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTO1103U",
+										"type": "text",
+										"description": "[실전투자]\nTTTO1103U : 선물 옵션 정정 취소 주문 주간\nJTCE1002U : 선물 옵션 정정 취소 주문 야간\n\n[모의투자]\nVTTO1103U : 선물 옵션 정정 취소 주문 주간\nVTCE1002U : 선물 옵션 정정 취소 주문 야간"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTT_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ORD_PRCS_DVSN_CD\": \"02\",\r\n    \"CANO\": \"{{CANO_T}}\",\r\n    \"ACNT_PRDT_CD\": \"03\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORGN_ODNO\": \"0000004018\",\r\n    \"ORD_QTY\": \"10\",\r\n    \"UNIT_PRICE\": \"300\",\r\n    \"NMPR_TYPE_CD\": \"01\",\r\n    \"KRX_NMPR_CNDT_CD\": \"0\",\r\n    \"RMN_QTY_YN\": \"Y\",\r\n    \"ORD_DVSN_CD\": \"01\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-futureoption/v1/trading/order-rvsecncl",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-futureoption",
+										"v1",
+										"trading",
+										"order-rvsecncl"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_선물옵션 주문체결내역조회",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTO5201R",
+										"type": "text",
+										"description": "[실전투자]\nTTTO5201R : 선물 옵션 주문 체결 내역 조회\n\n[모의투자]\nVTTO5201R : 선물 옵션 주문 체결 내역 조회"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-futureoption/v1/trading/inquire-ccnl?CANO={{CANO_T}}&ACNT_PRDT_CD=03&STRT_ORD_DT=20220730&END_ORD_DT=20220830&SLL_BUY_DVSN_CD=00&CCLD_NCCS_DVSN=00&SORT_SQN=DS&STRT_ODNO=&PDNO=&MKET_ID_CD=00&CTX_AREA_FK200=&CTX_AREA_NK200=",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-futureoption",
+										"v1",
+										"trading",
+										"inquire-ccnl"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO_T}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "03",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "STRT_ORD_DT",
+											"value": "20220730",
+											"description": "주문내역 조회 시작 일자 (YYYYMMDD)"
+										},
+										{
+											"key": "END_ORD_DT",
+											"value": "20220830",
+											"description": "주문내역 조회 마지막 일자 (YYYYMMDD)"
+										},
+										{
+											"key": "SLL_BUY_DVSN_CD",
+											"value": "00",
+											"description": "매도매수구분코드\n00 : 전체\n01 : 매도\n02 : 매수"
+										},
+										{
+											"key": "CCLD_NCCS_DVSN",
+											"value": "00",
+											"description": "체결미체결구분\n00 : 전체\n01 : 체결\n02 : 미체결"
+										},
+										{
+											"key": "SORT_SQN",
+											"value": "DS",
+											"description": "정렬순서\nAS : 정순\nDS : 역순"
+										},
+										{
+											"key": "STRT_ODNO",
+											"value": "",
+											"description": "시작주문번호(조회 시작 번호 입력)"
+										},
+										{
+											"key": "PDNO",
+											"value": "",
+											"description": "상품번호\n공란 : default\n선물 6자리 (예: 101S03)\n옵션 9자리 (예: 201S03370)"
+										},
+										{
+											"key": "MKET_ID_CD",
+											"value": "00",
+											"description": "공란(Default)"
+										},
+										{
+											"key": "CTX_AREA_FK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_FK100값 : 다음페이지 조회시(2번째부터)"
+										},
+										{
+											"key": "CTX_AREA_NK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_NK100값 : 다음페이지 조회시(2번째부터)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_선물옵션 잔고현황",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTFO6118R",
+										"type": "text",
+										"description": "[실전투자]\nCTFO6118R : 선물 옵션 잔고 현황\n\n[모의투자]\nVTFO6118R : 선물 옵션 잔고 현황"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "text"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-futureoption/v1/trading/inquire-balance?CANO={{CANO_T}}&ACNT_PRDT_CD=03&MGNA_DVSN=01&EXCC_STAT_CD=1&CTX_AREA_FK200=&CTX_AREA_NK200=",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-futureoption",
+										"v1",
+										"trading",
+										"inquire-balance"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO_T}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "03",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "MGNA_DVSN",
+											"value": "01",
+											"description": "증거금 구분(01 : 개시, 02 : 유지)"
+										},
+										{
+											"key": "EXCC_STAT_CD",
+											"value": "1",
+											"description": "정산상태코드(1 : 정산, 2 : 본정산)"
+										},
+										{
+											"key": "CTX_AREA_FK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_FK100값 : 다음페이지 조회시(2번째부터)"
+										},
+										{
+											"key": "CTX_AREA_NK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_NK100값 : 다음페이지 조회시(2번째부터)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_선물옵션 주문가능",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTO5105R",
+										"type": "text",
+										"description": "[실전투자]\nTTTO5105R : 선물 옵션 주문 가능\n\n[모의투자]\nVTTO5105R : 선물 옵션 주문 가능"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-futureoption/v1/trading/inquire-psbl-order?CANO={{CANO_T}}&ACNT_PRDT_CD=03&PDNO=101S09&SLL_BUY_DVSN_CD=02&UNIT_PRICE=1&ORD_DVSN_CD=01",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-futureoption",
+										"v1",
+										"trading",
+										"inquire-psbl-order"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO_T}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "03",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "PDNO",
+											"value": "101S09",
+											"description": "선물옵션종목코드\n선물 6자리 (예: 101S03)\n옵션 9자리 (예: 201S03370)"
+										},
+										{
+											"key": "SLL_BUY_DVSN_CD",
+											"value": "02",
+											"description": "매도매수구분코드(01 : 매도, 02 : 매수)"
+										},
+										{
+											"key": "UNIT_PRICE",
+											"value": "1",
+											"description": "주문가격\n※ 주문가격이 '0'일 경우\n- 옵션매수 : 현재가\n- 그 이외 : 기준가"
+										},
+										{
+											"key": "ORD_DVSN_CD",
+											"value": "01",
+											"description": "주문구분코드\n01 : 지정가\n02 : 시장가\n03 : 조건부\n04 : 최유리,\n10 : 지정가(IOC)\n11 : 지정가(FOK)\n12 : 시장가(IOC)\n13 : 시장가(FOK)\n14 : 최유리(IOC)\n15 : 최유리(FOK)"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "[국내선물옵션] 기본시세",
+					"item": [
+						{
+							"name": "V_선물옵션 시세",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHMIF10000000",
+										"type": "text",
+										"description": "[실전/모의투자]\nFHMIF10000000 : 선물 옵션 시세"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-futureoption/v1/quotations/inquire-price?fid_cond_mrkt_div_code=F&fid_input_iscd=101S09",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-futureoption",
+										"v1",
+										"quotations",
+										"inquire-price"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "F",
+											"description": "시장분류코드 (F: 지수선물, O:지수옵션\nJF: 주식선물, JO:주식옵션)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "101S09",
+											"description": "선물옵션종목코드\n선물 6자리 (예: 101S03)\n옵션 9자리 (예: 201S03370)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_선물옵션 시세호가",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHMIF10010000",
+										"type": "text",
+										"description": "[실전/모의투자]\nFHMIF10010000 : 선물 옵션 시세 호가"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-futureoption/v1/quotations/inquire-asking-price?fid_cond_mrkt_div_code=F&fid_input_iscd=101S09",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-futureoption",
+										"v1",
+										"quotations",
+										"inquire-asking-price"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "F",
+											"description": "시장분류코드 (F: 지수선물, O:지수옵션\nJF: 주식선물, JO:주식옵션)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "101S09",
+											"description": "선물옵션종목코드\n선물 6자리 (예: 101S03)\n옵션 9자리 (예: 201S03370)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_선물옵션기간별시세(일/주/월/년)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKIF03020100",
+										"type": "text",
+										"description": "[실전/모의투자]\nFHKIF03020100"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/domestic-futureoption/v1/quotations/inquire-daily-fuopchartprice?fid_cond_mrkt_div_code=F&fid_input_iscd=101S09&fid_input_date_1=20210301&fid_input_date_2=20220810&fid_period_div_code=D",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"domestic-futureoption",
+										"v1",
+										"quotations",
+										"inquire-daily-fuopchartprice"
+									],
+									"query": [
+										{
+											"key": "fid_cond_mrkt_div_code",
+											"value": "F",
+											"description": "시장분류코드 (F: 지수선물, O:지수옵션\nJF: 주식선물, JO:주식옵션)"
+										},
+										{
+											"key": "fid_input_iscd",
+											"value": "101S09",
+											"description": "선물옵션종목코드\n선물 6자리 (예: 101S03)\n옵션 9자리 (예: 201S03370)"
+										},
+										{
+											"key": "fid_input_date_1",
+											"value": "20210301",
+											"description": "시작일자 (20220501) (최대100건)"
+										},
+										{
+											"key": "fid_input_date_2",
+											"value": "20220810",
+											"description": "종료일자 (20220530)"
+										},
+										{
+											"key": "fid_period_div_code",
+											"value": "D",
+											"description": "기간분류코드 (D:일봉, W:주봉, M:월봉, Y:년봉)"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "해외주식",
+			"item": [
+				{
+					"name": "[해외주식] 주문/계좌",
+					"item": [
+						{
+							"name": "V_해외주식 주문(미국)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTT1002U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"NASD\",\r\n    \"PDNO\": \"TSLA\",\r\n    \"ORD_QTY\": \"1\",\r\n    \"OVRS_ORD_UNPR\": \"900.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 주문(일본)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS0308U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 주문(상해)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS0202U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SHAA\",\r\n    \"PDNO\": \"601360\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"7.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 주문(홍콩)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS1002U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SEHK\",\r\n    \"PDNO\": \"08495\",\r\n    \"ORD_QTY\": \"4000\",\r\n    \"OVRS_ORD_UNPR\": \"1.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 주문(심천)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS0305U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"SZAA\",\r\n    \"PDNO\": \"002051\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"8.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 주문(베트남)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS0311U ",
+										"type": "text",
+										"description": "[실전투자]\nTTTT1002U : 미국 매수 주문\nTTTT1006U : 미국 매도 주문\nTTTS0308U : 일본 매수 주문\nTTTS0307U : 일본 매도 주문\nTTTS0202U : 상해 매수 주문\nTTTS1005U : 상해 매도 주문\nTTTS1002U : 홍콩 매수 주문\nTTTS1001U : 홍콩 매도 주문\nTTTS0305U : 심천 매수 주문\nTTTS0304U : 심천 매도 주문\nTTTS0311U : 베트남 매수 주문\nTTTS0310U : 베트남 매도 주문\n\n[모의투자]\nVTTT1002U : 미국 매수 주문\nVTTT1001U : 미국 매도 주문\nVTTS0308U : 일본 매수 주문\nVTTS0307U : 일본 매도 주문\nVTTS0202U : 상해 매수 주문\nVTTS1005U : 상해 매도 주문\nVTTS1002U : 홍콩 매수 주문\nVTTS1001U : 홍콩 매도 주문\nVTTS0305U : 심천 매수 주문\nVTTS0304U : 심천 매도 주문\nVTTS0311U : 베트남 매수 주문\nVTTS0310U : 베트남 매도 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"VND\",\r\n    \"PDNO\": \"HPG\",\r\n    \"ORD_QTY\": \"100\",\r\n    \"OVRS_ORD_UNPR\": \"23000.0\",\r\n    \"ORD_SVR_DVSN_CD\": \"0\",\r\n    \"ORD_DVSN\": \"00\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 정정취소주문(정정)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS0309U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT1004U : 미국 정정 취소 주문\nTTTS1003U : 홍콩 정정 취소 주문\nTTTS0309U : 일본 정정 취소 주문\nTTTS0302U : 상해 취소 주문\nTTTS0306U : 심천 취소 주문\nTTTS0312U : 베트남 취소 주문\n\n[모의투자]\nVTTT1004U : 미국 정정 취소 주문\nVTTS1003U : 홍콩 정정 취소 주문\nVTTS0309U : 일본 정정 취소 주문\nVTTS0302U : 상해 취소 주문\nVTTS0306U : 심천 취소 주문\nVTTS0312U : 베트남 취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORGN_ODNO\": \"0000006616\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"01\",\r\n    \"ORD_QTY\": \"200\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-rvsecncl",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-rvsecncl"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 정정취소주문(취소)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS0309U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT1004U : 미국 정정 취소 주문\nTTTS1003U : 홍콩 정정 취소 주문\nTTTS0309U : 일본 정정 취소 주문\nTTTS0302U : 상해 취소 주문\nTTTS0306U : 심천 취소 주문\nTTTS0312U : 베트남 취소 주문\n\n[모의투자]\nVTTT1004U : 미국 정정 취소 주문\nVTTS1003U : 홍콩 정정 취소 주문\nVTTS0309U : 일본 정정 취소 주문\nVTTS0302U : 상해 취소 주문\nVTTS0306U : 심천 취소 주문\nVTTS0312U : 베트남 취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"PDNO\": \"4689\",\r\n    \"ORGN_ODNO\": \"0000006616\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"02\",\r\n    \"ORD_QTY\": \"200\",\r\n    \"OVRS_ORD_UNPR\": \"450.0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-rvsecncl",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-rvsecncl"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 예약주문접수(미국)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH); \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTT3014U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"PDNO\": \"TSLA\",\r\n    \"OVRS_EXCG_CD\": \"NASD\",\r\n    \"FT_ORD_QTY\": \"1\",\r\n    \"FT_ORD_UNPR3\": \"900.0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-resv",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-resv"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 예약주문접수(일본)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS3013U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"4689\",\r\n    \"PRDT_TYPE_CD\": \"515\",\r\n    \"OVRS_EXCG_CD\": \"TKSE\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"450.0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-resv",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-resv"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 예약주문접수(홍콩)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH); \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS3013U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"08495\",\r\n    \"PRDT_TYPE_CD\": \"501\",\r\n    \"OVRS_EXCG_CD\": \"SEHK\",\r\n    \"FT_ORD_QTY\": \"4000\",\r\n    \"FT_ORD_UNPR3\": \"1.0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-resv",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-resv"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 예약주문접수(상해)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS3013U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"601360\",\r\n    \"PRDT_TYPE_CD\": \"551\",\r\n    \"OVRS_EXCG_CD\": \"SHAA\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"7.0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-resv",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-resv"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 예약주문접수(심천)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS3013U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"002051\",\r\n    \"PRDT_TYPE_CD\": \"552\",\r\n    \"OVRS_EXCG_CD\": \"SZAA\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"8.0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-resv",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-resv"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 예약주문접수(베트남)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"    \r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS3013U",
+										"type": "text",
+										"description": "[실전투자]\nTTTT3016U : 미국 매도 예약 주문\nTTTT3014U : 미국 매수 예약 주문\nTTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문\n\n[모의투자]\nVTTT3016U : 미국 매도 예약 주문\nVTTT3014U : 미국 매수 예약 주문\nVTTS3013U : 중국/홍콩/일본/베트남 예약 매수/매도/취소 주문"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RVSE_CNCL_DVSN_CD\": \"00\",\r\n    \"PDNO\": \"HPG\",\r\n    \"PRDT_TYPE_CD\": \"508\",\r\n    \"OVRS_EXCG_CD\": \"HASE\",\r\n    \"FT_ORD_QTY\": \"100\",\r\n    \"FT_ORD_UNPR3\": \"23000.0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-resv",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-resv"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 예약주문접수 취소",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.sendRequest({\r",
+											"    url: pm.environment.get('VTS')+'/uapi/hashkey',\r",
+											"    method: 'POST',\r",
+											"    header: {\r",
+											"    'Content-Type': 'application/json',\r",
+											"    'appKey': pm.environment.get('VTS_APPKEY'),\r",
+											"    'appSecret': pm.environment.get('VTS_APPSECRET')\r",
+											"    },\r",
+											"    body: {mode: 'raw', raw: request.data}\r",
+											"    \r",
+											"}, function (err, res) {\r",
+											"    res_data = res.json();\r",
+											"    console.log(res_data);\r",
+											"\r",
+											"    // 환경변수 값 세팅 \r",
+											"    pm.environment.set(\"VTS_HASH\", res.json().HASH);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTT3017U",
+										"type": "text",
+										"description": "[실전투자]\nJTTT3017U : 미국예약주문접수 취소\n\n[모의투자]\nVTTT3017U : 미국예약주문접수 취소\n(일본, 홍콩 등 타국가 개발 진행 예정)"
+									},
+									{
+										"key": "hashkey",
+										"value": "{{VTS_HASH}}",
+										"type": "default",
+										"description": "[POST API 대상] Client가 요청하는 Request Body를 hashkey api로 생성한 Hash값\n* API문서 > hashkey 참조",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CANO\": \"{{CANO}}\",\r\n    \"ACNT_PRDT_CD\": \"01\",\r\n    \"RSVN_ORD_RCIT_DT\": \"20220816\",\r\n    \"OVRS_RSVN_ODNO\": \"41\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/order-resv",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"order-resv"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 미체결내역",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS3018R",
+										"type": "text",
+										"description": "[실전투자]\nTTTS3018R\n\n[모의투자]\nVTTS3018R"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/inquire-nccs?CANO={{CANO}}&ACNT_PRDT_CD=01&OVRS_EXCG_CD=TKSE&SORT_SQN=DS&CTX_AREA_FK200=&CTX_AREA_NK200",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"inquire-nccs"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "01",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "OVRS_EXCG_CD",
+											"value": "TKSE",
+											"description": "해외거래소코드\nNASD : 나스닥\nNYSE : 뉴욕\nAMEX : 아멕스\nSEHK : 홍콩\nSHAA : 중국상해\nSZAA : 중국심천\nTKSE : 일본\nHASE : 베트남 하노이\nVNSE : 베트남 호치민"
+										},
+										{
+											"key": "SORT_SQN",
+											"value": "DS",
+											"description": "정렬순서\nDS : 정순\n그외 : 역순"
+										},
+										{
+											"key": "CTX_AREA_FK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_FK100값 : 다음페이지 조회시(2번째부터)"
+										},
+										{
+											"key": "CTX_AREA_NK200",
+											"value": null,
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_NK100값 : 다음페이지 조회시(2번째부터)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 잔고",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS3012R",
+										"type": "text",
+										"description": "[실전투자]\nTTTS3012R\n\n[모의투자]\nVTTS3012R"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/inquire-balance?CANO={{CANO}}&ACNT_PRDT_CD=01&OVRS_EXCG_CD=TKSE&TR_CRCY_CD=JPY&CTX_AREA_FK200=&CTX_AREA_NK200=",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"inquire-balance"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "01",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "OVRS_EXCG_CD",
+											"value": "TKSE",
+											"description": "해외거래소코드\nNASD : 미국전체\nNAS : 나스닥\nNYSE : 뉴욕\nAMEX : 아멕스\nSEHK : 홍콩\nSHAA : 중국상해\nSZAA : 중국심천\nTKSE : 일본\nHASE : 베트남 하노이\nVNSE : 베트남 호치민"
+										},
+										{
+											"key": "TR_CRCY_CD",
+											"value": "JPY",
+											"description": "거래통화코드\nUSD : 미국달러\nHKD : 홍콩달러\nCNY : 중국위안화\nJPY : 일본엔화\nVND : 베트남동"
+										},
+										{
+											"key": "CTX_AREA_FK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_FK100값 : 다음페이지 조회시(2번째부터)"
+										},
+										{
+											"key": "CTX_AREA_NK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_NK100값 : 다음페이지 조회시(2번째부터)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 주문체결내역",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTTS3035R",
+										"type": "text",
+										"description": "[실전투자]\nTTTS3035R\n\n[모의투자]\nVTTS3035R"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/inquire-ccnl?CANO={{CANO}}&ACNT_PRDT_CD=01&PDNO=&ORD_STRT_DT=&ORD_END_DT=&SLL_BUY_DVSN=00&CCLD_NCCS_DVSN=00&OVRS_EXCG_CD=&SORT_SQN=DS&ORD_DT=&ORD_GNO_BRNO=&ODNO=&CTX_AREA_NK200=&CTX_AREA_FK200=",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"inquire-ccnl"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "01",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "PDNO",
+											"value": "",
+											"description": "상품번호(공백일경우 전종목)"
+										},
+										{
+											"key": "ORD_STRT_DT",
+											"value": "",
+											"description": "주문시작일자(YYYYMMDD)"
+										},
+										{
+											"key": "ORD_END_DT",
+											"value": "",
+											"description": "주문종료일자(YYYYMMDD)"
+										},
+										{
+											"key": "SLL_BUY_DVSN",
+											"value": "00",
+											"description": "매도매수구분\n00 : 전체\n01 : 매도\n02 : 매수"
+										},
+										{
+											"key": "CCLD_NCCS_DVSN",
+											"value": "00",
+											"description": "체결미체결구분\n00 : 전체\n01 : 체결\n02 : 미체결"
+										},
+										{
+											"key": "OVRS_EXCG_CD",
+											"value": "",
+											"description": "해외거래소코드\nNASD : 나스닥\nNYSE : 뉴욕\nAMEX : 아멕스\nSEHK : 홍콩\nSHAA : 중국상해\nSZAA : 중국심천\nTKSE : 일본\nHASE : 베트남 하노이\nVNSE : 베트남 호치민"
+										},
+										{
+											"key": "SORT_SQN",
+											"value": "DS",
+											"description": "정렬순서\nDS : 정순\nAS : 역순"
+										},
+										{
+											"key": "ORD_DT",
+											"value": "",
+											"description": "주문일자(\"\" Null 값 설정)"
+										},
+										{
+											"key": "ORD_GNO_BRNO",
+											"value": "",
+											"description": "주문채번지점번호(\"\" Null 값 설정)"
+										},
+										{
+											"key": "ODNO",
+											"value": "",
+											"description": "주문번호(\"\" Null 값 설정)"
+										},
+										{
+											"key": "CTX_AREA_NK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_FK100값 : 다음페이지 조회시(2번째부터)"
+										},
+										{
+											"key": "CTX_AREA_FK200",
+											"value": "",
+											"description": "공란 : 최초 조회시\n이전 조회 Output CTX_AREA_NK100값 : 다음페이지 조회시(2번째부터)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 체결기준 현재잔고",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "VTRP6504R",
+										"type": "text",
+										"description": "[실전투자]\nCTRP6504R\n\n[모의투자]\nVTRP6504R"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-stock/v1/trading/inquire-present-balance?CANO={{CANO}}&ACNT_PRDT_CD=01&NATN_CD=000&WCRC_FRCR_DVSN_CD=01&TR_MKET_CD=00&INQR_DVSN_CD=00",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-stock",
+										"v1",
+										"trading",
+										"inquire-present-balance"
+									],
+									"query": [
+										{
+											"key": "CANO",
+											"value": "{{CANO}}",
+											"description": "계좌번호 체계(8-2)의 앞 8자리"
+										},
+										{
+											"key": "ACNT_PRDT_CD",
+											"value": "01",
+											"description": "계좌번호 체계(8-2)의 뒤 2자리"
+										},
+										{
+											"key": "NATN_CD",
+											"value": "000",
+											"description": "국가코드\n000 전체\n840 미국\n344 홍콩\n156 중국\n392 일본\n704 베트남"
+										},
+										{
+											"key": "WCRC_FRCR_DVSN_CD",
+											"value": "01",
+											"description": "원화외화구분코드\n01 : 원화\n02 : 외화"
+										},
+										{
+											"key": "TR_MKET_CD",
+											"value": "00",
+											"description": "거래시장코드\n[Request body NATN_CD 000 설정]\n00 : 전체\n\n[Request body NATN_CD 840 설정]\n00 : 전체\n01 : 나스닥(NASD)\n02 : 뉴욕거래소(NYSE)\n03 : 미국(PINK SHEETS)\n04 : 미국(OTCBB)\n05 : 아멕스(AMEX)\n\n[Request body NATN_CD 156 설정]\n00 : 전체\n01 : 상해B\n02 : 심천B\n03 : 상해A\n04 : 심천A\n\n[Request body NATN_CD 392 설정]\n01 : 일본\n\n[Request body NATN_CD 704 설정]\n01 : 하노이거래\n02 : 호치민거래소\n\n[Request body NATN_CD 344 설정]\n01 : 홍콩\n02 : 홍콩CNY\n03 : 홍콩USD"
+										},
+										{
+											"key": "INQR_DVSN_CD",
+											"value": "00",
+											"description": "조회구분코드\n00 : 전체\n01 : 일반해외주식\n02 : 미니스탁"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "[해외주식] 기본시세",
+					"item": [
+						{
+							"name": "V_해외주식 현재체결가",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFS00000300",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nHHDFS00000300"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-price/v1/quotations/price?AUTH=&EXCD=NAS&SYMB=AAPL",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-price",
+										"v1",
+										"quotations",
+										"price"
+									],
+									"query": [
+										{
+											"key": "AUTH",
+											"value": "",
+											"description": "사용자권한정보\n\"\" (Null 값 설정)"
+										},
+										{
+											"key": "EXCD",
+											"value": "NAS",
+											"description": "거래소코드\nHKS : 홍콩\nNYS : 뉴욕\nNAS : 나스닥\nAMS : 아멕스\nTSE : 도쿄\nSHS : 상해\nSZS : 심천\nSHI : 상해지수\nSZI : 심천지수\nHSX : 호치민\nHNX : 하노이"
+										},
+										{
+											"key": "SYMB",
+											"value": "AAPL",
+											"description": "종목코드"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 기간별시세",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFS76240000",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nHHDFS76240000"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-price/v1/quotations/dailyprice?AUTH=&EXCD=NAS&SYMB=AAPL&GUBN=0&BYMD=&MODP=1",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-price",
+										"v1",
+										"quotations",
+										"dailyprice"
+									],
+									"query": [
+										{
+											"key": "AUTH",
+											"value": "",
+											"description": "사용자권한정보\n\"\" (Null 값 설정)"
+										},
+										{
+											"key": "EXCD",
+											"value": "NAS",
+											"description": "거래소코드\nHKS : 홍콩\nNYS : 뉴욕\nNAS : 나스닥\nAMS : 아멕스\nTSE : 도쿄\nSHS : 상해\nSZS : 심천\nSHI : 상해지수\nSZI : 심천지수\nHSX : 호치민\nHNX : 하노이"
+										},
+										{
+											"key": "SYMB",
+											"value": "AAPL",
+											"description": "종목코드"
+										},
+										{
+											"key": "GUBN",
+											"value": "0",
+											"description": "일/주/월구분\n0 : 일\n1 : 주\n2 : 월"
+										},
+										{
+											"key": "BYMD",
+											"value": "",
+											"description": "조회기준일자(YYYYMMDD)\n※ 공란 설정 시, 기준일 오늘 날짜로 설정"
+										},
+										{
+											"key": "MODP",
+											"value": "1",
+											"description": "수정주가반영여부\n0 : 미반영\n1 : 반영"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 종목/지수/환율기간별시세",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "FHKST03030100",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nFHKST03030100"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-price/v1/quotations/inquire-daily-chartprice?FID_COND_MRKT_DIV_CODE=N&FID_INPUT_ISCD=QQQ&FID_INPUT_DATE_1=20220531&FID_INPUT_DATE_2=20220731&FID_PERIOD_DIV_CODE=D",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-price",
+										"v1",
+										"quotations",
+										"inquire-daily-chartprice"
+									],
+									"query": [
+										{
+											"key": "FID_COND_MRKT_DIV_CODE",
+											"value": "N",
+											"description": "시장분류코드(N: 해외지수, X: 환율)"
+										},
+										{
+											"key": "FID_INPUT_ISCD",
+											"value": "QQQ",
+											"description": "종목코드\n※ 해외주식 마스터 코드 참조 \n(포럼 > FAQ > 종목정보 다운로드 > 해외주식)"
+										},
+										{
+											"key": "FID_INPUT_DATE_1",
+											"value": "20220531",
+											"description": "시작일자(YYYYMMDD)"
+										},
+										{
+											"key": "FID_INPUT_DATE_2",
+											"value": "20220731",
+											"description": "종료일자(YYYYMMDD)"
+										},
+										{
+											"key": "FID_PERIOD_DIV_CODE",
+											"value": "D",
+											"description": "기간분류코드(D:일, W:주, M:월, Y:년)"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외주식 조건검색",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTS_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTS_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTS_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFS76410000",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nHHDFS76410000"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-price/v1/quotations/inquire-search?AUTH=&EXCD=NAS&CO_YN_PRICECUR=1&CO_ST_PRICECUR=160&CO_EN_PRICECUR=170&CO_YN_RATE=&CO_ST_RATE=&CO_EN_RATE=&CO_YN_VALX=&CO_ST_VALX=&CO_EN_VALX=&CO_YN_SHAR=&CO_ST_SHAR=&CO_EN_SHAR=&CO_YN_VOLUME=&CO_ST_VOLUME=&CO_EN_VOLUME=&CO_YN_AMT=&CO_ST_AMT=&CO_EN_AMT=&CO_YN_EPS=&CO_ST_EPS=&CO_EN_EPS=&CO_YN_PER=&CO_ST_PER=&CO_EN_PER=",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-price",
+										"v1",
+										"quotations",
+										"inquire-search"
+									],
+									"query": [
+										{
+											"key": "AUTH",
+											"value": "",
+											"description": "사용자권한정보\n\"\" (Null 값 설정)"
+										},
+										{
+											"key": "EXCD",
+											"value": "NAS",
+											"description": "거래소코드\nNYS : 뉴욕, NAS : 나스닥, AMS : 아멕스\nHKS : 홍콩, SHS : 상해 , SZS : 심천\nHSX : 호치민, HNX : 하노이\nTSE : 도쿄"
+										},
+										{
+											"key": "CO_YN_PRICECUR",
+											"value": "1",
+											"description": "현재가선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_PRICECUR",
+											"value": "160",
+											"description": "현재가시작범위가"
+										},
+										{
+											"key": "CO_EN_PRICECUR",
+											"value": "170",
+											"description": "현재가끝범위가"
+										},
+										{
+											"key": "CO_YN_RATE",
+											"value": "",
+											"description": "등락율선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_RATE",
+											"value": "",
+											"description": "등락율시작율"
+										},
+										{
+											"key": "CO_EN_RATE",
+											"value": "",
+											"description": "등락율끝율"
+										},
+										{
+											"key": "CO_YN_VALX",
+											"value": "",
+											"description": "시가총액선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_VALX",
+											"value": "",
+											"description": "시가총액시작액"
+										},
+										{
+											"key": "CO_EN_VALX",
+											"value": "",
+											"description": "시가총액끝액"
+										},
+										{
+											"key": "CO_YN_SHAR",
+											"value": "",
+											"description": "발행주식수선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_SHAR",
+											"value": "",
+											"description": "발행주식시작수"
+										},
+										{
+											"key": "CO_EN_SHAR",
+											"value": "",
+											"description": "발행주식끝수"
+										},
+										{
+											"key": "CO_YN_VOLUME",
+											"value": "",
+											"description": "거래량선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_VOLUME",
+											"value": "",
+											"description": "거래량시작량"
+										},
+										{
+											"key": "CO_EN_VOLUME",
+											"value": "",
+											"description": "거래량끝량"
+										},
+										{
+											"key": "CO_YN_AMT",
+											"value": "",
+											"description": "거래대금선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_AMT",
+											"value": "",
+											"description": "거래대금시작금"
+										},
+										{
+											"key": "CO_EN_AMT",
+											"value": "",
+											"description": "거래대금끝금"
+										},
+										{
+											"key": "CO_YN_EPS",
+											"value": "",
+											"description": "EPS선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_EPS",
+											"value": "",
+											"description": "EPS시작"
+										},
+										{
+											"key": "CO_EN_EPS",
+											"value": "",
+											"description": "EPS끝"
+										},
+										{
+											"key": "CO_YN_PER",
+											"value": "",
+											"description": "PER선택조건\n해당조건 사용시(1), 미사용시 필수항목아님"
+										},
+										{
+											"key": "CO_ST_PER",
+											"value": "",
+											"description": "PER시작"
+										},
+										{
+											"key": "CO_EN_PER",
+											"value": "",
+											"description": "PER끝"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "해외선물옵션",
+			"item": [
+				{
+					"name": "[해외선물옵션] 기본시세",
+					"item": [
+						{
+							"name": "V_해외선물종목상세",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFC55010100",
+										"type": "text",
+										"description": "[실전투자/모의투자]\nHHDFC55010100"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-futureoption/v1/quotations/stock-detail?SRS_CD=6AU22",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-futureoption",
+										"v1",
+										"quotations",
+										"stock-detail"
+									],
+									"query": [
+										{
+											"key": "SRS_CD",
+											"value": "6AU22",
+											"description": "종목코드"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "V_해외선물종목현재가",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "content-type",
+										"value": "application/json",
+										"type": "text",
+										"description": "application/json; charset=utf-8"
+									},
+									{
+										"key": "authorization",
+										"value": "Bearer {{VTT_TOKEN}}",
+										"type": "text",
+										"description": "OAuth 토큰이 필요한 API 경우 발급한 Access token\n일반고객(Access token 유효기간 1일, OAuth 2.0의 Client Credentials Grant 절차를 준용)\n법인(Access token 유효기간 3개월, Refresh token 유효기간 1년, OAuth 2.0의 Authorization Code Grant 절차를 준용)"
+									},
+									{
+										"key": "appkey",
+										"value": "{{VTT_APPKEY}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appkey (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "appsecret",
+										"value": "{{VTT_APPSECRET}}",
+										"type": "text",
+										"description": "한국투자증권 홈페이지에서 발급받은 appsecret (절대 노출되지 않도록 주의해주세요.)"
+									},
+									{
+										"key": "tr_id",
+										"value": "HHDFC55010000",
+										"type": "text",
+										"description": "[실전/모의투자]\nHHDFC55010000"
+									}
+								],
+								"url": {
+									"raw": "{{VTS}}/uapi/overseas-futureoption/v1/quotations/inquire-price?SRS_CD=6AU22",
+									"host": [
+										"{{VTS}}"
+									],
+									"path": [
+										"uapi",
+										"overseas-futureoption",
+										"v1",
+										"quotations",
+										"inquire-price"
+									],
+									"query": [
+										{
+											"key": "SRS_CD",
+											"value": "6AU22",
+											"description": "종목코드"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

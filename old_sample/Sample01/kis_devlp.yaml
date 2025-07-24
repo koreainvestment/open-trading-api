@@ -1,0 +1,67 @@
+#====|  사용자 환경 샘플 아래 참고하시기 바랍니다.  |======================
+#====|  본 샘플은 토큰 발급 후 파일 저장 방식이므로 보안강화를 위해 메모리 방식 등 사용자 원하시는 방식으로 구현하시기 바랍니다. |=====
+
+#====|  kis_auth.py에서 환경파일 위치를 사용자가 정하시기 바랍니다. . 2024.05.16 KIS Developers Team  |======================
+#====|  kis_auth.py에서 환경파일 위치를 사용자가 정하시기 바랍니다. . 2024.05.16 KIS Developers Team  |======================
+#====|  kis_auth.py에서 환경파일 위치를 사용자가 정하시기 바랍니다. . 2024.05.16 KIS Developers Team  |======================
+#
+###############################   kis_auth.py   ##################################################
+# clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
+# 
+# key_bytes = 32
+# 
+# config_root = 'd:\\KIS\\config\\'  # 토큰 파일이 저장될 폴더, 제3자가 찾지 어렵도록 경로 설정하시기 바랍니다.  <<<==== 파일 위치 지정
+# #token_tmp = config_root + 'KIS000000'  # 토큰 로컬저장시 파일 이름 지정, 파일이름을 토큰값이 유추가능한 파일명은 삼가바랍니다.  <<<==== 토큰 저장 파일 방식
+# #token_tmp = config_root + 'KIS' + datetime.today().strftime("%Y%m%d%H%M%S")  # 토큰 로컬저장시 파일명 년월일시분초
+# token_tmp = config_root + 'KIS' + datetime.today().strftime("%Y%m%d")  # 토큰 로컬저장시 파일명 년월일
+# 
+# # 접근토큰 관리하는 파일 존재여부 체크, 없으면 생성
+# if os.path.exists(token_tmp) == False:
+#     f = open(token_tmp, "w+")
+# 
+# # 앱키, 앱시크리트, 토큰, 계좌번호 등 저장관리, 자신만의 경로와 파일명으로 설정하시기 바랍니다.
+# # pip install PyYAML (패키지설치)
+# with open(config_root + 'kis_devlp.yaml', encoding='UTF-8') as f:
+#     _cfg = yaml.load(f, Loader=yaml.FullLoader)
+# 
+# _TRENV = tuple()
+# _last_auth_time = datetime.now()
+# _autoReAuth = False
+# _DEBUG = False
+# _isPaper = False
+# 
+# 기본 헤더값 정의
+# _base_headers = {
+#     "Content-Type": "application/json",
+#     "Accept": "text/plain",
+#     "charset": "UTF-8",
+#     'User-Agent': _cfg['my_agent']
+# }
+######################################################################################################
+
+#홈페이지에서 API서비스 신청시 받은 Appkey, Appsecret 값 설정
+#모의투자
+#my_app: "앱키"
+#my_sec: "앱시크리트"
+#실전투자 
+my_app: "앱키"
+my_sec: "앱시크리트"
+
+
+#계좌번호 앞 8자리
+my_acct: "계좌번호 8자리"
+my_acct_stock: "증권계좌 8자리"
+my_acct_future: "선물옵션계좌 8자리"
+#계좌번호 뒤 2자리
+my_prod: "01"
+#my_prod: "03"
+
+#실전투자
+prod: "https://openapi.koreainvestment.com:9443"
+#모의투자
+vps: "https://openapivts.koreainvestment.com:29443"
+
+#디스코드 웹훅 URL
+DISCORD_WEBHOOK_URL: ""
+
+my_agent : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"

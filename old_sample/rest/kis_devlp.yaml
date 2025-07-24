@@ -1,0 +1,28 @@
+#홈페이지에서 API서비스 신청시 받은 Appkey, Appsecret 값 설정
+#실전투자
+my_app: ""
+my_sec: ""
+
+#모의투자
+paper_app: ""
+paper_sec: ""
+
+#계좌번호 앞 8자리
+my_acct_stock: "12345678"
+my_acct_future: ""
+my_paper_stock: ""
+my_paper_future: ""
+
+#계좌번호 뒤 2자리
+my_prod: "01"
+
+#domain info
+prod: "https://openapi.koreainvestment.com:9443" #서비스
+ops: "ws://ops.koreainvestment.com:21000" #웹소켓
+vps: "https://openapivts.koreainvestment.com:29443" #모의투자서비스
+vops: "ws://ops.koreainvestment.com:31000" #모의투자웹소켓
+
+my_token: ""
+
+# User-Agent; Chrome > F12 개발자 모드 > Console > navigator.userAgent > 자신의 userAgent 확인가능
+my_agent : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
