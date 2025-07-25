@@ -48,9 +48,11 @@ uv --version
 
 ### 2.3. KIS Open API 계정 설정
 
-1. **한국투자증권 홈페이지**에서 Open API 서비스 신청
-2. **앱키(App Key)**, **앱시크릿(App Secret)** 발급
-3. **모의투자** 및 **실전투자** 앱키 각각 준비
+🍀 [서비스 신청 안내 바로가기](https://apiportal.koreainvestment.com/about-howto)
+1. 한국투자증권 **계좌 개설 및 ID 연결**
+2. 한국투자증권 홈페이지 or 앱에서 **Open API 서비스 신청**
+3. **앱키(App Key)**, **앱시크릿(App Secret)** 발급
+4. **모의투자** 및 **실전투자** 앱키 각각 준비
 
 ### 2.4. 설정 파일 준비
 
