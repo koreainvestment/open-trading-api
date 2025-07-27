@@ -68,7 +68,7 @@ paper_app: "여기에 모의투자 앱키 입력"
 paper_sec: "여기에 모의투자 앱시크릿 입력"
 
 # HTS ID(KIS Developers 고객 ID) - 체결통보, 나의 조건 목록 확인 등에 사용됩니다.
-my_hts_id: "사용자 HTS ID"
+my_htsid: "사용자 HTS ID"
 
 # 계좌번호 앞 8자리
 my_acct_stock: "증권계좌 8자리"
