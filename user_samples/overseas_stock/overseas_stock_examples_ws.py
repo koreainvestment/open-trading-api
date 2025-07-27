@@ -29,7 +29,7 @@ kws.subscribe(request=asking_price, data=["RBAQAAPL"])
 # [해외주식] 실시간시세 > 해외주식 실시간체결통보[실시간-009]
 ##############################################################################################
 
-kws.subscribe(request=ccnl_notice, data=["dttest11"], kwargs={"env_dv": "real"})
+kws.subscribe(request=ccnl_notice, data=[trenv.my_htsid], kwargs={"env_dv": "real"})
 
 ##############################################################################################
 # [해외주식] 실시간시세 > 해외주식 지연호가(아시아)[실시간-008]

@@ -35,13 +35,13 @@ kws.subscribe(request=ccnl, data=["1OZQ25"])
 # [해외선물옵션]실시간시세 > 해외선물옵션 실시간체결내역통보[실시간-020]
 ##############################################################################################
 
-kws.subscribe(request=ccnl_notice, data=["dttest11"])
+kws.subscribe(request=ccnl_notice, data=[trenv.my_htsid])
 
 ##############################################################################################
 # [해외선물옵션]실시간시세 > 해외선물옵션 실시간주문내역통보[실시간-019]
 ##############################################################################################
 
-kws.subscribe(request=order_notice, data=["dttest11"])
+kws.subscribe(request=order_notice, data=[trenv.my_htsid])
 
 # 시작
 kws.start(on_result=None)

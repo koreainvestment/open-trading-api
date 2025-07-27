@@ -35,7 +35,7 @@ kws.subscribe(request=commodity_futures_realtime_quote, data=["165W09"])
 # [국내선물옵션] 실시간시세 > 선물옵션 실시간체결통보[실시간-012]
 ##############################################################################################
 
-kws.subscribe(request=fuopt_ccnl_notice, data=["dttest11"])
+kws.subscribe(request=fuopt_ccnl_notice, data=[trenv.my_htsid])
 
 ##############################################################################################
 # [국내선물옵션] 실시간시세 > 주식선물 실시간예상체결 [실시간-031]
@@ -83,7 +83,7 @@ kws.subscribe(request=krx_ngt_futures_ccnl, data=["101W9000"])
 # [국내선물옵션] 실시간시세 > KRX야간선물 실시간체결통보 [실시간-066]
 ##############################################################################################
 
-kws.subscribe(request=krx_ngt_futures_ccnl_notice, data=["dttest11"])
+kws.subscribe(request=krx_ngt_futures_ccnl_notice, data=[trenv.my_htsid])
 
 ##############################################################################################
 # [국내선물옵션] 실시간시세 > KRX야간옵션 실시간호가 [실시간-033]
@@ -107,7 +107,7 @@ kws.subscribe(request=krx_ngt_option_exp_ccnl, data=["101W9000"])
 # [국내선물옵션] 실시간시세 > KRX야간옵션실시간체결통보 [실시간-067]
 ##############################################################################################
 
-kws.subscribe(request=krx_ngt_option_notice, data=["dttest11"])
+kws.subscribe(request=krx_ngt_option_notice, data=[trenv.my_htsid])
 
 ##############################################################################################
 # [국내선물옵션] 실시간시세 > 주식옵션 실시간예상체결 [실시간-046]

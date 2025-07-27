@@ -1,10 +1,6 @@
-# POST를 이용해서 KIS사이트에 웹소켓 토큰을 받는 코드
-# https://github.com/koreainvestment/open-trading-api/blob/main/rest/kis_auth.py 참조
 # -*- coding: utf-8 -*-
-
-# ====|  토큰 발급에 필요한 API 호출 샘플 아래 참고하시기 바랍니다.  |=====================
+# ====|  (REST) 접근 토큰 / (Websocket) 웹소켓 접속키 발급 에 필요한 API 호출 샘플 아래 참고하시기 바랍니다.  |=====================
 # ====|  API 호출 공통 함수 포함                                  |=====================
-
 
 import asyncio
 import copy
@@ -37,7 +33,7 @@ clearConsole = lambda: os.system("cls" if os.name in ("nt", "dos") else "clear")
 
 key_bytes = 32
 config_root = os.path.join(os.path.expanduser("~"), "KIS", "config")
-# config_root = "$HOME/KIS/config/"  # 토큰 파일이 저장될 폴더, 제3자가 찾지 어렵도록 경로 설정하시기 바랍니다.
+# config_root = "$HOME/KIS/config/"  # 토큰 파일이 저장될 폴더, 제3자가 찾기 어렵도록 경로 설정하시기 바랍니다.
 # token_tmp = config_root + 'KIS000000'  # 토큰 로컬저장시 파일 이름 지정, 파일이름을 토큰값이 유추가능한 파일명은 삼가바랍니다.
 # token_tmp = config_root + 'KIS' + datetime.today().strftime("%Y%m%d%H%M%S")  # 토큰 로컬저장시 파일명 년월일시분초
 token_tmp = os.path.join(
@@ -114,13 +110,14 @@ def _getBaseHeader():
 def _setTRENV(cfg):
     nt1 = namedtuple(
         "KISEnv",
-        ["my_app", "my_sec", "my_acct", "my_prod", "my_token", "my_url", "my_url_ws"],
+        ["my_app", "my_sec", "my_acct", "my_prod", "my_htsid", "my_token", "my_url", "my_url_ws"],
     )
     d = {
         "my_app": cfg["my_app"],  # 앱키
         "my_sec": cfg["my_sec"],  # 앱시크리트
         "my_acct": cfg["my_acct"],  # 종합계좌번호(8자리)
         "my_prod": cfg["my_prod"],  # 계좌상품코드(2자리)
+        "my_htsid": cfg["my_htsid"], # HTS ID
         "my_token": cfg["my_token"],  # 토큰
         "my_url": cfg[
             "my_url"
@@ -158,18 +155,21 @@ def changeTREnv(token_key, svr="prod", product=_cfg["my_prod"]):
 
     if svr == "prod" and product == "01":  # 실전투자 주식투자, 위탁계좌, 투자계좌
         cfg["my_acct"] = _cfg["my_acct_stock"]
-    elif svr == "prod" and product == "30":  # 실전투자 증권저축계좌
-        cfg["my_acct"] = _cfg["my_acct_stock"]
     elif svr == "prod" and product == "03":  # 실전투자 선물옵션(파생)
         cfg["my_acct"] = _cfg["my_acct_future"]
     elif svr == "prod" and product == "08":  # 실전투자 해외선물옵션(파생)
         cfg["my_acct"] = _cfg["my_acct_future"]
+    elif svr == "prod" and product == "22":  # 실전투자 개인연금저축계좌
+        cfg["my_acct"] = _cfg["my_acct_stock"]
+    elif svr == "prod" and product == "29":  # 실전투자 퇴직연금계좌
+        cfg["my_acct"] = _cfg["my_acct_stock"]
     elif svr == "vps" and product == "01":  # 모의투자 주식투자, 위탁계좌, 투자계좌
         cfg["my_acct"] = _cfg["my_paper_stock"]
     elif svr == "vps" and product == "03":  # 모의투자 선물옵션(파생)
         cfg["my_acct"] = _cfg["my_paper_future"]
 
     cfg["my_prod"] = product
+    cfg["my_htsid"] = _cfg["my_htsid"]
     cfg["my_url"] = _cfg[svr]
 
     try:
