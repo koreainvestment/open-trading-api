@@ -8,6 +8,8 @@
 
 한국투자증권(Korea Investment & Securities)의 Open API를 쉽게 이해하고 활용할 수 있도록 실용적인 샘플 코드를 제공합니다.
 
+[한국투자증권 Open API 포털 바로가기](https://apiportal.koreainvestment.com/)
+
 ## 1. 제작 의도 및 대상
 
 ### 🎯 제작 의도
