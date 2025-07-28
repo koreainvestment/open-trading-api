@@ -44,7 +44,7 @@ def psearch_title(
         pd.DataFrame: 종목조건검색 목록 데이터
         
     Example:
-        >>> df = psearch_title(user_id="dttest11")
+        >>> df = psearch_title(user_id=trenv.my_htsid)
         >>> print(df)
     """
 

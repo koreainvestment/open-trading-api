@@ -47,11 +47,12 @@ def main():
 
     # 인증 토큰 발급
     ka.auth()
+    trenv = ka.getTREnv()
 
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
-        result = psearch_title(user_id="dttest11")
+        result = psearch_title(user_id=trenv.my_htsid)
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

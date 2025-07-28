@@ -26,14 +26,18 @@ print(result)
 # [해외주식] 주문/계좌 > 해외주식 미국주간주문 [v1_해외주식-026]
 ##############################################################################################
 
-df = daytime_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,order_dv="buy", ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.50", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00")
+df = daytime_order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, order_dv="buy", ovrs_excg_cd="NASD", pdno="AAPL",
+                   ord_qty="10", ovrs_ord_unpr="150.50", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0",
+                   ord_dvsn="00")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 미국주간정정취소 [v1_해외주식-027]
 ##############################################################################################
 
-df = daytime_order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="10", ovrs_ord_unpr="150.25", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0")
+df = daytime_order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL",
+                            orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="10", ovrs_ord_unpr="150.25",
+                            ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0")
 print(df)
 
 ##############################################################################################
@@ -47,7 +51,7 @@ print(df)
 # [해외주식] 주문/계좌 > 해외주식 지정가체결내역조회 [해외주식-070]
 ##############################################################################################
 
-result, result3 = inquire_algo_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,)
+result, result3 = inquire_algo_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, )
 print(result)
 print(result3)
 
@@ -62,21 +66,25 @@ print(df)
 # [해외주식] 주문/계좌 > 해외주식 주문체결내역 [v1_해외주식-007]
 ##############################################################################################
 
-df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="", ord_strt_dt="20250101", ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="NASD", sort_sqn="DS", ord_dt="", ord_gno_brno="", odno="", env_dv="real")
+df = inquire_ccnl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="", ord_strt_dt="20250101",
+                  ord_end_dt="20250131", sll_buy_dvsn="00", ccld_nccs_dvsn="00", ovrs_excg_cd="NASD", sort_sqn="DS",
+                  ord_dt="", ord_gno_brno="", odno="", env_dv="real")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 미체결내역 [v1_해외주식-005]
 ##############################################################################################
 
-df = inquire_nccs(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", sort_sqn="DS", FK200="", NK200="", env_dv="real")
+df = inquire_nccs(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", sort_sqn="DS", FK200="",
+                  NK200="", env_dv="real")
 print(df)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 결제기준잔고 [해외주식-064]
 ##############################################################################################
 
-df1, df2, df3 = inquire_paymt_stdr_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, bass_dt="20250630", wcrc_frcr_dvsn_cd="01", inqr_dvsn_cd="00")
+df1, df2, df3 = inquire_paymt_stdr_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, bass_dt="20250630",
+                                           wcrc_frcr_dvsn_cd="01", inqr_dvsn_cd="00")
 print(df1)
 print(df2)
 print(df3)
@@ -85,7 +93,9 @@ print(df3)
 # [해외주식] 주문/계좌 > 해외주식 기간손익 [v1_해외주식-032]
 ##############################################################################################
 
-df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", natn_cd="", crcy_cd="USD", pdno="", inqr_strt_dt="20230101", inqr_end_dt="20231231", wcrc_frcr_dvsn_cd="01", FK200="", NK200="")
+df1, df2 = inquire_period_profit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", natn_cd="",
+                                 crcy_cd="USD", pdno="", inqr_strt_dt="20230101", inqr_end_dt="20231231",
+                                 wcrc_frcr_dvsn_cd="01", FK200="", NK200="")
 print(df1)
 print(df2)
 
@@ -93,7 +103,9 @@ print(df2)
 # [해외주식] 주문/계좌 > 해외주식 일별거래내역 [해외주식-063]
 ##############################################################################################
 
-df1, df2 = inquire_period_trans(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, erlm_strt_dt="20240420", erlm_end_dt="20240520", ovrs_excg_cd="NAS", pdno="", sll_buy_dvsn_cd="00", loan_dvsn_cd="", FK100="", NK100="")
+df1, df2 = inquire_period_trans(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, erlm_strt_dt="20240420",
+                                erlm_end_dt="20240520", ovrs_excg_cd="NAS", pdno="", sll_buy_dvsn_cd="00",
+                                loan_dvsn_cd="", FK100="", NK100="")
 print(df1)
 print(df2)
 
@@ -101,7 +113,8 @@ print(df2)
 # [해외주식] 주문/계좌 > 해외주식 체결기준현재잔고 [v1_해외주식-008]
 ##############################################################################################
 
-df1, df2, df3 = inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, wcrc_frcr_dvsn_cd="02", natn_cd="000", tr_mket_cd="00", inqr_dvsn_cd="00", env_dv="real")
+df1, df2, df3 = inquire_present_balance(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, wcrc_frcr_dvsn_cd="02",
+                                        natn_cd="000", tr_mket_cd="00", inqr_dvsn_cd="00", env_dv="real")
 print(df1)
 print(df2)
 print(df3)
@@ -110,7 +123,8 @@ print(df3)
 # [해외주식] 주문/계좌 > 해외주식 매수가능금액조회 [v1_해외주식-014]
 ##############################################################################################
 
-df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", ovrs_ord_unpr="1.4", item_cd="QQQ", env_dv="real")
+df = inquire_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", ovrs_ord_unpr="1.4",
+                      item_cd="QQQ", env_dv="real")
 print(df)
 
 ##############################################################################################
@@ -133,7 +147,9 @@ print(result2)
 # [해외주식] 주문/계좌 > 해외주식 주문 [v1_해외주식-001]
 ##############################################################################################
 
-df = order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10", ovrs_ord_unpr="150.00", ord_dv="sell", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00", env_dv="real")
+df = order(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NASD", pdno="AAPL", ord_qty="10",
+           ovrs_ord_unpr="150.00", ord_dv="sell", ctac_tlno="", mgco_aptm_odno="", ord_svr_dvsn_cd="0", ord_dvsn="00",
+           env_dv="real")
 print(df)
 
 ##############################################################################################
@@ -141,7 +157,7 @@ print(df)
 ##############################################################################################
 
 result = order_resv(env_dv="real", ord_dv="usBuy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod,
-         pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
+                    pdno="TSLA", ovrs_excg_cd="NASD", ft_ord_qty="1", ft_ord_unpr3="900")
 print(result)
 
 ##############################################################################################
@@ -149,27 +165,30 @@ print(result)
 ##############################################################################################
 
 result = order_resv_ccnl(
-            env_dv="real",
-            nat_dv="us", 
-            cano=trenv.my_acct,
-            acnt_prdt_cd=trenv.my_prod,
-            rsvn_ord_rcit_dt="20250610",
-            ovrs_rsvn_odno="0030008244"
-        )
+    env_dv="real",
+    nat_dv="us",
+    cano=trenv.my_acct,
+    acnt_prdt_cd=trenv.my_prod,
+    rsvn_ord_rcit_dt="20250610",
+    ovrs_rsvn_odno="0030008244"
+)
 print(result)
 
 ##############################################################################################
 # [해외주식] 주문/계좌 > 해외주식 예약주문조회[v1_해외주식-013]
 ##############################################################################################
 
-df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20220809", inqr_end_dt="20220830", inqr_dvsn_cd="00", ovrs_excg_cd="NASD")
+df = order_resv_list(nat_dv="us", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20220809",
+                     inqr_end_dt="20220830", inqr_dvsn_cd="00", ovrs_excg_cd="NASD")
 print(df)
 
 ################################################################################
 # [해외주식] 주문/계좌 > 해외주식 정정취소주문[v1_해외주식-003]
 ################################################################################
 
-df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NYSE", pdno="BA", orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="", ord_svr_dvsn_cd="0", env_dv="real")
+df = order_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ovrs_excg_cd="NYSE", pdno="BA",
+                    orgn_odno="1234567890", rvse_cncl_dvsn_cd="01", ord_qty="100", ovrs_ord_unpr="0", mgco_aptm_odno="",
+                    ord_svr_dvsn_cd="0", env_dv="real")
 print(df)
 
 ##############################################################################################
@@ -236,3 +255,160 @@ result1, result2 = volume_surge(excd="NYS", mixn="0", vol_rang="0")
 print(result1)
 print(result2)
 
+##############################################################################################
+# [해외주식] 시세분석 > 해외속보(제목) [해외주식-055]
+##############################################################################################
+
+result = brknews_title(fid_news_ofer_entp_code="0", fid_cond_scr_div_code="11801")
+print(result)
+
+##############################################################################################
+# [해외주식] 시세분석 > 당사 해외주식담보대출 가능 종목 [해외주식-051]
+##############################################################################################
+
+result1, result2 = colable_by_company(pdno="AMD", natn_cd="840", inqr_sqn_dvsn="01")
+print(result1)
+print(result2)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외결제일자조회[해외주식-017]
+##############################################################################################
+
+df = countries_holiday(trad_dt="20250131", NK="", FK="")
+print(df)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 기간별시세[v1_해외주식-010]
+##############################################################################################
+
+df1, df2 = dailyprice(auth="", excd="NAS", symb="TSLA", gubn="0", bymd="", modp="1", env_dv="real")
+print(df1)
+print(df2)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 업종별코드조회[해외주식-049]
+##############################################################################################
+
+result1, result2 = industry_price(excd="NAS")
+print(result1)
+print(result2)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 업종별시세[해외주식-048]
+##############################################################################################
+
+result1, result2 = industry_theme(excd="NAS", icod="010", vol_rang="0")
+print(result1)
+print(result2)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 현재가 1호가[해외주식-033]
+##############################################################################################
+
+df1, df2, df3 = inquire_asking_price(auth="", excd="NAS", symb="TSLA")
+print(df1)
+print(df2)
+print(df3)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 체결추이[해외주식-037]
+##############################################################################################
+
+result = quot_inquire_ccnl(excd="NAS", tday="0", symb="TSLA")
+print(result)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 종목_지수_환율기간별시세(일_주_월_년)[v1_해외주식-012]
+##############################################################################################
+
+df1, df2 = inquire_daily_chartprice(fid_cond_mrkt_div_code="N", fid_input_iscd=".DJI", fid_input_date_1="20250101",
+                                    fid_input_date_2="20250131", fid_period_div_code="D", env_dv="real")
+print(df1)
+print(df2)
+
+##############################################################################################
+# [해외주식] 시세분석 > 해외주식조건검색[v1_해외주식-015]
+##############################################################################################
+
+df1, df2 = inquire_search(auth="", excd="NYS", co_yn_pricecur="1", co_st_pricecur="100", co_en_pricecur="200",
+                          co_yn_rate="1", co_st_rate="5", co_en_rate="10", co_yn_valx="1", co_st_valx="1000",
+                          co_en_valx="5000", co_yn_shar="1", co_st_shar="100", co_en_shar="500", co_yn_volume="1",
+                          co_st_volume="1000", co_en_volume="5000", co_yn_amt="1", co_st_amt="1000", co_en_amt="5000",
+                          co_yn_eps="1", co_st_eps="1", co_en_eps="5", co_yn_per="1", co_st_per="10", co_en_per="20",
+                          keyb="")
+print(df1)
+print(df2)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외지수분봉조회[v1_해외주식-031]
+##############################################################################################
+
+df1, df2 = inquire_time_indexchartprice(fid_cond_mrkt_div_code="N", fid_input_iscd="TSLA", fid_hour_cls_code="0",
+                                        fid_pw_data_incu_yn="Y")
+print(df1)
+print(df2)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식분봉조회[v1_해외주식-030]
+##############################################################################################
+
+df1, df2 = inquire_time_itemchartprice(auth="", excd="NAS", symb="TSLA", nmin="5", pinc="1", next="", nrec="120",
+                                       fill="", keyb="")
+print(df1)
+print(df2)
+
+##############################################################################################
+# [해외주식] 시세분석 > 해외뉴스종합(제목) [해외주식-053]
+##############################################################################################
+
+result = news_title(
+    info_gb="",
+    class_cd="",
+    nation_cd="",
+    exchange_cd="",
+    symb="",
+    data_dt="",
+    data_tm="",
+    cts=""
+)
+print(result)
+
+##############################################################################################
+# [해외주식] 시세분석 > 해외주식 기간별권리조회 [해외주식-052]
+##############################################################################################
+
+result = period_rights(
+    rght_type_cd="%%",
+    inqr_dvsn_cd="02",
+    inqr_strt_dt="20240417",
+    inqr_end_dt="20240417"
+)
+print(result)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 현재체결가[v1_해외주식-009]
+##############################################################################################
+
+df = price(auth="", excd="NAS", symb="AAPL", env_dv="real")
+print(df)
+
+##############################################################################################
+# [해외주식] 기본시세 > 해외주식 현재가상세[v1_해외주식-029]
+##############################################################################################
+
+df = price_detail(auth="", excd="NAS", symb="TSLA")
+print(df)
+
+##############################################################################################
+# [해외주식] 시세분석 > 해외주식 권리종합 [해외주식-050]
+##############################################################################################
+
+result = rights_by_ice(ncod="US", symb="NVDL")
+print(result)
+
+##############################################################################################
+# [해외주식] 시세분석 > 해외주식 상품기본정보[v1_해외주식-034]
+##############################################################################################
+
+df = search_info(prdt_type_cd="512", pdno="AAPL")
+print(df)

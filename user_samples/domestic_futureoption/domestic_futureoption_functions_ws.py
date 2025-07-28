@@ -211,7 +211,7 @@ def fuopt_ccnl_notice(
         message (str): 메시지 데이터
 
     Example:
-        >>> msg, columns = fuopt_ccnl_notice("1", "dttest11")
+        >>> msg, columns = fuopt_ccnl_notice("1", trenv.my_htsid)
         >>> print(msg, columns)
     """
 
@@ -913,7 +913,7 @@ def krx_ngt_futures_ccnl_notice(
         columns (list[str]): 컬럼 정보
 
     Example:
-        >>> msg, columns = krx_ngt_futures_ccnl_notice("1", "dttest11")
+        >>> msg, columns = krx_ngt_futures_ccnl_notice("1", trenv.my_htsid)
         >>> print(msg, columns)
     """
 
@@ -1248,7 +1248,7 @@ def krx_ngt_option_notice(
         columns (list[str]): 컬럼 정보
 
     Example:
-        >>> msg, columns = krx_ngt_option_notice("1", "dttest11")
+        >>> msg, columns = krx_ngt_option_notice("1", trenv.my_htsid)
         >>> print(msg, columns)
     """
 

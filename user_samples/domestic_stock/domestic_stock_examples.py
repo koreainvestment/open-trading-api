@@ -271,10 +271,10 @@ print(df)
 # [국내주식] 순위분석 > 등락률 순위[v1_국내주식-088]
 ##############################################################################################
 
-df = fluctuation(fid_rsfl_rate2="10", fid_cond_mrkt_div_code="J", fid_cond_scr_div_code="20170", fid_input_iscd="0000",
-                 fid_rank_sort_cls_code="0000", fid_input_cnt_1="10", fid_prc_cls_code="0", fid_input_price_1="0",
-                 fid_input_price_2="1000000", fid_vol_cnt="100000", fid_trgt_cls_code="0", fid_trgt_exls_cls_code="0",
-                 fid_div_cls_code="0", fid_rsfl_rate1="0")
+df = fluctuation(fid_cond_mrkt_div_code="J", fid_cond_scr_div_code="20170", fid_input_iscd="0000",
+                 fid_rank_sort_cls_code="0", fid_input_cnt_1="0", fid_prc_cls_code="0", fid_input_price_1="",
+                 fid_input_price_2="", fid_vol_cnt="", fid_trgt_cls_code="0", fid_trgt_exls_cls_code="0",
+                 fid_div_cls_code="0", fid_rsfl_rate1="", fid_rsfl_rate2="")
 print(df)
 
 ##############################################################################################
@@ -724,7 +724,7 @@ print(result)
 # [국내주식] 시세분석 > 관심종목 그룹조회 [국내주식-204]
 ##############################################################################################
 
-result = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id="dttest11")
+result = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id=trenv.my_htsid)
 print(result)
 
 ##############################################################################################
@@ -745,7 +745,7 @@ print(result)
 
 result1, result2 = intstock_stocklist_by_group(
     type="1",
-    user_id="dttest11",
+    user_id=trenv.my_htsid,
     inter_grp_code="001",
     fid_etc_cls_code="4"
 )
@@ -1153,14 +1153,14 @@ print(result)
 # [국내주식] 시세분석 > 종목조건검색조회 [국내주식-039]
 ##############################################################################################
 
-result = psearch_result(user_id="dttest11", seq="0")
+result = psearch_result(user_id=trenv.my_htsid, seq="0")
 print(result)
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목조건검색 목록조회[국내주식-038]
 ##############################################################################################
 
-result = psearch_title(user_id="dttest11")
+result = psearch_title(user_id=trenv.my_htsid)
 print(result)
 
 ##############################################################################################

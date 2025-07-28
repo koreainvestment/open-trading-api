@@ -38,7 +38,7 @@ def fuopt_ccnl_notice(
         message (str): 메시지 데이터
 
     Example:
-        >>> msg, columns = fuopt_ccnl_notice("1", "dttest11")
+        >>> msg, columns = fuopt_ccnl_notice("1", trenv.my_htsid)
         >>> print(msg, columns)
     """
 

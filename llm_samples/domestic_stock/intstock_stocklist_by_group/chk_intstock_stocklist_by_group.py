@@ -52,13 +52,14 @@ def main():
 
     # 인증 토큰 발급
     ka.auth()
+    trenv = ka.getTREnv()
 
     # case1 테스트
     logging.info("=== case1 테스트 ===")
     try:
         result1, result2 = intstock_stocklist_by_group(
             type="1",
-            user_id="dttest11",
+            user_id=trenv.my_htsid,
             inter_grp_code="001",
             fid_etc_cls_code="4"
         )

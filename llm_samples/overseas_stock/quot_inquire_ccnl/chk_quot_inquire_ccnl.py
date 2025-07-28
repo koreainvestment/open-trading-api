@@ -10,7 +10,7 @@ import pandas as pd
 
 sys.path.extend(['../..', '.'])  # kis_auth 파일 경로 추가
 import kis_auth as ka
-from inquire_ccnl import inquire_ccnl
+from quot_inquire_ccnl import quot_inquire_ccnl
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
@@ -58,7 +58,7 @@ def main():
     # case1 조회
     logging.info("=== case1 조회 ===")
     try:
-        result = inquire_ccnl(excd="NAS", tday="0", symb="TSLA")
+        result = quot_inquire_ccnl(excd="NAS", tday="0", symb="TSLA")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

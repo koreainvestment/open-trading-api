@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/overseas-price/v1/quotations/inquire-ccnl"
 
-def inquire_ccnl(
+def quot_inquire_ccnl(
     excd: str,         # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
     tday: str,         # [필수] 당일전일구분 (ex. 0:전일, 1:당일)
     symb: str,         # [필수] 종목코드 (ex. 해외종목코드)
@@ -54,7 +54,7 @@ def inquire_ccnl(
         pd.DataFrame: 해외주식 체결추이 데이터
         
     Example:
-        >>> df = inquire_ccnl(excd="NAS", tday="0", symb="TSLA")
+        >>> df = quot_inquire_ccnl(excd="NAS", tday="0", symb="TSLA")
         >>> print(df)
     """
 
@@ -100,7 +100,7 @@ def inquire_ccnl(
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
-            return inquire_ccnl(
+            return quot_inquire_ccnl(
                 excd, tday, symb, auth, keyb, "N", dataframe, depth + 1, max_depth
             )
         else:

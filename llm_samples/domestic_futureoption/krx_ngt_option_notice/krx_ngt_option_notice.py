@@ -40,7 +40,7 @@ def krx_ngt_option_notice(
         columns (list[str]): 컬럼 정보
 
     Example:
-        >>> msg, columns = krx_ngt_option_notice("1", "dttest11")
+        >>> msg, columns = krx_ngt_option_notice("1", trenv.my_htsid)
         >>> print(msg, columns)
     """
 

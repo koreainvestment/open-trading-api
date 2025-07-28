@@ -7167,7 +7167,7 @@ def intstock_grouplist(
         pd.DataFrame: 관심종목 그룹 정보를 담은 DataFrame
         
     Example:
-        >>> df = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id="dttest11")
+        >>> df = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id=trenv.my_htsid)
         >>> print(df)
     """
 
@@ -7531,7 +7531,7 @@ def intstock_stocklist_by_group(
         
     Example:
         >>> df1, df2 = intstock_stocklist_by_group(
-        ...     type="1", user_id="dttest11", inter_grp_code="001", fid_etc_cls_code="4"
+        ...     type="1", user_id=trenv.my_htsid, inter_grp_code="001", fid_etc_cls_code="4"
         ... )
         >>> print(df1)
         >>> print(df2)
@@ -12190,7 +12190,7 @@ def psearch_result(
         pd.DataFrame: 종목조건검색조회 데이터
         
     Example:
-        >>> df = psearch_result(user_id="dttest11", seq="0")
+        >>> df = psearch_result(user_id=trenv.my_htsid, seq="0")
         >>> print(df)
     """
 
@@ -12245,7 +12245,7 @@ def psearch_title(
         pd.DataFrame: 종목조건검색 목록 데이터
         
     Example:
-        >>> df = psearch_title(user_id="dttest11")
+        >>> df = psearch_title(user_id=trenv.my_htsid)
         >>> print(df)
     """
 

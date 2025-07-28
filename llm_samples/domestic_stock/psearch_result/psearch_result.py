@@ -48,7 +48,7 @@ def psearch_result(
         pd.DataFrame: 종목조건검색조회 데이터
         
     Example:
-        >>> df = psearch_result(user_id="dttest11", seq="0")
+        >>> df = psearch_result(user_id=trenv.my_htsid, seq="0")
         >>> print(df)
     """
 

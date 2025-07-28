@@ -45,7 +45,7 @@ def intstock_grouplist(
         pd.DataFrame: 관심종목 그룹 정보를 담은 DataFrame
         
     Example:
-        >>> df = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id="dttest11")
+        >>> df = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id=trenv.my_htsid)
         >>> print(df)
     """
 

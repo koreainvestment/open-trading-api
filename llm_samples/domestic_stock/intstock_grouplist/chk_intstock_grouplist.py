@@ -47,11 +47,12 @@ def main():
     
     # 인증 토큰 발급
     ka.auth()
+    trenv = ka.getTREnv()
     
     # case1 테스트
     logging.info("=== case1 테스트 ===")
     try:
-        result = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id="dttest11")
+        result = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id=trenv.my_htsid)
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

@@ -68,7 +68,7 @@ def main():
         - DataFrame: 국내주식 등락률 순위 조회 결과
         
     Example:
-        >>> df = fluctuation(fid_rsfl_rate2="10", fid_cond_mrkt_div_code="J", fid_cond_scr_div_code="20170", fid_input_iscd="0000", fid_rank_sort_cls_code="0000", fid_input_cnt_1="10", fid_prc_cls_code="0", fid_input_price_1="0", fid_input_price_2="1000000", fid_vol_cnt="100000", fid_trgt_cls_code="0", fid_trgt_exls_cls_code="0", fid_div_cls_code="0", fid_rsfl_rate1="0")
+        >>> df = fluctuation(fid_cond_mrkt_div_code="J", fid_cond_scr_div_code="20170", fid_input_iscd="0000", fid_rank_sort_cls_code="0", fid_input_cnt_1="0", fid_prc_cls_code="0", fid_input_price_1="", fid_input_price_2="", fid_vol_cnt="", fid_trgt_cls_code="0", fid_trgt_exls_cls_code="0", fid_div_cls_code="0", fid_rsfl_rate1="", fid_rsfl_rate2="")
     """
     # pandas 출력 옵션 설정
     pd.set_option('display.max_columns', None)  # 모든 컬럼 표시

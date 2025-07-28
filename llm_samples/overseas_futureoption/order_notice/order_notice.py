@@ -41,7 +41,7 @@ def order_notice(
         columns (list[str]): 컬럼 정보
 
     Example:
-        >>> msg, columns = order_notice("1", "dttest11")
+        >>> msg, columns = order_notice("1", trenv.my_htsid)
         >>> print(msg, columns)
     """
 

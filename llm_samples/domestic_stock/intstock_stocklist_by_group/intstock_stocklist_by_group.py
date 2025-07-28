@@ -57,7 +57,7 @@ def intstock_stocklist_by_group(
         
     Example:
         >>> df1, df2 = intstock_stocklist_by_group(
-        ...     type="1", user_id="dttest11", inter_grp_code="001", fid_etc_cls_code="4"
+        ...     type="1", user_id=trenv.my_htsid, inter_grp_code="001", fid_etc_cls_code="4"
         ... )
         >>> print(df1)
         >>> print(df2)

@@ -93,12 +93,13 @@ https://wikidocs.net/book/7847 (국내주식 업데이트 완료, 추후 해외�
     # 인증 토큰 발급
     ka.auth()
     ka.auth_ws()
+    trenv = ka.getTREnv()
 
     # 인증(auth_ws()) 이후에 선언
     kws = ka.KISWebSocket(api_url="/tryitout")
 
     # 조회
-    kws.subscribe(request=ccnl_notice, data=["dttest11"])
+    kws.subscribe(request=ccnl_notice, data=[trenv.my_htsid])
 
     # 결과 표시
     def on_result(ws, tr_id: str, result: pd.DataFrame, data_map: dict):
