@@ -139,5 +139,10 @@ kws.subscribe(request=stock_option_asking_price, data=["239W08090"])
 
 kws.subscribe(request=stock_option_ccnl, data=["339W08088"])
 
+
 # 시작
-kws.start(on_result=None)
+def on_result(ws, tr_id, result, data_info):
+    print(result)
+
+
+kws.start(on_result=on_result)

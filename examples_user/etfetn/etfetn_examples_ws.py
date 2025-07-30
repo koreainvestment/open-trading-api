@@ -25,5 +25,10 @@ kws = ka.KISWebSocket(api_url="/tryitout")
 
 kws.subscribe(request=etf_nav_trend, data=["069500"])
 
+
 # 시작
-kws.start(on_result=None)
+def on_result(ws, tr_id, result, data_info):
+    print(result)
+
+
+kws.start(on_result=on_result)

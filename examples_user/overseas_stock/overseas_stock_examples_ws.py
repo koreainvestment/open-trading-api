@@ -43,5 +43,10 @@ kws.subscribe(request=delayed_asking_price_asia, data=["DHKS00003"])
 
 kws.subscribe(request=delayed_ccnl, data=["DHKS00003"])
 
+
 # 시작
-kws.start(on_result=None)
+def on_result(ws, tr_id, result, data_info):
+    print(result)
+
+
+kws.start(on_result=on_result)

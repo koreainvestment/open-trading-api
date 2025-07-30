@@ -43,5 +43,10 @@ kws.subscribe(request=ccnl_notice, data=[trenv.my_htsid])
 
 kws.subscribe(request=order_notice, data=[trenv.my_htsid])
 
+
 # 시작
-kws.start(on_result=None)
+def on_result(ws, tr_id, result, data_info):
+    print(result)
+
+
+kws.start(on_result=on_result)

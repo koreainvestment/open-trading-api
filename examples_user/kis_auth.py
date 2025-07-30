@@ -67,7 +67,7 @@ _base_headers = {
 
 # 토큰 발급 받아 저장 (토큰값, 토큰 유효시간,1일, 6시간 이내 발급신청시는 기존 토큰값과 동일, 발급시 알림톡 발송)
 def save_token(my_token, my_expired):
-    print(type(my_expired), my_expired)
+    # print(type(my_expired), my_expired)
     valid_date = datetime.strptime(my_expired, "%Y-%m-%d %H:%M:%S")
     # print('Save token date: ', valid_date)
     with open(token_tmp, "w", encoding="utf-8") as f:
@@ -117,7 +117,7 @@ def _setTRENV(cfg):
         "my_sec": cfg["my_sec"],  # 앱시크리트
         "my_acct": cfg["my_acct"],  # 종합계좌번호(8자리)
         "my_prod": cfg["my_prod"],  # 계좌상품코드(2자리)
-        "my_htsid": cfg["my_htsid"], # HTS ID
+        "my_htsid": cfg["my_htsid"],  # HTS ID
         "my_token": cfg["my_token"],  # 토큰
         "my_url": cfg[
             "my_url"
@@ -411,7 +411,7 @@ class APIRespError(APIResp):
 
 
 def _url_fetch(
-    api_url, ptr_id, tr_cont, params, appendHeaders=None, postFlag=False, hashFlag=True
+        api_url, ptr_id, tr_cont, params, appendHeaders=None, postFlag=False, hashFlag=True
 ):
     url = f"{getTREnv().my_url}{api_url}"
 
@@ -602,10 +602,10 @@ open_map: dict = {}
 
 
 def add_open_map(
-    name: str,
-    request: Callable[[str, str, ...], (dict, list[str])],
-    data: str | list[str],
-    kwargs: dict = None,
+        name: str,
+        request: Callable[[str, str, ...], (dict, list[str])],
+        data: str | list[str],
+        kwargs: dict = None,
 ):
     if open_map.get(name, None) is None:
         open_map[name] = {
@@ -624,11 +624,11 @@ data_map: dict = {}
 
 
 def add_data_map(
-    tr_id: str,
-    columns: list = None,
-    encrypt: str = None,
-    key: str = None,
-    iv: str = None,
+        tr_id: str,
+        columns: list = None,
+        encrypt: str = None,
+        key: str = None,
+        iv: str = None,
 ):
     if data_map.get(tr_id, None) is None:
         data_map[tr_id] = {"columns": [], "encrypt": False, "key": None, "iv": None}
@@ -651,6 +651,7 @@ class KISWebSocket:
     on_result: Callable[
         [websockets.ClientConnection, str, pd.DataFrame, dict], None
     ] = None
+    result_all_data: bool = False
 
     retry_count: int = 0
     amx_retries: int = 0
@@ -664,6 +665,7 @@ class KISWebSocket:
     async def __subscriber(self, ws: websockets.ClientConnection):
         async for raw in ws:
             logging.info("received message >> %s" % raw)
+            show_result = False
 
             df = pd.DataFrame()
 
@@ -683,6 +685,8 @@ class KISWebSocket:
                     StringIO(d), header=None, sep="^", names=dm["columns"], dtype=object
                 )
 
+                show_result = True
+
             else:
                 rsp = system_resp(raw)
 
@@ -696,7 +700,10 @@ class KISWebSocket:
                     await ws.pong(raw)
                     print(f"### SEND [PINGPONG] [{raw}]")
 
-            if self.on_result is not None:
+                if self.result_all_data:
+                    show_result = True
+
+            if show_result is True and self.on_result is not None:
                 self.on_result(ws, tr_id, df, data_map[tr_id])
 
     async def __runner(self):
@@ -726,12 +733,12 @@ class KISWebSocket:
     # func
     @classmethod
     async def send(
-        cls,
-        ws: websockets.ClientConnection,
-        request: Callable[[str, str, ...], (dict, list[str])],
-        tr_type: str,
-        data: str,
-        kwargs: dict = None,
+            cls,
+            ws: websockets.ClientConnection,
+            request: Callable[[str, str, ...], (dict, list[str])],
+            tr_type: str,
+            data: str,
+            kwargs: dict = None,
     ):
         k = {} if kwargs is None else kwargs
         msg, columns = request(tr_type, data, **k)
@@ -744,12 +751,12 @@ class KISWebSocket:
         smart_sleep()
 
     async def send_multiple(
-        self,
-        ws: websockets.ClientConnection,
-        request: Callable[[str, str, ...], (dict, list[str])],
-        tr_type: str,
-        data: list | str,
-        kwargs: dict = None,
+            self,
+            ws: websockets.ClientConnection,
+            request: Callable[[str, str, ...], (dict, list[str])],
+            tr_type: str,
+            data: list | str,
+            kwargs: dict = None,
     ):
         if type(data) is str:
             await self.send(ws, request, tr_type, data, kwargs)
@@ -761,29 +768,31 @@ class KISWebSocket:
 
     @classmethod
     def subscribe(
-        cls,
-        request: Callable[[str, str, ...], (dict, list[str])],
-        data: list | str,
-        kwargs: dict = None,
+            cls,
+            request: Callable[[str, str, ...], (dict, list[str])],
+            data: list | str,
+            kwargs: dict = None,
     ):
         add_open_map(request.__name__, request, data, kwargs)
 
     def unsubscribe(
-        self,
-        ws: websockets.ClientConnection,
-        request: Callable[[str, str, ...], (dict, list[str])],
-        data: list | str,
+            self,
+            ws: websockets.ClientConnection,
+            request: Callable[[str, str, ...], (dict, list[str])],
+            data: list | str,
     ):
         self.send_multiple(ws, request, "2", data)
 
     # start
     def start(
-        self,
-        on_result: Callable[
-            [websockets.ClientConnection, str, pd.DataFrame, dict], None
-        ],
+            self,
+            on_result: Callable[
+                [websockets.ClientConnection, str, pd.DataFrame, dict], None
+            ],
+            result_all_data: bool = False,
     ):
         self.on_result = on_result
+        self.result_all_data = result_all_data
         try:
             asyncio.run(self.__runner())
         except KeyboardInterrupt:

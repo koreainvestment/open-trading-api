@@ -36,13 +36,18 @@ kws.subscribe(request=bond_ccnl, data=["KR103502GA34", "KR6095572D81"])
 ##############################################################################################
 
 kws.subscribe(request=bond_index_ccnl, data=[
-        # 한경채권지수
-        "KBPR01", "KBPR02", "KBPR03", "KBPR04",
-        # KIS채권지수
-        "KISR01", "MSBI07", "KTBL10", "MSBI09", "MSBI10", "CDIX01",
-        # 매경채권지수
-        "MKFR01", "MSBI01", "MSBI03", "MSBI10", "CORP01"
-    ])
+    # 한경채권지수
+    "KBPR01", "KBPR02", "KBPR03", "KBPR04",
+    # KIS채권지수
+    "KISR01", "MSBI07", "KTBL10", "MSBI09", "MSBI10", "CDIX01",
+    # 매경채권지수
+    "MKFR01", "MSBI01", "MSBI03", "MSBI10", "CORP01"
+])
+
 
 # 시작
-kws.start(on_result=None)
+def on_result(ws, tr_id, result, data_info):
+    print(result)
+
+
+kws.start(on_result=on_result)

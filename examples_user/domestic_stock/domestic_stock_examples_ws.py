@@ -72,9 +72,9 @@ kws.subscribe(request=exp_ccnl_krx, data=["005930", "000660"])
 ##############################################################################################
 
 kws.subscribe(
-        request=exp_ccnl_nxt,
-        data=["005930", "000660", "005380"]
-    )
+    request=exp_ccnl_nxt,
+    data=["005930", "000660", "005380"]
+)
 
 ##############################################################################################
 # [국내주식] 실시간시세 > 국내주식 실시간예상체결(통합)
@@ -104,7 +104,7 @@ kws.subscribe(request=index_program_trade, data=["0001", "0128"])
 # [국내주식] 실시간시세 > 국내주식 장운영정보 (KRX) [실시간-049]
 ##############################################################################################
 
-kws.subscribe(request=market_status_krx, data=["417450","308100"])
+kws.subscribe(request=market_status_krx, data=["417450", "308100"])
 
 ##############################################################################################
 # [국내주식] 실시간시세 > 국내주식 장운영정보(NXT)
@@ -172,5 +172,10 @@ kws.subscribe(request=program_trade_nxt, data=["032640", "010950"])
 
 kws.subscribe(request=program_trade_total, data=["005930", "000660"])
 
+
 # 시작
-kws.start(on_result=None)
+def on_result(ws, tr_id, result, data_info):
+    print(result)
+
+
+kws.start(on_result=on_result)
