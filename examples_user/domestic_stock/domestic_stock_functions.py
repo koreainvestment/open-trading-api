@@ -469,14 +469,20 @@ def chk_holiday(
 
     params = {
         "BASS_DT": bass_dt,
-        "CTX_AREA_FK100": FK100,
-        "CTX_AREA_NK100": NK100
+        "CTX_AREA_FK": FK100,
+        "CTX_AREA_NK": NK100
     }
 
-    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
+    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
 
     if res.isOK():
-        current_data = pd.DataFrame(res.getBody().output, index=[0])
+        if hasattr(res.getBody(), 'output'):
+            output_data = res.getBody().output
+            if not isinstance(output_data, list):
+                output_data = [output_data]
+            current_data = pd.DataFrame(output_data)
+        else:
+            current_data = pd.DataFrame()
 
         if dataframe is not None:
             dataframe = pd.concat([dataframe, current_data], ignore_index=True)
@@ -484,8 +490,8 @@ def chk_holiday(
             dataframe = current_data
 
         tr_cont = res.getHeader().tr_cont
-        FK100 = res.getBody().ctx_area_fk100
-        NK100 = res.getBody().ctx_area_nk100
+        FK100 = res.getBody().ctx_area_fk
+        NK100 = res.getBody().ctx_area_nk
 
         if tr_cont in ["M", "F"]:  # 다음 페이지 존재
             logging.info("Call Next page...")
@@ -497,7 +503,7 @@ def chk_holiday(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=api_url)
+        res.printError(url=API_URL)
         return pd.DataFrame()
 
 

@@ -1770,7 +1770,7 @@ def inquire_psbl_order(
     res = ka._url_fetch(api_url, tr_id, "", params)
     
     if res.isOK():
-        current_data = pd.DataFrame(res.getBody().output)
+        current_data = pd.DataFrame([res.getBody().output])
         logging.info("Data fetch complete.")
         return current_data
     else:
