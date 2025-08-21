@@ -44,7 +44,7 @@ def finance_ratio(
     
     Args:
         fid_trgt_cls_code (str): 대상 구분 코드 (0 : 전체)
-        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (시장구분코드, 주식 J)
+        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): 조건 화면 분류 코드 (Unique key, 20175)
         fid_input_iscd (str): 입력 종목코드 (0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200)
         fid_div_cls_code (str): 분류 구분 코드 (0 : 전체)

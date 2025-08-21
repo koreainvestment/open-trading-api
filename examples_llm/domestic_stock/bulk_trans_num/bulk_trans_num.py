@@ -50,7 +50,7 @@ def bulk_trans_num(
     
     Args:
         fid_aply_rang_prc_2 (str): ~ 가격
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key(11909)
         fid_input_iscd (str): 0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200, 4001: KRX100
         fid_rank_sort_cls_code (str): 0:매수상위, 1:매도상위

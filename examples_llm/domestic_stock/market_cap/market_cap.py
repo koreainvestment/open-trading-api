@@ -41,7 +41,7 @@ def market_cap(
     
     Args:
         fid_input_price_2 (str): 입력값 없을때 전체 (~ 가격)
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20174 )
         fid_div_cls_code (str): 0: 전체,  1:보통주,  2:우선주
         fid_input_iscd (str): 0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200

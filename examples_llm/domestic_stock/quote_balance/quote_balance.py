@@ -42,7 +42,7 @@ def quote_balance(
     
     Args:
         fid_vol_cnt (str): 입력값 없을때 전체 (거래량 ~)
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20172 )
         fid_input_iscd (str): 0000(전체) 코스피(0001), 코스닥(1001), 코스피200(2001)
         fid_rank_sort_cls_code (str): 0: 순매수잔량순, 1:순매도잔량순, 2:매수비율순, 3:매도비율순

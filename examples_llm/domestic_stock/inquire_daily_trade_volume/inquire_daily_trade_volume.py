@@ -35,7 +35,7 @@ def inquire_daily_trade_volume(
     국내주식 종목의 일별 매수체결량, 매도체결량 데이터를 확인할 수 있습니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): [필수] FID 조건 시장 분류 코드 (ex. J)
+        fid_cond_mrkt_div_code (str): [필수] FID 조건 시장 분류 코드 (J:KRX, NX:NXT)
         fid_input_iscd (str): [필수] FID 입력 종목코드 (ex. 123456)
         fid_period_div_code (str): [필수] FID 기간 분류 코드 (ex. D)
         fid_input_date_1 (str): FID 입력 날짜1

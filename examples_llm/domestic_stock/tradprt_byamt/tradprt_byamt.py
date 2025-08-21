@@ -32,7 +32,7 @@ def tradprt_byamt(
     한국투자 HTS(eFriend Plus) > [0135] 체결금액별 매매비중 화면의 "상단 표" 기능을 API로 개발한 사항으로, 해당 화면을 참고하시면 기능을 이해하기 쉽습니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J)
+        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): [필수] 조건화면분류코드 (ex. 11119)
         fid_input_iscd (str): [필수] 입력 종목코드 (ex. 123456)
 

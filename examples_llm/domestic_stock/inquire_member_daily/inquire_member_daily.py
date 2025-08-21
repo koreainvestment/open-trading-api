@@ -35,7 +35,7 @@ def inquire_member_daily(
     한국투자 HTS(eFriend Plus) > [0454] 증권사 종목매매동향 화면을 API로 개발한 사항으로, 해당 화면을 참고하시면 기능을 이해하기 쉽습니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): [필수] 조건시장분류코드 (ex. 주식J)
+        fid_cond_mrkt_div_code (str): [필수] 조건시장분류코드 (J:KRX, NX:NXT)
         fid_input_iscd (str): [필수] 입력종목코드 (ex. 123456)  
         fid_input_iscd_2 (str): [필수] 회원사코드 (ex. 회원사코드 FAQ 종목정보 다운로드(국내) > 회원사 참조)
         fid_input_date_1 (str): [필수] 입력날짜1

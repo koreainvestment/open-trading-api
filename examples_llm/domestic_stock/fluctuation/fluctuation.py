@@ -43,7 +43,7 @@ def fluctuation(
     국내주식 등락률 순위 API를 호출하여 DataFrame으로 반환합니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (J: 주식, W: ELW, Q: ETF)
+        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): 조건 화면 분류 코드 (20170: 등락률)
         fid_input_iscd (str): 입력 종목코드 (0000: 전체)
         fid_rank_sort_cls_code (str): 순위 정렬 구분 코드 (0000: 등락률순)

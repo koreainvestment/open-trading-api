@@ -32,7 +32,7 @@ def inquire_member(
     
     Args:
         env_dv (str): [필수] 실전모의구분 (ex. real:실전, demo:모의)
-        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J:KRX)
+        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (J:KRX, NX:NXT)
         fid_input_iscd (str): [필수] 입력 종목코드 (ex. 123456)
 
     Returns:
