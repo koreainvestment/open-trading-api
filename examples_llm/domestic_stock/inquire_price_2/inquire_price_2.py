@@ -30,7 +30,7 @@ def inquire_price_2(
     주식현재가 시세2 API입니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J)
+        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J:KRX, NX:NXT, UN:통합)
         fid_input_iscd (str): [필수] 입력 종목코드
         
     Returns:

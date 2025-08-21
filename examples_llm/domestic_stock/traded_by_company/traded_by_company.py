@@ -46,7 +46,7 @@ def traded_by_company(
     
     Args:
         fid_trgt_exls_cls_code (str): 0: 전체
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key(20186)
         fid_div_cls_code (str): 0:전체, 1:관리종목, 2:투자주의, 3:투자경고, 4:투자위험예고, 5:투자위험, 6:보통주, 7:우선주
         fid_rank_sort_cls_code (str): 0:매도상위,1:매수상위

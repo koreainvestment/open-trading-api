@@ -44,7 +44,7 @@ def profit_asset_index(
     국내주식 수익자산지표 순위 API를 호출하여 DataFrame으로 반환합니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (필수)
+        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (필수) (J:KRX, NX:NXT)
         fid_trgt_cls_code (str): 대상 구분 코드 (필수)
         fid_cond_scr_div_code (str): 조건 화면 분류 코드 (필수)
         fid_input_iscd (str): 입력 종목코드 (필수)

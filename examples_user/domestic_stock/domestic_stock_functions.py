@@ -191,7 +191,7 @@ def bulk_trans_num(
     
     Args:
         fid_aply_rang_prc_2 (str): ~ 가격
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key(11909)
         fid_input_iscd (str): 0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200, 4001: KRX100
         fid_rank_sort_cls_code (str): 0:매수상위, 1:매도상위
@@ -1253,7 +1253,7 @@ def disparity(
     
     Args:
         fid_input_price_2 (str): 입력값 없을때 전체 (~ 가격)
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (ex. J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20178 )
         fid_div_cls_code (str): 0: 전체, 1:관리종목, 2:투자주의, 3:투자경고, 4:투자위험예고, 5:투자위험, 6:보톧주, 7:우선주
         fid_rank_sort_cls_code (str): 0: 이격도상위순, 1:이격도하위순
@@ -2785,7 +2785,7 @@ def finance_ratio(
     
     Args:
         fid_trgt_cls_code (str): 대상 구분 코드 (0 : 전체)
-        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (시장구분코드, 주식 J)
+        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): 조건 화면 분류 코드 (Unique key, 20175)
         fid_input_iscd (str): 입력 종목코드 (0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200)
         fid_div_cls_code (str): 분류 구분 코드 (0 : 전체)
@@ -3033,7 +3033,7 @@ def fluctuation(
     국내주식 등락률 순위 API를 호출하여 DataFrame으로 반환합니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (J: 주식, W: ELW, Q: ETF)
+        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): 조건 화면 분류 코드 (20170: 등락률)
         fid_input_iscd (str): 입력 종목코드 (0000: 전체)
         fid_rank_sort_cls_code (str): 순위 정렬 구분 코드 (0000: 등락률순)
@@ -4714,7 +4714,7 @@ def inquire_daily_trade_volume(
     국내주식 종목의 일별 매수체결량, 매도체결량 데이터를 확인할 수 있습니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): [필수] FID 조건 시장 분류 코드 (ex. J)
+        fid_cond_mrkt_div_code (str): [필수] FID 조건 시장 분류 코드 (J:KRX, NX:NXT, UN:통합)
         fid_input_iscd (str): [필수] FID 입력 종목코드 (ex. 123456)
         fid_period_div_code (str): [필수] FID 기간 분류 코드 (ex. D)
         fid_input_date_1 (str): FID 입력 날짜1
@@ -5433,7 +5433,7 @@ def inquire_investor(
     
     Args:
         env_dv (str): [필수] 실전모의구분 (ex. real:실전, demo:모의)
-        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J:KRX)
+        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J:KRX, NX:NXT, UN:통합)
         fid_input_iscd (str): [필수] 입력 종목코드 (ex. 123456)
 
     Returns:
@@ -5613,7 +5613,7 @@ def inquire_member(
     
     Args:
         env_dv (str): [필수] 실전모의구분 (ex. real:실전, demo:모의)
-        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J:KRX)
+        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J:KRX, NX:NXT, UN:통합)
         fid_input_iscd (str): [필수] 입력 종목코드 (ex. 123456)
 
     Returns:
@@ -5675,7 +5675,7 @@ def inquire_member_daily(
     한국투자 HTS(eFriend Plus) > [0454] 증권사 종목매매동향 화면을 API로 개발한 사항으로, 해당 화면을 참고하시면 기능을 이해하기 쉽습니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): [필수] 조건시장분류코드 (ex. 주식J)
+        fid_cond_mrkt_div_code (str): [필수] 조건시장분류코드 (ex. J:KRX, NX:NXT)
         fid_input_iscd (str): [필수] 입력종목코드 (ex. 123456)  
         fid_input_iscd_2 (str): [필수] 회원사코드 (ex. 회원사코드 FAQ 종목정보 다운로드(국내) > 회원사 참조)
         fid_input_date_1 (str): [필수] 입력날짜1
@@ -6164,7 +6164,7 @@ def inquire_price_2(
     주식현재가 시세2 API입니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J)
+        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J:KRX, NX:NXT, UN:통합)
         fid_input_iscd (str): [필수] 입력 종목코드
         
     Returns:
@@ -7305,7 +7305,7 @@ def intstock_multprice(
     https://github.com/koreainvestment/open-trading-api/blob/main/rest/interest_stocks_price.py
     
     Args:
-        fid_cond_mrkt_div_code_1 (str): [필수] 조건 시장 분류 코드1 (ex. J)
+        fid_cond_mrkt_div_code_1 (str): [필수] 조건 시장 분류 코드1 (ex. J:KRX, NX:NXT)
         fid_input_iscd_1 (str): [필수] 입력 종목코드1 (ex. 123456)
         fid_cond_mrkt_div_code_2 (Optional[str]): 조건 시장 분류 코드2
         fid_input_iscd_2 (Optional[str]): 입력 종목코드2
@@ -9511,7 +9511,7 @@ def market_cap(
     
     Args:
         fid_input_price_2 (str): 입력값 없을때 전체 (~ 가격)
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20174 )
         fid_div_cls_code (str): 0: 전체,  1:보통주,  2:우선주
         fid_input_iscd (str): 0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200
@@ -9664,7 +9664,7 @@ def market_value(
     
     Args:
         fid_trgt_cls_code (str): 0 : 전체
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20179 )
         fid_input_iscd (str): 0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200
         fid_div_cls_code (str): 0: 전체, 1:관리종목, 2:투자주의, 3:투자경고, 4:투자위험예고, 5:투자위험, 6:보통주, 7:우선주
@@ -11908,7 +11908,7 @@ def prefer_disparate_ratio(
     
     Args:
         fid_vol_cnt (str): 입력값 없을때 전체 (거래량 ~)
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20177 )
         fid_div_cls_code (str): 0: 전체
         fid_input_iscd (str): 0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200
@@ -12047,7 +12047,7 @@ def profit_asset_index(
     국내주식 수익자산지표 순위 API를 호출하여 DataFrame으로 반환합니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (필수)
+        fid_cond_mrkt_div_code (str): 조건 시장 분류 코드 (필수) (J:KRX, NX:NXT)
         fid_trgt_cls_code (str): 대상 구분 코드 (필수)
         fid_cond_scr_div_code (str): 조건 화면 분류 코드 (필수)
         fid_input_iscd (str): 입력 종목코드 (필수)
@@ -12408,7 +12408,7 @@ def quote_balance(
     
     Args:
         fid_vol_cnt (str): 입력값 없을때 전체 (거래량 ~)
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20172 )
         fid_input_iscd (str): 0000(전체) 코스피(0001), 코스닥(1001), 코스피200(2001)
         fid_rank_sort_cls_code (str): 0: 순매수잔량순, 1:순매도잔량순, 2:매수비율순, 3:매도비율순
@@ -12874,7 +12874,7 @@ def top_interest_stock(
     
     Args:
         fid_input_iscd_2 (str): 000000 : 필수입력값
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key(20180)
         fid_input_iscd (str): 0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200
         fid_trgt_cls_code (str): 0 : 전체
@@ -13018,7 +13018,7 @@ def traded_by_company(
     
     Args:
         fid_trgt_exls_cls_code (str): 0: 전체
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key(20186)
         fid_div_cls_code (str): 0:전체, 1:관리종목, 2:투자주의, 3:투자경고, 4:투자위험예고, 5:투자위험, 6:보통주, 7:우선주
         fid_rank_sort_cls_code (str): 0:매도상위,1:매수상위
@@ -13168,7 +13168,7 @@ def tradprt_byamt(
     한국투자 HTS(eFriend Plus) > [0135] 체결금액별 매매비중 화면의 "상단 표" 기능을 API로 개발한 사항으로, 해당 화면을 참고하시면 기능을 이해하기 쉽습니다.
     
     Args:
-        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J)
+        fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): [필수] 조건화면분류코드 (ex. 11119)
         fid_input_iscd (str): [필수] 입력 종목코드 (ex. 123456)
 
@@ -13234,7 +13234,7 @@ def volume_power(
     
     Args:
         fid_trgt_exls_cls_code (str): 0 : 전체
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20168 )
         fid_input_iscd (str): 0000:전체, 0001:거래소, 1001:코스닥, 2001:코스피200
         fid_div_cls_code (str): 0: 전체,  1: 보통주 2: 우선주

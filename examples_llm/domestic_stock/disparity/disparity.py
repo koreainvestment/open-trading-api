@@ -49,7 +49,7 @@ def disparity(
     
     Args:
         fid_input_price_2 (str): 입력값 없을때 전체 (~ 가격)
-        fid_cond_mrkt_div_code (str): 시장구분코드 (주식 J)
+        fid_cond_mrkt_div_code (str): 시장구분코드 (J:KRX, NX:NXT)
         fid_cond_scr_div_code (str): Unique key( 20178 )
         fid_div_cls_code (str): 0: 전체, 1:관리종목, 2:투자주의, 3:투자경고, 4:투자위험예고, 5:투자위험, 6:보톧주, 7:우선주
         fid_rank_sort_cls_code (str): 0: 이격도상위순, 1:이격도하위순

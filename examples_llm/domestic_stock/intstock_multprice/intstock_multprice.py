@@ -99,7 +99,7 @@ def intstock_multprice(
     https://github.com/koreainvestment/open-trading-api/blob/main/rest/interest_stocks_price.py
     
     Args:
-        fid_cond_mrkt_div_code_1 (str): [필수] 조건 시장 분류 코드1 (ex. J)
+        fid_cond_mrkt_div_code_1 (str): [필수] 조건 시장 분류 코드1 (J:KRX, NX:NXT)
         fid_input_iscd_1 (str): [필수] 입력 종목코드1 (ex. 123456)
         fid_cond_mrkt_div_code_2 (Optional[str]): 조건 시장 분류 코드2
         fid_input_iscd_2 (Optional[str]): 입력 종목코드2
