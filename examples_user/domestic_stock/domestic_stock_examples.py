@@ -540,7 +540,7 @@ print(result)
 result = inquire_investor_daily_by_market(
     fid_cond_mrkt_div_code="U",
     fid_input_iscd="0001",
-    fid_input_date_1="20240517",
+    fid_input_date_1="20250701",
     fid_input_iscd_1="KSP",
     fid_input_date_2="20250701",
     fid_input_iscd_2="0001",
@@ -650,7 +650,14 @@ result = inquire_psbl_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, i
 print(result)
 
 ##############################################################################################
-# [국내주식] 기본시세 > 주식당일분봉조회[v1_국내주식-022]
+# [국내주식] 주문/계좌 > 매도가능수량조회 [국내주식-165]
+##############################################################################################
+
+df = inquire_psbl_sell(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="000660")
+print(df)
+
+##############################################################################################
+# [국내주식] 기본시세 > 주식일별분봉조회 [국내주식-213]
 ##############################################################################################
 
 result1, result2 = inquire_time_dailychartprice(
@@ -672,7 +679,7 @@ print(df1)
 print(df2)
 
 ##############################################################################################
-# [국내주식] 기본시세 > 시장별 투자자매매동향(일별) [국내주식-075]
+# [국내주식] 기본시세 > 주식당일분봉조회[v1_국내주식-022]
 ##############################################################################################
 
 output1, output2 = inquire_time_itemchartprice(env_dv="real", fid_cond_mrkt_div_code="J",
@@ -774,6 +781,15 @@ print(df)
 
 result = investor_program_trade_today(mrkt_div_cls_code="1")
 print(result)
+
+########################################################################################
+# [국내주식] 시세분석  > 종목별 투자자매매동향(일별)[종목별 투자자매매동향(일별)]
+########################################################################################
+
+df1, df2 = investor_trade_by_stock_daily(fid_cond_mrkt_div_code="J", fid_input_iscd="005930",
+                                         fid_input_date_1="20250812", fid_org_adj_prc="", fid_etc_cls_code="")
+print(df1)
+print(df2)
 
 ##############################################################################################
 # [국내주식] 시세분석 > 종목별 외인기관 추정가집계[v1_국내주식-046]
@@ -1237,11 +1253,4 @@ print(df)
 df = volume_rank(fid_cond_mrkt_div_code="J", fid_cond_scr_div_code="20171", fid_input_iscd="0000", fid_div_cls_code="0",
                  fid_blng_cls_code="0", fid_trgt_cls_code="111111111", fid_trgt_exls_cls_code="0000000000",
                  fid_input_price_1="0", fid_input_price_2="1000000", fid_vol_cnt="100000", fid_input_date_1="")
-print(df)
-
-##############################################################################################
-# [국내주식] 주문/계좌 > 매도가능수량조회 [국내주식-165]
-##############################################################################################
-
-df = inquire_psbl_sell(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="000660")
 print(df)

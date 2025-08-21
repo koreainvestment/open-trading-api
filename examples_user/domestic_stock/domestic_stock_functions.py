@@ -72,6 +72,7 @@ def after_hour_balance(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/after-hour-balance"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -102,9 +103,6 @@ def after_hour_balance(
     tr_id = "FHPST01760000"
 
     # API 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/ranking/after-hour-balance"
-
     params = {
         "fid_input_price_1": fid_input_price_1,
         "fid_cond_mrkt_div_code": fid_cond_mrkt_div_code,
@@ -229,6 +227,7 @@ def bulk_trans_num(
             )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/bulk-trans-num"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -267,8 +266,6 @@ def bulk_trans_num(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHKST190900C0"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/bulk-trans-num"
 
     params = {
         "fid_aply_rang_prc_2": fid_aply_rang_prc_2,
@@ -372,6 +369,7 @@ def capture_uplowprice(
         >>> df = capture_uplowprice("J", "11300", "0", "0", "0000")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/capture-uplowprice"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -390,8 +388,6 @@ def capture_uplowprice(
         raise ValueError("fid_input_iscd is required (e.g. '0000', '0001', '1001')")
 
     tr_id = "FHKST130000C0"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/capture-uplowprice"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -452,6 +448,7 @@ def chk_holiday(
         >>> df = chk_holiday(bass_dt="20250630")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/chk-holiday"
 
     if bass_dt == "":
         raise ValueError("bass_dt is required (e.g. 'YYYYMMDD')")
@@ -465,15 +462,13 @@ def chk_holiday(
 
     tr_id = "CTCA0903R"  # 국내휴장일조회
 
-    api_url = "/uapi/domestic-stock/v1/quotations/chk-holiday"
-
     params = {
         "BASS_DT": bass_dt,
         "CTX_AREA_FK": FK100,
         "CTX_AREA_NK": NK100
     }
 
-    res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
 
     if res.isOK():
         if hasattr(res.getBody(), 'output'):
@@ -503,7 +498,7 @@ def chk_holiday(
             logging.info("Data fetch complete.")
             return dataframe
     else:
-        res.printError(url=API_URL)
+        res.printError(url=api_url)
         return pd.DataFrame()
 
 
@@ -546,6 +541,7 @@ def comp_interest(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/comp-interest"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -568,8 +564,6 @@ def comp_interest(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHPST07020000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/comp-interest"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -650,6 +644,7 @@ def comp_program_trade_daily(
         >>> df = comp_program_trade_daily("J", "K", "20250101", "20250617")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/comp-program-trade-daily"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J:주식,NX:NXT,UN:통합')")
@@ -658,8 +653,6 @@ def comp_program_trade_daily(
         raise ValueError("fid_mrkt_cls_code is required (e.g. 'K:코스피,Q:코스닥')")
 
     tr_id = "FHPPG04600001"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/comp-program-trade-daily"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -711,6 +704,7 @@ def comp_program_trade_today(
         >>> df = comp_program_trade_today("J", "K")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/comp-program-trade-today"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -720,8 +714,6 @@ def comp_program_trade_today(
         raise ValueError("fid_mrkt_cls_code is required (e.g. 'K:코스피, Q:코스닥')")
 
     tr_id = "FHPPG04600101"  # 프로그램매매 종합현황(시간)
-
-    api_url = "/uapi/domestic-stock/v1/quotations/comp-program-trade-today"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,  # 시장 구분 코드
@@ -785,6 +777,7 @@ def credit_balance(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/credit-balance"
     # 필수 파라미터 검증
     if not fid_cond_scr_div_code:
         logger.error("fid_cond_scr_div_code is required. (e.g. '11701')")
@@ -812,8 +805,6 @@ def credit_balance(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHKST17010000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/credit-balance"
 
     params = {
         "FID_COND_SCR_DIV_CODE": fid_cond_scr_div_code,
@@ -934,6 +925,7 @@ def credit_by_company(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/credit-by-company"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -968,9 +960,6 @@ def credit_by_company(
     tr_id = "FHPST04770000"
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/quotations/credit-by-company"
-
     params = {
         "fid_rank_sort_cls_code": fid_rank_sort_cls_code,
         "fid_slct_yn": fid_slct_yn,
@@ -1061,6 +1050,7 @@ def daily_credit_balance(
         >>> df = daily_credit_balance("J", "20476", "005930", "20240313")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/daily-credit-balance"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -1082,8 +1072,6 @@ def daily_credit_balance(
             return dataframe
 
     tr_id = "FHPST04760000"  # 국내주식 신용잔고 일별추이
-
-    api_url = "/uapi/domestic-stock/v1/quotations/daily-credit-balance"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,  # 시장 분류 코드
@@ -1148,6 +1136,7 @@ def daily_loan_trans(
         >>> df = daily_loan_trans(mrkt_div_cls_code="1", mksc_shrn_iscd="005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/daily-loan-trans"
 
     # 필수 파라미터 검증
     if mrkt_div_cls_code == "":
@@ -1157,8 +1146,6 @@ def daily_loan_trans(
         raise ValueError("mksc_shrn_iscd is required (e.g. '123456')")
 
     tr_id = "HHPST074500C0"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/daily-loan-trans"
 
     params = {
         "MRKT_DIV_CLS_CODE": mrkt_div_cls_code,
@@ -1205,6 +1192,7 @@ def daily_short_sale(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/daily-short-sale"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -1214,8 +1202,6 @@ def daily_short_sale(
         raise ValueError("fid_input_iscd is required (e.g. '123456')")
 
     tr_id = "FHPST04830000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/daily-short-sale"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1301,6 +1287,7 @@ def disparity(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/disparity"
     # 필수 파라미터 검증
     if not fid_cond_mrkt_div_code:
         logger.error("fid_cond_mrkt_div_code is required. (e.g. 'J')")
@@ -1332,8 +1319,6 @@ def disparity(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST01780000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/disparity"
 
     params = {
         "fid_input_price_2": fid_input_price_2,
@@ -1443,6 +1428,7 @@ def dividend_rate(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/dividend-rate"
     # 필수 파라미터 검증
     if not gb1:
         logger.error("gb1 is required. (e.g. '1')")
@@ -1478,8 +1464,6 @@ def dividend_rate(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB13470100"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/dividend-rate"
 
     params = {
         "CTS_AREA": cts_area,
@@ -1567,6 +1551,7 @@ def estimate_perform(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/estimate-perform"
     # 필수 파라미터 검증
     if not sht_cd:
         logger.error("sht_cd is required. (e.g. '265520')")
@@ -1583,8 +1568,6 @@ def estimate_perform(
         )
 
     tr_id = "HHKST668300C0"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/estimate-perform"
 
     params = {
         "SHT_CD": sht_cd,
@@ -1679,6 +1662,7 @@ def exp_closing_price(
         >>> df = exp_closing_price("J", "0001", "0", "11173", "0")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/exp-closing-price"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -1697,8 +1681,6 @@ def exp_closing_price(
         raise ValueError("fid_blng_cls_code is required (e.g. '0', '1')")
 
     tr_id = "FHKST117300C0"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/exp-closing-price"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1753,6 +1735,7 @@ def exp_index_trend(
         >>> df = exp_index_trend('1', '10', '0000', 'U')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/exp-index-trend"
     # 필수 파라미터 검증
     if not fid_mkop_cls_code:
         logger.error("fid_mkop_cls_code is required. (e.g. '1')")
@@ -1772,8 +1755,6 @@ def exp_index_trend(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST01840000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/exp-index-trend"
 
     params = {
         "FID_MKOP_CLS_CODE": fid_mkop_cls_code,
@@ -1847,6 +1828,7 @@ def exp_price_trend(
         >>> print(output1)
         >>> print(output2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/exp-price-trend"
 
     if not fid_cond_mrkt_div_code:
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -1858,8 +1840,6 @@ def exp_price_trend(
         raise ValueError("fid_mkop_cls_code is required (e.g. '0')")
 
     tr_id = "FHPST01810000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/exp-price-trend"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -1927,6 +1907,7 @@ def exp_total_index(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/exp-total-index"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -1957,8 +1938,6 @@ def exp_total_index(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHKUP11750000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/exp-total-index"
 
     params = {
         "fid_mrkt_cls_code": fid_mrkt_cls_code,
@@ -2077,6 +2056,7 @@ def exp_trans_updown(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/exp-trans-updown"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -2115,8 +2095,6 @@ def exp_trans_updown(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST01820000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/exp-trans-updown"
 
     params = {
         "fid_rank_sort_cls_code": fid_rank_sort_cls_code,
@@ -2209,6 +2187,7 @@ def finance_balance_sheet(
         >>> df = finance_balance_sheet("0", "J", "000660")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/finance/balance-sheet"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -2231,8 +2210,6 @@ def finance_balance_sheet(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHKST66430100"
-
-    api_url = "/uapi/domestic-stock/v1/finance/balance-sheet"
 
     params = {
         "FID_DIV_CLS_CODE": fid_div_cls_code,
@@ -2312,6 +2289,7 @@ def finance_financial_ratio(
         >>> df = finance_financial_ratio("0", "J", "000660")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/finance/financial-ratio"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -2334,8 +2312,6 @@ def finance_financial_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHKST66430300"
-
-    api_url = "/uapi/domestic-stock/v1/finance/financial-ratio"
 
     params = {
         "FID_DIV_CLS_CODE": fid_div_cls_code,
@@ -2414,6 +2390,7 @@ def finance_growth_ratio(
         >>> df = finance_growth_ratio('005930', '1', 'J')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/finance/growth-ratio"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -2439,9 +2416,6 @@ def finance_growth_ratio(
     tr_id = "FHKST66430800"
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/finance/growth-ratio"
-
     params = {
         "fid_input_iscd": fid_input_iscd,
         "fid_div_cls_code": fid_div_cls_code,
@@ -2517,6 +2491,7 @@ def finance_income_statement(
         >>> df = finance_income_statement('1', 'J', '005930')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/finance/income-statement"
     # 필수 파라미터 검증
     if not fid_div_cls_code:
         logger.error("fid_div_cls_code is required. (e.g. '0' or '1')")
@@ -2536,8 +2511,6 @@ def finance_income_statement(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHKST66430200"
-
-    api_url = "/uapi/domestic-stock/v1/finance/income-statement"
 
     params = {
         "FID_DIV_CLS_CODE": fid_div_cls_code,
@@ -2618,6 +2591,7 @@ def finance_other_major_ratios(
         >>> df = finance_other_major_ratios('005930', '1', 'J')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/finance/other-major-ratios"
     # 필수 파라미터 검증
     if not fid_input_iscd:
         logger.error("fid_input_iscd is required. (e.g. '000660')")
@@ -2637,8 +2611,6 @@ def finance_other_major_ratios(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHKST66430500"
-
-    api_url = "/uapi/domestic-stock/v1/finance/other-major-ratios"
 
     params = {
         "fid_input_iscd": fid_input_iscd,
@@ -2714,6 +2686,7 @@ def finance_profit_ratio(
         >>> df = finance_profit_ratio('005930', '1', 'J')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/finance/profit-ratio"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -2736,8 +2709,6 @@ def finance_profit_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHKST66430400"
-
-    api_url = "/uapi/domestic-stock/v1/finance/profit-ratio"
 
     params = {
         "fid_input_iscd": fid_input_iscd,
@@ -2850,6 +2821,7 @@ def finance_ratio(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/finance-ratio"
     # 필수 파라미터 검증
     if fid_trgt_cls_code == "":
         raise ValueError("대상 구분 코드 확인요망!!!")
@@ -2871,8 +2843,6 @@ def finance_ratio(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
     tr_id = "FHPST01750000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/finance-ratio"
 
     params = {
         "fid_trgt_cls_code": fid_trgt_cls_code,
@@ -2971,6 +2941,7 @@ def finance_stability_ratio(
         >>> df = finance_stability_ratio('005930', '1', 'J')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/finance/stability-ratio"
     # 필수 파라미터 검증
     if not fid_input_iscd:
         logger.error("fid_input_iscd is required. (e.g. '000660')")
@@ -2990,8 +2961,6 @@ def finance_stability_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHKST66430600"
-
-    api_url = "/uapi/domestic-stock/v1/finance/stability-ratio"
 
     params = {
         "fid_input_iscd": fid_input_iscd,
@@ -3088,6 +3057,7 @@ def fluctuation(
         >>> df = fluctuation(fid_rsfl_rate2="10", fid_cond_mrkt_div_code="J", fid_cond_scr_div_code="20170", fid_input_iscd="0000", fid_rank_sort_cls_code="0000", fid_input_cnt_1="10", fid_prc_cls_code="0", fid_input_price_1="0", fid_input_price_2="1000000", fid_vol_cnt="100000", fid_trgt_cls_code="0", fid_trgt_exls_cls_code="0", fid_div_cls_code="0", fid_rsfl_rate1="0")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/fluctuation"
     if fid_cond_mrkt_div_code not in ["J", "W", "Q"]:
         raise ValueError("조건 시장 분류 코드 확인요망!!!")
 
@@ -3095,8 +3065,6 @@ def fluctuation(
         raise ValueError("조건 화면 분류 코드 확인요망!!!")
 
     tr_id = "FHPST01700000"  # 국내주식 등락률 순위
-
-    api_url = "/uapi/domestic-stock/v1/ranking/fluctuation"
 
     params = {
         "fid_rsfl_rate2": fid_rsfl_rate2,
@@ -3184,6 +3152,7 @@ def foreign_institution_total(
         >>> df = foreign_institution_total("V", "16449", "0000", "0", "0", "0")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/foreign-institution-total"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'V')")
@@ -3205,8 +3174,6 @@ def foreign_institution_total(
         raise ValueError("fid_etc_cls_code is required (e.g. '0:전체,1:외국인,2:기관계,3:기타')")
 
     tr_id = "FHPTJ04400000"  # 국내기관_외국인 매매종목가집계
-
-    api_url = "/uapi/domestic-stock/v1/quotations/foreign-institution-total"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
@@ -3254,6 +3221,7 @@ def frgnmem_pchs_trend(
         >>> df = frgnmem_pchs_trend("J", "005930", "99999")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-pchs-trend"
 
     if not fid_cond_mrkt_div_code:
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -3265,8 +3233,6 @@ def frgnmem_pchs_trend(
         raise ValueError("fid_input_iscd_2 is required (e.g. '99999')")
 
     tr_id = "FHKST644400C0"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-pchs-trend"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -3315,6 +3281,7 @@ def frgnmem_trade_estimate(
         >>> df = frgnmem_trade_estimate("J", "16441", "0000", "0", "0")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-estimate"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -3332,8 +3299,6 @@ def frgnmem_trade_estimate(
         raise ValueError("fid_rank_sort_cls_code_2 is required (e.g. '0')")
 
     tr_id = "FHKST644100C0"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-estimate"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -3403,6 +3368,7 @@ def frgnmem_trade_trend(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend"
     # [필수 파라미터 검증]
     if not fid_cond_scr_div_code:
         logger.error("fid_cond_scr_div_code is required. (e.g. '20432')")
@@ -3426,8 +3392,6 @@ def frgnmem_trade_trend(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHPST04320000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend"
 
     params = {
         "FID_COND_SCR_DIV_CODE": fid_cond_scr_div_code,
@@ -3533,6 +3497,7 @@ def hts_top_view(
         >>> df = hts_top_view(tr_cont="", dataframe=None, depth=0, max_depth=10)
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/hts-top-view"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -3544,9 +3509,6 @@ def hts_top_view(
     tr_id = "HHMCM000100C0"
 
     # Request Query Parameter가 없으므로 빈 딕셔너리로 유지
-
-    api_url = "/uapi/domestic-stock/v1/ranking/hts-top-view"
-
     params = {}
 
     # API 호출
@@ -3612,6 +3574,7 @@ def inquire_account_balance(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-account-balance"
 
     if cano == "":
         raise ValueError("cano is required (e.g. '12345678')")
@@ -3620,8 +3583,6 @@ def inquire_account_balance(
         raise ValueError("acnt_prdt_cd is required (e.g. '19' or '21')")
 
     tr_id = "CTRP6548R"  # 투자계좌자산현황조회
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-account-balance"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -3671,6 +3632,7 @@ def inquire_asking_price_exp_ccn(
         >>> print(result1)  # 호가정보
         >>> print(result2)  # 예상체결정보
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn"
 
     # 필수 파라미터 검증
     if env_dv == "":
@@ -3689,8 +3651,6 @@ def inquire_asking_price_exp_ccn(
         tr_id = "FHKST01010200"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-asking-price-exp-ccn"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
@@ -3767,6 +3727,7 @@ def inquire_balance(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-balance"
 
     # 필수 파라미터 검증
     if env_dv == "":
@@ -3811,8 +3772,6 @@ def inquire_balance(
         tr_id = "VTTC8434R"
     else:
         raise ValueError("env_dv is required (e.g. 'real' or 'demo')")
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-balance"
 
     params = {
         "CANO": cano,
@@ -3920,6 +3879,7 @@ def inquire_balance_rlz_pl(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-balance-rlz-pl"
 
     # 필수 파라미터 검증
     if cano == "":
@@ -3955,8 +3915,6 @@ def inquire_balance_rlz_pl(
         return dataframe1, dataframe2
 
     tr_id = "TTTC8494R"  # 주식잔고조회_실현손익
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-balance-rlz-pl"
 
     params = {
         "CANO": cano,
@@ -4035,6 +3993,7 @@ def inquire_ccnl(
         >>> df = inquire_ccnl("real", "J", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-ccnl"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -4053,8 +4012,6 @@ def inquire_ccnl(
         tr_id = "FHKST01010300"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-ccnl"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -4106,6 +4063,7 @@ def inquire_credit_psamount(
         >>> df = inquire_credit_psamount(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_dvsn="00", crdt_type="21", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-credit-psamount"
 
     # 필수 파라미터 검증
     if cano == "" or cano is None:
@@ -4132,8 +4090,6 @@ def inquire_credit_psamount(
         raise ValueError("ovrs_icld_yn is required")
 
     tr_id = "TTTC8909R"
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-credit-psamount"
 
     params = {
         "CANO": cano,
@@ -4233,6 +4189,7 @@ def inquire_daily_ccld(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-daily-ccld"
 
     # 필수 파라미터 검증
     if env_dv == "":
@@ -4291,8 +4248,6 @@ def inquire_daily_ccld(
             raise ValueError("pd_dv can only be 'before' or 'inner'")
     else:
         raise ValueError("env_dv is required (e.g. 'real' or 'demo')")
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-daily-ccld"
 
     params = {
         "CANO": cano,
@@ -4410,6 +4365,7 @@ def inquire_daily_indexchartprice(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice"
     # 필수 파라미터 검증
     if not fid_cond_mrkt_div_code:
         logger.error("fid_cond_mrkt_div_code is required. (e.g. 'U')")
@@ -4448,8 +4404,6 @@ def inquire_daily_indexchartprice(
         tr_id = "FHKUP03500100"  # 실전투자용 TR ID
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-indexchartprice"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -4546,6 +4500,7 @@ def inquire_daily_itemchartprice(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
 
     # 필수 파라미터 검증
     if env_dv == "":
@@ -4576,8 +4531,6 @@ def inquire_daily_itemchartprice(
         tr_id = "FHKST03010100"
     else:
         raise ValueError("env_dv is required (e.g. 'real' or 'demo')")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -4628,6 +4581,7 @@ def inquire_daily_overtimeprice(
         >>> print(result1)
         >>> print(result2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-overtimeprice"
 
     # 필수 파라미터 검증
     if env_dv == "":
@@ -4646,8 +4600,6 @@ def inquire_daily_overtimeprice(
         tr_id = "FHPST02320000"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-overtimeprice"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -4701,6 +4653,7 @@ def inquire_daily_price(
         >>> df = inquire_daily_price("real", "J", "005930", "D", "1")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-price"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -4726,8 +4679,6 @@ def inquire_daily_price(
         tr_id = "FHKST01010400"
     else:
         raise ValueError("env_dv can only be real or demo")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-price"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -4777,6 +4728,7 @@ def inquire_daily_trade_volume(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-trade-volume"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -4788,8 +4740,6 @@ def inquire_daily_trade_volume(
         raise ValueError("fid_period_div_code is required (e.g. 'D')")
 
     tr_id = "FHKST03010800"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-daily-trade-volume"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -4849,6 +4799,7 @@ def inquire_elw_price(
         >>> df = inquire_elw_price('W', '000660', env_dv='demo')  # 모의투자
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-elw-price"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -4881,9 +4832,6 @@ def inquire_elw_price(
         raise ValueError("env_dv can only be 'real' or 'demo'")
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-elw-price"
-
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_INPUT_ISCD": fid_input_iscd,
@@ -4976,6 +4924,7 @@ def inquire_index_category_price(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-category-price"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -5006,8 +4955,6 @@ def inquire_index_category_price(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHPUP02140000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-category-price"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -5102,6 +5049,7 @@ def inquire_index_daily_price(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-daily-price"
     # 필수 파라미터 검증
     if not fid_period_div_code:
         logger.error("fid_period_div_code is required. (e.g. 'D')")
@@ -5125,8 +5073,6 @@ def inquire_index_daily_price(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHPUP02120000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-daily-price"
 
     params = {
         "FID_PERIOD_DIV_CODE": fid_period_div_code,
@@ -5211,6 +5157,7 @@ def inquire_index_price(
         >>> df = inquire_index_price("U", "0001")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-price"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -5232,9 +5179,6 @@ def inquire_index_price(
     tr_id = "FHPUP02100000"
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-price"
-
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_INPUT_ISCD": fid_input_iscd,
@@ -5311,6 +5255,7 @@ def inquire_index_tickprice(
         >>> df = inquire_index_tickprice('0001', 'U')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-tickprice"
     # 필수 파라미터 검증
     if not fid_input_iscd:
         logger.error("fid_input_iscd is required. (e.g. '0001')")
@@ -5326,8 +5271,6 @@ def inquire_index_tickprice(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPUP02110100"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-tickprice"
 
     params = {
         "FID_INPUT_ISCD": fid_input_iscd,
@@ -5408,6 +5351,7 @@ def inquire_index_timeprice(
         >>> df = inquire_index_timeprice("60", "0001", "U")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-timeprice"
     # 필수 파라미터 검증
     if not fid_input_hour_1:
         logger.error("fid_input_hour_1 is required. (e.g. '60')")
@@ -5427,8 +5371,6 @@ def inquire_index_timeprice(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPUP02110200"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-index-timeprice"
 
     params = {
         "FID_INPUT_HOUR_1": fid_input_hour_1,
@@ -5501,6 +5443,7 @@ def inquire_investor(
         >>> df = inquire_investor(env_dv="real", fid_cond_mrkt_div_code="J", fid_input_iscd="005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor"
 
     # 필수 파라미터 검증
     if env_dv == "":
@@ -5519,8 +5462,6 @@ def inquire_investor(
         tr_id = "FHKST01010900"
     else:
         raise ValueError("env_dv can only be real or demo")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -5552,7 +5493,7 @@ def inquire_investor_daily_by_market(
     """
     시장별 투자자매매동향(일별) API입니다.
     한국투자 HTS(eFriend Plus) > [0404] 시장별 일별동향 화면의 기능을 API로 개발한 사항으로, 해당 화면을 참고하시면 기능을 이해하기 쉽습니다.
-
+    
     Args:
         fid_cond_mrkt_div_code (str): [필수] 조건 시장 분류 코드 (ex. U:업종)
         fid_input_iscd (str): [필수] 입력 종목코드 (ex. 0001)
@@ -5563,11 +5504,12 @@ def inquire_investor_daily_by_market(
 
     Returns:
         pd.DataFrame: 시장별 투자자매매동향(일별) 데이터
-
+        
     Example:
         >>> df = inquire_investor_daily_by_market("U", "0001", "20250701", "KSP", "20250701", "0001")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor-daily-by-market"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -5589,8 +5531,6 @@ def inquire_investor_daily_by_market(
         raise ValueError("fid_input_iscd_2 is required (e.g. 업종분류코드')")
 
     tr_id = "FHPTJ04040000"  # 시장별 투자자매매동향(일별)
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor-daily-by-market"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
@@ -5634,6 +5574,7 @@ def inquire_investor_time_by_market(
         >>> df = inquire_investor_time_by_market(fid_input_iscd="999", fid_input_iscd_2="S001")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor-time-by-market"
 
     if fid_input_iscd == "":
         raise ValueError("fid_input_iscd is required")
@@ -5642,8 +5583,6 @@ def inquire_investor_time_by_market(
         raise ValueError("fid_input_iscd_2 is required")
 
     tr_id = "FHPTJ04030000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-investor-time-by-market"
 
     params = {
         "FID_INPUT_ISCD": fid_input_iscd,  # 시장구분
@@ -5684,6 +5623,7 @@ def inquire_member(
         >>> df = inquire_member(env_dv="real", fid_cond_mrkt_div_code="J", fid_input_iscd="005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-member"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -5702,8 +5642,6 @@ def inquire_member(
         tr_id = "FHKST01010600"
     else:
         raise ValueError("env_dv can only be real or demo")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-member"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -5757,6 +5695,7 @@ def inquire_member_daily(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-member-daily"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -5774,8 +5713,6 @@ def inquire_member_daily(
         raise ValueError("fid_input_date_2 is required")
 
     tr_id = "FHPST04540000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-member-daily"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -5820,6 +5757,7 @@ def inquire_overtime_asking_price(
         >>> df = inquire_overtime_asking_price("J", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-overtime-asking-price"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -5828,8 +5766,6 @@ def inquire_overtime_asking_price(
         raise ValueError("fid_input_iscd is required (e.g. '123456')")
 
     tr_id = "FHPST02300400"  # 국내주식 시간외호가
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-overtime-asking-price"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,  # 시장 분류 코드
@@ -5869,6 +5805,7 @@ def inquire_overtime_price(
         >>> df = inquire_overtime_price("J", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-overtime-price"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -5878,8 +5815,6 @@ def inquire_overtime_price(
         raise ValueError("fid_input_iscd is required (e.g. '005930')")
 
     tr_id = "FHPST02300000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-overtime-price"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -5947,6 +5882,7 @@ def inquire_period_profit(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-period-profit"
 
     # 필수 파라미터 검증
     if cano == "":
@@ -5979,8 +5915,6 @@ def inquire_period_profit(
         return dataframe1, dataframe2
 
     tr_id = "TTTC8708R"
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-period-profit"
 
     params = {
         "CANO": cano,
@@ -6079,6 +6013,7 @@ def inquire_period_trade_profit(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-period-trade-profit"
 
     if cano == "":
         raise ValueError("cano is required")
@@ -6107,8 +6042,6 @@ def inquire_period_trade_profit(
         return dataframe1, dataframe2
 
     tr_id = "TTTC8715R"  # 기간별매매손익현황조회
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-period-trade-profit"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -6184,6 +6117,7 @@ def inquire_price(
         >>> df = inquire_price("real", "J", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-price"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -6202,8 +6136,6 @@ def inquire_price(
         tr_id = "FHKST01010100"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-price"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -6242,6 +6174,7 @@ def inquire_price_2(
         >>> df = inquire_price_2("J", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-price-2"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -6251,8 +6184,6 @@ def inquire_price_2(
         raise ValueError("fid_input_iscd is required")
 
     tr_id = "FHPST01010000"  # 주식현재가 시세2
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-price-2"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
@@ -6316,6 +6247,7 @@ def inquire_psbl_order(
         >>> df = inquire_psbl_order(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_unpr="55000", ord_dvsn="01", cma_evlu_amt_icld_yn="N", ovrs_icld_yn="N")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-order"
 
     # 필수 파라미터 검증
     if env_dv == "":
@@ -6349,8 +6281,6 @@ def inquire_psbl_order(
         tr_id = "VTTC8908R"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-order"
 
     params = {
         "CANO": cano,
@@ -6411,6 +6341,7 @@ def inquire_psbl_rvsecncl(
         >>> df = inquire_psbl_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_dvsn_1="1", inqr_dvsn_2="0")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-rvsecncl"
 
     if cano == "":
         raise ValueError("cano is required (e.g. '계좌번호 체계(8-2)의 앞 8자리')")
@@ -6432,8 +6363,6 @@ def inquire_psbl_rvsecncl(
             return dataframe
 
     tr_id = "TTTC0084R"  # 주식정정취소가능주문조회
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-rvsecncl"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -6473,6 +6402,104 @@ def inquire_psbl_rvsecncl(
 
 
 ##############################################################################################
+# [국내주식] 주문/계좌 > 매도가능수량조회 [국내주식-165]
+##############################################################################################
+
+def inquire_psbl_sell(
+        cano: str,  # 종합계좌번호
+        acnt_prdt_cd: str,  # 계좌상품코드
+        pdno: str,  # 종목번호
+        tr_cont: str = "",  # 연속 거래 여부
+        dataframe: Optional[pd.DataFrame] = None,  # 누적 데이터프레임
+        depth: int = 0,  # 현재 재귀 깊이
+        max_depth: int = 10  # 최대 재귀 깊이
+) -> Optional[pd.DataFrame]:
+    """
+    [국내주식] 주문/계좌 
+    매도가능수량조회[국내주식-165]
+    매도가능수량조회 API를 호출하여 DataFrame으로 반환합니다.
+    
+    Args:
+        cano (str): 종합계좌번호
+        acnt_prdt_cd (str): 계좌상품코드
+        pdno (str): 보유종목 코드 ex)000660
+        tr_cont (str): 연속 거래 여부
+        dataframe (Optional[pd.DataFrame]): 누적 데이터프레임
+        depth (int): 현재 재귀 깊이
+        max_depth (int): 최대 재귀 깊이 (기본값: 10)
+        
+    Returns:
+        Optional[pd.DataFrame]: 매도가능수량조회 데이터
+        
+    Example:
+        >>> df = inquire_psbl_sell("12345678", "01", "000660")
+        >>> print(df)
+    """
+    api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-sell"
+    # 필수 파라미터 검증
+    if not cano:
+        logger.error("cano is required. (e.g. '12345678')")
+        raise ValueError("cano is required. (e.g. '12345678')")
+
+    if not acnt_prdt_cd:
+        logger.error("acnt_prdt_cd is required. (e.g. '01')")
+        raise ValueError("acnt_prdt_cd is required. (e.g. '01')")
+
+    if not pdno:
+        logger.error("pdno is required. (e.g. '000660')")
+        raise ValueError("pdno is required. (e.g. '000660')")
+
+    # 최대 재귀 깊이 체크
+    if depth >= max_depth:
+        logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
+        return dataframe if dataframe is not None else pd.DataFrame()
+
+    tr_id = "TTTC8408R"
+
+    params = {
+        "CANO": cano,
+        "ACNT_PRDT_CD": acnt_prdt_cd,
+        "PDNO": pdno,
+    }
+
+    # API 호출
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
+
+    if res.isOK():
+        if hasattr(res.getBody(), 'output'):
+            output_data = res.getBody().output
+            if not isinstance(output_data, list):
+                output_data = [output_data]
+            current_data = pd.DataFrame(output_data)
+        else:
+            current_data = pd.DataFrame()
+
+        if dataframe is not None:
+            dataframe = pd.concat([dataframe, current_data], ignore_index=True)
+        else:
+            dataframe = current_data
+
+        tr_cont = res.getHeader().tr_cont
+
+        if tr_cont == "M":
+            logger.info("Calling next page...")
+            ka.smart_sleep()
+            return inquire_psbl_sell(
+                cano,
+                acnt_prdt_cd,
+                pdno,
+                "N", dataframe, depth + 1, max_depth
+            )
+        else:
+            logger.info("Data fetch complete.")
+            return dataframe
+    else:
+        logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
+        res.printError(api_url)
+        return pd.DataFrame()
+
+
+##############################################################################################
 # [국내주식] 기본시세 > 주식일별분봉조회 [국내주식-213]
 ##############################################################################################
 
@@ -6508,6 +6535,7 @@ def inquire_time_dailychartprice(
         >>> print(output1)
         >>> print(output2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-dailychartprice"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -6523,8 +6551,6 @@ def inquire_time_dailychartprice(
         raise ValueError("fid_input_date_1 is required (e.g. '20241023')")
 
     tr_id = "FHKST03010230"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-dailychartprice"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -6597,6 +6623,7 @@ def inquire_time_indexchartprice(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-indexchartprice"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -6627,8 +6654,6 @@ def inquire_time_indexchartprice(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHKUP03500200"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-indexchartprice"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -6745,6 +6770,7 @@ def inquire_time_itemchartprice(
         >>> print(output1)
         >>> print(output2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -6767,8 +6793,6 @@ def inquire_time_itemchartprice(
         tr_id = "FHKST03010200"
     else:
         raise ValueError("env_dv can only be real or demo")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -6820,6 +6844,7 @@ def inquire_time_itemconclusion(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-itemconclusion"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -6841,8 +6866,6 @@ def inquire_time_itemconclusion(
         tr_id = "FHPST01060000"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-itemconclusion"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -6892,6 +6915,7 @@ def inquire_time_overtimeconclusion(
         >>> print(output1)
         >>> print(output2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-overtimeconclusion"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -6913,8 +6937,6 @@ def inquire_time_overtimeconclusion(
         tr_id = "FHPST02310000"
     else:
         raise ValueError("env_dv can only be 'real' or 'demo'")
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-time-overtimeconclusion"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -6990,6 +7012,7 @@ def inquire_vi_status(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/inquire-vi-status"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -7020,8 +7043,6 @@ def inquire_vi_status(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST01390000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/inquire-vi-status"
 
     params = {
         "FID_DIV_CLS_CODE": fid_div_cls_code,
@@ -7108,6 +7129,7 @@ def intgr_margin(
         >>> df = intgr_margin(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, cma_evlu_amt_icld_yn="N", wcrc_frcr_dvsn_cd="01", fwex_ctrt_frcr_dvsn_cd="01")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/intgr-margin"
 
     if cano == "":
         raise ValueError("cano is required (e.g. '12345678')")
@@ -7125,8 +7147,6 @@ def intgr_margin(
         raise ValueError("fwex_ctrt_frcr_dvsn_cd is required (e.g. '01' or '02')")
 
     tr_id = "TTTC0869R"
-
-    api_url = "/uapi/domestic-stock/v1/trading/intgr-margin"
 
     params = {
         "CANO": cano,
@@ -7176,6 +7196,7 @@ def intstock_grouplist(
         >>> df = intstock_grouplist(type="1", fid_etc_cls_code="00", user_id=trenv.my_htsid)
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/intstock-grouplist"
 
     if type == "":
         raise ValueError("type is required (e.g. '1')")
@@ -7187,8 +7208,6 @@ def intstock_grouplist(
         raise ValueError("user_id is required")
 
     tr_id = "HHKCM113004C7"  # 관심종목 그룹조회
-
-    api_url = "/uapi/domestic-stock/v1/quotations/intstock-grouplist"
 
     params = {
         "TYPE": type,  # 관심종목구분코드
@@ -7354,6 +7373,7 @@ def intstock_multprice(
         >>> df = intstock_multprice(fid_cond_mrkt_div_code_1="J", fid_input_iscd_1="419530")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/intstock-multprice"
 
     if fid_cond_mrkt_div_code_1 == "":
         raise ValueError("fid_cond_mrkt_div_code_1 is required (e.g. 'J')")
@@ -7362,8 +7382,6 @@ def intstock_multprice(
         raise ValueError("fid_input_iscd_1 is required (e.g. '123456')")
 
     tr_id = "FHKST11300006"  # 관심종목(멀티종목) 시세조회
-
-    api_url = "/uapi/domestic-stock/v1/quotations/intstock-multprice"
 
     params = {
         "FID_COND_MRKT_DIV_CODE_1": fid_cond_mrkt_div_code_1,
@@ -7542,6 +7560,7 @@ def intstock_stocklist_by_group(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/intstock-stocklist-by-group"
 
     if type == "":
         raise ValueError("type is required (e.g. '1')")
@@ -7556,8 +7575,6 @@ def intstock_stocklist_by_group(
         raise ValueError("fid_etc_cls_code is required (e.g. '4')")
 
     tr_id = "HHKCM113004C6"  # 관심종목 그룹별 종목조회
-
-    api_url = "/uapi/domestic-stock/v1/quotations/intstock-stocklist-by-group"
 
     params = {
         "TYPE": type,  # 관심종목구분코드
@@ -7633,6 +7650,7 @@ def invest_opbysec(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/invest-opbysec"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -7671,9 +7689,6 @@ def invest_opbysec(
     tr_id = "FHKST663400C0"
 
     # API 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/quotations/invest-opbysec"
-
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_COND_SCR_DIV_CODE": fid_cond_scr_div_code,
@@ -7768,6 +7783,7 @@ def invest_opinion(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/invest-opinion"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -7802,9 +7818,6 @@ def invest_opinion(
     tr_id = "FHKST663300C0"
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/quotations/invest-opinion"
-
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
         "FID_COND_SCR_DIV_CODE": fid_cond_scr_div_code,
@@ -7875,13 +7888,12 @@ def investor_program_trade_today(
         >>> df = investor_program_trade_today(mrkt_div_cls_code="1")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/investor-program-trade-today"
 
     if mrkt_div_cls_code == "":
         raise ValueError("mrkt_div_cls_code is required (e.g. '1' or '4')")
 
     tr_id = "HHPPG046600C1"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/investor-program-trade-today"
 
     params = {
         "MRKT_DIV_CLS_CODE": mrkt_div_cls_code
@@ -7895,6 +7907,145 @@ def investor_program_trade_today(
     else:
         res.printError(url=api_url)
         return pd.DataFrame()
+
+
+########################################################################################
+# [국내주식] 시세분석  > 종목별 투자자매매동향(일별)[종목별 투자자매매동향(일별)]
+########################################################################################
+
+def investor_trade_by_stock_daily(
+        fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
+        fid_input_iscd: str,  # 입력 종목코드
+        fid_input_date_1: str,  # 입력 날짜1
+        fid_org_adj_prc: str,  # 수정주가 원주가 가격
+        fid_etc_cls_code: str,  # 기타 구분 코드
+        dataframe1: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output1)
+        dataframe2: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output2)
+        tr_cont: str = "",
+        depth: int = 0,
+        max_depth: int = 10
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    [국내주식] 시세분석 
+    종목별 투자자매매동향(일별)[종목별 투자자매매동향(일별)]
+    종목별 투자자매매동향(일별) API를 호출하여 DataFrame으로 반환합니다.
+    
+    Args:
+        fid_cond_mrkt_div_code (str): J:KRX, NX:NXT, UN:통합
+        fid_input_iscd (str): 종목번호 (6자리)
+        fid_input_date_1 (str): 입력 날짜(20250812)
+        fid_org_adj_prc (str): 공란 입력
+        fid_etc_cls_code (str): 공란 입력
+        dataframe1 (Optional[pd.DataFrame]): 누적 데이터프레임 (output1)
+        dataframe2 (Optional[pd.DataFrame]): 누적 데이터프레임 (output2)
+        tr_cont (str): 연속 거래 여부
+        depth (int): 현재 재귀 깊이
+        max_depth (int): 최대 재귀 깊이 (기본값: 10)
+        
+    Returns:
+        Tuple[pd.DataFrame, pd.DataFrame]: 종목별 투자자매매동향(일별) 데이터
+        
+    Example:
+        >>> df1, df2 = investor_trade_by_stock_daily(
+        ...     fid_cond_mrkt_div_code="J",
+        ...     fid_input_iscd="005930",
+        ...     fid_input_date_1="20250812",
+        ...     fid_org_adj_prc="",
+        ...     fid_etc_cls_code=""
+        ... )
+        >>> print(df1)
+        >>> print(df2)
+    """
+    api_url = "/uapi/domestic-stock/v1/quotations/investor-trade-by-stock-daily"
+    # 필수 파라미터 검증
+    if not fid_cond_mrkt_div_code:
+        logger.error("fid_cond_mrkt_div_code is required. (e.g. 'J')")
+        raise ValueError("fid_cond_mrkt_div_code is required. (e.g. 'J')")
+    if not fid_input_iscd:
+        logger.error("fid_input_iscd is required. (e.g. '005930')")
+        raise ValueError("fid_input_iscd is required. (e.g. '005930')")
+    if not fid_input_date_1:
+        logger.error("fid_input_date_1 is required. (e.g. '20250812')")
+        raise ValueError("fid_input_date_1 is required. (e.g. '20250812')")
+
+    # 최대 재귀 깊이 체크
+    if depth >= max_depth:
+        logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
+        return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
+
+    tr_id = "FHPTJ04160001"
+
+    params = {
+        "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
+        "FID_INPUT_ISCD": fid_input_iscd,
+        "FID_INPUT_DATE_1": fid_input_date_1,
+        "FID_ORG_ADJ_PRC": fid_org_adj_prc,
+        "FID_ETC_CLS_CODE": fid_etc_cls_code,
+    }
+
+    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
+
+    if res.isOK():
+        # output1 처리
+        if hasattr(res.getBody(), 'output1'):
+            output_data = res.getBody().output1
+            if output_data:
+                if isinstance(output_data, list):
+                    current_data1 = pd.DataFrame(output_data)
+                else:
+                    current_data1 = pd.DataFrame([output_data])
+
+                if dataframe1 is not None:
+                    dataframe1 = pd.concat([dataframe1, current_data1], ignore_index=True)
+                else:
+                    dataframe1 = current_data1
+            else:
+                if dataframe1 is None:
+                    dataframe1 = pd.DataFrame()
+        else:
+            if dataframe1 is None:
+                dataframe1 = pd.DataFrame()
+
+        # output2 처리
+        if hasattr(res.getBody(), 'output2'):
+            output_data = res.getBody().output2
+            if output_data:
+                if isinstance(output_data, list):
+                    current_data2 = pd.DataFrame(output_data)
+                else:
+                    current_data2 = pd.DataFrame([output_data])
+
+                if dataframe2 is not None:
+                    dataframe2 = pd.concat([dataframe2, current_data2], ignore_index=True)
+                else:
+                    dataframe2 = current_data2
+            else:
+                if dataframe2 is None:
+                    dataframe2 = pd.DataFrame()
+        else:
+            if dataframe2 is None:
+                dataframe2 = pd.DataFrame()
+
+        tr_cont = res.getHeader().tr_cont
+
+        if tr_cont in ["M", "F"]:
+            logger.info("Calling next page...")
+            ka.smart_sleep()
+            return investor_trade_by_stock_daily(
+                fid_cond_mrkt_div_code,
+                fid_input_iscd,
+                fid_input_date_1,
+                fid_org_adj_prc,
+                fid_etc_cls_code,
+                "N", dataframe1, dataframe2, depth + 1, max_depth
+            )
+        else:
+            logger.info("Data fetch complete.")
+            return dataframe1, dataframe2
+    else:
+        logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
+        res.printError(api_url)
+        return pd.DataFrame(), pd.DataFrame()
 
 
 ##############################################################################################
@@ -7922,13 +8073,12 @@ def investor_trend_estimate(
         >>> df = investor_trend_estimate(mksc_shrn_iscd="005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/investor-trend-estimate"
 
     if mksc_shrn_iscd == "":
         raise ValueError("mksc_shrn_iscd is required (ex. '123456')")
 
     tr_id = "HHPTJ04160200"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/investor-trend-estimate"
 
     params = {
         "MKSC_SHRN_ISCD": mksc_shrn_iscd
@@ -7981,6 +8131,7 @@ def ksdinfo_bonus_issue(
         >>> df = ksdinfo_bonus_issue(" ", "20230101", "20231231", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/bonus-issue"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -7999,8 +8150,6 @@ def ksdinfo_bonus_issue(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669101C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/bonus-issue"
 
     params = {
         "CTS": cts,
@@ -8083,6 +8232,7 @@ def ksdinfo_cap_dcrs(
         >>> df = ksdinfo_cap_dcrs(" ", "20230101", "20231231", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/cap-dcrs"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -8101,8 +8251,6 @@ def ksdinfo_cap_dcrs(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669106C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/cap-dcrs"
 
     params = {
         "CTS": cts,
@@ -8189,6 +8337,7 @@ def ksdinfo_dividend(
         >>> df = ksdinfo_dividend(" ", "0", "20230101", "20231231", " ", " ")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/dividend"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -8211,8 +8360,6 @@ def ksdinfo_dividend(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669102C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/dividend"
 
     params = {
         "CTS": cts,
@@ -8301,6 +8448,7 @@ def ksdinfo_forfeit(
         >>> df = ksdinfo_forfeit("001440", "20240315", "20240314", " ")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/forfeit"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -8319,8 +8467,6 @@ def ksdinfo_forfeit(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669109C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/forfeit"
 
     params = {
         "SHT_CD": sht_cd,
@@ -8403,6 +8549,7 @@ def ksdinfo_list_info(
         >>> df = ksdinfo_list_info("000660", "20231010", "20231001", "")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/list-info"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -8424,9 +8571,6 @@ def ksdinfo_list_info(
     tr_id = "HHKDB669107C0"
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/list-info"
-
     params = {
         "SHT_CD": sht_cd,
         "T_DT": t_dt,
@@ -8510,6 +8654,7 @@ def ksdinfo_mand_deposit(
         >>> df = ksdinfo_mand_deposit('20230301', '005930', '20230101', '')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/mand-deposit"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -8532,9 +8677,6 @@ def ksdinfo_mand_deposit(
     tr_id = "HHKDB669110C0"
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/mand-deposit"
-
     params = {
         "T_DT": t_dt,
         "SHT_CD": sht_cd,
@@ -8621,6 +8763,7 @@ def ksdinfo_merger_split(
         >>> df = ksdinfo_merger_split(" ", "20230101", "20231231", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/merger-split"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -8639,8 +8782,6 @@ def ksdinfo_merger_split(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669104C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/merger-split"
 
     params = {
         "CTS": cts,
@@ -8726,6 +8867,7 @@ def ksdinfo_paidin_capin(
         >>> df = ksdinfo_paidin_capin(" ", "1", "20230101", "20231231", " ")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/paidin-capin"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -8748,8 +8890,6 @@ def ksdinfo_paidin_capin(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669100C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/paidin-capin"
 
     params = {
         "CTS": cts,
@@ -8831,6 +8971,7 @@ def ksdinfo_pub_offer(
         >>> df = ksdinfo_pub_offer("000000", "", "20230101", "20231231")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/pub-offer"
     # 필수 파라미터 검증
     if not f_dt:
         logger.error("f_dt is required. (e.g. '20230101')")
@@ -8846,8 +8987,6 @@ def ksdinfo_pub_offer(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669108C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/pub-offer"
 
     params = {
         "SHT_CD": sht_cd,
@@ -8930,6 +9069,7 @@ def ksdinfo_purreq(
         >>> df = ksdinfo_purreq("005930", "20231010", "20231001", "")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/purreq"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -8947,8 +9087,6 @@ def ksdinfo_purreq(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669103C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/purreq"
 
     params = {
         "SHT_CD": sht_cd,
@@ -9036,6 +9174,7 @@ def ksdinfo_rev_split(
         >>> df = ksdinfo_rev_split("001390", "", "20230101", "20231231", "0")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/rev-split"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -9058,8 +9197,6 @@ def ksdinfo_rev_split(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669105C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/rev-split"
 
     params = {
         "SHT_CD": sht_cd,
@@ -9144,6 +9281,7 @@ def ksdinfo_sharehld_meet(
         >>> df = ksdinfo_sharehld_meet(" ", "20230101", "20231231", " ")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ksdinfo/sharehld-meet"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -9162,8 +9300,6 @@ def ksdinfo_sharehld_meet(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "HHKDB669111C0"
-
-    api_url = "/uapi/domestic-stock/v1/ksdinfo/sharehld-meet"
 
     params = {
         "CTS": cts,
@@ -9250,6 +9386,7 @@ def lendable_by_company(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/lendable-by-company"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -9272,8 +9409,6 @@ def lendable_by_company(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "CTSC2702R"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/lendable-by-company"
 
     params = {
         "EXCG_DVSN_CD": excg_dvsn_cd,
@@ -9404,6 +9539,7 @@ def market_cap(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/market-cap"
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code != "J":
         raise ValueError("조건 시장 분류 코드 확인요망!!!")
@@ -9419,8 +9555,6 @@ def market_cap(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
     tr_id = "FHPST01740000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/market-cap"
 
     params = {
         "fid_input_price_2": fid_input_price_2,
@@ -9486,10 +9620,9 @@ def market_time() -> pd.DataFrame:
         >>> df = market_time()
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/market-time"
 
     tr_id = "HHMCM000002C0"  # 국내선물 영업일조회
-
-    api_url = "/uapi/domestic-stock/v1/quotations/market-time"
 
     params = {}
 
@@ -9567,6 +9700,7 @@ def market_value(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/market-value"
     # 필수 파라미터 검증
     if fid_trgt_cls_code not in ["0"]:
         raise ValueError("대상 구분 코드 확인요망!!!")
@@ -9588,8 +9722,6 @@ def market_value(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
     tr_id = "FHPST01790000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/market-value"
 
     params = {
         "fid_trgt_cls_code": fid_trgt_cls_code,
@@ -9678,10 +9810,9 @@ def mktfunds(
         >>> df = mktfunds()
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/mktfunds"
 
     tr_id = "FHKST649100C0"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/mktfunds"
 
     params = {
         "FID_INPUT_DATE_1": fid_input_date_1
@@ -9759,6 +9890,7 @@ def near_new_highlow(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/near-new-highlow"
     # 필수 파라미터 검증
     if fid_aply_rang_vol not in ["0", "100"]:
         raise ValueError("적용 범위 거래량 확인요망!!!")
@@ -9778,8 +9910,6 @@ def near_new_highlow(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
     tr_id = "FHPST01870000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/near-new-highlow"
 
     params = {
         "fid_aply_rang_vol": fid_aply_rang_vol,
@@ -9895,6 +10025,7 @@ def news_title(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/news-title"
     # 최대 재귀 깊이 체크
     if depth >= max_depth:
         logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
@@ -9904,9 +10035,6 @@ def news_title(
     tr_id = "FHKST01011800"
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/quotations/news-title"
-
     params = {
         "FID_NEWS_OFER_ENTP_CODE": fid_news_ofer_entp_code,
         "FID_COND_MRKT_CLS_CODE": fid_cond_mrkt_cls_code,
@@ -10015,6 +10143,7 @@ def order_cash(
         >>> df = order_cash(env_dv="demo", ord_dv="buy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_dvsn="00", ord_qty="1", ord_unpr="70000", excg_id_dvsn_cd="KRX")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/order-cash"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -10061,8 +10190,6 @@ def order_cash(
             raise ValueError("ord_dv can only be sell or buy")
     else:
         raise ValueError("env_dv is required (e.g. 'real' or 'demo')")
-
-    api_url = "/uapi/domestic-stock/v1/trading/order-cash"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -10158,6 +10285,7 @@ def order_credit(
         >>> df = order_credit(ord_dv="buy", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", crdt_type="21", loan_dt="20220810", ord_dvsn="00", ord_qty="1", ord_unpr="55000")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/order-credit"
 
     # 필수 파라미터 검증
     if ord_dv == "" or ord_dv is None:
@@ -10195,8 +10323,6 @@ def order_credit(
         tr_id = "TTTC0051U"
     else:
         raise ValueError("ord_dv can only be buy or sell")
-
-    api_url = "/uapi/domestic-stock/v1/trading/order-credit"
 
     params = {
         "CANO": cano,
@@ -10326,6 +10452,7 @@ def order_resv(
         >>> df = order_resv(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, pdno="005930", ord_qty="1", ord_unpr="55000", sll_buy_dvsn_cd="02", ord_dvsn_cd="00", ord_objt_cblc_dvsn_cd="10")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/order-resv"
 
     if cano == "" or cano is None:
         raise ValueError("cano is required (e.g. '계좌번호 체계(8-2)의 앞 8자리')")
@@ -10352,8 +10479,6 @@ def order_resv(
         raise ValueError("ord_objt_cblc_dvsn_cd is required (e.g. '10: 현금, 12~28: 각종 대출/상환코드')")
 
     tr_id = "CTSC0008U"
-
-    api_url = "/uapi/domestic-stock/v1/trading/order-resv"
 
     params = {
         "CANO": cano,
@@ -10441,6 +10566,7 @@ def order_resv_ccnl(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/order-resv-ccnl"
 
     # 필수 파라미터 검증
     if rsvn_ord_ord_dt == "":
@@ -10472,8 +10598,6 @@ def order_resv_ccnl(
             return dataframe
 
     tr_id = "CTSC0004R"  # 주식예약주문조회
-
-    api_url = "/uapi/domestic-stock/v1/trading/order-resv-ccnl"
 
     params = {
         "RSVN_ORD_ORD_DT": rsvn_ord_ord_dt,  # 예약주문시작일자
@@ -10573,6 +10697,7 @@ def order_resv_rvsecncl(
         >>> df = order_resv_rvsecncl(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, rsvn_ord_seq="88793", rsvn_ord_orgno="123", rsvn_ord_ord_dt="20250113", ord_type="cancel")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/order-resv-rvsecncl"
 
     # 필수 파라미터 검증
     if cano == "" or cano is None:
@@ -10600,8 +10725,6 @@ def order_resv_rvsecncl(
         tr_id = "CTSC0013U"
     else:
         raise ValueError("ord_type can only be cancel or modify")
-
-    api_url = "/uapi/domestic-stock/v1/trading/order-resv-rvsecncl"
 
     params = {
         "CANO": cano,
@@ -10690,6 +10813,7 @@ def order_rvsecncl(
         >>> df = order_rvsecncl(env_dv="real", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, ...)
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/order-rvsecncl"
 
     # 필수 파라미터 검증
     if env_dv == "" or env_dv is None:
@@ -10732,8 +10856,6 @@ def order_rvsecncl(
         tr_id = "VTTC0013U"
     else:
         raise ValueError("env_dv is required (e.g. 'real' or 'demo')")
-
-    api_url = "/uapi/domestic-stock/v1/trading/order-rvsecncl"
 
     params = {
         "CANO": cano,
@@ -10796,6 +10918,7 @@ def overtime_exp_trans_fluct(
         >>> df = overtime_exp_trans_fluct("J", "11186", "0000", "0", "0")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/overtime-exp-trans-fluct"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -10813,8 +10936,6 @@ def overtime_exp_trans_fluct(
         raise ValueError("fid_div_cls_code is required (e.g. '0')")
 
     tr_id = "FHKST11860000"  # 국내주식 시간외예상체결등락률
-
-    api_url = "/uapi/domestic-stock/v1/ranking/overtime-exp-trans-fluct"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -10900,6 +11021,7 @@ def overtime_fluctuation(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/overtime-fluctuation"
     # 필수 파라미터 검증
     if not fid_cond_mrkt_div_code:
         logger.error("fid_cond_mrkt_div_code is required. (e.g. 'J')")
@@ -10920,8 +11042,6 @@ def overtime_fluctuation(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHPST02340000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/overtime-fluctuation"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -11049,6 +11169,7 @@ def overtime_volume(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/overtime-volume"
     # 필수 파라미터 검증
     if not fid_cond_mrkt_div_code:
         logger.error("fid_cond_mrkt_div_code is required. (e.g. 'J')")
@@ -11072,8 +11193,6 @@ def overtime_volume(
         return dataframe1 if dataframe1 is not None else pd.DataFrame(), dataframe2 if dataframe2 is not None else pd.DataFrame()
 
     tr_id = "FHPST02350000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/overtime-volume"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -11168,6 +11287,7 @@ def pbar_tratio(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/pbar-tratio"
 
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code == "":
@@ -11180,8 +11300,6 @@ def pbar_tratio(
         raise ValueError("fid_cond_scr_div_code is required (e.g. '20113')")
 
     tr_id = "FHPST01130000"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/pbar-tratio"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -11249,6 +11367,7 @@ def pension_inquire_balance(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-balance"
 
     if cano == "" or cano is None:
         raise ValueError("cano is required (e.g. '12345678')")
@@ -11271,8 +11390,6 @@ def pension_inquire_balance(
         return dataframe1, dataframe2
 
     tr_id = "TTTC2208R"  # 퇴직연금 잔고조회
-
-    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-balance"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -11363,6 +11480,7 @@ def pension_inquire_daily_ccld(
         >>> df = pension_inquire_daily_ccld(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, user_dvsn_cd="%%", sll_buy_dvsn_cd="00", ccld_nccs_dvsn="%%", inqr_dvsn_3="00")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-daily-ccld"
 
     if cano == "":
         raise ValueError("cano is required (e.g. '12345678')")
@@ -11390,8 +11508,6 @@ def pension_inquire_daily_ccld(
             return dataframe
 
     tr_id = "TTTC2201R"  # 퇴직연금 미체결내역
-
-    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-daily-ccld"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -11458,6 +11574,7 @@ def pension_inquire_deposit(
         >>> df = pension_inquire_deposit(cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, acca_dvsn_cd="00")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-deposit"
 
     if cano == "":
         raise ValueError("cano is required (e.g. '12345678')")
@@ -11469,8 +11586,6 @@ def pension_inquire_deposit(
         raise ValueError("acca_dvsn_cd is required (e.g. '00')")
 
     tr_id = "TTTC0506R"  # 퇴직연금 예수금조회
-
-    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-deposit"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -11520,6 +11635,7 @@ def pension_inquire_present_balance(
         >>> print(df1)
         >>> print(df2)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-present-balance"
 
     # 필수 파라미터 검증
     if cano == "":
@@ -11532,8 +11648,6 @@ def pension_inquire_present_balance(
         raise ValueError("user_dvsn_cd is required (e.g. '00')")
 
     tr_id = "TTTC2202R"  # 퇴직연금 체결기준잔고
-
-    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-present-balance"
 
     params = {
         "CANO": cano,  # 종합계좌번호
@@ -11600,6 +11714,7 @@ def pension_inquire_psbl_order(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-psbl-order"
 
     # 필수 파라미터 검증
     if cano == "":
@@ -11624,8 +11739,6 @@ def pension_inquire_psbl_order(
         raise ValueError("ord_dvsn is required (e.g. '00: 지정가, 01: 시장가')")
 
     tr_id = "TTTC0503R"
-
-    api_url = "/uapi/domestic-stock/v1/trading/pension/inquire-psbl-order"
 
     params = {
         "CANO": cano,
@@ -11698,6 +11811,7 @@ def period_rights(
         >>> df = period_rights(inqr_dvsn="03", cano=trenv.my_acct, acnt_prdt_cd=trenv.my_prod, inqr_strt_dt="20250101", inqr_end_dt="20250103")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/trading/period-rights"
 
     if inqr_dvsn == "":
         raise ValueError("inqr_dvsn is required (e.g. '03')")
@@ -11722,8 +11836,6 @@ def period_rights(
             return dataframe
 
     tr_id = "CTRGA011R"  # 기간별계좌권리현황조회
-
-    api_url = "/uapi/domestic-stock/v1/trading/period-rights"
 
     params = {
         "INQR_DVSN": inqr_dvsn,
@@ -11826,6 +11938,7 @@ def prefer_disparate_ratio(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio"
     # 필수 파라미터 검증
     if not fid_cond_mrkt_div_code:
         logger.error("fid_cond_mrkt_div_code is required. (e.g. 'J')")
@@ -11852,8 +11965,6 @@ def prefer_disparate_ratio(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST01770000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio"
 
     params = {
         "fid_vol_cnt": fid_vol_cnt,
@@ -11973,6 +12084,7 @@ def profit_asset_index(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/profit-asset-index"
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code != "J":
         raise ValueError("조건 시장 분류 코드 확인요망!!!")
@@ -11996,8 +12108,6 @@ def profit_asset_index(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
     tr_id = "FHPST01730000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/profit-asset-index"
 
     params = {
         "fid_cond_mrkt_div_code": fid_cond_mrkt_div_code,
@@ -12086,6 +12196,7 @@ def program_trade_by_stock(
         >>> df = program_trade_by_stock(fid_cond_mrkt_div_code="J", fid_input_iscd="005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/program-trade-by-stock"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (ex. J:KRX,NX:NXT,UN:통합)")
@@ -12094,8 +12205,6 @@ def program_trade_by_stock(
         raise ValueError("fid_input_iscd is required (ex. 123456)")
 
     tr_id = "FHPPG04650101"  # 종목별 프로그램매매추이(체결)
-
-    api_url = "/uapi/domestic-stock/v1/quotations/program-trade-by-stock"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,  # 조건 시장 분류 코드
@@ -12138,6 +12247,7 @@ def program_trade_by_stock_daily(
         >>> df = program_trade_by_stock_daily("J", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/program-trade-by-stock-daily"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (ex. J:KRX,NX:NXT,UN:통합)")
@@ -12146,8 +12256,6 @@ def program_trade_by_stock_daily(
         raise ValueError("fid_input_iscd is required (ex. 123456)")
 
     tr_id = "FHPPG04650201"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/program-trade-by-stock-daily"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -12199,6 +12307,7 @@ def psearch_result(
         >>> df = psearch_result(user_id=trenv.my_htsid, seq="0")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/psearch-result"
 
     if user_id == "":
         raise ValueError("user_id is required")
@@ -12207,8 +12316,6 @@ def psearch_result(
         raise ValueError("seq is required (e.g. '종목조건검색 목록조회 API의 output인 'seq'을 이용')")
 
     tr_id = "HHKST03900400"  # 종목조건검색조회
-
-    api_url = "/uapi/domestic-stock/v1/quotations/psearch-result"
 
     params = {
         "user_id": user_id,  # 사용자 HTS ID
@@ -12254,13 +12361,12 @@ def psearch_title(
         >>> df = psearch_title(user_id=trenv.my_htsid)
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/psearch-title"
 
     if user_id == "":
         raise ValueError("user_id is required (e.g. 'U:업종')")
 
     tr_id = "HHKST03900300"  # 종목조건검색 목록조회
-
-    api_url = "/uapi/domestic-stock/v1/quotations/psearch-title"
 
     params = {
         "user_id": user_id  # 사용자 HTS ID
@@ -12332,6 +12438,7 @@ def quote_balance(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/quote-balance"
     # 필수 파라미터 검증
     if fid_cond_mrkt_div_code != "J":
         raise ValueError("조건 시장 분류 코드 확인요망!!!")
@@ -12349,8 +12456,6 @@ def quote_balance(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
     tr_id = "FHPST01720000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/quote-balance"
 
     params = {
         "fid_vol_cnt": fid_vol_cnt,
@@ -12441,6 +12546,7 @@ def search_info(
         >>> df = search_info('AAPL', '512')
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/search-info"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -12463,9 +12569,6 @@ def search_info(
     tr_id = "CTPF1604R"
 
     # 요청 파라미터 설정
-
-    api_url = "/uapi/domestic-stock/v1/quotations/search-info"
-
     params = {
         "PDNO": pdno,
         "PRDT_TYPE_CD": prdt_type_cd,
@@ -12542,6 +12645,7 @@ def search_stock_info(
         >>> df = search_stock_info("300", "000660")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/search-stock-info"
     # 로깅 설정
     logger = logging.getLogger(__name__)
 
@@ -12560,8 +12664,6 @@ def search_stock_info(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "CTPF1002R"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/search-stock-info"
 
     params = {
         "PRDT_TYPE_CD": prdt_type_cd,
@@ -12665,6 +12767,7 @@ def short_sale(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/short-sale"
     # 필수 파라미터 검증
     if not fid_cond_mrkt_div_code:
         logger.error("fid_cond_mrkt_div_code is required. (e.g. 'J')")
@@ -12688,8 +12791,6 @@ def short_sale(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST04820000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/short-sale"
 
     params = {
         "FID_APLY_RANG_VOL": fid_aply_rang_vol,
@@ -12807,6 +12908,7 @@ def top_interest_stock(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/top-interest-stock"
     # 필수 파라미터 검증
     if not fid_input_iscd_2:
         logger.error("fid_input_iscd_2 is required. (e.g. '000000')")
@@ -12830,8 +12932,6 @@ def top_interest_stock(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST01800000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/top-interest-stock"
 
     params = {
         "fid_input_iscd_2": fid_input_iscd_2,
@@ -12954,6 +13054,7 @@ def traded_by_company(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/traded-by-company"
     # 필수 파라미터 검증
     if not fid_trgt_exls_cls_code:
         logger.error("fid_trgt_exls_cls_code is required. (e.g. '0')")
@@ -12992,8 +13093,6 @@ def traded_by_company(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST01860000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/traded-by-company"
 
     params = {
         "fid_trgt_exls_cls_code": fid_trgt_exls_cls_code,
@@ -13080,6 +13179,7 @@ def tradprt_byamt(
         >>> df = tradprt_byamt("J", "11119", "005930")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/tradprt-byamt"
 
     if fid_cond_mrkt_div_code == "":
         raise ValueError("fid_cond_mrkt_div_code is required (e.g. 'J')")
@@ -13091,8 +13191,6 @@ def tradprt_byamt(
         raise ValueError("fid_input_iscd is required (e.g. '123456')")
 
     tr_id = "FHKST111900C0"
-
-    api_url = "/uapi/domestic-stock/v1/quotations/tradprt-byamt"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -13166,6 +13264,7 @@ def volume_power(
         ... )
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/ranking/volume-power"
     # 필수 파라미터 검증
     if not fid_trgt_exls_cls_code:
         logger.error("fid_trgt_exls_cls_code is required. (e.g. '0')")
@@ -13192,8 +13291,6 @@ def volume_power(
         return dataframe if dataframe is not None else pd.DataFrame()
 
     tr_id = "FHPST01680000"
-
-    api_url = "/uapi/domestic-stock/v1/ranking/volume-power"
 
     params = {
         "fid_trgt_exls_cls_code": fid_trgt_exls_cls_code,
@@ -13295,6 +13392,7 @@ def volume_rank(
         >>> df = volume_rank(fid_cond_mrkt_div_code="J", fid_cond_scr_div_code="20171", fid_input_iscd="0000", fid_div_cls_code="0", fid_blng_cls_code="0", fid_trgt_cls_code="111111111", fid_trgt_exls_cls_code="0000000000", fid_input_price_1="0", fid_input_price_2="1000000", fid_vol_cnt="100000", fid_input_date_1="")
         >>> print(df)
     """
+    api_url = "/uapi/domestic-stock/v1/quotations/volume-rank"
     if fid_cond_mrkt_div_code not in ["J", "NX", "UN", "W"]:
         raise ValueError("조건 시장 분류 코드 확인요망!!!")
 
@@ -13318,8 +13416,6 @@ def volume_rank(
     #     raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
     tr_id = "FHPST01710000"  # 거래량순위
-
-    api_url = "/uapi/domestic-stock/v1/quotations/volume-rank"
 
     params = {
         "FID_COND_MRKT_DIV_CODE": fid_cond_mrkt_div_code,
@@ -13363,104 +13459,5 @@ def volume_rank(
             print("The End")
             return dataframe
     else:
-        res.printError(api_url)
-        return pd.DataFrame()
-
-
-##############################################################################################
-# [국내주식] 주문/계좌 > 매도가능수량조회 [국내주식-165]
-##############################################################################################
-
-def inquire_psbl_sell(
-        cano: str,  # 종합계좌번호
-        acnt_prdt_cd: str,  # 계좌상품코드
-        pdno: str,  # 종목번호
-        tr_cont: str = "",  # 연속 거래 여부
-        dataframe: Optional[pd.DataFrame] = None,  # 누적 데이터프레임
-        depth: int = 0,  # 현재 재귀 깊이
-        max_depth: int = 10  # 최대 재귀 깊이
-) -> Optional[pd.DataFrame]:
-    """
-    [국내주식] 주문/계좌
-    매도가능수량조회[국내주식-165]
-    매도가능수량조회 API를 호출하여 DataFrame으로 반환합니다.
-
-    Args:
-        cano (str): 종합계좌번호
-        acnt_prdt_cd (str): 계좌상품코드
-        pdno (str): 보유종목 코드 ex)000660
-        tr_cont (str): 연속 거래 여부
-        dataframe (Optional[pd.DataFrame]): 누적 데이터프레임
-        depth (int): 현재 재귀 깊이
-        max_depth (int): 최대 재귀 깊이 (기본값: 10)
-
-    Returns:
-        Optional[pd.DataFrame]: 매도가능수량조회 데이터
-
-    Example:
-        >>> df = inquire_psbl_sell("12345678", "01", "000660")
-        >>> print(df)
-    """
-    # 필수 파라미터 검증
-    if not cano:
-        logger.error("cano is required. (e.g. '12345678')")
-        raise ValueError("cano is required. (e.g. '12345678')")
-
-    if not acnt_prdt_cd:
-        logger.error("acnt_prdt_cd is required. (e.g. '01')")
-        raise ValueError("acnt_prdt_cd is required. (e.g. '01')")
-
-    if not pdno:
-        logger.error("pdno is required. (e.g. '000660')")
-        raise ValueError("pdno is required. (e.g. '000660')")
-
-    # 최대 재귀 깊이 체크
-    if depth >= max_depth:
-        logger.warning("Maximum recursion depth (%d) reached. Stopping further requests.", max_depth)
-        return dataframe if dataframe is not None else pd.DataFrame()
-
-    tr_id = "TTTC8408R"
-
-    api_url = "/uapi/domestic-stock/v1/trading/inquire-psbl-sell"
-
-    params = {
-        "CANO": cano,
-        "ACNT_PRDT_CD": acnt_prdt_cd,
-        "PDNO": pdno,
-    }
-
-    # API 호출
-    res = ka._url_fetch(api_url, tr_id, tr_cont, params)
-
-    if res.isOK():
-        if hasattr(res.getBody(), 'output'):
-            output_data = res.getBody().output
-            if not isinstance(output_data, list):
-                output_data = [output_data]
-            current_data = pd.DataFrame(output_data)
-        else:
-            current_data = pd.DataFrame()
-
-        if dataframe is not None:
-            dataframe = pd.concat([dataframe, current_data], ignore_index=True)
-        else:
-            dataframe = current_data
-
-        tr_cont = res.getHeader().tr_cont
-
-        if tr_cont == "M":
-            logger.info("Calling next page...")
-            ka.smart_sleep()
-            return inquire_psbl_sell(
-                cano,
-                acnt_prdt_cd,
-                pdno,
-                "N", dataframe, depth + 1, max_depth
-            )
-        else:
-            logger.info("Data fetch complete.")
-            return dataframe
-    else:
-        logger.error("API call failed: %s - %s", res.getErrorCode(), res.getErrorMessage())
         res.printError(api_url)
         return pd.DataFrame()
