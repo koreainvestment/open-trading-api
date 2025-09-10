@@ -311,4 +311,4 @@ uv sync --reinstall
 
 # 📧 문의사항
 
-- [한국투자증권 고객의 소리](https://securities.koreainvestment.com/main/customer/support/Support.jsp?cmd=agree_3) > 홈페이지 로그인 후 이용해주세요
+- [💬 한국투자증권 Open API 챗봇](https://chatgpt.com/g/g-68b920ee7afc8191858d3dc05d429571-hangugtujajeunggweon-open-api-seobiseu-gpts)에 언제든 궁금한 점을 물어보세요.
