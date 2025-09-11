@@ -4,12 +4,12 @@
 
 한국투자증권에서 개발자들을 위한 혁신적인 도구를 공개합니다. **MCP(Model Context Protocol)**를 활용해 AI 모델이 증권 데이터에 직접 접근할 수 있는 두 가지 도구를 제공합니다:
 
-1. **KIS Trade MCP**: 한국투자증권 OpenAPI를 AI 도구에서 직접 호출
+1. **KIS Trading MCP** (9월 중 공개예정): 한국투자증권 OpenAPI를 AI 도구에서 직접 호출
 2. **KIS Code Assistant MCP**: 한국투자증권 OpenAPI 사용법과 샘플코드를 AI 도구가 검색/제공
 
 ## 🔧 지원 기능
 
-### KIS Trade MCP
+### KIS Trading MCP
 
 - **시세 조회**: 국내/해외 주식, 선물/옵션, 채권, ETF/ELW
 - **계좌 관리**: 잔고조회, 주문/체결내역, 손익현황
