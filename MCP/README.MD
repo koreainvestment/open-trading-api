@@ -10,7 +10,7 @@
 ## 🔧 지원 기능
 
 ### KIS Code Assistant MCP
-  //스미더리 주소
+  https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp
 - **스마트 검색**: 자연어로 원하는 API 기능 검색
 - **샘플코드 제공**: GitHub에서 실제 구현 코드 자동 검색
 - **카테고리별 탐색**: 기능별 체계적인 API 분류
