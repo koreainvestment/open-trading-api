@@ -1,7 +1,6 @@
 """
 Created on 2025-08-21
 
-@author: LaivData jjlee with cursor
 """
 
 import sys

@@ -4,7 +4,6 @@
 """
 Created on 2025-06-18
 
-@author: LaivData jjlee with cursor
 """
 
 import logging

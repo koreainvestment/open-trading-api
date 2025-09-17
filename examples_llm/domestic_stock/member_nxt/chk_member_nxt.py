@@ -1,6 +1,5 @@
 """
 Created on 2025-07-08
-@author: LaivData jjlee with cursor
 """
 
 import logging

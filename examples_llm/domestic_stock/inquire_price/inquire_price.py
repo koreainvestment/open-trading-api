@@ -1,6 +1,5 @@
 """
 Created on 20250112
-@author: LaivData SJPark with cursor
 """
 
 

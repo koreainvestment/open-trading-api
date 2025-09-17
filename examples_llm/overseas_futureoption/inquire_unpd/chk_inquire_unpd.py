@@ -2,7 +2,6 @@
 """
 Created on 2025-07-02
 
-@author: LaivData jjlee with cursor
 """
 
 import sys

@@ -1,6 +1,5 @@
 """
 Created on 20250114
-@author: LaivData SJPark with cursor
 """
 
 import logging
