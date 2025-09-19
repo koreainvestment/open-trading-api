@@ -1,0 +1,17 @@
+[project]
+name = "korea-investment-api-mcp"
+version = "0.1.0"
+description = "한국투자증권 OPEN API MCP 서버 - LLM이 쉽게 사용할 수 있는 금융 API 래퍼"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=2.11.2",
+    "pandas>=2.3.1",
+    "pycryptodome>=3.23.0",
+    "pydantic>=2.11.7",
+    "python-dotenv>=1.1.1",
+    "requests>=2.32.4",
+    "websockets>=15.0.1",
+    "PyYAML>=6.0.1",
+    "sqlalchemy>=2.0.43",
+]
