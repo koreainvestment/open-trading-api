@@ -1,0 +1,2914 @@
+{
+  "tool_info": {
+    "introduce": "한국투자증권의 해외주식 OPEN API를 활용합니다.",
+    "introduce_append": "",
+    "examples": [
+      {
+        "api_type": "price",
+        "params": {
+          "auth": "",
+          "excd": "NAS",
+          "symb": "AAPL"
+        }
+      },
+      {
+        "api_type": "inquire_daily_chartprice",
+        "params": {
+          "fid_cond_mrkt_div_code": "N",
+          "fid_input_iscd": ".DJI",
+          "fid_input_date_1": "20220401",
+          "fid_input_date_2": "20220613",
+          "fid_period_div_code": "D",
+          "env_dv": "real"
+        }
+      }
+    ]
+  },
+  "apis": {
+    "price": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식 현재체결가",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/price",
+      "method": "price",
+      "api_path": "/uapi/overseas-price/v1/quotations/price",
+      "params": {
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "사용자권한정보"
+        },
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "거래소코드"
+        },
+        "symb": {
+          "name": "symb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real",
+          "description": "실전모의구분 (real:실전, demo:모의)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "inquire_daily_chartprice": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식 종목/지수/환율기간별시세(일/주/월/년)",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_daily_chartprice",
+      "method": "inquire_daily_chartprice",
+      "api_path": "/uapi/overseas-price/v1/quotations/inquire-daily-chartprice",
+      "params": {
+        "fid_cond_mrkt_div_code": {
+          "name": "fid_cond_mrkt_div_code",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "N: 해외지수, X 환율, I: 국채, S:금선물"
+        },
+        "fid_input_iscd": {
+          "name": "fid_input_iscd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드 ※ 해외주식 마스터 코드 참조  (포럼 > FAQ > 종목정보 다운로드(해외) > 해외지수)  ※ 해당 API로 미국주식 조회 시, 다우30, 나스닥100, S&P500 종목만 조회 가능합니다. 더 많은 미국주식 종목 시세를 이용할 시에는, 해외주식기간별시세 API 사용 부탁드립니다."
+        },
+        "fid_input_date_1": {
+          "name": "fid_input_date_1",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "시작일자(YYYYMMDD)"
+        },
+        "fid_input_date_2": {
+          "name": "fid_input_date_2",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종료일자(YYYYMMDD)"
+        },
+        "fid_period_div_code": {
+          "name": "fid_period_div_code",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "D:일, W:주, M:월, Y:년"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real",
+          "description": "실전모의구분 (real:실전, demo:모의)"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output1)"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output2)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "inquire_time_itemchartprice": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식분봉조회",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_time_itemchartprice",
+      "method": "inquire_time_itemchartprice",
+      "api_path": "/uapi/overseas-price/v1/quotations/inquire-time-itemchartprice",
+      "params": {
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"\" 공백으로 입력"
+        },
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "NYS : 뉴욕 NAS : 나스닥 AMS : 아멕스  HKS : 홍콩 SHS : 상해  SZS : 심천 HSX : 호치민 HNX : 하노이 TSE : 도쿄   ※ 주간거래는 최대 1일치 분봉만 조회 가능 BAY : 뉴욕(주간) BAQ : 나스닥(주간) BAA : 아멕스(주간)"
+        },
+        "symb": {
+          "name": "symb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드(ex. TSLA)"
+        },
+        "nmin": {
+          "name": "nmin",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "분단위(1: 1분봉, 2: 2분봉, ...)"
+        },
+        "pinc": {
+          "name": "pinc",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "0:당일 1:전일포함 ※ 다음조회 시 반드시 \"1\"로 입력"
+        },
+        "next": {
+          "name": "next",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "처음조회 시, \"\" 공백 입력 다음조회 시, \"1\" 입력"
+        },
+        "nrec": {
+          "name": "nrec",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "레코드요청갯수 (최대 120)"
+        },
+        "fill": {
+          "name": "fill",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"\" 공백으로 입력"
+        },
+        "keyb": {
+          "name": "keyb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "처음 조회 시, \"\" 공백 입력 다음 조회 시, 이전 조회 결과의 마지막 분봉 데이터를 이용하여, 1분 전 혹은 n분 전의 시간을 입력  (형식: YYYYMMDDHHMMSS, ex. 20241014140100)"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output1)"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output2)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "dailyprice": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식 기간별시세",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/dailyprice",
+      "method": "dailyprice",
+      "api_path": "/uapi/overseas-price/v1/quotations/dailyprice",
+      "params": {
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "사용자권한정보"
+        },
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "거래소코드"
+        },
+        "symb": {
+          "name": "symb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드"
+        },
+        "gubn": {
+          "name": "gubn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "일/주/월구분"
+        },
+        "bymd": {
+          "name": "bymd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "조회기준일자(YYYYMMDD)"
+        },
+        "modp": {
+          "name": "modp",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "수정주가반영여부"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real",
+          "description": "실전모의구분 (real:실전, demo:모의)"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output1)"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output2)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "price_detail": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식 현재가상세",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/price_detail",
+      "method": "price_detail",
+      "api_path": "/uapi/overseas-price/v1/quotations/price-detail",
+      "params": {
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "사용자권한정보"
+        },
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "거래소명 (예: HKS, NYS, NAS, AMS, TSE, SHS, SZS, SHI, SZI, HSX, HNX, BAY, BAQ, BAA)"
+        },
+        "symb": {
+          "name": "symb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "inquire_asking_price": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식 현재가 1호가",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_asking_price",
+      "method": "inquire_asking_price",
+      "api_path": "/uapi/overseas-price/v1/quotations/inquire-asking-price",
+      "params": {
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "사용자권한정보"
+        },
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "거래소코드 (예: NYS, NAS, AMS, 등)"
+        },
+        "symb": {
+          "name": "symb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드 (예: TSLA)"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output1)"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output2)"
+        },
+        "dataframe3": {
+          "name": "dataframe3",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output3)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "inquire_search": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식조건검색",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_search",
+      "method": "inquire_search",
+      "api_path": "/uapi/overseas-price/v1/quotations/inquire-search",
+      "params": {
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"\" (Null 값 설정)"
+        },
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "NYS : 뉴욕, NAS : 나스닥,  AMS : 아멕스  HKS : 홍콩, SHS : 상해 , SZS : 심천 HSX : 호치민, HNX : 하노이 TSE : 도쿄"
+        },
+        "co_yn_pricecur": {
+          "name": "co_yn_pricecur",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해당조건 사용시(1), 미사용시 필수항목아님"
+        },
+        "co_st_pricecur": {
+          "name": "co_st_pricecur",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 각국통화(JPY, USD, HKD, CNY, VND)"
+        },
+        "co_en_pricecur": {
+          "name": "co_en_pricecur",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 각국통화(JPY, USD, HKD, CNY, VND)"
+        },
+        "co_yn_rate": {
+          "name": "co_yn_rate",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해당조건 사용시(1), 미사용시 필수항목아님"
+        },
+        "co_st_rate": {
+          "name": "co_st_rate",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "%"
+        },
+        "co_en_rate": {
+          "name": "co_en_rate",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "%"
+        },
+        "co_yn_valx": {
+          "name": "co_yn_valx",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해당조건 사용시(1), 미사용시 필수항목아님"
+        },
+        "co_st_valx": {
+          "name": "co_st_valx",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 천"
+        },
+        "co_en_valx": {
+          "name": "co_en_valx",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 천"
+        },
+        "co_yn_shar": {
+          "name": "co_yn_shar",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해당조건 사용시(1), 미사용시 필수항목아님"
+        },
+        "co_st_shar": {
+          "name": "co_st_shar",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 천"
+        },
+        "co_en_shar": {
+          "name": "co_en_shar",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 천"
+        },
+        "co_yn_volume": {
+          "name": "co_yn_volume",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해당조건 사용시(1), 미사용시 필수항목아님"
+        },
+        "co_st_volume": {
+          "name": "co_st_volume",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 주"
+        },
+        "co_en_volume": {
+          "name": "co_en_volume",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 주"
+        },
+        "co_yn_amt": {
+          "name": "co_yn_amt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해당조건 사용시(1), 미사용시 필수항목아님"
+        },
+        "co_st_amt": {
+          "name": "co_st_amt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 천"
+        },
+        "co_en_amt": {
+          "name": "co_en_amt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "단위: 천"
+        },
+        "co_yn_eps": {
+          "name": "co_yn_eps",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해당조건 사용시(1), 미사용시 필수항목아님"
+        },
+        "co_st_eps": {
+          "name": "co_st_eps",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "co_en_eps (str):"
+        },
+        "co_en_eps": {
+          "name": "co_en_eps",
+          "type": "str",
+          "required": true,
+          "default_value": null
+        },
+        "co_yn_per": {
+          "name": "co_yn_per",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해당조건 사용시(1), 미사용시 필수항목아님"
+        },
+        "co_st_per": {
+          "name": "co_st_per",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "co_en_per (str):"
+        },
+        "co_en_per": {
+          "name": "co_en_per",
+          "type": "str",
+          "required": true,
+          "default_value": null
+        },
+        "keyb": {
+          "name": "keyb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"\" 공백 입력"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output)"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output1)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "quot_inquire_ccnl": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식 체결추이",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/quot_inquire_ccnl",
+      "method": "quot_inquire_ccnl",
+      "api_path": "/uapi/overseas-price/v1/quotations/inquire-ccnl",
+      "params": {
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)"
+        },
+        "tday": {
+          "name": "tday",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 당일전일구분 (ex. 0:전일, 1:당일)"
+        },
+        "symb": {
+          "name": "symb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 종목코드 (ex. 해외종목코드)"
+        },
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "사용자권한정보"
+        },
+        "keyb": {
+          "name": "keyb",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "NEXT KEY BUFF"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속거래여부"
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "내부 재귀깊이 (자동관리)"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 횟수 제한"
+        }
+      }
+    },
+    "search_info": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식 상품기본정보",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/search_info",
+      "method": "search_info",
+      "api_path": "/uapi/overseas-price/v1/quotations/search-info",
+      "params": {
+        "prdt_type_cd": {
+          "name": "prdt_type_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "512  미국 나스닥 / 513  미국 뉴욕 / 529  미국 아멕스  515  일본 501  홍콩 / 543  홍콩CNY / 558  홍콩USD 507  베트남 하노이 / 508  베트남 호치민 551  중국 상해A / 552  중국 심천A"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "예) AAPL (애플)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "industry_theme": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외주식 업종별시세",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/industry_theme",
+      "method": "industry_theme",
+      "api_path": "/uapi/overseas-price/v1/quotations/industry-theme",
+      "params": {
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)"
+        },
+        "icod": {
+          "name": "icod",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 업종코드"
+        },
+        "vol_rang": {
+          "name": "vol_rang",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래량조건 (ex. 0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상)"
+        },
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "사용자권한정보"
+        },
+        "keyb": {
+          "name": "keyb",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "NEXT KEY BUFF"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속거래여부"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임1"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임2"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "내부 재귀깊이 (자동관리)"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 횟수 제한"
+        }
+      }
+    },
+    "inquire_time_indexchartprice": {
+      "category": "[해외주식] 기본시세",
+      "name": "해외지수분봉조회",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_time_indexchartprice",
+      "method": "inquire_time_indexchartprice",
+      "api_path": "/uapi/overseas-price/v1/quotations/inquire-time-indexchartprice",
+      "params": {
+        "fid_cond_mrkt_div_code": {
+          "name": "fid_cond_mrkt_div_code",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "N 해외지수 X 환율 KX 원화환율"
+        },
+        "fid_input_iscd": {
+          "name": "fid_input_iscd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목번호(ex. TSLA)"
+        },
+        "fid_hour_cls_code": {
+          "name": "fid_hour_cls_code",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "0: 정규장, 1: 시간외"
+        },
+        "fid_pw_data_incu_yn": {
+          "name": "fid_pw_data_incu_yn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "Y/N"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output1)"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output2)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "updown_rate": {
+      "category": "[해외주식] 시세분석",
+      "name": "해외주식 상승율/하락율",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/updown_rate",
+      "method": "updown_rate",
+      "api_path": "/uapi/overseas-stock/v1/ranking/updown-rate",
+      "params": {
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)"
+        },
+        "nday": {
+          "name": "nday",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] N일자값 (ex. 0:당일, 1:2일, 2:3일, 3:5일, 4:10일, 5:20일전, 6:30일, 7:60일, 8:120일, 9:1년)"
+        },
+        "gubn": {
+          "name": "gubn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 상승율/하락율 구분 (ex. 0:하락율, 1:상승율)"
+        },
+        "vol_rang": {
+          "name": "vol_rang",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래량조건 (ex. 0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상)"
+        },
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "사용자권한정보"
+        },
+        "keyb": {
+          "name": "keyb",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "NEXT KEY BUFF"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속거래여부"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임1"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임2"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "내부 재귀깊이 (자동관리)"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 횟수 제한"
+        }
+      }
+    },
+    "rights_by_ice": {
+      "category": "[해외주식] 시세분석",
+      "name": "해외주식 권리종합",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/rights_by_ice",
+      "method": "rights_by_ice",
+      "api_path": "/uapi/overseas-price/v1/quotations/rights-by-ice",
+      "params": {
+        "ncod": {
+          "name": "ncod",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 국가코드 (ex. CN:중국,HK:홍콩,US:미국,JP:일본,VN:베트남)"
+        },
+        "symb": {
+          "name": "symb",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 종목코드"
+        },
+        "st_ymd": {
+          "name": "st_ymd",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "일자시작일 (ex. 미입력시 3개월전)"
+        },
+        "ed_ymd": {
+          "name": "ed_ymd",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "일자종료일 (ex. 미입력시 3개월후)"
+        }
+      }
+    },
+    "price_fluct": {
+      "category": "[해외주식] 시세분석",
+      "name": "해외주식 가격급등락",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/price_fluct",
+      "method": "price_fluct",
+      "api_path": "/uapi/overseas-stock/v1/ranking/price-fluct",
+      "params": {
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)"
+        },
+        "gubn": {
+          "name": "gubn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 급등/급락구분 (ex. 0:급락, 1:급등)"
+        },
+        "mixn": {
+          "name": "mixn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] N분전콤보값 (ex. 0:1분전, 1:2분전, 2:3분전, 3:5분전, 4:10분전, 5:15분전, 6:20분전, 7:30분전, 8:60분전, 9:120분전)"
+        },
+        "vol_rang": {
+          "name": "vol_rang",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래량조건 (ex. 0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상)"
+        },
+        "keyb": {
+          "name": "keyb",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "NEXT KEY BUFF"
+        },
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "사용자권한정보"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속거래여부"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임1"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임2"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "내부 재귀깊이 (자동관리)"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 횟수 제한"
+        }
+      }
+    },
+    "trade_vol": {
+      "category": "[해외주식] 시세분석",
+      "name": "해외주식 거래량순위",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/trade_vol",
+      "method": "trade_vol",
+      "api_path": "/uapi/overseas-stock/v1/ranking/trade-vol",
+      "params": {
+        "excd": {
+          "name": "excd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)"
+        },
+        "nday": {
+          "name": "nday",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] N분전콤보값 (ex. 0:당일, 1:2일전, 2:3일전, 3:5일전, 4:10일전, 5:20일전, 6:30일전, 7:60일전, 8:120일전, 9:1년전)"
+        },
+        "vol_rang": {
+          "name": "vol_rang",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래량조건 (ex. 0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상)"
+        },
+        "keyb": {
+          "name": "keyb",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "NEXT KEY BUFF (ex. \"\")"
+        },
+        "auth": {
+          "name": "auth",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "사용자권한정보 (ex. \"\")"
+        },
+        "prc1": {
+          "name": "prc1",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "가격 필터 시작 (ex. \"\")"
+        },
+        "prc2": {
+          "name": "prc2",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "가격 필터 종료 (ex. \"\")"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속거래여부 (ex. \"\")"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임1"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임2"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "내부 재귀깊이 (자동관리)"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 횟수 제한"
+        }
+      }
+    },
+    "period_rights": {
+      "category": "[해외주식] 시세분석",
+      "name": "해외주식 기간별권리조회",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/period_rights",
+      "method": "period_rights",
+      "api_path": "/uapi/overseas-price/v1/quotations/period-rights",
+      "params": {
+        "rght_type_cd": {
+          "name": "rght_type_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 권리유형코드 (%%:전체, 01:유상, 02:무상, 03:배당, 11:합병,14:액면분할, 15:액면병합, 17:감자, 54:WR청구,61:원리금상환, 71:WR소멸, 74:배당옵션, 75:특별배당, 76:ISINCODE변경, 77:실권주청약)"
+        },
+        "inqr_dvsn_cd": {
+          "name": "inqr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 조회구분코드 (02:현지기준일, 03:청약시작일, 04:청약종료일)"
+        },
+        "inqr_strt_dt": {
+          "name": "inqr_strt_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 조회시작일자 (20250101)"
+        },
+        "inqr_end_dt": {
+          "name": "inqr_end_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 조회종료일자 (20250131)"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "상품번호"
+        },
+        "prdt_type_cd": {
+          "name": "prdt_type_cd",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "상품유형코드"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    },
+    "inquire_present_balance": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 체결기준현재잔고",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_present_balance",
+      "method": "inquire_present_balance",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-present-balance",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "wcrc_frcr_dvsn_cd": {
+          "name": "wcrc_frcr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "01 : 원화  02 : 외화"
+        },
+        "natn_cd": {
+          "name": "natn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "000 전체 840 미국 344 홍콩 156 중국 392 일본 704 베트남"
+        },
+        "tr_mket_cd": {
+          "name": "tr_mket_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[Request body NATN_CD 000 설정] 00 : 전체  [Request body NATN_CD 840 설정] 00 : 전체 01 : 나스닥(NASD) 02 : 뉴욕거래소(NYSE) 03 : 미국(PINK SHEETS) 04 : 미국(OTCBB) 05 : 아멕스(AMEX)  [Request body NATN_CD 156 설정] 00 : 전체 01 : 상해B 02 : 심천B 03 : 상해A 04 : 심천A  [Request body NATN_CD 392 설정] 01 : 일본  [Request body NATN_CD 704 설정] 01 : 하노이거래 02 : 호치민거래소  [Request body NATN_CD 344 설정] 01 : 홍콩 02 : 홍콩CNY 03 : 홍콩USD"
+        },
+        "inqr_dvsn_cd": {
+          "name": "inqr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "00 : 전체  01 : 일반해외주식  02 : 미니스탁"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real",
+          "description": "실전모의구분 (real:실전, demo:모의)"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output1)"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output2)"
+        },
+        "dataframe3": {
+          "name": "dataframe3",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output3)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "inquire_balance": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 잔고",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_balance",
+      "method": "inquire_balance",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-balance",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[모의] NASD : 나스닥 NYSE : 뉴욕  AMEX : 아멕스  [실전] NASD : 미국전체 NAS : 나스닥 NYSE : 뉴욕  AMEX : 아멕스  [모의/실전 공통] SEHK : 홍콩 SHAA : 중국상해 SZAA : 중국심천 TKSE : 일본 HASE : 베트남 하노이 VNSE : 베트남 호치민"
+        },
+        "tr_crcy_cd": {
+          "name": "tr_crcy_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "USD : 미국달러 HKD : 홍콩달러 CNY : 중국위안화 JPY : 일본엔화 VND : 베트남동"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    },
+    "inquire_nccs": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 미체결내역",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_nccs",
+      "method": "inquire_nccs",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-nccs",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "NASD : 나스닥 NYSE : 뉴욕  AMEX : 아멕스 SEHK : 홍콩 SHAA : 중국상해 SZAA : 중국심천 TKSE : 일본 HASE : 베트남 하노이 VNSE : 베트남 호치민  * NASD 인 경우만 미국전체로 조회되며 나머지 거래소 코드는 해당 거래소만 조회됨 * 공백 입력 시 다음조회가 불가능하므로, 반드시 거래소코드 입력해야 함"
+        },
+        "sort_sqn": {
+          "name": "sort_sqn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "DS : 정순 그외 : 역순  [header tr_id: TTTS3018R] \"\"(공란)"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    },
+    "inquire_ccnl": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 주문체결내역",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_ccnl",
+      "method": "inquire_ccnl",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-ccnl",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "전종목일 경우 \"%\" 입력 ※ 모의투자계좌의 경우 \"\"(전체 조회)만 가능"
+        },
+        "ord_strt_dt": {
+          "name": "ord_strt_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "YYYYMMDD 형식 (현지시각 기준)"
+        },
+        "ord_end_dt": {
+          "name": "ord_end_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "YYYYMMDD 형식 (현지시각 기준)"
+        },
+        "sll_buy_dvsn": {
+          "name": "sll_buy_dvsn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "00 : 전체  01 : 매도  02 : 매수 ※ 모의투자계좌의 경우 \"00\"(전체 조회)만 가능"
+        },
+        "ccld_nccs_dvsn": {
+          "name": "ccld_nccs_dvsn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "00 : 전체  01 : 체결  02 : 미체결 ※ 모의투자계좌의 경우 \"00\"(전체 조회)만 가능"
+        },
+        "sort_sqn": {
+          "name": "sort_sqn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "DS : 정순 AS : 역순  ※ 모의투자계좌의 경우 정렬순서 사용불가(Default : DS(정순))"
+        },
+        "ord_dt": {
+          "name": "ord_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"\" (Null 값 설정)"
+        },
+        "ord_gno_brno": {
+          "name": "ord_gno_brno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"\" (Null 값 설정)"
+        },
+        "odno": {
+          "name": "odno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"\" (Null 값 설정) ※ 주문번호로 검색 불가능합니다. 반드시 \"\"(Null 값 설정) 바랍니다."
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "전종목일 경우 \"%\" 입력 NASD : 미국시장 전체(나스닥, 뉴욕, 아멕스) NYSE : 뉴욕 AMEX : 아멕스 SEHK : 홍콩  SHAA : 중국상해 SZAA : 중국심천 TKSE : 일본 HASE : 베트남 하노이 VNSE : 베트남 호치민 ※ 모의투자계좌의 경우 \"\"(전체 조회)만 가능"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    },
+    "inquire_psamount": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 매수가능금액조회",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_psamount",
+      "method": "inquire_psamount",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-psamount",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "NASD : 나스닥 / NYSE : 뉴욕 / AMEX : 아멕스 SEHK : 홍콩 / SHAA : 중국상해 / SZAA : 중국심천 TKSE : 일본 / HASE : 하노이거래소 / VNSE : 호치민거래소"
+        },
+        "ovrs_ord_unpr": {
+          "name": "ovrs_ord_unpr",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해외주문단가 (23.8) 정수부분 23자리, 소수부분 8자리"
+        },
+        "item_cd": {
+          "name": "item_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real",
+          "description": "실전모의구분 (real:실전, demo:모의)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "foreign_margin": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외증거금 통화별조회",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/foreign_margin",
+      "method": "foreign_margin",
+      "api_path": "/uapi/overseas-stock/v1/trading/foreign-margin",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부 (기본값: \"\")"
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "order": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 주문",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/order",
+      "method": "order",
+      "api_path": "/uapi/overseas-stock/v1/trading/order",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "NASD : 나스닥 NYSE : 뉴욕 AMEX : 아멕스 SEHK : 홍콩 SHAA : 중국상해 SZAA : 중국심천 TKSE : 일본 HASE : 베트남 하노이 VNSE : 베트남 호치민"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드"
+        },
+        "ord_qty": {
+          "name": "ord_qty",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "주문수량 (해외거래소 별 최소 주문수량 및 주문단위 확인 필요)"
+        },
+        "ovrs_ord_unpr": {
+          "name": "ovrs_ord_unpr",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "1주당 가격 * 시장가의 경우 1주당 가격을 공란으로 비우지 않음 \"0\"으로 입력"
+        },
+        "ord_dv": {
+          "name": "ord_dv",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "주문구분 (buy: 매수, sell: 매도)"
+        },
+        "ctac_tlno": {
+          "name": "ctac_tlno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "mgco_aptm_odno (str):"
+        },
+        "mgco_aptm_odno": {
+          "name": "mgco_aptm_odno",
+          "type": "str",
+          "required": true,
+          "default_value": null
+        },
+        "ord_svr_dvsn_cd": {
+          "name": "ord_svr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"0\"(Default)"
+        },
+        "ord_dvsn": {
+          "name": "ord_dvsn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[Header tr_id TTTT1002U(미국 매수 주문)] 00 : 지정가 32 : LOO(장개시지정가) 34 : LOC(장마감지정가) * 모의투자 VTTT1002U(미국 매수 주문)로는 00:지정가만 가능  [Header tr_id TTTT1006U(미국 매도 주문)] 00 : 지정가 31 : MOO(장개시시장가) 32 : LOO(장개시지정가) 33 : MOC(장마감시장가) 34 : LOC(장마감지정가) * 모의투자 VTTT1006U(미국 매도 주문)로는 00:지정가만 가능  [Header tr_id TTTS1001U(홍콩 매도 주문)] 00 : 지정가 50 : 단주지정가 * 모의투자 VTTS1001U(홍콩 매도 주문)로는 00:지정가만 가능  [그외 tr_id] 제거"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real",
+          "description": "실전모의구분 (real:실전, demo:모의)"
+        }
+      }
+    },
+    "order_rvsecncl": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 정정취소주문",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/order_rvsecncl",
+      "method": "order_rvsecncl",
+      "api_path": "/uapi/overseas-stock/v1/trading/order-rvsecncl",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "NASD : 나스닥  NYSE : 뉴욕  AMEX : 아멕스 SEHK : 홍콩 SHAA : 중국상해 SZAA : 중국심천 TKSE : 일본 HASE : 베트남 하노이 VNSE : 베트남 호치민"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "상품번호"
+        },
+        "orgn_odno": {
+          "name": "orgn_odno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "정정 또는 취소할 원주문번호 (해외주식_주문 API ouput ODNO  or 해외주식 미체결내역 API output ODNO 참고)"
+        },
+        "rvse_cncl_dvsn_cd": {
+          "name": "rvse_cncl_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "01 : 정정  02 : 취소"
+        },
+        "ord_qty": {
+          "name": "ord_qty",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "주문수량"
+        },
+        "ovrs_ord_unpr": {
+          "name": "ovrs_ord_unpr",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "취소주문 시, \"0\" 입력"
+        },
+        "mgco_aptm_odno": {
+          "name": "mgco_aptm_odno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "운용사지정주문번호"
+        },
+        "ord_svr_dvsn_cd": {
+          "name": "ord_svr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"0\"(Default)"
+        },
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": "real",
+          "description": "실전모의구분 (real:실전, demo:모의)"
+        }
+      }
+    },
+    "inquire_period_trans": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 일별거래내역",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_period_trans",
+      "method": "inquire_period_trans",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-period-trans",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "erlm_strt_dt": {
+          "name": "erlm_strt_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "등록시작일자 (예: 20240420)"
+        },
+        "erlm_end_dt": {
+          "name": "erlm_end_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "등록종료일자 (예: 20240520)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해외거래소코드"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "상품번호"
+        },
+        "sll_buy_dvsn_cd": {
+          "name": "sll_buy_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "매도매수구분코드 (00: 전체, 01: 매도, 02: 매수)"
+        },
+        "loan_dvsn_cd": {
+          "name": "loan_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "대출구분코드"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    },
+    "inquire_paymt_stdr_balance": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 결제기준잔고",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_paymt_stdr_balance",
+      "method": "inquire_paymt_stdr_balance",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-paymt-stdr-balance",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "bass_dt": {
+          "name": "bass_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "기준일자"
+        },
+        "wcrc_frcr_dvsn_cd": {
+          "name": "wcrc_frcr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "원화외화구분코드 (01: 원화기준, 02: 외화기준)"
+        },
+        "inqr_dvsn_cd": {
+          "name": "inqr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "조회구분코드 (00: 전체, 01: 일반, 02: 미니스탁)"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output1)"
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output2)"
+        },
+        "dataframe3": {
+          "name": "dataframe3",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null,
+          "description": "누적 데이터프레임 (output3)"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "연속 거래 여부"
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0,
+          "description": "현재 재귀 깊이"
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10,
+          "description": "최대 재귀 깊이 (기본값: 10)"
+        }
+      }
+    },
+    "daytime_order": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 미국주간주문",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/daytime_order",
+      "method": "daytime_order",
+      "api_path": "/uapi/overseas-stock/v1/trading/daytime-order",
+      "params": {
+        "order_dv": {
+          "name": "order_dv",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "주문구분 buy(매수) / sell(매도)"
+        },
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "NASD:나스닥 / NYSE:뉴욕 / AMEX:아멕스"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드"
+        },
+        "ord_qty": {
+          "name": "ord_qty",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "해외거래소 별 최소 주문수량 및 주문단위 확인 필요"
+        },
+        "ovrs_ord_unpr": {
+          "name": "ovrs_ord_unpr",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "소수점 포함, 1주당 가격 * 시장가의 경우 1주당 가격을 공란으로 비우지 않음 \"0\"으로 입력"
+        },
+        "ctac_tlno": {
+          "name": "ctac_tlno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\" \""
+        },
+        "mgco_aptm_odno": {
+          "name": "mgco_aptm_odno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\" \""
+        },
+        "ord_svr_dvsn_cd": {
+          "name": "ord_svr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "\"0\""
+        },
+        "ord_dvsn": {
+          "name": "ord_dvsn",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[미국 매수/매도 주문]  00 : 지정가  * 주간거래는 지정가만 가능"
+        }
+      }
+    },
+    "daytime_order_rvsecncl": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 미국주간정정취소",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/daytime_order_rvsecncl",
+      "method": "daytime_order_rvsecncl",
+      "api_path": "/uapi/overseas-stock/v1/trading/daytime-order-rvsecncl",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "NASD:나스닥 / NYSE:뉴욕 / AMEX:아멕스"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "종목코드"
+        },
+        "orgn_odno": {
+          "name": "orgn_odno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "정정 또는 취소할 원주문번호"
+        },
+        "rvse_cncl_dvsn_cd": {
+          "name": "rvse_cncl_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "01 : 정정, 02 : 취소"
+        },
+        "ord_qty": {
+          "name": "ord_qty",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "주문수량"
+        },
+        "ovrs_ord_unpr": {
+          "name": "ovrs_ord_unpr",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "소수점 포함, 1주당 가격"
+        },
+        "ctac_tlno": {
+          "name": "ctac_tlno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "연락전화번호"
+        },
+        "mgco_aptm_odno": {
+          "name": "mgco_aptm_odno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "운용사지정주문번호"
+        },
+        "ord_svr_dvsn_cd": {
+          "name": "ord_svr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "주문서버구분코드"
+        }
+      }
+    },
+    "inquire_period_profit": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 기간손익",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_period_profit",
+      "method": "inquire_period_profit",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-period-profit",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "공란 : 전체,  NASD : 미국, SEHK : 홍콩, SHAA : 중국, TKSE : 일본, HASE : 베트남"
+        },
+        "natn_cd": {
+          "name": "natn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "공란(Default)"
+        },
+        "crcy_cd": {
+          "name": "crcy_cd",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "공란 : 전체 USD : 미국달러, HKD : 홍콩달러, CNY : 중국위안화,  JPY : 일본엔화, VND : 베트남동"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "공란 : 전체"
+        },
+        "inqr_strt_dt": {
+          "name": "inqr_strt_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "YYYYMMDD"
+        },
+        "inqr_end_dt": {
+          "name": "inqr_end_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "YYYYMMDD"
+        },
+        "wcrc_frcr_dvsn_cd": {
+          "name": "wcrc_frcr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "01 : 외화, 02 : 원화"
+        },
+        "dataframe1": {
+          "name": "dataframe1",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "dataframe2": {
+          "name": "dataframe2",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    },
+    "order_resv": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 예약주문접수",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/order_resv",
+      "method": "order_resv",
+      "api_path": "/uapi/overseas-stock/v1/trading/order-resv",
+      "params": {
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 실전모의구분 (ex. real:실전, demo:모의)"
+        },
+        "ord_dv": {
+          "name": "ord_dv",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 매도매수구분 (ex. usBuy:미국매수, usSell:미국매도, asia:아시아)"
+        },
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "pdno": {
+          "name": "pdno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 상품번호"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 해외거래소코드 (ex. NASD:나스닥, NYSE:뉴욕, AMEX:아멕스, SEHK:홍콩, SHAA:상해, SZAA:심천, TKSE:일본, HASE:하노이, VNSE:호치민)"
+        },
+        "ft_ord_qty": {
+          "name": "ft_ord_qty",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] FT주문수량"
+        },
+        "ft_ord_unpr3": {
+          "name": "ft_ord_unpr3",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] FT주문단가3"
+        },
+        "sll_buy_dvsn_cd": {
+          "name": "sll_buy_dvsn_cd",
+          "type": "str",
+          "required": false,
+          "default_value": "",
+          "description": "매도매수구분코드 (ex. 아시아인경우만 사용, 01:매도,02:매수)"
+        },
+        "rvse_cncl_dvsn_cd": {
+          "name": "rvse_cncl_dvsn_cd",
+          "type": "str",
+          "required": false,
+          "default_value": "",
+          "description": "정정취소구분코드 (ex. 아시아인경우만 사용, 00:매도/매수)"
+        },
+        "prdt_type_cd": {
+          "name": "prdt_type_cd",
+          "type": "str",
+          "required": false,
+          "default_value": "",
+          "description": "상품유형코드 (ex. 아시아인경우만 사용)"
+        },
+        "ord_svr_dvsn_cd": {
+          "name": "ord_svr_dvsn_cd",
+          "type": "str",
+          "required": false,
+          "default_value": "",
+          "description": "주문서버구분코드 (ex. 0)"
+        },
+        "rsvn_ord_rcit_dt": {
+          "name": "rsvn_ord_rcit_dt",
+          "type": "str",
+          "required": false,
+          "default_value": "",
+          "description": "예약주문접수일자 (ex. 아시아인경우만 사용)"
+        },
+        "ord_dvsn": {
+          "name": "ord_dvsn",
+          "type": "str",
+          "required": false,
+          "default_value": "",
+          "description": "주문구분 (ex. 미국 매수/매도인 경우만 사용)"
+        },
+        "ovrs_rsvn_odno": {
+          "name": "ovrs_rsvn_odno",
+          "type": "str",
+          "required": false,
+          "default_value": "",
+          "description": "해외예약주문번호 (ex. 아이사인 경우만 사용)"
+        },
+        "algo_ord_tmd_dvsn_cd": {
+          "name": "algo_ord_tmd_dvsn_cd",
+          "type": "str",
+          "required": false,
+          "default_value": "",
+          "description": "알고리즘주문시간구분코드 (ex. TWAP, VWAP 주문에서만 사용, 02로 고정)"
+        }
+      }
+    },
+    "order_resv_list": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 예약주문조회",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/order_resv_list",
+      "method": "order_resv_list",
+      "api_path": "/uapi/overseas-stock/v1/trading/order-resv-list",
+      "params": {
+        "nat_dv": {
+          "name": "nat_dv",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 국가구분코드 (ex. us:미국, asia:아시아)"
+        },
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "inqr_strt_dt": {
+          "name": "inqr_strt_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 조회시작일자 (ex. 20250101)"
+        },
+        "inqr_end_dt": {
+          "name": "inqr_end_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 조회종료일자 (ex. 20251231)"
+        },
+        "inqr_dvsn_cd": {
+          "name": "inqr_dvsn_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 조회구분코드 (ex. 00:전체, 01:일반해외주식, 02:미니스탁)"
+        },
+        "ovrs_excg_cd": {
+          "name": "ovrs_excg_cd",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 해외거래소코드 (ex. NASD:나스닥, NYSE:뉴욕, AMEX:아멕스, SEHK:홍콩, SHAA:상해, SZAA:심천, TKSE:일본, HASE:하노이, VNSE:호치민)"
+        },
+        "prdt_type_cd": {
+          "name": "prdt_type_cd",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "상품유형코드"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    },
+    "inquire_algo_ccnl": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 지정가체결내역조회",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/inquire_algo_ccnl",
+      "method": "inquire_algo_ccnl",
+      "api_path": "/uapi/overseas-stock/v1/trading/inquire-algo-ccnl",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "ord_dt": {
+          "name": "ord_dt",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "주문일자"
+        },
+        "ord_gno_brno": {
+          "name": "ord_gno_brno",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "주문채번지점번호"
+        },
+        "odno": {
+          "name": "odno",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "주문번호 (ex. 지정가주문번호 TTTC6058R에서 조회된 주문번호 입력)"
+        },
+        "ttlz_icld_yn": {
+          "name": "ttlz_icld_yn",
+          "type": "str",
+          "required": true,
+          "default_value": "",
+          "description": "집계포함여부"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "dataframe3": {
+          "name": "dataframe3",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    },
+    "order_resv_ccnl": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 예약주문접수취소",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/order_resv_ccnl",
+      "method": "order_resv_ccnl",
+      "api_path": "/uapi/overseas-stock/v1/trading/order-resv-ccnl",
+      "params": {
+        "env_dv": {
+          "name": "env_dv",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 실전모의구분 (ex. real:실전, demo:모의)"
+        },
+        "nat_dv": {
+          "name": "nat_dv",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 국가구분 (ex. us:미국)"
+        },
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "rsvn_ord_rcit_dt": {
+          "name": "rsvn_ord_rcit_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 해외주문접수일자"
+        },
+        "ovrs_rsvn_odno": {
+          "name": "ovrs_rsvn_odno",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 해외예약주문번호 (ex. 해외주식_예약주문접수 API Output ODNO(주문번호) 참고)"
+        }
+      }
+    },
+    "algo_ordno": {
+      "category": "[해외주식] 주문/계좌",
+      "name": "해외주식 지정가주문번호조회",
+      "github_url": "https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/overseas_stock/algo_ordno",
+      "method": "algo_ordno",
+      "api_path": "/uapi/overseas-stock/v1/trading/algo-ordno",
+      "params": {
+        "cano": {
+          "name": "cano",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌번호 (시스템 자동 설정, 제공 불필요)"
+        },
+        "acnt_prdt_cd": {
+          "name": "acnt_prdt_cd",
+          "type": "str",
+          "required": false,
+          "default_value": null,
+          "description": "계좌상품코드 (시스템 자동 설정, 제공 불필요)"
+        },
+        "trad_dt": {
+          "name": "trad_dt",
+          "type": "str",
+          "required": true,
+          "default_value": null,
+          "description": "[필수] 거래일자"
+        },
+        "tr_cont": {
+          "name": "tr_cont",
+          "type": "str",
+          "required": true,
+          "default_value": ""
+        },
+        "dataframe": {
+          "name": "dataframe",
+          "type": "pd.DataFrame",
+          "required": false,
+          "default_value": null
+        },
+        "depth": {
+          "name": "depth",
+          "type": "int",
+          "required": true,
+          "default_value": 0
+        },
+        "max_depth": {
+          "name": "max_depth",
+          "type": "int",
+          "required": true,
+          "default_value": 10
+        }
+      }
+    }
+  }
+}
