@@ -97,9 +97,11 @@ cd "open-trading-api/MCP/Kis Trading MCP"
 **필수 정보:**
 - App Key (실전용)
 - App Secret (실전용)
-- App Key (모의용) - 선택사항
-- App Secret (모의용) - 선택사항
-- 계좌 정보들 - 선택사항
+- 계좌 정보들
+
+**선택 정보:**
+- App Key (모의용)
+- App Secret (모의용)
 
 #### **3단계: Docker 이미지 빌드**
 ```bash
@@ -126,6 +128,7 @@ docker run -d \
   -e KIS_ACCT_FUTURE="87654321" \
   -e KIS_PAPER_STOCK="11111111" \
   -e KIS_PAPER_FUTURE="22222222" \
+  -e KIS_PROD_TYPE="01" \
   kis-trade-mcp
 ```
 
@@ -301,7 +304,7 @@ docker exec kis-trade-mcp env | grep KIS
 docker restart kis-trade-mcp
 
 # 환경변수 다시 설정하여 실행
-docker run -d --name kis-trade-mcp-new -e KIS_APP_KEY="..." ...
+docker run -d --name kis-trade-mcp -e KIS_APP_KEY="..." ...
 ```
 
 **3. 메모리 부족**
