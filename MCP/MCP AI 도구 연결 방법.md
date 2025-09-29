@@ -50,17 +50,18 @@ MCP는 Claude를 개발한 Anthropic에서 만든 프로토콜로, AI 모델이 
     
     Link : [https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp](https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp)
     
-    ![image.png](%ED%95%9C%ED%88%AC%EA%B0%80%20%EB%A7%8C%EB%93%A0%20MCP%EB%A5%BC%20AI%20%EB%8F%84%EA%B5%AC%EC%97%90%20%EC%97%B0%EA%B2%B0%ED%95%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%2026c4d0474fac801bb534cfdb40af5cac/image.png)
-    
-    ![image.png](%ED%95%9C%ED%88%AC%EA%B0%80%20%EB%A7%8C%EB%93%A0%20MCP%EB%A5%BC%20AI%20%EB%8F%84%EA%B5%AC%EC%97%90%20%EC%97%B0%EA%B2%B0%ED%95%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%2026c4d0474fac801bb534cfdb40af5cac/image%201.png)
+    <img width="2048" height="958" alt="image" src="https://github.com/user-attachments/assets/82aa8bc4-b112-482c-8e8d-34c41fb0ed76" />
+
+    <img width="2048" height="816" alt="image 1" src="https://github.com/user-attachments/assets/3404acc4-058a-4b41-a4d4-0d5aa62ddd3b" />
     
     **AUTO / Claude Desktop** 선택 → Terminal 명령어 Copy 클릭
     
-    ![image.png](%ED%95%9C%ED%88%AC%EA%B0%80%20%EB%A7%8C%EB%93%A0%20MCP%EB%A5%BC%20AI%20%EB%8F%84%EA%B5%AC%EC%97%90%20%EC%97%B0%EA%B2%B0%ED%95%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%2026c4d0474fac801bb534cfdb40af5cac/image%202.png)
+    <img width="2048" height="884" alt="image 2" src="https://github.com/user-attachments/assets/a5852435-baa9-4fe0-a5e6-41929552b900" />
     
     터미널에 명령어 붙여넣기하고 엔터 → 설치 완료 메시지 후 Claude 재시작 질문에는 Y 입력 후 엔터를 누르면 Claude Desktop 재시작
     
-    ![image.png](%ED%95%9C%ED%88%AC%EA%B0%80%20%EB%A7%8C%EB%93%A0%20MCP%EB%A5%BC%20AI%20%EB%8F%84%EA%B5%AC%EC%97%90%20%EC%97%B0%EA%B2%B0%ED%95%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%2026c4d0474fac801bb534cfdb40af5cac/image%203.png)
+    <img width="2048" height="1000" alt="image 3" src="https://github.com/user-attachments/assets/911b7818-bedf-4d04-8721-09cc4cf5409d" />
+
     
     홈 화면 대화창 하단 **검색 및 도구** 버튼에서 설치 및 추가 확인 가능, `설정 → 개발자`에서도 확인 할 수 있습니다.
     
@@ -68,18 +69,19 @@ MCP는 Claude를 개발한 Anthropic에서 만든 프로토콜로, AI 모델이 
     
     Link : [https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp](https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp)
     
-    ![image.png](%ED%95%9C%ED%88%AC%EA%B0%80%20%EB%A7%8C%EB%93%A0%20MCP%EB%A5%BC%20AI%20%EB%8F%84%EA%B5%AC%EC%97%90%20%EC%97%B0%EA%B2%B0%ED%95%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%2026c4d0474fac801bb534cfdb40af5cac/image%204.png)
-    
-    ![image.png](%ED%95%9C%ED%88%AC%EA%B0%80%20%EB%A7%8C%EB%93%A0%20MCP%EB%A5%BC%20AI%20%EB%8F%84%EA%B5%AC%EC%97%90%20%EC%97%B0%EA%B2%B0%ED%95%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%2026c4d0474fac801bb534cfdb40af5cac/image%205.png)
+    <img width="2048" height="988" alt="image 4" src="https://github.com/user-attachments/assets/5058bc1d-8046-47e4-9962-f7f1a5f3bcba" />
+
+    <img width="2048" height="988" alt="image 5" src="https://github.com/user-attachments/assets/6bb863b7-a8de-4435-8bdd-ef1deece02f0" />
+
     
     **AUTO / Cursor** 선택 → **One-Click Install** 클릭
     
-    ![image.png](%ED%95%9C%ED%88%AC%EA%B0%80%20%EB%A7%8C%EB%93%A0%20MCP%EB%A5%BC%20AI%20%EB%8F%84%EA%B5%AC%EC%97%90%20%EC%97%B0%EA%B2%B0%ED%95%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%2026c4d0474fac801bb534cfdb40af5cac/image%206.png)
+   <img width="2048" height="958" alt="image 6" src="https://github.com/user-attachments/assets/f3e2f17b-f1b6-4b8f-a388-2990ef6f2a0e" />
     
     Cursor에서 **Install** 클릭하면 완료
     
-    ![image.png](%ED%95%9C%ED%88%AC%EA%B0%80%20%EB%A7%8C%EB%93%A0%20MCP%EB%A5%BC%20AI%20%EB%8F%84%EA%B5%AC%EC%97%90%20%EC%97%B0%EA%B2%B0%ED%95%98%EB%8A%94%20%EB%B0%A9%EB%B2%95%2026c4d0474fac801bb534cfdb40af5cac/image%207.png)
-    
+   <img width="2048" height="958" alt="image 7" src="https://github.com/user-attachments/assets/a4fcdcdc-d83b-4187-946d-28160d7f65bf" />
+
     KIS Code Assistant MCP가 연결되었는지 확인 (경로 :  `Settings` > `MCP Servers`)
     
 
