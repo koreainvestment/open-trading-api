@@ -115,7 +115,7 @@ def main():
         result = inquire_ccnl(
             cano=trenv.my_acct,  # 종합계좌번호
             acnt_prdt_cd=trenv.my_prod,  # 계좌상품코드
-            pdno="",  # 상품번호
+            pdno="%",  # 상품번호
             ord_strt_dt="20250601",  # 주문시작일자
             ord_end_dt="20250630",  # 주문종료일자
             sll_buy_dvsn="00",  # 매도매수구분
