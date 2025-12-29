@@ -309,6 +309,10 @@ uv sync --reinstall
 
 ---
 
+## Tools (demo)
+- .venv/bin/python tools/signal_bb_volume.py --code 086520
+- .venv/bin/python tools/backtest_signals.py --code 086520
+
 # 📧 문의사항
 
 - [💬 한국투자증권 Open API 챗봇](https://chatgpt.com/g/g-68b920ee7afc8191858d3dc05d429571-hangugtujajeunggweon-open-api-seobiseu-gpts)에 언제든 궁금한 점을 물어보세요.

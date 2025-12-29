@@ -171,3 +171,21 @@ kis_devlp.yaml
 **/*token*
 **/config/**
 **/.kis/**
+
+# --- local / os junk ---
+.DS_Store
+**/.DS_Store
+
+# --- outputs / local data ---
+out/
+data/
+
+# --- python ---
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# --- venv / build ---
+.venv/
+dist/
+build/
