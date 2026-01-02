@@ -146,7 +146,8 @@ def ccnl_notice(
         "DEBT_DATE",
         "START_TM",
         "END_TM",
-        "TM_DIV_TP"
+        "TM_DIV_TP",
+        "CNTG_UNPR12"
     ]
 
     return msg, columns
