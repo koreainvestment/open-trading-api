@@ -29,7 +29,7 @@ COLUMN_MAPPING = {
     'ord_gno_brno': '주문채번지점번호',
     'odno': '주문번호',
     'sll_buy_dvsn_cd': '매도매수구분코드',
-    'sll_buy_dvsn_name': '매도매수구분명',
+    'sll_buy_dvsn_cd_name': '매도매수구분명',
     'ovrs_rsvn_ord_stat_cd': '해외예약주문상태코드',
     'ovrs_rsvn_ord_stat_cd_name': '해외예약주문상태코드명',
     'pdno': '상품번호',
