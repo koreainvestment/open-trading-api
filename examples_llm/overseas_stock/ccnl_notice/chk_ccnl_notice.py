@@ -43,7 +43,8 @@ COLUMN_MAPPING = {
     "DEBT_DATE": "담보대출일자",
     "START_TM": "분할매수/매도 시작시간",
     "END_TM": "분할매수/매도 종료시간",
-    "TM_DIV_TP": "시간분할타입유형"
+    "TM_DIV_TP": "시간분할타입유형",
+    "CNTG_UNPR": "체결단가12"
 }
 
 # 숫자형 컬럼 정의
