@@ -1,0 +1,60 @@
+version: "1.0"
+
+metadata:
+  name: "단기 반전 (Short-Term Reversal)"
+  description: "주가가 단기 이동평균 대비 일정 비율 이상 하락하면 매수, 상승하면 매도"
+  author: "kis_backtest"
+  tags:
+    - mean_reversion
+    - reversal
+    - short_term
+    - oversold
+
+strategy:
+  id: short_term_reversal
+  category: mean_reversion
+
+  params:
+    period:
+      default: 5
+      min: 3
+      max: 20
+      type: int
+      description: "평균 기간"
+    threshold_pct:
+      default: 3.0
+      min: 1.0
+      max: 10.0
+      type: float
+      description: "이격 임계치 %"
+    stop_loss_pct:
+      default: 5.0
+      min: 2
+      max: 15
+      type: float
+      description: "손절 %"
+
+  indicators:
+    - id: sma
+      alias: ma
+      params:
+        period: $period
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: close
+        operator: less_than
+        compare_to: ma
+
+  exit:
+    logic: AND
+    conditions:
+      - indicator: close
+        operator: greater_than
+        compare_to: ma
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 5.0

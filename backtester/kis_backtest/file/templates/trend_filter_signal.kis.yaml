@@ -1,0 +1,63 @@
+version: "1.0"
+
+metadata:
+  name: "추세 필터 + 시그널"
+  description: "N일선 위에서 전일 대비 상승 시 매수, N일선 아래에서 하락 시 매도"
+  author: "kis_backtest"
+  tags:
+    - trend
+    - momentum
+    - composite
+    - filter
+
+strategy:
+  id: trend_filter_signal
+  category: composite
+
+  # 파라미터 정의 - $param_name 참조에서 사용
+  params:
+    trend_period:
+      default: 60
+      min: 20
+      max: 200
+      type: int
+      description: "추세 판단 SMA 기간"
+
+  # $trend_period 참조로 파라미터 바인딩
+  indicators:
+    - id: sma
+      alias: trend
+      params:
+        period: $trend_period
+    - id: roc
+      alias: daily_return
+      params:
+        period: 1
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: close
+        operator: greater_than
+        compare_to: trend
+      - indicator: daily_return
+        operator: greater_than
+        value: 0
+
+  exit:
+    logic: AND
+    conditions:
+      - indicator: close
+        operator: less_than
+        compare_to: trend
+      - indicator: daily_return
+        operator: less_than
+        value: 0
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 5.0
+  take_profit:
+    enabled: true
+    percent: 10.0

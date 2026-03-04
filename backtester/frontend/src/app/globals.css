@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+:root {
+  /* KIS Primary */
+  --kis-blue: #245bee;
+  --kis-blue-dark: #1a47b8;
+  --kis-blue-light: #4a7aff;
+
+  /* Semantic - 한국 주식 컨벤션 */
+  --profit: #ef4444;      /* 상승/수익 - 빨강 */
+  --loss: #3b82f6;        /* 하락/손실 - 파랑 */
+  --neutral: #6b7280;     /* 보합 */
+
+  /* Background */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  /* KIS Colors */
+  --color-kis-blue: var(--kis-blue);
+  --color-kis-blue-dark: var(--kis-blue-dark);
+  --color-kis-blue-light: var(--kis-blue-light);
+
+  /* Primary (alias for KIS Blue) */
+  --color-primary: #245bee;
+  --color-primary-dark: #1a47b8;
+  --color-primary-light: #4a7aff;
+  --color-profit: var(--profit);
+  --color-loss: var(--loss);
+  --color-neutral: var(--neutral);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* 수익/손실 색상 */
+.text-profit {
+  color: var(--profit);
+}
+
+.text-loss {
+  color: var(--loss);
+}
+
+.text-neutral {
+  color: var(--neutral);
+}
+
+/* 카드 기본 스타일 */
+.card {
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    border-color: #334155;
+    background: #1e293b;
+  }
+}
+
+/* KIS 버튼 */
+.btn-primary {
+  background: var(--kis-blue);
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--kis-blue-dark);
+}
+
+/* 스크롤바 커스텀 */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #475569;
+  }
+}
+
+/* 숫자 고정폭 */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 접근성 포커스 링 */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-surface, #fff), 0 0 0 4px var(--color-primary);
+}

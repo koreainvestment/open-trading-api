@@ -1,0 +1,65 @@
+version: "1.0"
+
+metadata:
+  name: "SMA 골든/데드 크로스"
+  description: "단기 SMA가 장기 SMA를 상향 돌파하면 매수 (골든크로스), 하향 돌파하면 매도 (데드크로스)"
+  author: "kis_backtest"
+  tags:
+    - trend
+    - sma
+    - crossover
+    - golden_cross
+
+strategy:
+  id: sma_crossover
+  category: trend
+
+  # 파라미터 정의 - $param_name 참조에서 사용
+  params:
+    fast_period:
+      default: 5
+      min: 2
+      max: 50
+      type: int
+      description: "단기 SMA 기간"
+    slow_period:
+      default: 20
+      min: 10
+      max: 200
+      type: int
+      description: "장기 SMA 기간"
+
+  # $fast_period, $slow_period 참조로 파라미터 바인딩
+  indicators:
+    - id: sma
+      alias: fast
+      params:
+        period: $fast_period
+    - id: sma
+      alias: slow
+      params:
+        period: $slow_period
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: fast
+        operator: cross_above
+        compare_to: slow
+
+  exit:
+    logic: OR
+    conditions:
+      - indicator: fast
+        operator: cross_below
+        compare_to: slow
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 5.0
+  take_profit:
+    enabled: true
+    percent: 10.0
+  trailing_stop:
+    enabled: false

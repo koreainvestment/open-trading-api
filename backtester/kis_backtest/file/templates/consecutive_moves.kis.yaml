@@ -1,0 +1,59 @@
+version: "1.0"
+
+metadata:
+  name: "연속 상승/하락 (Consecutive Moves)"
+  description: "N일 연속 상승하면 매수, N일 연속 하락하면 매도하는 모멘텀 전략"
+  author: "kis_backtest"
+  tags:
+    - momentum
+    - consecutive
+    - streak
+
+strategy:
+  id: consecutive_moves
+  category: momentum
+
+  params:
+    up_days:
+      default: 5
+      min: 2
+      max: 10
+      type: int
+      description: "연속 상승일"
+    down_days:
+      default: 5
+      min: 2
+      max: 10
+      type: int
+      description: "연속 하락일"
+    stop_loss_pct:
+      default: 5.0
+      min: 1
+      max: 15
+      type: float
+      description: "손절 %"
+
+  indicators:
+    - id: roc
+      alias: daily_change
+      params:
+        period: 1
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: daily_change
+        operator: greater_than
+        value: 0
+
+  exit:
+    logic: AND
+    conditions:
+      - indicator: daily_change
+        operator: less_than
+        value: 0
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 5.0
