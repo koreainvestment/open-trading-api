@@ -1,0 +1,60 @@
+version: "1.0"
+
+metadata:
+  name: "모멘텀 (Momentum)"
+  description: "N일 수익률이 임계치를 초과하면 매수, 반대 방향으로 임계치를 초과하면 매도"
+  author: "kis_backtest"
+  tags:
+    - momentum
+    - ranking
+    - relative
+    - absolute
+
+strategy:
+  id: momentum
+  category: momentum
+
+  params:
+    lookback:
+      default: 60
+      min: 20
+      max: 252
+      type: int
+      description: "수익률 계산 기간"
+    threshold:
+      default: 0.0
+      min: -10
+      max: 10
+      type: float
+      description: "진입 임계치 %"
+    stop_loss_pct:
+      default: 10.0
+      min: 2
+      max: 20
+      type: float
+      description: "손절 %"
+
+  indicators:
+    - id: roc
+      alias: momentum
+      params:
+        period: $lookback
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: momentum
+        operator: greater_than
+        value: $threshold
+
+  exit:
+    logic: AND
+    conditions:
+      - indicator: momentum
+        operator: less_than
+        value: 0
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 10.0

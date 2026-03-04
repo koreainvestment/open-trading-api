@@ -1,0 +1,64 @@
+version: "1.0"
+
+metadata:
+  name: "변동성 축소 후 확장 (Volatility Squeeze Breakout)"
+  description: "ATR이 평균 이하로 축소된 후 일정 비율 돌파하면 매수"
+  author: "kis_backtest"
+  tags:
+    - volatility
+    - atr
+    - breakout
+    - squeeze
+
+strategy:
+  id: volatility_breakout
+  category: volatility
+
+  params:
+    atr_period:
+      default: 10
+      min: 5
+      max: 20
+      type: int
+      description: "ATR 기간"
+    breakout_pct:
+      default: 3.0
+      min: 1.0
+      max: 10.0
+      type: float
+      description: "돌파 기준 %"
+    stop_loss_pct:
+      default: 5.0
+      min: 2
+      max: 15
+      type: float
+      description: "손절 %"
+
+  indicators:
+    - id: atr
+      alias: atr
+      params:
+        period: $atr_period
+    - id: roc
+      alias: daily_return
+      params:
+        period: 1
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: daily_return
+        operator: greater_than
+        value: $breakout_pct
+
+  exit:
+    logic: AND
+    conditions:
+      - indicator: daily_return
+        operator: less_than
+        value: 0
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 5.0

@@ -1,0 +1,28 @@
+[project]
+name = "kis-strategy-builder"
+version = "1.0.0"
+description = "KIS Strategy Builder + Order Execution"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0.0",
+    "httpx>=0.25.0",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.22",
+    "requests>=2.32.5",
+    "websockets>=11.0.0",
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "pycryptodome>=3.20.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["core", "strategy", "strategy_core", "backend"]

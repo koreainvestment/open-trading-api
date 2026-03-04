@@ -1,0 +1,392 @@
+@import "tailwindcss";
+
+:root {
+  /* Brand */
+  --color-primary: #245bee;
+  --color-primary-dark: #1a47b8;
+  --color-primary-light: #4a7aff;
+  --color-primary-bg: #eef2ff;
+
+  /* Korean Stock Convention */
+  --color-profit: #ef4444;    /* 상승 = 빨강 */
+  --color-loss: #3b82f6;      /* 하락 = 파랑 */
+  --color-neutral: #6b7280;
+
+  /* Semantic */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Surface */
+  --color-bg: #f8fafc;
+  --color-bg-secondary: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+
+  /* Text */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+
+  /* Spacing Scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Legacy aliases */
+  --kis-blue: var(--color-primary);
+  --kis-blue-dark: var(--color-primary-dark);
+  --kis-blue-light: var(--color-primary-light);
+  --profit: var(--color-profit);
+  --loss: var(--color-loss);
+  --neutral: var(--color-neutral);
+  --background: var(--color-bg);
+  --foreground: var(--color-text-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0f172a;
+    --color-bg-secondary: #1e293b;
+    --color-surface: #1e293b;
+    --color-border: #334155;
+    --color-text-primary: #f1f5f9;
+    --color-text-secondary: #94a3b8;
+    --color-text-muted: #64748b;
+    --color-primary-bg: rgba(36, 91, 238, 0.15);
+
+    --background: var(--color-bg);
+    --foreground: var(--color-text-primary);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-noto-sans-kr), var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Primary Brand - direct values for Tailwind v4 utilities (bg-primary, text-primary, etc.) */
+  --color-primary: #245bee;
+  --color-primary-dark: #1a47b8;
+  --color-primary-light: #4a7aff;
+  --color-primary-bg: #eef2ff;
+
+  /* KIS Colors (legacy aliases) */
+  --color-kis-blue: #245bee;
+  --color-kis-blue-dark: #1a47b8;
+  --color-kis-blue-light: #4a7aff;
+
+  /* Semantic */
+  --color-profit: #ef4444;
+  --color-loss: #3b82f6;
+  --color-neutral: #6b7280;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-noto-sans-kr), var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Typography Scale */
+.text-display {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.text-heading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.text-subheading {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.text-body {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-caption {
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-code {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  font-family: var(--font-geist-mono), 'Menlo', monospace;
+}
+
+/* 수익/손실 색상 */
+.text-profit {
+  color: var(--color-profit);
+}
+
+.text-loss {
+  color: var(--color-loss);
+}
+
+.text-neutral {
+  color: var(--color-neutral);
+}
+
+/* 카드 기본 스타일 */
+.card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 1rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* KIS 버튼 */
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Stepper 스타일 */
+.stepper-step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+}
+
+.stepper-step.active {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(36, 91, 238, 0.3);
+}
+
+.stepper-step.completed {
+  color: var(--color-success);
+}
+
+.stepper-step.pending {
+  color: var(--color-text-muted);
+}
+
+.stepper-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--color-border);
+  min-width: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.stepper-connector.completed {
+  background: var(--color-success);
+}
+
+/* 시맨틱 토글 스위치 */
+.toggle-switch {
+  position: relative;
+  width: 2.5rem;
+  height: 1.25rem;
+  appearance: none;
+  background: #cbd5e1;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  outline: none;
+}
+
+.toggle-switch:checked {
+  background: var(--color-primary);
+}
+
+.toggle-switch.toggle-red:checked {
+  background: var(--color-error);
+}
+
+.toggle-switch.toggle-green:checked {
+  background: var(--color-success);
+}
+
+.toggle-switch.toggle-blue:checked {
+  background: var(--color-primary);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1rem;
+  height: 1rem;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.toggle-switch:checked::after {
+  transform: translateX(1.25rem);
+}
+
+.toggle-switch:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-primary-bg), 0 0 0 4px var(--color-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggle-switch {
+    background: #475569;
+  }
+}
+
+/* 포커스 링 */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-primary);
+}
+
+/* 조건 카드 */
+.condition-card {
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: var(--space-4);
+  transition: all 0.2s ease;
+}
+
+.condition-card:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(36, 91, 238, 0.08);
+}
+
+.condition-card.dragging {
+  opacity: 0.5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: scale(1.02);
+}
+
+.condition-card.drag-over {
+  border-color: var(--color-primary);
+  background: var(--color-primary-bg);
+}
+
+/* 스크롤바 커스텀 */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: var(--radius-full);
+}
+
+@media (prefers-color-scheme: dark) {
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #475569;
+  }
+}
+
+/* 숫자 고정폭 */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 슬라이더 커스텀 (range input) */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: #e2e8f0;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.05);
+}
+
+input[type="range"].range-red::-webkit-slider-thumb {
+  background: var(--color-error);
+}
+
+input[type="range"].range-green::-webkit-slider-thumb {
+  background: var(--color-success);
+}
+
+input[type="range"].range-blue::-webkit-slider-thumb {
+  background: var(--color-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  input[type="range"] {
+    background: #334155;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    border-color: #1e293b;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

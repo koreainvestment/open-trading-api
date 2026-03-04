@@ -15,6 +15,8 @@
 
 - `examples_llm/`: LLM이 단일 API 기능을 쉽게 탐색하고 호출할 수 있도록 구성된 기능 단위 샘플 코드
 - `examples_user/`: 사용자가 실제 투자 및 자동매매 구현에 활용할 수 있도록 상품별로 통합된 API 호출 예제 코드
+- `strategy_builder/`: 비주얼 UI로 매매 전략을 설계하고, 생성된 시그널 바탕으로 매수/매도 가능
+- `backtester/`: 설계한 전략을 과거 데이터로 검증하는 백테스팅 엔진
 
 > AI와 사람이 모두 활용하기 쉬운 구조를 지향합니다.
 
@@ -34,6 +36,9 @@
 # 프로젝트 구조
 .
 ├── README.md                    # 프로젝트 설명서
+├── strategy_builder/            # 전략 설계 + 시그널 생성 엔진           ← New
+├── backtester/                  # 백테스팅 엔진 (QuantConnect Lean)   ← New
+│
 ├── docs/
 │   └── convention.md            # 코딩 컨벤션 가이드
 ├── examples_llm/                  # LLM용 샘플 코드
@@ -105,6 +110,45 @@
 - API 호출 공통 함수
 - 실전투자/모의투자 환경 전환 지원
 - 웹소켓 연결 설정 기능 제공
+
+### 2.4. AI 트레이딩 도구
+
+샘플 코드 외에, Open API를 활용한 **전략 설계 → 백테스팅 → 주문 실행** 파이프라인을 제공합니다.
+
+```mermaid
+graph LR
+    SB[strategy_builder] -->|".kis.yaml"| BT[backtester]
+    BT -->|"검증 완료"| SB
+    SB -->|"BUY/SELL/HOLD"| KIS[KIS Open API]
+```
+
+| 디렉토리 | 역할 | 상세 |
+|----------|------|------|
+| `strategy_builder/` | 전략 설계 + 시그널 생성 | 80개 기술지표, 10개 프리셋 전략, BUY/SELL/HOLD 신호 ([README](strategy_builder/README.md)) |
+| `backtester/` | 과거 검증 + 파라미터 최적화 | Docker 기반 QuantConnect Lean, HTML 리포트 ([README](backtester/README.md)) |
+| `MCP/` | AI 도구 연결 | KIS Code Assistant + Trading MCP ([README](MCP/README.MD)) |
+
+#### 10개 프리셋 전략
+
+`strategy_builder`와 `backtester` 양쪽에서 동일하게 지원합니다.
+
+| # | 전략명 | 유형 | 한줄 설명 |
+|---|--------|------|-----------|
+| 01 | 골든크로스 | 추세추종 | 단기 이동평균이 장기 이동평균을 상향 돌파하면 매수 |
+| 02 | 모멘텀 | 추세추종 | 최근 N일 수익률이 높은 종목을 매수 |
+| 03 | 52주 신고가 | 돌파매매 | 종가가 52주 최고가를 갱신하면 매수 |
+| 04 | 연속 상승/하락 | 추세추종 | N일 연속 종가 상승 시 매수, N일 연속 하락 시 매도 |
+| 05 | 이격도 | 역추세 | 종가/이동평균 비율로 과열(매도)·침체(매수) 판단 |
+| 06 | 돌파 실패 | 손절 | 전고점 돌파 후 다시 아래로 빠지면 손절 |
+| 07 | 강한 종가 | 모멘텀 | 종가가 당일 고가 근처에서 마감하면 매수 |
+| 08 | 변동성 확장 | 돌파매매 | 변동성이 줄어든 뒤 급등하면 매수 |
+| 09 | 평균회귀 | 역추세 | 가격이 평균에서 크게 벗어나면 반대 방향으로 매매 |
+| 10 | 추세 필터 | 추세추종 | 장기 이동평균 위에서 상승 중이면 매수 |
+
+#### .kis.yaml — 공유 전략 포맷
+
+`strategy_builder`에서 설계한 전략을 `.kis.yaml`로 내보내면, `backtester`에서 그대로 Import하여 백테스트를 수행할 수 있습니다.
+포맷 상세는 [strategy_builder/README.md](strategy_builder/README.md#kisyaml-포맷) 또는 [backtester/README.md](backtester/README.md#kisyaml-포맷)를 참고하세요.
 
 ## 3. 사전 환경설정 안내
 
@@ -188,9 +232,9 @@ my_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
 ### 3.6. kis_auth.py 설정 경로 수정
 
-- `kis_auth.py`의 config_root 경로를 본인 환경에 맞게 수정해줍니다. 발급된 토큰 파일이 저장될 경로로, 제3자가 찾기 어렵도록 설정하는것을 권장합니다.
+`kis_auth.py`의 config_root 경로를 본인 환경에 맞게 수정해줍니다.
 
-```yaml
+```python
 # kis_auth.py 39번째 줄
 # windows - C:\Users\사용자이름\KIS\config
 # Linux/macOS - /home/사용자이름/KIS/config
@@ -208,6 +252,15 @@ import kis_auth as ka
 # 실전투자 인증
 ka.auth(svr="prod", product="01") # 모의투자: svr="vps"
 ```
+
+### 3.8. 전략 빌더 / 백테스터 환경 설정 (선택)
+
+전략 설계 및 백테스팅 기능을 사용하려면 추가 설정이 필요합니다.
+
+| 항목 | 설치 | 용도 |
+|------|------|------|
+| Node.js 18+ | [nodejs.org](https://nodejs.org/) | strategy_builder, backtester 프론트엔드 |
+| Docker Desktop | [docker.com](https://www.docker.com/products/docker-desktop) | backtester (Lean 엔진) |
 
 ## 4. 샘플 코드 실행
 
@@ -283,6 +336,22 @@ kws = ka.KISWebSocket(api_url="/tryitout")
 kws.subscribe(request=asking_price_krx, data=["005930", "000660"])
 ```
 
+### 4.3. 전략 빌더 / 백테스터 실행
+
+```bash
+# Strategy Builder (전략 설계 + 시그널)
+cd strategy_builder
+./start.sh
+
+# Backtester (백테스팅)
+cd backtester
+./start.sh
+```
+
+상세 실행 방법은 각 디렉토리의 README를 참고하세요:
+- [strategy_builder/README.md](strategy_builder/README.md)
+- [backtester/README.md](backtester/README.md)
+
 ## 5. 문제 해결 가이드
 
 ### 토큰 오류 시
@@ -306,6 +375,18 @@ ka.auth(svr="prod")  # 또는 "vps"
 # 의존성 재설치
 uv sync --reinstall
 ```
+
+### Docker 오류 (backtester)
+
+```bash
+docker info              # Docker Desktop 실행 상태 확인
+docker images | grep lean # Lean 이미지 확인 (첫 실행 시 자동 다운로드)
+```
+
+### 초당 거래건수 초과 (`EGW00201`)
+
+모의투자 계좌는 REST API 호출 제한이 낮습니다.
+단일 조회에는 문제없으나, 파라미터 최적화처럼 연속 호출이 많으면 실전투자 계좌를 권장합니다.
 
 ---
 

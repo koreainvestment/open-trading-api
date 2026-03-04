@@ -1,0 +1,59 @@
+[project]
+name = "kis-backtest"
+version = "1.0.0"
+description = "KIS Backtesting Library - QuantConnect Lean + KIS API Integration"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "mcp[cli]>=1.9.4",
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+    "pydantic>=2.0.0",
+    "jinja2>=3.1.0",
+    "pyyaml>=6.0.0",
+    "httpx>=0.25.0",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.22",
+    "requests>=2.32.5",
+    "websockets>=11.0.0",
+    "pycryptodome>=3.20.0",
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "scipy>=1.12.0",
+    "matplotlib>=3.8.0",
+    "plotly>=5.18.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["kis_backtest"]
+omit = [
+    "kis_backtest/providers/kis/*.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]

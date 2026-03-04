@@ -1,0 +1,51 @@
+version: "1.0"
+
+metadata:
+  name: "강한 종가 (Strong Close - IBS)"
+  description: "Internal Bar Strength가 높으면(종가가 고가 근처) 매수, 낮으면 매도"
+  author: "kis_backtest"
+  tags:
+    - momentum
+    - strong_close
+    - ibs
+
+strategy:
+  id: strong_close
+  category: momentum
+
+  params:
+    min_close_ratio:
+      default: 0.8
+      min: 0.5
+      max: 0.99
+      type: float
+      description: "최소 종가 비율 (IBS 임계치)"
+    stop_loss_pct:
+      default: 5.0
+      min: 1.0
+      max: 15.0
+      type: float
+      description: "손절 %"
+
+  indicators:
+    - id: ibs
+      alias: ibs
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: ibs
+        operator: greater_equal
+        value: $min_close_ratio
+
+  exit:
+    logic: AND
+    conditions:
+      - indicator: ibs
+        operator: less_than
+        value: 0.2
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 5.0

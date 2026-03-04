@@ -1,0 +1,60 @@
+version: "1.0"
+
+metadata:
+  name: "추세 돌파 후 이탈 (False Breakout)"
+  description: "N일 고점을 돌파한 후 다시 하락하면 매도하는 반전 전략"
+  author: "kis_backtest"
+  tags:
+    - trend
+    - breakout
+    - false_breakout
+    - reversal
+
+strategy:
+  id: false_breakout
+  category: trend
+
+  params:
+    lookback:
+      default: 20
+      min: 10
+      max: 60
+      type: int
+      description: "전고점 계산 기간"
+    exit_days:
+      default: 3
+      min: 1
+      max: 10
+      type: int
+      description: "이탈 확인 일수"
+    stop_loss_pct:
+      default: 3.0
+      min: 1
+      max: 10
+      type: float
+      description: "손절 %"
+
+  indicators:
+    - id: max
+      alias: prev_high
+      params:
+        period: $lookback
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: close
+        operator: cross_above
+        compare_to: prev_high
+
+  exit:
+    logic: AND
+    conditions:
+      - indicator: close
+        operator: less_than
+        compare_to: prev_high
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 3.0

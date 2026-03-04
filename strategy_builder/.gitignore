@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+!frontend/src/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Local config
+.env
+.env.local
+.env.*.local
+
+# KIS
+.master/
+KIS/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Tool configs
+.serena/
+.claude/
+
+# Node (frontend)
+node_modules/
+.next/
+.vercel
+
+# uv
+.python-version

@@ -1,0 +1,63 @@
+version: "1.0"
+
+metadata:
+  name: "52주 신고가 돌파 (52-Week High Breakout)"
+  description: "종가가 52주(252거래일) 최고가를 돌파하면 매수, 손절/익절로 관리"
+  author: "kis_backtest"
+  tags:
+    - trend
+    - breakout
+    - 52week
+    - high
+
+strategy:
+  id: week52_high
+  category: trend
+
+  params:
+    lookback:
+      default: 252
+      min: 60
+      max: 504
+      type: int
+      description: "최고가 계산 기간 (252=52주)"
+    stop_loss_pct:
+      default: 5.0
+      min: 2
+      max: 15
+      type: float
+      description: "손절 %"
+    take_profit_pct:
+      default: 15.0
+      min: 5
+      max: 30
+      type: float
+      description: "익절 %"
+
+  indicators:
+    - id: max
+      alias: high52
+      params:
+        period: $lookback
+
+  entry:
+    logic: AND
+    conditions:
+      - indicator: close
+        operator: cross_above
+        compare_to: high52
+
+  exit:
+    logic: AND
+    conditions:
+      - indicator: close
+        operator: cross_below
+        compare_to: high52
+
+risk:
+  stop_loss:
+    enabled: true
+    percent: 5.0
+  take_profit:
+    enabled: true
+    percent: 15.0
