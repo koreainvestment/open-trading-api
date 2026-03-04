@@ -42,7 +42,7 @@ export default function RootLayout({
           <footer className="border-t border-slate-200 dark:border-slate-800">
             <div className="max-w-7xl mx-auto px-4 py-4">
               <p className="text-center text-sm text-slate-500">
-                KIS Strategy Framework &copy; 2026. Built with Next.js & Tailwind CSS.
+                투자에는 원금 손실의 위험이 있으며, 과거 성과가 미래를 보장하지 않습니다.
               </p>
             </div>
           </footer>
