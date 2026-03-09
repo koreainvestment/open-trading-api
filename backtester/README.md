@@ -326,7 +326,7 @@ bash scripts/start_mcp.sh    # http://127.0.0.1:3846/mcp
 | `week52_high` | 52주 신고가 돌파 | trend | 52주 최고가 갱신 시 매수 |
 | `consecutive_moves` | 연속 상승/하락 | momentum | N일 연속 패턴 감지 |
 | `ma_divergence` | 이동평균 이격도 | mean_reversion | MA 대비 이격도 기반 매매 |
-| `false_breakout` | 추세 돌파 후 이탈 | mean_reversion | 돌파 실패 시 반전 매매 |
+| `false_breakout` | 추세 돌파 후 이탈 | trend | 돌파 실패 시 반전 매매 |
 | `strong_close` | 강한 종가 | momentum | 고가 대비 종가 위치로 강도 판단 |
 | `volatility_breakout` | 변동성 축소 후 확장 | volatility | 변동성 최저 후 돌파 매수 |
 | `short_term_reversal` | 단기 반전 | mean_reversion | 과매도 구간 반등 매수 |

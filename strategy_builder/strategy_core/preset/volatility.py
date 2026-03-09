@@ -2,7 +2,7 @@ from strategy.strategy_08_volatility import VolatilityStrategy
 from strategy_core.registry import register
 
 
-@register('volatility', '변동성')
+@register('volatility', '돌파매매')
 class VolatilityPreset:
     strategy_class = VolatilityStrategy
     name = '변동성 확장'

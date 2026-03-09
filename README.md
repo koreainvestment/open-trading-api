@@ -43,6 +43,9 @@
 │   └── convention.md            # 코딩 컨벤션 가이드
 ├── examples_llm/                  # LLM용 샘플 코드
 │   ├── kis_auth.py              # 인증 공통 함수
+│   ├── auth                     # 인증(토큰 발급)
+│   │   ├── auth_token               # REST 접근토큰 발급
+│   │   └── auth_ws_token            # 웹소켓 접속키 발급
 │   ├── domestic_bond            # 국내채권
 │   │   └── inquire_price        # API 단일 기능별 폴더
 │   │       ├── inquire_price.py         # 한줄 호출 파일 (예: 채권 가격 조회)
@@ -52,10 +55,12 @@
 │   ├── elw                      # ELW
 │   ├── etfetn                   # ETF/ETN
 │   ├── overseas_futureoption    # 해외선물옵션
-│   ├── overseas_price           # 해외시세
 │   └── overseas_stock           # 해외주식
 ├── examples_user/                 # user용 실제 사용 예제
 │   ├── kis_auth.py              # 인증 공통 함수
+│   ├── auth                     # 인증(토큰 발급)
+│   │   ├── auth_functions.py            # 인증 함수 모음
+│   │   └── auth_examples.py             # 인증 실행 예제
 │   ├── domestic_bond            # 국내채권
 │   │   ├── domestic_bond_functions.py        # (REST) 통합 함수 파일 (모든 API 함수 모음)
 │   │   ├── domestic_bond_examples.py         # (REST) 실행 예제 파일 (함수 사용법)
@@ -66,10 +71,9 @@
 │   ├── elw                      # ELW
 │   ├── etfetn                   # ETF/ETN
 │   ├── overseas_futureoption    # 해외선물옵션
-│   ├── overseas_price           # 해외시세
 │   └── overseas_stock           # 해외주식
 ├── legacy/                      # 구 샘플코드 보관
-├── stock_info/                  # 종목정보파일 참고 데이터
+├── stocks_info/                 # 종목정보파일 참고 데이터
 ├── kis_devlp.yaml               # API 설정 파일 (개인정보 입력 필요)
 ├── pyproject.toml               # (uv)프로젝트 의존성 관리
 └── uv.lock                      # (uv)의존성 락 파일
@@ -81,6 +85,7 @@
 
 | 카테고리 | 설명 | 폴더명 |
 | --- | --- | --- |
+| 인증 | 접근토큰 발급, 웹소켓 접속키 발급 | `auth` |
 | 국내주식 | 국내 주식 시세, 주문, 잔고 등 | `domestic_stock` |
 | 국내채권 | 국내 채권 시세, 주문 등 | `domestic_bond` |
 | 국내선물옵션 | 국내 파생상품 관련 | `domestic_futureoption` |
@@ -154,7 +159,7 @@ graph LR
 
 ### 3.1. Python 환경 요구사항
 
-- **Python 3.9 이상** 필요
+- **Python 3.11 이상** 필요
 - **uv** **패키지 매니저 사용** 권장 (빠르고 간편한 의존성 관리)
 
 ### 3.2. uv 설치 방법
@@ -178,7 +183,7 @@ uv --version
 ```bash
 # 저장소 클론
 git clone https://github.com/koreainvestment/open-trading-api
-cd open-trading-api/kis_github
+cd open-trading-api
 
 # uv를 사용한 의존성 설치 - 한줄로 끝
 uv sync
@@ -194,8 +199,18 @@ uv sync
 
 ### 3.5. kis_devlp.yaml 설정
 
-- 본인의 계정 설정을 위해 `kis_devlp.yaml` 파일을 열어 다음과 같이 수정합니다.
-1. **프로젝트 루트에 위치한** `kis_devlp.yaml` 파일 열기
+- 본인의 계정 설정을 위해 `kis_devlp.yaml` 파일을 수정합니다.
+- 기본 경로는 `~/KIS/config/kis_devlp.yaml`입니다. 폴더가 없으면 생성해 주세요.
+- 프로젝트 루트의 `kis_devlp.yaml`을 `~/KIS/config/`로 복사한 뒤 수정하는 것을 권장합니다.
+- 경로를 변경하고 싶다면 `kis_auth.py`의 `config_root` 값을 수정하면 됩니다.
+
+```bash
+# 설정 폴더 생성 및 파일 복사
+mkdir -p ~/KIS/config
+cp kis_devlp.yaml ~/KIS/config/
+```
+
+1. `~/KIS/config/kis_devlp.yaml` 파일 열기
 2. **앱키와 앱시크릿** 정보 입력
 3. **HTS ID** 정보 입력
 4. **계좌번호** 정보 입력 (앞 8자리와 뒤 2자리 구분)
@@ -223,25 +238,14 @@ my_paper_future: "모의투자 선물옵션계좌 8자리"
 my_prod: "01" # 종합계좌
 # my_prod: "03" # 국내선물옵션 계좌
 # my_prod: "08" # 해외선물옵션 계좌
-# my_prod: "22" # 연금저축 계좌
+# my_prod: "22" # 개인연금 계좌
 # my_prod: "29" # 퇴직연금 계좌
 
 # User-Agent(기본값 사용 권장, 변경 불필요)
 my_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 ```
 
-### 3.6. kis_auth.py 설정 경로 수정
-
-`kis_auth.py`의 config_root 경로를 본인 환경에 맞게 수정해줍니다.
-
-```python
-# kis_auth.py 39번째 줄
-# windows - C:\Users\사용자이름\KIS\config
-# Linux/macOS - /home/사용자이름/KIS/config
-# config_root = os.path.join(os.path.expanduser("~"), "KIS", "config")
-config_root = os.path.join(os.path.expanduser("~"), "폴더 경로", "config")
-```
-### 3.7. 실행파일 내 인증 설정 검토
+### 3.6. 실행파일 내 인증 설정 검토
 
 - 실행하려는 파일에서 인증 관련 설정을 검토 혹은 변경해줍니다. 국내주식 기능 전체를 이용하시려면, `domestic_stock/domestic_stock_examples.py` 파일을 확인해주세요. 
 ka.auth() 함수의 svr, product 매개변수를 아래와 같이 수정하면 실전환경(prod)에서 위탁계좌(-01)로 매매 테스트가 가능합니다.
@@ -253,7 +257,7 @@ import kis_auth as ka
 ka.auth(svr="prod", product="01") # 모의투자: svr="vps"
 ```
 
-### 3.8. 전략 빌더 / 백테스터 환경 설정 (선택)
+### 3.7. 전략 빌더 / 백테스터 환경 설정 (선택)
 
 전략 설계 및 백테스팅 기능을 사용하려면 추가 설정이 필요합니다.
 
@@ -270,8 +274,8 @@ ka.auth(svr="prod", product="01") # 모의투자: svr="vps"
 
 ```bash
 # 국내주식 샘플 코드 실행 (examples_user/domestic_stock/)
-python domestic_stock_examples.py # REST 방식
-python domestic_stock_examples_ws.py  # Websocket 방식 
+uv run python domestic_stock_examples.py # REST 방식
+uv run python domestic_stock_examples_ws.py  # Websocket 방식 
 ```
 
 domestic_stock_examples.py에는 여러 함수가 포함되어 있으므로, 사용하려는 함수만 남기고 나머지는 주석 처리한 후, 입력값을 수정하여 호출해 주세요.
@@ -280,7 +284,7 @@ domestic_stock_examples.py에는 여러 함수가 포함되어 있으므로, 사
 
 ```bash
 # 국내주식 > 주식현재가 시세 샘플 코드 실행 (examples_llm/domestic_stock/inquire_price/)
-python chk_inquire_price.py
+uv run python chk_inquire_price.py
 ```
 
 examples_llm 은 각 기능별로 개별 실행 파일(chk_*.py)이 분리되어 있어, 특정 기능만 테스트하고자 할 때 유용합니다.

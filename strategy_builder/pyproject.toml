@@ -3,7 +3,7 @@ name = "kis-strategy-builder"
 version = "1.0.0"
 description = "KIS Strategy Builder + Order Execution"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 dependencies = [
     "fastapi>=0.104.0",
