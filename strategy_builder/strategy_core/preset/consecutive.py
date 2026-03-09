@@ -2,7 +2,7 @@ from strategy.strategy_04_consecutive import ConsecutiveStrategy
 from strategy_core.registry import register
 
 
-@register('consecutive', '패턴')
+@register('consecutive', '추세추종')
 class ConsecutivePreset:
     strategy_class = ConsecutiveStrategy
     name = '연속 상승/하락'
