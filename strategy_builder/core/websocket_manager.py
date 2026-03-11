@@ -115,6 +115,7 @@ class OrderbookWebSocketManager:
                         "stock_code": stock_code,
                         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         "data": {
+                            "current_price": orderbook.get("current_price"),
                             "ask_prices": orderbook["ask_prices"],
                             "ask_volumes": orderbook["ask_volumes"],
                             "bid_prices": orderbook["bid_prices"],

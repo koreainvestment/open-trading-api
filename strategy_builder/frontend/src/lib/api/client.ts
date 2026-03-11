@@ -84,4 +84,19 @@ export async function apiDelete<T>(path: string): Promise<T> {
   return handleResponse<T>(response);
 }
 
+/**
+ * WebSocket base URL 반환.
+ * - NEXT_PUBLIC_API_URL 설정 시: http→ws 변환 (dev/prod 자동 대응)
+ * - 미설정 시: 동일 origin 사용 (프로덕션 same-origin 배포)
+ *
+ * ⚠️ 로컬 개발 시 .env.local에 반드시 설정:
+ *    NEXT_PUBLIC_API_URL=http://localhost:8000
+ */
+export function getWsBase(): string {
+  if (API_BASE) return API_BASE.replace(/^http/, "ws");
+  if (typeof window === "undefined") return "ws://localhost:8000";
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  return `${protocol}//${window.location.host}`;
+}
+
 export { ApiError, API_BASE };
