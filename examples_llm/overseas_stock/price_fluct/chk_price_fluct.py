@@ -69,7 +69,7 @@ def main():
     # API 호출
     logging.info("API 호출")
     try:
-        result1, result2 = price_fluct(excd="NAS", gubn="0", mixn="0", vol_rang="0")
+        result1, result2 = price_fluct(excd="NAS", gubn="0", minx="0", vol_rang="0")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return
