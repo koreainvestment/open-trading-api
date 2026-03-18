@@ -46,43 +46,79 @@ MCP는 Claude를 개발한 Anthropic에서 만든 프로토콜로, AI 모델이 
 
 ### 설정 방법
 
-1. Claude Desktop
-    
-    Link : [https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp](https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp)
-    
-    <img width="2048" height="958" alt="image" src="https://github.com/user-attachments/assets/82aa8bc4-b112-482c-8e8d-34c41fb0ed76" />
+GitHub 저장소: [open-trading-api/MCP/KIS Code Assistant MCP](https://github.com/koreainvestment/open-trading-api/tree/main/MCP/KIS%20Code%20Assistant%20MCP)
 
-    <img width="2048" height="816" alt="image 1" src="https://github.com/user-attachments/assets/3404acc4-058a-4b41-a4d4-0d5aa62ddd3b" />
-    
-    **AUTO / Claude Desktop** 선택 → Terminal 명령어 Copy 클릭
-    
-    <img width="2048" height="884" alt="image 2" src="https://github.com/user-attachments/assets/a5852435-baa9-4fe0-a5e6-41929552b900" />
-    
-    터미널에 명령어 붙여넣기하고 엔터 → 설치 완료 메시지 후 Claude 재시작 질문에는 Y 입력 후 엔터를 누르면 Claude Desktop 재시작
-    
-    <img width="2048" height="1000" alt="image 3" src="https://github.com/user-attachments/assets/911b7818-bedf-4d04-8721-09cc4cf5409d" />
+#### 사전 준비: 저장소 클론 및 패키지 설치
 
-    
-    홈 화면 대화창 하단 **검색 및 도구** 버튼에서 설치 및 추가 확인 가능, `설정 → 개발자`에서도 확인 할 수 있습니다.
-    
-2. Cursor
-    
-    Link : [https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp](https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp)
-    
-    <img width="2048" height="988" alt="image 4" src="https://github.com/user-attachments/assets/5058bc1d-8046-47e4-9962-f7f1a5f3bcba" />
+```bash
+# 1. 저장소 클론
+git clone https://github.com/koreainvestment/open-trading-api.git
+cd open-trading-api/MCP/KIS\ Code\ Assistant\ MCP
 
-    <img width="2048" height="988" alt="image 5" src="https://github.com/user-attachments/assets/6bb863b7-a8de-4435-8bdd-ef1deece02f0" />
+# 2. 패키지 설치
+uv sync
+```
 
-    
-    **AUTO / Cursor** 선택 → **One-Click Install** 클릭
-    
-   <img width="2048" height="958" alt="image 6" src="https://github.com/user-attachments/assets/f3e2f17b-f1b6-4b8f-a388-2990ef6f2a0e" />
-    
-    Cursor에서 **Install** 클릭하면 완료
-    
-   <img width="2048" height="958" alt="image 7" src="https://github.com/user-attachments/assets/a4fcdcdc-d83b-4187-946d-28160d7f65bf" />
+#### 1. Claude Desktop
 
-    KIS Code Assistant MCP가 연결되었는지 확인 (경로 :  `Settings` > `MCP Servers`)
+Claude Desktop 설정 파일(`claude_desktop_config.json`)에 아래 내용을 추가합니다.
+
+> 설정 파일 위치
+> - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+> - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "kis-code-assistant-mcp": {
+      "command": "{uv 실행 경로}",
+      "args": [
+        "--directory", "{프로젝트 폴더 경로}/MCP/KIS Code Assistant MCP",
+        "run", "server.py", "--stdio"
+      ]
+    }
+  }
+}
+```
+
+- `{uv 실행 경로}`: 터미널에서 `which uv` (macOS/Linux) 또는 `where uv` (Windows) 명령으로 확인한 전체 경로 (예: `/Users/username/.local/bin/uv`)
+- `{프로젝트 폴더 경로}`: 저장소를 클론한 절대 경로 (예: `/Users/username/open-trading-api`)
+
+Claude Desktop을 재시작하면 홈 화면 대화창 하단 **검색 및 도구** 버튼에서 설치 확인 가능, `설정 → 개발자`에서도 확인할 수 있습니다.
+
+#### 2. Cursor
+
+Docker 또는 로컬에서 HTTP 서버를 실행한 뒤, Cursor의 `Settings > MCP Servers`에서 아래 설정을 추가합니다.
+
+```bash
+# Docker로 실행하는 경우
+docker build -t kis-code-assistant-mcp .
+docker run -d -p 8081:8081 --name kis-code-assistant-mcp kis-code-assistant-mcp
+
+# 또는 로컬에서 직접 실행
+uv run server.py
+```
+
+서버가 정상 동작하는지 확인:
+```bash
+curl http://localhost:8081/health
+# {"status":"healthy","server":"kis-code-assistant-mcp","version":"0.1.0",...}
+```
+
+Cursor MCP 설정:
+```json
+{
+  "mcpServers": {
+    "kis-code-assistant-mcp": {
+      "url": "http://localhost:8081/mcp"
+    }
+  }
+}
+```
+
+> Cursor는 stdio 방식도 지원합니다. Claude Desktop과 동일한 설정을 사용할 수 있습니다.
+
+KIS Code Assistant MCP가 연결되었는지 확인 (경로: `Settings` > `MCP Servers`)
     
 
 # 🚀 MCP기반 트레이딩 시스템 개발을 위한 환경 설정
@@ -316,10 +352,10 @@ uv run python test_connection.py
 ### 🛠️ 자주 발생하는 문제와 해결방법
 
 1. MCP 연결 실패 시
+    - Docker 컨테이너가 실행 중인지 확인 (`docker ps`)
+    - MCP 서버 URL 확인 (`curl http://localhost:8081/health`)
     - Claude Desktop/Cursor 재시작
-    - MCP 서버 URL 확인 ([https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp](https://smithery.ai/server/@KISOpenAPI/kis-code-assistant-mcp))
     - 방화벽 설정 확인
-    - 인터넷 연결 확인
 2. API 연결 오류 시
     - App Key와 Secret이 발급 받은 것과 동일한지 확인
     - kis_auth.py 의 내용이 다운로드 받은 파일과 동일한지 확인

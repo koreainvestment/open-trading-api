@@ -1,0 +1,37 @@
+# Git 관련
+.git
+.gitignore
+
+# Python 관련
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+
+# 개발 환경
+.venv
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS 관련
+.DS_Store
+Thumbs.db
+
+# Docker 관련
+Dockerfile
+.dockerignore
+
+# 문서
+*.md
+!README.md
+
+# 기타
+tmp/
+*.log
+*.tmp
