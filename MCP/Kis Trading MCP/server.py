@@ -47,7 +47,6 @@ def main():
         name="My Awesome MCP Server",
         instructions="This is a server for a specific project.",
         version="1.0.0",
-        stateless_http=False,
     )
 
     # middleware

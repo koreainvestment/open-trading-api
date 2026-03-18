@@ -61,7 +61,6 @@ mcp = FastMCP(
     host=_host,
     port=_port,
     streamable_http_path="/mcp",
-    stateless_http=True,
 )
 
 # ─── Strategy Tools ────────────────────────────────────────────────────────────
