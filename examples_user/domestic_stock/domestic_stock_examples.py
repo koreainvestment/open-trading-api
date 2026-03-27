@@ -12,7 +12,8 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # 인증
-ka.auth()
+# ka.auth()
+ka.auth(svr="prod", product="01") # 모의투자: svr="vps"
 trenv = ka.getTREnv()
 
 ##############################################################################################
