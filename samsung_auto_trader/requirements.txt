@@ -1,0 +1,3 @@
+requests==2.31.0
+python-dotenv==1.0.0  # 로컬 .env 파일 사용 시에만 필요 (Codespaces User Secrets 사용 시 불필요)
+pytz==2024.1  # 한국 시간대(KST) 지원
