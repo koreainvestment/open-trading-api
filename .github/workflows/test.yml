@@ -1,0 +1,54 @@
+name: Test
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  strategy-builder:
+    name: strategy_builder tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: strategy_builder
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv pip install --system ".[dev]"
+
+      - name: Run tests
+        run: python -m pytest tests/ -v
+
+  backtester:
+    name: backtester tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backtester
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv pip install --system ".[dev]"
+
+      - name: Run tests
+        run: python -m pytest tests/ -v
