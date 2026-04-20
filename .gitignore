@@ -164,6 +164,7 @@ KIS/
 # ===== Claude Code =====
 .claude/logs/*.log
 .claude/settings.local.json
+SESSION_HANDOFF_EMERGENCY.md
 
 # ===== p2 output artifacts (regeneratable) =====
 backtester/examples/output/reports/*.html
