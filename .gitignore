@@ -151,6 +151,7 @@ yarn-error.log*
 
 # ===== Lock files =====
 *.lock
+!uv.lock
 
 # ===== KIS (민감 정보) =====
 KIS/

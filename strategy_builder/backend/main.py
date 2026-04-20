@@ -16,15 +16,19 @@ from backend.routers import strategy, auth, market, orders, account, files, symb
 
 # FastAPI 앱 생성
 app = FastAPI(
-    title="KIS Strategy Builder",
-    description="한국투자증권 전략 빌더",
-    version="1.0.0"
+    title="KIS Strategy Builder", description="한국투자증권 전략 빌더", version="1.0.0"
 )
 
-# CORS 설정
+# CORS 설정 - 와일드카드는 allow_credentials=True와 함께 사용 불가하므로 명시적 origin 설정
+_cors_origins_env = os.environ.get("CORS_ALLOW_ORIGINS", "")
+_cors_origins = (
+    [o.strip() for o in _cors_origins_env.split(",") if o.strip()]
+    if _cors_origins_env
+    else ["http://localhost:3000"]
+)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,9 +66,4 @@ if __name__ == "__main__":
     print(" URL: http://localhost:8000")
     print("=" * 50)
 
-    uvicorn.run(
-        "backend.main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True
-    )
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)

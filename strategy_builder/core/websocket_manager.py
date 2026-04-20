@@ -27,6 +27,7 @@ class OrderbookWebSocketManager:
 
     def __init__(self):
         self.subscriptions: Dict[str, Set] = {}  # {stock_code: {client_websockets}}
+        self.env_modes: Dict[str, str] = {}  # {stock_code: env_dv}
         self.running = False
         self.polling_tasks: Dict[str, asyncio.Task] = {}  # {stock_code: polling_task}
 
@@ -50,27 +51,31 @@ class OrderbookWebSocketManager:
         self.subscriptions.clear()
         logging.info("Orderbook WebSocket Manager 종료")
 
-    async def subscribe_orderbook(self, stock_code: str, client_ws):
+    async def subscribe_orderbook(
+        self, stock_code: str, client_ws, env_dv: str = "vps"
+    ):
         """
         실시간 호가 구독
 
         Args:
             stock_code: 종목코드
             client_ws: 클라이언트 웹소켓
+            env_dv: 환경 구분 (real/prod=실전, vps/demo=모의)
         """
         if stock_code not in self.subscriptions:
             self.subscriptions[stock_code] = set()
+            self.env_modes[stock_code] = env_dv
 
             # 폴링 태스크 시작 (1초마다 호가 조회)
-            task = asyncio.create_task(
-                self._polling_loop(stock_code)
-            )
+            task = asyncio.create_task(self._polling_loop(stock_code))
             self.polling_tasks[stock_code] = task
-            logging.info(f"호가 구독 시작 (polling): {stock_code}")
+            logging.info(f"호가 구독 시작 (polling, {env_dv}): {stock_code}")
 
         # 클라이언트 추가
         self.subscriptions[stock_code].add(client_ws)
-        logging.info(f"클라이언트 추가: {stock_code} (총 {len(self.subscriptions[stock_code])}명)")
+        logging.info(
+            f"클라이언트 추가: {stock_code} (총 {len(self.subscriptions[stock_code])}명)"
+        )
 
     async def unsubscribe_orderbook(self, stock_code: str, client_ws):
         """
@@ -85,7 +90,9 @@ class OrderbookWebSocketManager:
 
         # 클라이언트 제거
         self.subscriptions[stock_code].discard(client_ws)
-        logging.info(f"클라이언트 제거: {stock_code} (남은 {len(self.subscriptions[stock_code])}명)")
+        logging.info(
+            f"클라이언트 제거: {stock_code} (남은 {len(self.subscriptions[stock_code])}명)"
+        )
 
         # 구독자가 없으면 폴링 중단
         if len(self.subscriptions[stock_code]) == 0:
@@ -95,6 +102,7 @@ class OrderbookWebSocketManager:
                 logging.info(f"호가 구독 해제: {stock_code}")
 
             del self.subscriptions[stock_code]
+            self.env_modes.pop(stock_code, None)
 
     async def _polling_loop(self, stock_code: str):
         """
@@ -105,8 +113,9 @@ class OrderbookWebSocketManager:
         """
         while self.running and stock_code in self.subscriptions:
             try:
-                # REST API로 호가 조회
-                orderbook = data_fetcher.get_orderbook(stock_code, env_dv="vps")
+                # REST API로 호가 조회 (구독 시 전달받은 환경 모드 사용)
+                env_dv = self.env_modes.get(stock_code, "vps")
+                orderbook = data_fetcher.get_orderbook(stock_code, env_dv=env_dv)
 
                 if orderbook:
                     # 클라이언트에게 전달
@@ -122,7 +131,7 @@ class OrderbookWebSocketManager:
                             "bid_volumes": orderbook["bid_volumes"],
                             "total_ask_volume": orderbook["total_ask_volume"],
                             "total_bid_volume": orderbook["total_bid_volume"],
-                        }
+                        },
                     }
 
                     # 모든 구독 클라이언트에게 전달

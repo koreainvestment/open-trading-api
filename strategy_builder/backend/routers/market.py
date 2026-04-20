@@ -8,7 +8,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query
 
 from core import data_fetcher
 from core.websocket_manager import get_ws_manager
-from backend import authenticate, is_authenticated
+from backend import authenticate, get_current_mode, is_authenticated
 
 logging.basicConfig(level=logging.INFO)
 
@@ -26,7 +26,7 @@ def ensure_authenticated(env_dv: str = "vps") -> bool:
 @router.get("/orderbook/{stock_code}")
 async def get_orderbook(
     stock_code: str,
-    env_dv: str = Query("demo", description="환경 구분 (real/demo/prod/vps)")
+    env_dv: str = Query("demo", description="환경 구분 (real/demo/prod/vps)"),
 ):
     """
     호가 조회 REST API
@@ -56,36 +56,24 @@ async def get_orderbook(
     try:
         # 인증 확인/시도
         if not ensure_authenticated(env_dv):
-            return {
-                "status": "error",
-                "message": "KIS API 인증 필요"
-            }
-        
+            return {"status": "error", "message": "KIS API 인증 필요"}
+
         orderbook = data_fetcher.get_orderbook(stock_code, env_dv)
 
         if not orderbook:
-            return {
-                "status": "error",
-                "message": f"호가 조회 실패: {stock_code}"
-            }
+            return {"status": "error", "message": f"호가 조회 실패: {stock_code}"}
 
-        return {
-            "status": "success",
-            "data": orderbook
-        }
+        return {"status": "success", "data": orderbook}
 
     except Exception as e:
         logging.error(f"호가 조회 에러: {e}")
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+        return {"status": "error", "message": str(e)}
 
 
 @router.get("/price/{stock_code}")
 async def get_current_price(
     stock_code: str,
-    env_dv: str = Query("demo", description="환경 구분 (real/demo/prod/vps)")
+    env_dv: str = Query("demo", description="환경 구분 (real/demo/prod/vps)"),
 ):
     """
     현재가 조회 REST API (등락 정보 포함)
@@ -112,30 +100,18 @@ async def get_current_price(
     try:
         # 인증 확인/시도
         if not ensure_authenticated(env_dv):
-            return {
-                "status": "error",
-                "message": "KIS API 인증 필요"
-            }
+            return {"status": "error", "message": "KIS API 인증 필요"}
 
         price_data = data_fetcher.get_current_price(stock_code, env_dv)
 
         if not price_data:
-            return {
-                "status": "error",
-                "message": f"현재가 조회 실패: {stock_code}"
-            }
+            return {"status": "error", "message": f"현재가 조회 실패: {stock_code}"}
 
-        return {
-            "status": "success",
-            "data": price_data
-        }
+        return {"status": "success", "data": price_data}
 
     except Exception as e:
         logging.error(f"현재가 조회 에러: {e}")
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+        return {"status": "error", "message": str(e)}
 
 
 @router.websocket("/ws/{stock_code}")
@@ -176,9 +152,10 @@ async def websocket_orderbook(websocket: WebSocket, stock_code: str):
             await websocket.close(code=1011, reason="Internal error")
             return
 
-    # 호가 구독
+    # 호가 구독 (현재 인증된 환경 모드 전달)
     try:
-        await ws_manager.subscribe_orderbook(stock_code, websocket)
+        env_dv = get_current_mode()
+        await ws_manager.subscribe_orderbook(stock_code, websocket, env_dv=env_dv)
     except Exception as e:
         logging.error(f"호가 구독 실패: {e}")
         await websocket.close(code=1011, reason="Subscription failed")
