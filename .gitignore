@@ -177,3 +177,4 @@ settings.local.json
 
 .serena/samsung_auto_trader/token_cache.json
 samsung_auto_trader/__pycache__/
+samsung_auto_trader/token_cache.json
