@@ -1,5 +1,6 @@
 import time
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from api_client import ApiClient
 from auth import get_access_token
@@ -10,6 +11,8 @@ from orders import OrderService
 from account import AccountService, AccountInfo
 
 logger = get_logger(__name__)
+
+KST = ZoneInfo("Asia/Seoul")
 
 CYCLE_SEPARATOR = "-" * 80
 
@@ -36,24 +39,26 @@ class StockTrader:
         self.order_service = OrderService(self.api_client, config.account_no)
 
     def _is_in_trading_window(self) -> bool:
-        now = datetime.now()
+        now = datetime.now(KST)
         start = datetime.strptime(self.config.trading_start, "%H:%M").time()
         end = datetime.strptime(self.config.trading_end, "%H:%M").time()
         return start <= now.time() <= end
 
     def _sleep_until_start(self) -> None:
-        now = datetime.now()
+        now = datetime.now(KST)
         start_time = datetime.combine(
             now.date(),
             datetime.strptime(self.config.trading_start, "%H:%M").time(),
+            tzinfo=KST,
         )
 
         if now < start_time:
-            delta = (start_time - now).seconds
+            delta = int((start_time - now).total_seconds())
             logger.info(
-                "[WAIT] Trading window not started. sleep_seconds=%s start=%s",
+                "[WAIT] Trading window not started. sleep_seconds=%s start=%s current_time_kst=%s",
                 delta,
                 self.config.trading_start,
+                now.strftime("%H:%M:%S"),
             )
             time.sleep(min(delta, 300))
 
@@ -74,7 +79,7 @@ class StockTrader:
 
         logger.info(
             "[START] Samsung Auto Trader started. trading_window=%s-%s symbol=%s "
-            "order_quantity=%s max_buy_per_cycle=%s max_sell_per_cycle=%s",
+            "order_quantity=%s max_buy_per_cycle=%s max_sell_per_cycle=%s timezone=Asia/Seoul",
             self.config.trading_start,
             self.config.trading_end,
             SYMBOL,
@@ -84,13 +89,14 @@ class StockTrader:
         )
 
         while True:
-            now = datetime.now()
+            now = datetime.now(KST)
 
             if not self._is_in_trading_window():
                 if now.time() > datetime.strptime(self.config.trading_end, "%H:%M").time():
                     logger.info(
-                        "[STOP] Trading window ended. end=%s",
+                        "[STOP] Trading window ended. end=%s current_time_kst=%s",
                         self.config.trading_end,
+                        now.strftime("%H:%M:%S"),
                     )
                     break
 
@@ -103,7 +109,11 @@ class StockTrader:
                 sell_orders_this_cycle = 0
 
                 logger.info(CYCLE_SEPARATOR)
-                logger.info("[CYCLE_START] symbol=%s", SYMBOL)
+                logger.info(
+                    "[CYCLE_START] symbol=%s current_time_kst=%s",
+                    SYMBOL,
+                    now.strftime("%H:%M:%S"),
+                )
                 logger.info(CYCLE_SEPARATOR)
 
                 current_price = self.market_data.get_current_price(
@@ -232,14 +242,14 @@ class StockTrader:
                     self._confirm_execution(before_info, after_info),
                 )
 
-                logger.info("-" * 80)
+                logger.info(CYCLE_SEPARATOR)
                 logger.info(
                     "[CYCLE_END] symbol=%s buy_orders=%s sell_orders=%s",
                     SYMBOL,
                     buy_orders_this_cycle,
                     sell_orders_this_cycle,
                 )
-                logger.info("-" * 80)
+                logger.info(CYCLE_SEPARATOR)
 
             except Exception as exc:
                 logger.error("[CYCLE_ERROR] error=%s", exc)

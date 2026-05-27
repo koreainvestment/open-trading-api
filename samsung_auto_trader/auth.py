@@ -1,7 +1,6 @@
 import json
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Optional
 
 import requests
@@ -27,10 +26,17 @@ def load_cached_token() -> Optional[TokenData]:
         raw = json.loads(TOKEN_CACHE_FILE.read_text())
         issued_at = datetime.fromisoformat(raw["issued_at"])
         expires_in = int(raw.get("expires_in", 0))
+
         if datetime.now(timezone.utc) < issued_at + timedelta(seconds=expires_in - 30):
             logger.info("Reusing cached token from token cache.")
-            return TokenData(access_token=raw["access_token"], issued_at=issued_at, expires_in=expires_in)
+            return TokenData(
+                access_token=raw["access_token"],
+                issued_at=issued_at,
+                expires_in=expires_in,
+            )
+
         logger.info("Cached token has expired or is close to expiration.")
+
     except (ValueError, KeyError, OSError) as exc:
         logger.warning("Unable to load token cache: %s", exc)
 
@@ -43,6 +49,7 @@ def save_cached_token(token: str, expires_in: int) -> None:
         "issued_at": datetime.now(timezone.utc).isoformat(),
         "expires_in": expires_in,
     }
+
     TOKEN_CACHE_FILE.write_text(json.dumps(payload, indent=2))
     logger.info("Saved new access token to cache.")
 
@@ -65,9 +72,8 @@ def request_new_token(config: AppConfig) -> TokenData:
         timeout=10,
     )
 
-    print("TOKEN URL:", config.token_url)
-    print("TOKEN STATUS:", response.status_code)
-    print("TOKEN RESPONSE:", response.text)
+    # 보안상 access token이 포함된 응답 본문은 출력하지 않습니다.
+    logger.info("Token request completed. status=%s", response.status_code)
 
     response.raise_for_status()
     data = response.json()
@@ -90,7 +96,9 @@ def request_new_token(config: AppConfig) -> TokenData:
 
 def get_access_token(config: AppConfig) -> str:
     token = load_cached_token()
+
     if token is not None:
         return token.access_token
+
     token = request_new_token(config)
     return token.access_token
