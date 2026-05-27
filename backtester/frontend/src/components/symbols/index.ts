@@ -1,1 +1,0 @@
-export { StockInput } from "./StockInput";

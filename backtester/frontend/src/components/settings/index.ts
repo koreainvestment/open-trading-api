@@ -1,1 +1,0 @@
-export { SettingsModal } from "./SettingsModal";
