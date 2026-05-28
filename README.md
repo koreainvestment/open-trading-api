@@ -104,7 +104,7 @@ API 요청을 공통으로 처리하는 파일
 | `save_cached_token()` | 새 토큰을 받으면 `token_cache.json`에 저장 |
 | `request_new_token()` | 한국투자증권 API에 토큰 발급 요청을 보냄 |
 | `get_access_token()` | `load_cached_token()`을 호출하고 없으면 `request_new_token()` 실행 |
-  ↓
+
 ### 3.5 market_data.py
 삼성전자 현재가를 조회하는 파일
 
