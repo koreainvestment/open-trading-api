@@ -136,4 +136,4 @@ python main.py
 ![결과](https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/execution_log.png)
 
 
-![계좌]([https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/execution_log.png](https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/account.png))
+![계좌]([https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/execution_log.png](https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/account.png)
