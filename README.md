@@ -668,7 +668,7 @@ python main.py
 
 아래 이미지는 자동매매 프로그램이 한 사이클 동안 실행된 결과입니다.
 
-<img src="images/execution_log.png" alt="자동매매 실행 로그" width="800">
+[<img src="images/execution_log.png" alt="자동매매 실행 로그" width="800">](https://github.com/Kon9kongE2/open-trading-api/blob/b41d106376fd6c41b1a30d36cb0ba8073e71d8d7/picture/account.png)
 
 해당 로그에서는 현재가 조회, 계좌 조회, 매수/매도 주문 요청, 주문 후 계좌 재조회가 한 사이클 안에서 실행된 것을 확인할 수 있습니다.
 
