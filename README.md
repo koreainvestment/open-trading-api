@@ -9,9 +9,9 @@
 ```text
 open-trading-api/
 ├── README.md
-├── images/
+├── picture/
 │   ├── execution_log.png
-│   └── account_status.png
+│   └── account.png
 ├── .gitignore
 └── samsung_auto_trader/
     ├── main.py
@@ -31,7 +31,7 @@ open-trading-api/
 | 항목 | 설명 |
 |---|---|
 | `README.md` | 제출을 위해 작성한 시스템의 구조 |
-| `images/` | 결과 이미지 저장 폴더 |
+| `picture/` | 결과 이미지 저장 폴더 |
 | `.gitignore` | 토큰, 캐시, 환경변수, Python 임시파일 등이 GitHub에 올라가지 않도록 관리하는 파일 |
 | `samsung_auto_trader/` | 실제 자동매매 시스템 코드가 들어 있는 폴더 |
 
@@ -61,6 +61,61 @@ samsung_auto_trader/
 ---
 
 ## 3. `samsung_auto_trader` 코드 설명 및 역할
+
+### 3.1 main.py
+프로그램의 실행 시작점
+
+총 세 가지를 불러옴
+| `load_config` | 환경변수에서 계좌번호, API 키 등을 가져오는 함수 |
+| `configure_logger, get_logger` | 로그 출력 설정 |
+| `StockTrader` | 실제 자동매매를 수행하는 클래스 |
+
+### 3.2 config.py
+설정값을 관리하는 파일
+
+| `AppConfig` | 설정값을 하나로 묶어두는 클래스 |
+| `load_config` | 계좌번호와 API 키를 읽음 |
+| `ENDPOINTS` | 한국투자증권 API의 기능별 주소를 저장 |
+
+### 3.3 auth.py
+API 접근 토큰을 발급하고 저장하는 파일
+
+API를 호출하려면 매번 인증 토큰이 필요한데, 매번 새로 받기보다는 재사용할 수 있도록 `token_cache.json`에 토큰을 저장했다가 유효하면 재사용함.
+
+| `TokenData` | 토큰 정보를 저장하는 클래스 |
+| `load_cached_token()` | 기존에 `token_cache.json`에 저장된 토큰이 있는지 확인 |
+| `save_cached_token()` | 새 토큰을 받으면 `token_cache.json`에 저장 |
+| `request_new_token()` | 한국투자증권 API에 토큰 발급 요청을 보냄 |
+| `get_access_token()` | `load_cached_token()`을 호출하고 없으면 `request_new_token()` 실행 |
+
+### 3.4 api_client.py
+API 요청을 공통으로 처리하는 파일
+
+| `TokenData` | 토큰 정보를 저장하는 클래스 |
+| `load_cached_token()` | 기존에 `token_cache.json`에 저장된 토큰이 있는지 확인 |
+| `save_cached_token()` | 새 토큰을 받으면 `token_cache.json`에 저장 |
+| `request_new_token()` | 한국투자증권 API에 토큰 발급 요청을 보냄 |
+| `get_access_token()` | `load_cached_token()`을 호출하고 없으면 `request_new_token()` 실행 |
+  ↓
+### 3.5 market_data.py
+삼성전자 현재가를 조회하는 파일
+
+| `parse_price_response()` | 현재가를 꺼내는 함수 |
+| `MarketDataService` | 현재가 조회 기능을 담당하는 클래스 |
+
+### 3.6 account.py
+계좌의 주문 가능 현금과 삼성전자 보유 수량을 조회하는 파일
+
+### 3.7 orders.py
+매수, 매도 주문을 넣는 파일
+
+### 3.8 trader.py
+자동매매 전체 흐름을 제어하는 파일
+
+### 3.9 logger.py
+로그 출력 형식을 설정하는 파일
+
+깔끔하게 출력하기 위해서 사용함
 
 ---
 
