@@ -133,6 +133,6 @@ python main.py
 
 아래 이미지는 계좌 현금 및 보유 수량 조회 결과입니다.
 
-<img src="https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/execution_log.png" width="500">
+<img src="https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/execution_log.png">
 
 <img src="https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/account.png" width="500">
