@@ -133,4 +133,4 @@ python main.py
 
 아래 이미지는 계좌 현금 및 보유 수량 조회 결과입니다.
 
-<img src="images/account_status.png" alt="계좌 상태 조회 결과" width="800">
+[<img src="images/account_status.png" alt="계좌 상태 조회 결과" width="800">](https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/execution_log.png)
