@@ -175,4 +175,6 @@ backtester/examples/output/*.py
 # ===== Claude settings =====
 settings.local.json
 
-.serena/
+.serena/.venv-1/
+samsung_auto_trader/
+.venv-1/
