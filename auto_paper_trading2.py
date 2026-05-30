@@ -25,19 +25,28 @@ inquire_balance = domestic_stock_functions.inquire_balance
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-STOCK_CODE = "005930"  # 삼성전자
-INTERVAL = 60 * 30     # 30분
+STOCK_CODE = "000150"  # 두산
+INTERVAL = 60 * 10     # 10분
 
 BUY_RULES = [
-    (-5, 0.30),    # -5% 이하 하락 시 현금의 30% 매수
-    (-3, 0.20),    # -3% 이하 하락 시 현금의 20% 매수
-    (-1.5, 0.10),  # -1.5% 이하 하락 시 현금의 10% 매수
+    (-30, 0.50),    # -30% 이하 하락 시 현금의 50% 매수
+    (-25, 0.40),    # -25% 이하 하락 시 현금의 40% 매수
+    (-20, 0.30),    # -20% 이하 하락 시 현금의 30% 매수
+    (-15, 0.20),    # -15% 이하 하락 시 현금의 20% 매수
+    (-10, 0.10),    # -10% 이하 하락 시 현금의 10% 매수
+    (-5, 0.05),    # -5% 이하 하락 시 현금의 5% 매수
+    (-2.5, 0.025),    # -2.5% 이하 하락 시 현금의 2.5% 매수
 ]
 
 SELL_RULES = [
-    (7, 0.75),     # +7% 이상 상승 시 보유수량의 75% 매도
-    (4, 0.50),     # +4% 이상 상승 시 보유수량의 50% 매도
-    (2, 0.25),     # +2% 이상 상승 시 보유수량의 25% 매도
+    (30, 0.75),     # +30% 이상 상승 시 보유수량의 75% 매도
+    (25, 0.625),     # +25% 이상 상승 시 보유수량의 62.5% 매도
+    (20, 0.5),     # +20% 이상 상승 시 보유수량의 50% 매도
+    (15, 0.375),     # +15% 이상 상승 시 보유수량의 37.5% 매도
+    (10, 0.25),     # +10% 이상 상승 시 보유수량의 25% 매도
+    (5, 0.125),     # +5% 이상 상승 시 보유수량의 12.5% 매도
+    (2.5, 0.0625),     # +2.5% 이상 상승 시 보유수량의 6.25% 매도
+
 ]
 
 ka.auth(svr="vps", product="01")
@@ -90,10 +99,10 @@ def get_current_holding_qty():
 
     samsung = balance_df[balance_df["pdno"] == STOCK_CODE]
 
-    if len(samsung) == 0:
+    if len(doosan) == 0:
         return 0
 
-    return int(samsung.iloc[0]["hldg_qty"])
+    return int(doosan.iloc[0]["hldg_qty"])
 
 def get_available_cash():
     balance_df, summary_df = inquire_balance(
