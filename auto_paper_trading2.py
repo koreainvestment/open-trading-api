@@ -25,7 +25,7 @@ inquire_balance = domestic_stock_functions.inquire_balance
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-STOCK_CODE = "000150"  # 두산
+STOCK_CODE = "034020"  # 두산
 INTERVAL = 60 * 10     # 10분
 
 BUY_RULES = [
