@@ -141,9 +141,6 @@ cash = get_available_cash()
 
 logging.info(f"주문가능현금: {cash:,}원")
 
-print("===== SUMMARY =====")
-print(summary_df.T)
-
 def initial_buy():
     holding_qty = get_current_holding_qty()
 
