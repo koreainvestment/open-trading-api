@@ -2045,24 +2045,1155 @@ last_error에 예외 저장
 
 ---
 
+# market_data.py: 현재가 조회
+
+한국투자증권 KIS API를 사용해 국내 주식의 현재가 정보를 조회하는 시장 데이터 서비스 코드에 대한 설명입니다.
+
+이 코드는 크게 네 부분으로 구성됩니다.
+
+1. `KISApiClient` import 처리
+2. 주식 시세 정보를 담는 `Quote` 데이터 클래스
+3. 값을 정수로 변환하는 `_to_int()` 함수
+4. 현재가 조회를 담당하는 `MarketDataService` 클래스
+
+이 모듈의 목적은 KIS API의 현재가 조회 응답을 `Quote` 객체로 변환하여 프로그램의 다른 부분에서 활용할 수 있도록 하는 것입니다.
+
+---
+
+# 1. 전체 코드의 역할
+
+이 코드는 특정 종목의 현재가 정보를 조회합니다.
+
+한국투자증권 KIS API의 국내 주식 현재가 조회 API를 호출하고, 응답 데이터에서 다음 정보를 추출합니다.
+
+* 종목 코드
+* 현재가
+* 시가
+* 고가
+* 저가
+* 누적 거래량
+* 원본 API 응답 데이터
+
+API 응답은 일반적으로 문자열 형태로 들어오기 때문에, 가격이나 거래량처럼 숫자로 다뤄야 하는 값은 정수로 변환합니다.
+
+전체 흐름은 다음과 같습니다.
+
+```text
+MarketDataService 생성
+  ↓
+get_current_price() 호출
+  ↓
+KISApiClient.get()으로 현재가 조회 API 호출
+  ↓
+응답 payload에서 output 추출
+  ↓
+현재가 stck_prpr 추출
+  ↓
+현재가를 정수로 변환
+  ↓
+현재가가 없으면 오류 발생
+  ↓
+시가, 고가, 저가, 거래량 변환
+  ↓
+Quote 객체 생성
+  ↓
+조회 결과 로그 기록
+  ↓
+Quote 객체 반환
+```
+
+---
+
+# 2. `KISApiClient` import 처리
+
+```python
+try:
+    from .api_client import KISApiClient
+except ImportError:  # pragma: no cover
+    from api_client import KISApiClient
+```
+
+이 부분은 `KISApiClient` 클래스를 가져오는 코드입니다.
+
+먼저 상대 import를 시도합니다.
+
+상대 import는 `market_data.py` 안에서 같은 패키지의 `api_client.py`를 가져올 때 `.api_client` 형식을 사용할 수 있습니다.
+
+상대 import가 실패하면 일반 import 방식으로 다시 가져옵니다.
+
+---
+
+# 3. `Quote` 데이터 클래스
+
+```python
+@dataclass(frozen=True)
+class Quote:
+    symbol: str
+    price: int
+    open_price: int | None = None
+    high_price: int | None = None
+    low_price: int | None = None
+    volume: int | None = None
+    raw: dict[str, Any] | None = None
+```
+
+`Quote`는 주식 시세 정보를 담는 데이터 클래스입니다.
+
+KIS API에서 받은 현재가 조회 응답 중 필요한 값을 정리하여 하나의 객체로 표현합니다.
+
+---
+
+## 4.1 `symbol`
+
+```python
+symbol: str
+```
+
+조회한 종목 코드입니다.
+
+---
+
+## 4.2 `price`
+
+```python
+price: int
+```
+
+현재가입니다.
+
+KIS API 응답의 `stck_prpr` 값을 정수로 변환하여 저장합니다
+
+---
+
+## 4.3 `open_price`
+
+```python
+open_price: int | None = None
+```
+
+시가입니다.
+
+시가는 장 시작 시 처음 형성된 가격을 의미합니다.
+
+값이 없거나 변환할 수 없으면 `None`이 됩니다.
+
+---
+
+## 4.4 `high_price`
+
+```python
+high_price: int | None = None
+```
+
+고가입니다.
+
+고가는 해당 거래일 중 현재까지 가장 높게 형성된 가격을 의미합니다.
+
+값이 없거나 변환할 수 없으면 `None`이 됩니다.
+
+---
+
+## 4.5 `low_price`
+
+```python
+low_price: int | None = None
+```
+
+저가입니다.
+
+저가는 해당 거래일 중 현재까지 가장 낮게 형성된 가격을 의미합니다.
+
+값이 없거나 변환할 수 없으면 `None`이 됩니다.
+
+---
+
+## 4.6 `volume`
+
+```python
+volume: int | None = None
+```
+
+누적 거래량입니다.
+
+값이 없거나 변환할 수 없으면 `None`이 됩니다.
+
+---
+
+## 4.7 `raw`
+
+```python
+raw: dict[str, Any] | None = None
+```
+
+KIS API 응답의 원본 `output` 데이터입니다.
+
+이 필드는 현재 코드에서 별도로 추출하지 않은 API 응답 항목까지 보존하기 위해 사용됩니다.
+
+---
+
+# 5. `_to_int()` 함수
+
+```python
+def _to_int(value: Any, default: int | None = None) -> int | None:
+    if value is None:
+        return default
+    try:
+        text = str(value).replace(",", "").strip()
+        if text == "":
+            return default
+        return int(float(text))
+    except (TypeError, ValueError):
+        return default
+```
+
+`_to_int()` 함수는 다양한 형태의 값을 정수로 변환하는 보조 함수입니다.
+
+---
+
+## 5.1 함수 매개변수
+
+```python
+def _to_int(value: Any, default: int | None = None) -> int | None:
+```
+
+변환에 성공하면 `int` 값을 반환합니다.
+
+변환할 수 없으면 `default` 값을 반환합니다.
+
+기본적으로 `default`는 `None`이므로, 변환 실패 시 `None`이 반환됩니다.
+
+---
+
+## 5.3 `None` 처리
+
+```python
+if value is None:
+    return default
+```
+
+입력값이 `None`이면 변환을 시도하지 않고 바로 `default`를 반환합니다.
+
+---
+
+## 5.4 문자열 변환과 쉼표 제거
+
+```python
+text = str(value).replace(",", "").strip()
+```
+
+입력값을 먼저 문자열로 변환합니다.
+
+그 다음 쉼표를 제거합니다.
+
+```python
+replace(",", "")
+```
+
+```python
+strip()
+```
+
+---
+
+## 5.5 빈 문자열 처리
+
+```python
+if text == "":
+    return default
+```
+
+문자열로 변환하고 공백을 제거한 결과가 빈 문자열이면 숫자로 변환할 수 없습니다.
+
+따라서 `default`를 반환합니다.
+
+---
+
+## 5.6 정수 변환
+
+```python
+return int(float(text))
+```
+
+이 코드는 문자열을 먼저 `float`으로 변환한 뒤, 다시 `int`로 변환합니다.
+
+예를 들어 `"70000.0"`을 바로 `int()`로 변환하면 오류가 발생합니다.
+
+따라서 이 함수는 정수 문자열뿐 아니라 소수점이 포함된 숫자 문자열도 처리할 수 있습니다.
+
+---
+
+## 5.7 변환 실패 처리
+
+```python
+except (TypeError, ValueError):
+    return default
+```
+
+정수 변환 과정에서 오류가 발생하면 `default`를 반환합니다.
+
+처리하는 오류는 다음 두 가지입니다.
+
+| 예외           | 발생 상황                    |
+| ------------ | ------------------------ |
+| `TypeError`  | 변환할 수 없는 타입이 들어온 경우      |
+| `ValueError` | 숫자로 해석할 수 없는 문자열이 들어온 경우 |
+
+---
+
+# 6. `MarketDataService` 클래스
+
+```python
+class MarketDataService:
+```
+
+`MarketDataService`는 시장 데이터 조회 기능을 제공하는 클래스입니다.
+
+---
+
+# 7. `MarketDataService.__init__()`
+
+```python
+def __init__(self, client: KISApiClient, logger) -> None:
+    self.client = client
+    self.logger = logger
+```
+
+`MarketDataService` 객체를 초기화하는 생성자입니다.
+
+현재가 조회에 사용할 API 클라이언트와 로그 기록용 로거를 저장합니다.
+
+| 매개변수     | 타입             | 설명                           |
+| -------- | -------------- | ---------------------------- |
+| `client` | `KISApiClient` | KIS API 요청을 보내는 클라이언트 객체입니다. |
+| `logger` | 명시된 타입 없음      | 현재가 조회 결과를 기록하는 로거입니다.       |
+
+`KISApiClient` 객체를 저장합니다.
+
+로그를 기록하기 위한 객체를 저장합니다.
+
+---
+
+# 8. `get_current_price()` 메서드
+
+```python
+def get_current_price(self, symbol: str, market_code: str = "J") -> Quote:
+```
+
+`get_current_price()`는 특정 종목의 현재가를 조회하는 메서드입니다.
+
+KIS API의 국내 주식 현재가 조회 API를 호출하고, 응답을 `Quote` 객체로 변환하여 반환합니다.
+
+| 매개변수          | 타입    | 설명                          |
+| ------------- | ----- | --------------------------- |
+| `symbol`      | `str` | 조회할 종목 코드입니다.               |
+| `market_code` | `str` | 시장 구분 코드입니다. 기본값은 `"J"`입니다. |
+
+`Quote` 객체에는 현재가, 시가, 고가, 저가, 거래량, 원본 응답 데이터가 담깁니다.
+
+---
+
+# 9. 현재가 조회 API 호출
+
+```python
+payload = self.client.get(
+    "/uapi/domestic-stock/v1/quotations/inquire-price",
+    tr_id="FHKST01010100",
+    params={
+        "FID_COND_MRKT_DIV_CODE": market_code,
+        "FID_INPUT_ISCD": symbol,
+    },
+)
+```
+
+이 코드는 `KISApiClient`의 `get()` 메서드를 사용하여 국내 주식 현재가 조회 API를 호출합니다.
 
 
+```python
+"/uapi/domestic-stock/v1/quotations/inquire-price"
+```
+
+이 경로는 국내 주식 현재가 조회 API의 경로입니다.
+
+`KISApiClient`는 이 경로를 `base_url`과 합쳐 최종 요청 URL을 만듭니다.
+
+```python
+tr_id="FHKST01010100"
+```
+
+`tr_id`는 KIS API에서 요청 종류를 구분하기 위해 사용하는 거래 ID입니다.
+
+이 값은 현재가 조회 API에 해당하는 거래 ID로 사용됩니다.
+
+```python
+params={
+    "FID_COND_MRKT_DIV_CODE": market_code,
+    "FID_INPUT_ISCD": symbol,
+}
+```
+
+GET 요청에 전달할 조회 조건입니다.
+
+이 파라미터는 URL 쿼리 파라미터로 전송됩니다.
+
+각 값의 의미는 다음과 같습니다.
+
+| 파라미터                     | 설명            |
+| ------------------------ | ------------- |
+| `FID_COND_MRKT_DIV_CODE` | 시장 구분 코드입니다.  |
+| `FID_INPUT_ISCD`         | 조회할 종목 코드입니다. |
+
+---
+
+# 10. 응답 `output` 추출
+
+```python
+output = payload.get("output", {})
+```
+
+KIS API 응답에서 `output` 값을 꺼냅니다.
+
+`output` 키가 없으면 빈 딕셔너리 `{}`를 사용합니다.
+
+---
+
+# 11. 현재가 추출 및 변환
+
+```python
+price = _to_int(output.get("stck_prpr"))
+```
+
+`output`에서 현재가 값을 꺼내 정수로 변환합니다.
+
+---
+
+## 11.1 현재가 누락 검사
+
+```python
+if price is None:
+    raise RuntimeError(f"Current price was missing from API response: {payload}")
+```
+
+현재가는 `Quote` 객체를 만들기 위한 필수 값입니다.
+
+따라서 현재가가 없거나 정수로 변환할 수 없으면 오류를 발생시킵니다.
+
+이 경우 API 응답 전체인 `payload`를 오류 메시지에 포함하여 어떤 응답이 들어왔는지 확인할 수 있게 합니다.
+
+---
+
+# 12. `Quote` 객체 생성
+
+```python
+quote = Quote(
+    symbol=symbol,
+    price=price,
+    open_price=_to_int(output.get("stck_oprc")),
+    high_price=_to_int(output.get("stck_hgpr")),
+    low_price=_to_int(output.get("stck_lwpr")),
+    volume=_to_int(output.get("acml_vol")),
+    raw=output,
+)
+```
+
+현재가 조회 결과를 `Quote` 객체로 변환합니다.
+
+---
+
+# 13. 조회 결과 로그 기록
+
+```python
+self.logger.info("current price: symbol=%s price=%s", symbol, f"{quote.price:,}")
+```
+
+현재가 조회가 성공하면 로그를 남깁니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+* 종목 코드
+* 현재가
+
+`f"{quote.price:,}"`는 현재가에 천 단위 쉼표를 넣어 문자열로 만드는 표현입니다.
+
+---
+
+# 14. `Quote` 객체 반환
+
+```python
+return quote
+```
+
+최종적으로 생성된 `Quote` 객체를 반환합니다.
+
+이 객체는 프로그램의 다른 모듈에서 현재가 판단, 주문 가격 계산, 로그 기록 등에 사용할 수 있습니다.
+
+---
+
+# 15. 실행 흐름 요약
+
+`get_current_price()`를 기준으로 전체 실행 흐름을 정리하면 다음과 같습니다.
+
+```text
+get_current_price(symbol, market_code)
+  ↓
+KISApiClient.get() 호출
+  ↓
+국내 주식 현재가 조회 API 요청
+  ↓
+payload에서 output 추출
+  ↓
+output["stck_prpr"]를 현재가로 사용
+  ↓
+현재가를 정수로 변환
+  ↓
+현재가가 없으면 RuntimeError 발생
+  ↓
+시가, 고가, 저가, 거래량을 정수로 변환
+  ↓
+Quote 객체 생성
+  ↓
+현재가 조회 성공 로그 기록
+  ↓
+Quote 반환
+```
+
+---
+
+# account.py: 잔고/보유종목 조회
+
+한국투자증권 KIS API를 사용해 계좌 잔고와 보유 종목 정보를 조회하는 코드에 대한 설명입니다.
+
+이 코드는 크게 다섯 부분으로 구성됩니다.
+
+1. `KISApiClient` import 처리
+2. 응답 데이터에서 첫 번째 유효 값을 찾는 `_first_value()` 함수
+3. 값을 정수로 변환하는 `_to_int()` 함수
+4. 보유 종목 정보를 표현하는 `Holding` 데이터 클래스
+5. 계좌 전체 상태를 표현하는 `AccountSnapshot` 데이터 클래스
+6. 계좌 잔고 조회를 담당하는 `AccountService` 클래스
+
+이 모듈의 목적은 KIS API의 계좌 잔고 조회 응답을 프로그램에서 사용하기 쉬운 형태로 변환하는 것입니다.
+
+---
+
+# 1. 전체 코드의 역할
+
+이 코드는 사용자의 국내 주식 계좌 상태를 조회합니다.
+
+한국투자증권 KIS API의 잔고 조회 API를 호출하고, 응답 데이터에서 다음 정보를 추출합니다.
+
+* 현금 잔고
+* 주문 가능 현금
+* 총 평가 금액
+* 보유 종목 목록
+* 각 보유 종목의 종목 코드
+* 각 보유 종목의 종목명
+* 보유 수량
+* 평균 매입가
+* 현재가
+* 평가 손익
+* 원본 API 응답 데이터
+
+KIS API 응답은 문자열 형태의 숫자를 많이 포함합니다.
+
+따라서 이 코드는 API 응답에서 필요한 값을 꺼낸 뒤 정수로 변환하여 `Holding` 객체와 `AccountSnapshot` 객체로 정리합니다.
+
+전체 흐름은 다음과 같습니다.
+
+```text
+AccountService 생성
+  ↓
+get_snapshot() 호출
+  ↓
+KISApiClient.get()으로 잔고 조회 API 호출
+  ↓
+payload에서 output1, output2 추출
+  ↓
+output1에서 보유 종목 목록 생성
+  ↓
+output2에서 계좌 요약 정보 추출
+  ↓
+Holding 객체 목록 생성
+  ↓
+AccountSnapshot 객체 생성
+  ↓
+계좌 스냅샷 로그 기록
+  ↓
+AccountSnapshot 반환
+```
+
+---
+
+# 2. `KISApiClient` import 처리
+
+```python
+try:
+    from .api_client import KISApiClient
+except ImportError:  # pragma: no cover
+    from api_client import KISApiClient
+```
+
+이 코드는 `KISApiClient` 클래스를 가져오는 부분입니다.
+
+먼저 상대 import를 시도합니다.
+
+상대 import는 이 파일이 패키지 내부 모듈로 실행될 때 사용됩니다.
+
+예를 들어 같은 패키지 안에 `api_client.py`와 `account.py`가 있다면, `.api_client`를 통해 같은 패키지의 API 클라이언트를 가져올 수 있습니다.
+
+상대 import가 실패하면 일반 import 방식으로 다시 가져옵니다.
+
+---
+
+# 3. `_first_value()` 함수
+
+```python
+def _first_value(mapping: dict[str, Any], *keys: str) -> Any:
+    for key in keys:
+        if key in mapping and mapping[key] not in (None, ""):
+            return mapping[key]
+    return None
+```
+
+`_first_value()` 함수는 딕셔너리에서 여러 후보 키를 순서대로 확인하고, 가장 먼저 발견되는 유효한 값을 반환하는 보조 함수입니다.
+
+KIS API 응답 필드명은 API 종류나 환경에 따라 조금씩 다르게 들어올 수 있습니다.
+
+이 함수는 이런 여러 후보 키 중 실제 응답에 존재하는 값을 찾아줍니다.
+
+| 매개변수      | 타입               | 설명                   |
+| --------- | ---------------- | -------------------- |
+| `mapping` | `dict[str, Any]` | 값을 찾을 대상 딕셔너리입니다.    |
+| `*keys`   | `str`            | 순서대로 확인할 후보 키 목록입니다. |
+
+`*keys`는 여러 개의 문자열 인자를 받을 수 있다는 뜻입니다.
+
+각 키에 대해 두 가지 조건을 확인합니다.
+
+1. 해당 키가 딕셔너리에 존재해야 한다.
+2. 해당 키의 값이 `None` 또는 빈 문자열 `""`이 아니어야 한다.
+
+두 조건을 모두 만족하면 해당 값을 반환합니다.
+
+모든 후보 키를 확인했는데 사용할 수 있는 값이 없으면 `None`을 반환합니다.
+
+---
+
+# 4. `_to_int()` 함수
+
+```python
+def _to_int(value: Any) -> int:
+    try:
+        return int(float(str(value).replace(",", "").strip()))
+    except (TypeError, ValueError):
+        return 0
+```
+
+`_to_int()` 함수는 API 응답 값을 정수로 변환하는 보조 함수입니다.
+
+변환할 수 없는 경우에는 `0`을 반환합니다.
+
+처리하는 오류는 다음과 같습니다.
+
+| 예외           | 발생 상황                    |
+| ------------ | ------------------------ |
+| `TypeError`  | 변환할 수 없는 타입이 들어온 경우      |
+| `ValueError` | 숫자로 해석할 수 없는 문자열이 들어온 경우 |
+
+---
+
+# 5. `Holding` 데이터 클래스
+
+```python
+@dataclass(frozen=True)
+class Holding:
+    symbol: str
+    name: str
+    quantity: int
+    average_price: int
+    current_price: int
+    evaluation_profit_loss: int
+    raw: dict[str, Any]
+```
+
+`Holding`은 계좌가 보유한 개별 종목 정보를 표현하는 데이터 클래스입니다.
+
+보유 종목 하나당 하나의 `Holding` 객체가 생성됩니다.
+
+| 필드                       | 타입               | 설명                          |
+| ------------------------ | ---------------- | --------------------------- |
+| `symbol`                 | `str`            | 종목 코드입니다.                   |
+| `name`                   | `str`            | 종목명입니다.                     |
+| `quantity`               | `int`            | 보유 수량입니다.                   |
+| `average_price`          | `int`            | 평균 매입가입니다.                  |
+| `current_price`          | `int`            | 현재가입니다.                     |
+| `evaluation_profit_loss` | `int`            | 평가 손익 금액입니다.                |
+| `raw`                    | `dict[str, Any]` | 해당 보유 종목의 원본 API 응답 데이터입니다. |
+
+---
+
+# 6. `AccountSnapshot` 데이터 클래스
+
+```python
+@dataclass(frozen=True)
+class AccountSnapshot:
+    cash: int
+    available_cash: int
+    total_value: int
+    holdings: list[Holding]
+    raw_summary: dict[str, Any]
+    raw_holdings: list[dict[str, Any]]
+```
+
+`AccountSnapshot`은 특정 시점의 계좌 전체 상태를 표현하는 데이터 클래스입니다.
+
+| 필드               | 타입                     | 설명                 |
+| ---------------- | ---------------------- | ------------------ |
+| `cash`           | `int`                  | 계좌의 현금 금액입니다.      |
+| `available_cash` | `int`                  | 주문 가능 현금입니다.       |
+| `total_value`    | `int`                  | 계좌 총 평가 금액입니다.     |
+| `holdings`       | `list[Holding]`        | 보유 종목 목록입니다.       |
+| `raw_summary`    | `dict[str, Any]`       | 계좌 요약 정보 원본 응답입니다. |
+| `raw_holdings`   | `list[dict[str, Any]]` | 보유 종목 목록 원본 응답입니다. |
 
 
+# 7. `AccountService` 클래스
+
+```python
+class AccountService:
+```
+
+`AccountService`는 `KISApiClient`를 통해 계좌 정보를 조회하는 서비스 클래스입니다.
+
+---
+
+# 8. `AccountService.__init__()`
+
+```python
+class AccountService:
+    def __init__(self, client: KISApiClient, logger, account_number: str, account_product_code: str) -> None:
+        self.client = client
+        self.logger = logger
+        self.account_number = account_number
+        self.account_product_code = account_product_code
+```
+
+`AccountService` 객체를 초기화하는 생성자입니다.
+
+| 매개변수                   | 타입             | 설명                           |
+| ---------------------- | -------------- | ---------------------------- |
+| `client`               | `KISApiClient` | KIS API 요청을 보내는 클라이언트 객체입니다. |
+| `logger`               | 명시된 타입 없음      | 계좌 조회 결과를 기록하는 로거입니다.        |
+| `account_number`       | `str`          | 계좌번호 앞 8자리입니다.               |
+| `account_product_code` | `str`          | 계좌상품코드 2자리입니다.               |
+
+---
 
 
+# 9. `get_snapshot()` 메서드
 
+```python
+def get_snapshot(self) -> AccountSnapshot:
+```
 
+`get_snapshot()`은 현재 계좌 상태를 조회하는 메서드입니다.
 
+KIS API의 국내 주식 잔고 조회 API를 호출하고, 응답을 `AccountSnapshot` 객체로 변환하여 반환합니다.
 
+```python
+payload = self.client.get(
+    "/uapi/domestic-stock/v1/trading/inquire-balance",
+    tr_id="VTTC8434R",
+    params={
+        "CANO": self.account_number,
+        "ACNT_PRDT_CD": self.account_product_code,
+        "AFHR_FLPR_YN": "N",
+        "OFL_YN": "",
+        "INQR_DVSN": "02",
+        "UNPR_DVSN": "01",
+        "FUND_STTL_ICLD_YN": "N",
+        "FNCG_AMT_AUTO_RDPT_YN": "N",
+        "PRCS_DVSN": "00",
+        "CTX_AREA_FK100": "",
+        "CTX_AREA_NK100": "",
+    },
+)
+```
 
+`KISApiClient`의 `get()` 메서드를 사용하여 국내 주식 잔고 조회 API를 호출합니다.
 
+---
 
+## 10.1 API 경로
 
+```python
+"/uapi/domestic-stock/v1/trading/inquire-balance"
+```
 
+이 경로는 국내 주식 잔고 조회 API의 경로입니다.
 
+`KISApiClient`는 이 경로를 `base_url`과 합쳐 최종 요청 URL을 만듭니다.
 
+---
 
+## 10.2 거래 ID
+
+```python
+tr_id="VTTC8434R"
+```
+
+`tr_id`는 KIS API에서 요청 종류를 구분하기 위해 사용하는 거래 ID입니다.
+
+이 값은 잔고 조회 API에 해당하는 거래 ID로 사용됩니다.
+
+---
+
+## 10.3 요청 파라미터
+
+```python
+params={
+    "CANO": self.account_number,
+    "ACNT_PRDT_CD": self.account_product_code,
+    "AFHR_FLPR_YN": "N",
+    "OFL_YN": "",
+    "INQR_DVSN": "02",
+    "UNPR_DVSN": "01",
+    "FUND_STTL_ICLD_YN": "N",
+    "FNCG_AMT_AUTO_RDPT_YN": "N",
+    "PRCS_DVSN": "00",
+    "CTX_AREA_FK100": "",
+    "CTX_AREA_NK100": "",
+}
+```
+
+GET 요청에 전달할 조회 조건입니다.
+
+이 파라미터는 URL 쿼리 파라미터로 전송됩니다.
+
+각 파라미터의 의미는 다음과 같습니다.
+
+| 파라미터                    | 설명                       |
+| ----------------------- | ------------------------ |
+| `CANO`                  | 계좌번호 앞 8자리입니다.           |
+| `ACNT_PRDT_CD`          | 계좌상품코드 2자리입니다.           |
+| `AFHR_FLPR_YN`          | 시간외 단일가 여부와 관련된 값입니다.    |
+| `OFL_YN`                | 오프라인 여부와 관련된 값입니다.       |
+| `INQR_DVSN`             | 조회 구분 값입니다.              |
+| `UNPR_DVSN`             | 단가 구분 값입니다.              |
+| `FUND_STTL_ICLD_YN`     | 펀드 결제분 포함 여부와 관련된 값입니다.  |
+| `FNCG_AMT_AUTO_RDPT_YN` | 융자금액 자동상환 여부와 관련된 값입니다.  |
+| `PRCS_DVSN`             | 처리 구분 값입니다.              |
+| `CTX_AREA_FK100`        | 연속 조회를 위한 이전 조회 키 영역입니다. |
+| `CTX_AREA_NK100`        | 연속 조회를 위한 다음 조회 키 영역입니다. |
+
+---
+
+# 11. 응답 데이터 추출
+
+```python
+output1 = payload.get("output1", []) or []
+output2 = payload.get("output2", []) or []
+```
+
+KIS API 잔고 조회 응답에서 `output1`과 `output2`를 꺼냅니다.
+
+| 응답 필드     | 의미           |
+| --------- | ------------ |
+| `output1` | 보유 종목 목록입니다. |
+| `output2` | 계좌 요약 정보입니다. |
+
+키가 없을 땐 빈 리스트를 사용합니다.
+
+뒤의 `or []`는 값이 `None`이거나 빈 값일 경우에도 빈 리스트로 처리하기 위한 코드입니다.
+
+---
+
+## 11.1 `output1`이 딕셔너리인 경우
+
+```python
+if isinstance(output1, dict):
+    output1 = [output1]
+```
+
+보유 종목 정보인 `output1`은 보통 리스트 형태이지만, 응답 상황에 따라 딕셔너리 하나로 들어올 수도 있습니다.
+
+이 경우 이후 코드에서 동일하게 반복 처리할 수 있도록 리스트로 감쌉니다.
+
+---
+
+## 11.2 `output2`가 딕셔너리인 경우
+
+```python
+if isinstance(output2, dict):
+    output2 = [output2]
+```
+
+계좌 요약 정보인 `output2`도 보통 리스트 형태이지만, 딕셔너리 하나로 들어올 수 있습니다.
+
+이 경우에도 리스트로 감싸서 이후 코드에서 일관되게 처리할 수 있도록 합니다.
+
+---
+
+# 12. 계좌 요약 정보 선택
+
+```python
+summary = output2[0] if output2 else {}
+```
+
+`output2`에서 첫 번째 항목을 계좌 요약 정보로 사용합니다.
+
+`output2`가 비어 있으면 빈 딕셔너리 `{}`를 사용합니다.
+
+이렇게 하면 계좌 요약 정보가 없더라도 이후 코드에서 오류 없이 기본값 `0`을 사용할 수 있습니다.
+
+---
+
+# 13. 보유 종목 목록 생성
+
+```python
+holdings: list[Holding] = []
+for item in output1:
+    holdings.append(
+        Holding(
+            symbol=str(_first_value(item, "pdno", "PDNO", "prdt_no", "shtn_pdno") or "").strip(),
+            name=str(_first_value(item, "prdt_name", "PDT_NM", "hldg_item_name") or "").strip(),
+            quantity=_to_int(_first_value(item, "hldg_qty", "hold_qty", "qty")),
+            average_price=_to_int(_first_value(item, "pchs_avg_pric", "avg_prc", "pchs_unpr")),
+            current_price=_to_int(_first_value(item, "prpr", "stck_prpr", "current_price")),
+            evaluation_profit_loss=_to_int(_first_value(item, "evlu_pfls_amt", "pl_amt", "evaluation_profit_loss")),
+            raw=item,
+        )
+    )
+```
+
+이 코드는 API 응답의 보유 종목 목록을 순회하면서 각 항목을 `Holding` 객체로 변환합니다.
+
+## 13.1 보유 종목 리스트 초기화
+
+```python
+holdings: list[Holding] = []
+```
+
+`Holding` 객체들을 담을 빈 리스트를 만듭니다.
+
+---
+
+## 13.2 `output1` 순회
+
+```python
+for item in output1:
+```
+
+`output1`에 들어 있는 보유 종목 데이터를 하나씩 순회합니다.
+
+각 `item`은 보유 종목 하나에 대한 원본 API 응답 딕셔너리입니다.
+
+---
+
+## 13.3 종목 코드 추출
+
+```python
+symbol=str(_first_value(item, "pdno", "PDNO", "prdt_no", "shtn_pdno") or "").strip()
+```
+
+종목 코드를 추출합니다.
+
+여러 후보 키 중 가장 먼저 발견되는 유효 값을 사용합니다.
+
+값이 없으면 빈 문자열을 사용합니다.
+
+최종적으로 문자열로 변환한 뒤 앞뒤 공백을 제거합니다.
+
+---
+
+## 13.4 종목명 추출
+
+```python
+name=str(_first_value(item, "prdt_name", "PDT_NM", "hldg_item_name") or "").strip()
+```
+
+종목명을 추출합니다.
+
+값이 없으면 빈 문자열을 사용합니다.
+
+---
+
+## 13.5 보유 수량 추출
+
+```python
+quantity=_to_int(_first_value(item, "hldg_qty", "hold_qty", "qty"))
+```
+
+보유 수량을 추출합니다.
+
+찾은 값은 `_to_int()`를 통해 정수로 변환됩니다.
+
+값이 없거나 변환할 수 없으면 `0`이 됩니다.
+
+---
+
+## 13.6 평균 매입가 추출
+
+```python
+average_price=_to_int(_first_value(item, "pchs_avg_pric", "avg_prc", "pchs_unpr"))
+```
+
+평균 매입가를 추출합니다.
+
+찾은 값은 `_to_int()`를 통해 정수로 변환됩니다.
+
+---
+
+## 13.7 현재가 추출
+
+```python
+current_price=_to_int(_first_value(item, "prpr", "stck_prpr", "current_price"))
+```
+
+현재가를 추출합니다.
+
+찾은 값은 `_to_int()`를 통해 정수로 변환됩니다.
+
+---
+
+## 13.8 평가 손익 추출
+
+```python
+evaluation_profit_loss=_to_int(_first_value(item, "evlu_pfls_amt", "pl_amt", "evaluation_profit_loss"))
+```
+
+평가 손익 금액을 추출합니다.
+
+찾은 값은 `_to_int()`를 통해 정수로 변환됩니다.
+
+---
+
+## 13.9 원본 보유 종목 데이터 저장
+
+```python
+raw=item
+```
+
+보유 종목의 원본 API 응답 데이터를 그대로 저장합니다.
+
+---
+
+# 14. `AccountSnapshot` 객체 생성
+
+```python
+snapshot = AccountSnapshot(
+    cash=_to_int(_first_value(summary, "dnca_tot_amt", "cash", "tot_cash_amt")),
+    available_cash=_to_int(
+        _first_value(summary, "prvs_rcdl_excc_amt", "available_cash", "ord_psbl_cash")
+    ),
+    total_value=_to_int(_first_value(summary, "tot_evlu_amt", "total_value", "evlu_amt_smtl_amt")),
+    holdings=holdings,
+    raw_summary=summary,
+    raw_holdings=output1,
+)
+```
+
+계좌 요약 정보와 보유 종목 목록을 하나로 묶어 `AccountSnapshot` 객체를 생성합니다.
+
+---
+
+## 14.1 현금 잔고 추출
+
+```python
+cash=_to_int(_first_value(summary, "dnca_tot_amt", "cash", "tot_cash_amt"))
+```
+
+현금 잔고를 추출합니다.
+
+찾은 값은 `_to_int()`를 통해 정수로 변환됩니다.
+
+---
+
+## 14.2 주문 가능 현금 추출
+
+```python
+available_cash=_to_int(
+    _first_value(summary, "prvs_rcdl_excc_amt", "available_cash", "ord_psbl_cash")
+)
+```
+
+주문 가능 현금을 추출합니다.
+
+찾은 값은 `_to_int()`를 통해 정수로 변환됩니다.
+
+---
+
+## 14.3 총 평가 금액 추출
+
+```python
+total_value=_to_int(_first_value(summary, "tot_evlu_amt", "total_value", "evlu_amt_smtl_amt"))
+```
+
+총 평가 금액을 추출합니다.
+
+찾은 값은 `_to_int()`를 통해 정수로 변환됩니다.
+
+---
+
+## 14.4 보유 종목 목록 저장
+
+```python
+holdings=holdings
+```
+
+앞에서 생성한 `Holding` 객체 목록을 저장합니다.
+
+---
+
+## 14.5 원본 계좌 요약 데이터 저장
+
+```python
+raw_summary=summary
+```
+
+계좌 요약 정보의 원본 API 응답 데이터를 저장합니다.
+
+---
+
+## 14.6 원본 보유 종목 데이터 저장
+
+```python
+raw_holdings=output1
+```
+
+보유 종목 목록의 원본 API 응답 데이터를 저장합니다.
+
+---
+
+# 15. 계좌 조회 로그 기록
+
+```python
+self.logger.info(
+    "holdings snapshot: cash=%s available=%s holdings=%s",
+    f"{snapshot.cash:,}",
+    f"{snapshot.available_cash:,}",
+    len(snapshot.holdings),
+)
+```
+
+계좌 스냅샷 조회가 완료되면 로그를 남깁니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+* 현금 잔고
+* 주문 가능 현금
+* 보유 종목 수
+* 
+---
+
+# 16. `AccountSnapshot` 반환
+
+```python
+return snapshot
+```
+
+최종적으로 생성된 `AccountSnapshot` 객체를 반환합니다.
+
+# 
 
 
 
