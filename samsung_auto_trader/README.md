@@ -162,8 +162,54 @@ token이나 issued_date 값이 비어 있으면 None을 반환한다
 저장된 token과 issued_date는 딕셔너리 형식으로 만들고 다시 json형식으로 변환한다
 새로 발급받는 토큰을 저장할 때도 save를 사용한다
 
+class AuthManager:
+    def __init__() -> None:
+    def get_token(self) -> str:
+        today = date.today().isoformat()
+        if self._cached_token and self._cached_token.issued_date == today:
+            self.logger.info("token reuse: cached token reused for %s", today)
+            return self._cached_token.token
 
+        self.logger.info("token refresh: requesting a new mock-trading token")
+        token = self._request_new_token()
+        self._cached_token = TokenCache(token=token, issued_date=today)
+        self._cached_token.save(self.cache_path)
+        self.logger.info("token refresh: token cached at %s", self.cache_path)
+        return token
 
+    def _request_new_token(self) -> str:
+        url = f"{self.base_url}/oauth2/tokenP"
+        payload: dict[str, Any] = {
+            "grant_type": "client_credentials",
+            "appkey": self.appkey,
+            "appsecret": self.appsecret,
+        }
+        headers = {
+            "content-type": "application/json",
+            "accept": "text/plain",
+            "charset": "UTF-8",
+        }
+        response = self._session.post(url, json=payload, headers=headers, timeout=self.timeout_seconds)
+        response.raise_for_status()
+
+        data = response.json()
+        token = str(data.get("access_token", "")).strip()
+        if not token:
+            raise RuntimeError(f"Token response did not include access_token: {data}")
+        return token
+이미 저장된 토큰이 오늘 발급된 토큰이면 그대로 재사용하고, 저장된 토큰이 없거나 오래된 토큰이면 API 서버에 새 토큰을 요청하고, 그 토큰을 파일에 저장하는 함수
+init에서 필요한 정보 저장
+self._cached_token은 TokenCache 클래스를 사용하여 cache_path에 저장된 토큰 파일이 있으면 읽어오고, 없거나 잘못된 파일이면 None을 반환한다
+get_token은 토큰을 가져오는 함수
+오늘 날짜를 저장된 토큰과 비교하여 토큰의 발급일이 오늘이면 새 토큰을 요청하지 않고 기존 토큰을 반환한다
+저장된 토큰이 없거나, 발급일이 오늘이 아니면 새 토큰을 요청한다
+새로 토큰을 받으면 TokenCache 객체로 만들고, 파일에 저장하여 재사용할 수 있게 만든다
+request_new_token은 실제 토큰을 발급받는 함수
+API 서버 주소로 토큰 발급 주소를 만들고 서버에 grant_type(토큰 발급 방식), appkey와 appsecret(인증에 필요), content-type(토큰 형식)을 보내 토큰 발급 요청을 보낸다. 
+post는 서버에 데이터를 보내서 어떤 결과를 받아오는 HTTP 요청 방식
+raise_for_status()는 서버 응답이 실패 상태이면 오류를 발생시킨다
+서버가 응답하면 json 형태로 바꾼 후 access token을 꺼낸다
+없으면 오류를 발생시키고 있으면 토큰 반환
 
 
 
