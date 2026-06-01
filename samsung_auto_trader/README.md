@@ -112,6 +112,8 @@ def parse_account(account_value: str) -> tuple[str, str]:
 그 다음 문자가 섞여있을 가능성을 대비하여 문자를 모두 제거하고 전체가 10자리가 맞으면 앞 8자리, 뒷 2자리를 나누어 반환한다
 형식이 맞지 않았으면 오류를 발생시킨다
 
+## auth.py: 토큰 발급
+
 @dataclass(frozen=True)
 class Settings:
     @classmethod
@@ -197,17 +199,17 @@ ok 함수는 성공 여부를 판단
 HTTP 요청 자체가 성공하고(self.status_code == 200), 한국투자증권 API 내부 응답 코드가 성공(rt_cd == "0")하면 성공한 것
 
 class KISApiClient:
-한국투자증권 API에 GET/POST 요청을 보내는 공통 클라이언트 클래스
+발급받은 토큰으로 한국투자증권 API에 GET/POST 요청을 보내는 공통 클라이언트 클래스
 KISApiClient
 │
 ├─ __init__()
 │  └─ API 요청에 필요한 기본 정보 저장
 │
 ├─ get()
-│  └─ GET 요청을 _request()로 넘김
+│  └─ 서버에서 정보를 불러옴
 │
 ├─ post()
-│  └─ POST 요청을 _request()로 넘김
+│  └─ 서버에 데이터를 보냄
 │
 ├─ get_hashkey()
 │  └─ POST 요청 본문에 대한 hashkey 발급
@@ -224,3 +226,77 @@ KISApiClient
    ├─ 실패 시 재시도
    └─ 성공 시 payload 반환
    
+init()에서 API 요청을 보내기 위해 필요한 정보를 저장한다
+get()에서 서버에서 정보를 가져오는 함수. 실제 작동은 _request()에서
+post()는 서버에 데이터를 보내는 함수 
+body에 서버에 보낼 주문 정보를 넣음
+use_hashkey=True이면 요청 본문에 대해 hashkey를 발급받아 헤더에 추가
+get_hashkey()는 hashkey를 발급받는 함수
+hashkey는 내가 보내는 요청 본문이 변조되지 않았다는 것을 증명하기 위한 값이다
+먼저 hashkey 발급 전용 URL을 만들다
+서버에 body를 보내고, 그 body에 대한 hashkey를 요청한다
+응답에서 HASH값을 꺼내고, 없으면 오류를 발생시킨다
+_request()는 실제로 API 요청을 처리하는 함수
+API 서버 주소와 API 경로를 합쳐 최종 요청 주소를 만든다
+AuthManager으로 토큰을 요청하여 받는다
+header를 토큰, appkey, appsecret, tr_id(거래 요청 종류 ID) 등을 넣어 만든다
+request_kwargs로 공통 요청 요소를 만들고, get요청인지 post요청인지에 따라 다르게 처리한다
+get요청의 경우 조회조건이 params에 들어간다
+post요청의 경우 body 데이터가 json 본문에 들어간다. use_hashkey가 True이면 get_hashkey()로 hashkey를 발급받아 헤더에 추가한다
+요청이 실패할 경우 retry_count번 재시도한다
+요청의 종류에 따라 앞 request_kwargs가 작동
+오류의 종류에 따라 재시도 대상 오류와 예외 오류로 구별하여 작동한다
+서버가 응답하면 응답을 json형태로 변환한다
+API 내부 처리에서 실패한 경우에는 RuntimeError를 발생시킨다
+성공적으로 진행되면 최종적으로는 API 응답 데이터를 반환한다
+오류가 발생하면 last_error에 저장하고, 최종 실패했을 때 원래 오류를 함께 보여준다
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
