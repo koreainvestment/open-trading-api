@@ -231,5 +231,5 @@ while True:
     except Exception as e:
         logging.error(f"오류 발생: {e}")
 
-    logging.info("30분 대기 후 다시 실행")
+    logging.info("10분 대기 후 다시 실행")
     time.sleep(INTERVAL)
