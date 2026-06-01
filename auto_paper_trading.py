@@ -161,6 +161,8 @@ def initial_buy():
 
     print(df)
 
+initial_buy()
+
 while True:
     try:
         price_df = inquire_price("demo", "J", STOCK_CODE)
