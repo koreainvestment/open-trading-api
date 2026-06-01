@@ -54,8 +54,6 @@ trenv = ka.getTREnv()
 
 logging.info("모의투자 인증 완료")
 
-initial_buy()
-
 def get_action_and_qty(change_rate, current_price, holding_qty):
     """
     등락률에 따라 매수/매도 방향과 수량을 결정한다.
