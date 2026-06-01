@@ -534,72 +534,595 @@ Settings 객체 반환
 
 ---
 
-# auth.py: 토큰 발급
+# auth.py: 토큰 발급과 관리
 
-@dataclass(frozen=True)
-class Settings:
-    @classmethod
-    def from_env(cls) -> "Settings":
-                return cls()
+한국투자증권 KIS API 접근 토큰을 발급받고, 발급받은 토큰을 파일에 캐시하여 재사용하는 인증 관리 코드에 대한 설명입니다.
 
-Settings는 프로그램 실행에 필요한 설정값을 저장하는 클래스
-계좌정보, API 키, 종목코드, 주문 수량, 요청 시간 제한 등을 관리한다
-@dataclass(frozen=True)는 __init__을 대신해주고 설정값을 고정한다
-@classmethod
-def from_env(cls)는 Settings 클래스를 환경변수와 설정값에서 필요한 값들을 자동으로 읽어 Settings 객체로 반환한다
-settings.account_number처럼 설정값을 사용할 수 있다
+---
 
+## 1. 전체 코드의 역할
+
+KIS API를 사용하려면 API 요청마다 접근 토큰이 필요합니다.
+
+접근 토큰은 `appkey`와 `appsecret`을 사용해 발급받으며, 이후 API 요청의 `Authorization` 헤더에 사용됩니다.
+
+하지만 API 요청을 보낼 때마다 새 토큰을 발급받는 것은 비효율적이므로 이 코드는 한 번 발급받은 토큰을 파일에 저장해두고, 같은 날짜 안에서는 저장된 토큰을 재사용합니다.
+
+전체 흐름은 다음과 같습니다.
+
+```text
+AuthManager 생성
+  ↓
+토큰 캐시 파일 읽기
+  ↓
+get_token() 호출
+  ↓
+오늘 발급된 캐시 토큰이 있으면 재사용
+  ↓
+없으면 새 토큰 발급
+  ↓
+새 토큰을 파일에 저장
+  ↓
+토큰 반환
+```
+
+---
+
+# 3. `TokenCache` 데이터 클래스
+
+```python
+@dataclass
 class TokenCache:
+    token: str
+    issued_date: str
+```
 
-API 토큰을 파일에 저장하고, 나중에 다시 불러오기 위한 TokenCache 클래스
-TokenCache
-│
-├─ token
-│  └─ API 접근 토큰 저장
-│
-├─ issued_date
-│  └─ 토큰 발급 날짜 저장
-│
-├─ from_file(path)
-│  └─ 파일에서 토큰 캐시를 읽어 TokenCache 객체 생성
-│
-└─ save(path)
-   └─ 현재 토큰 캐시를 JSON 파일로 저장
-토큰과 날짜가 있는 파일을 저장한다. 만약 파일이 없다면 None을 반환한다
-파일을 읽어 json형식으로 만들고, 다시 딕셔너리 형식으로 변환한다
-파일이 깨져 있거나 JSON 형식이 아니면 None을 반환한다
-파일에서 token과 issued_date를 꺼내고, 없으면 ""을 불러온다
-token이나 issued_date 값이 비어 있으면 None을 반환한다
-모든 과정이 정상적으로 진행되면, TokenCache에 token과 issued_date가 저장되어 반환된다
-저장된 token과 issued_date는 딕셔너리 형식으로 만들고 다시 json형식으로 변환한다
-새로 발급받는 토큰을 저장할 때도 save를 사용한다
+`TokenCache`는 발급받은 접근 토큰과 해당 토큰을 발급받은 날짜를 저장하는 클래스입니다.
 
+이 클래스는 파일에 저장된 토큰 정보를 읽어오거나, 현재 토큰 정보를 파일에 저장하는 역할을 합니다.
+
+`TokenCache`는 두 개의 필드를 가집니다.
+
+| 필드            | 타입    | 설명                       |
+| ------------- | ----- | ------------------------ |
+| `token`       | `str` | KIS API에서 발급받은 접근 토큰입니다. |
+| `issued_date` | `str` | 토큰을 발급받은 날짜입니다.          |
+
+---
+
+# 4. `TokenCache.from_file()`
+
+```python
+@classmethod
+def from_file(cls, path: Path) -> "TokenCache | None":
+```
+
+`from_file()`은 토큰 캐시 파일에서 기존 토큰 정보를 읽어오는 클래스 메서드입니다.
+
+파일에 유효한 토큰 정보가 있으면 `TokenCache` 객체를 반환하고, 없거나 사용할 수 없는 상태이면 `None`을 반환합니다.
+
+---
+
+## 4.3 파일 존재 여부 확인
+
+```python
+if not path.exists():
+    return None
+```
+
+먼저 토큰 캐시 파일이 존재하는지 확인합니다.
+
+파일이 없으면 읽을 수 있는 캐시 토큰도 없으므로 `None`을 반환합니다.
+
+이 경우 이후 `AuthManager.get_token()`에서 새 토큰을 발급받게 됩니다.
+
+---
+
+## 4.4 JSON 파일 읽기
+
+```python
+try:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+except json.JSONDecodeError:
+    return None
+```
+
+파일이 존재하면 파일 내용을 읽고 JSON으로 변환합니다.
+
+```python
+path.read_text(encoding="utf-8")
+```
+
+이 코드는 캐시 파일의 내용을 UTF-8 인코딩으로 읽습니다.
+
+```python
+json.loads(...)
+```
+
+이 코드는 읽어온 문자열을 Python 객체로 변환합니다.
+
+만약 파일 내용이 올바른 JSON 형식이 아니면 `json.JSONDecodeError`가 발생합니다.
+
+이 경우 캐시 파일을 사용할 수 없다고 판단하고 `None`을 반환합니다.
+
+---
+
+## 4.5 토큰과 발급일 추출
+
+```python
+token = str(payload.get("token", "")).strip()
+issued_date = str(payload.get("issued_date", "")).strip()
+```
+
+JSON 데이터에서 `token`과 `issued_date` 값을 꺼냅니다.
+
+```python
+payload.get("token", "")
+```
+
+`token` 키가 있으면 해당 값을 가져오고, 없으면 빈 문자열을 사용합니다.
+
+```python
+payload.get("issued_date", "")
+```
+
+`issued_date` 키가 있으면 해당 값을 가져오고, 없으면 빈 문자열을 사용합니다.
+
+각 값은 `str()`로 문자열화한 뒤 `strip()`으로 앞뒤 공백을 제거합니다.
+
+---
+
+## 4.6 유효성 확인
+
+```python
+if not token or not issued_date:
+    return None
+```
+
+토큰이나 발급일 중 하나라도 비어 있으면 캐시 정보를 사용할 수 없습니다.
+
+따라서 `None`을 반환합니다.
+
+---
+
+## 4.7 `TokenCache` 객체 생성
+
+```python
+return cls(token=token, issued_date=issued_date)
+```
+
+캐시 파일에서 유효한 토큰과 발급일을 읽어왔다면 `TokenCache` 객체를 생성해 반환합니다.
+
+여기서 `cls`는 `TokenCache` 클래스를 의미합니다.
+
+---
+
+# 5. `TokenCache.save()`
+
+```python
+def save(self, path: Path) -> None:
+```
+
+`save()` 메서드는 현재 `TokenCache` 객체의 내용을 파일에 저장합니다.
+
+새 토큰을 발급받은 뒤, 다음 실행에서도 재사용할 수 있도록 캐시 파일을 갱신하는 역할을 합니다.
+
+이 메서드는 파일 저장만 수행하고 별도의 값을 반환하지 않습니다.
+
+---
+
+## 5.3 JSON 파일 저장
+
+```python
+path.write_text(
+    json.dumps({"token": self.token, "issued_date": self.issued_date}, ensure_ascii=False, indent=2),
+    encoding="utf-8",
+)
+```
+
+현재 객체의 `token`과 `issued_date`를 JSON 문자열로 변환한 뒤 파일에 저장합니다.
+
+`json.dumps()`는 Python 객체를 JSON 문자열로 변환합니다.
+
+여기서는 딕셔너리를 JSON 문자열로 변환합니다.
+
+이 딕셔너리는 현재 캐시 객체가 가진 토큰과 발급일을 담고 있습니다.
+
+---
+
+# 6. `AuthManager` 클래스
+
+```python
 class AuthManager:
+```
 
-이미 저장된 토큰이 오늘 발급된 토큰이면 그대로 재사용하고, 저장된 토큰이 없거나 오래된 토큰이면 API 서버에 새 토큰을 요청하고, 그 토큰을 파일에 저장하는 클래스
-AuthManager
-│
-├─ TokenCache.from_file()
-│  └─ 기존 토큰 파일 읽기
-│
-├─ get_token()
-│  ├─ 오늘 발급된 토큰이 있으면 재사용
-│  └─ 없으면 새 토큰 요청
-│
-└─ _request_new_token()
-   └─ API 서버에 토큰 발급 요청
-init에서 필요한 정보 저장
-self._cached_token은 TokenCache 클래스를 사용하여 cache_path에 저장된 토큰 파일이 있으면 읽어오고, 없거나 잘못된 파일이면 None을 반환한다
-get_token은 토큰을 가져오는 함수
-오늘 날짜를 저장된 토큰과 비교하여 토큰의 발급일이 오늘이면 새 토큰을 요청하지 않고 기존 토큰을 반환한다
-저장된 토큰이 없거나, 발급일이 오늘이 아니면 새 토큰을 요청한다
-새로 토큰을 받으면 TokenCache 객체로 만들고, 파일에 저장하여 재사용할 수 있게 만든다
-request_new_token은 실제 토큰을 발급받는 함수
-API 서버 주소로 토큰 발급 주소를 만들고 서버에 grant_type(토큰 발급 방식), appkey와 appsecret(인증에 필요), content-type(토큰 형식)을 보내 토큰 발급 요청을 보낸다. 
-post는 서버에 데이터를 보내서 어떤 결과를 받아오는 HTTP 요청 방식
-raise_for_status()는 서버 응답이 실패 상태이면 오류를 발생시킨다
-서버가 응답하면 json 형태로 바꾼 후 access token을 꺼낸다
-없으면 오류를 발생시키고 있으면 토큰 반환
+`AuthManager`는 KIS API 접근 토큰을 관리하는 클래스입니다.
+
+주요 역할은 다음과 같습니다.
+
+1. 캐시 파일에서 기존 토큰을 읽어온다.
+2. 오늘 발급된 토큰이 있으면 재사용한다.
+3. 오늘 발급된 토큰이 없으면 새 토큰을 요청한다.
+4. 새 토큰을 캐시 파일에 저장한다.
+5. API 클라이언트가 사용할 수 있도록 토큰 문자열을 반환한다.
+
+---
+
+# 7. `AuthManager.__init__()`
+
+```python
+def __init__(
+    self,
+    base_url: str,
+    appkey: str,
+    appsecret: str,
+    cache_path: Path,
+    logger,
+    timeout_seconds: int = 10,
+) -> None:
+```
+
+`AuthManager` 객체를 초기화하는 생성자입니다.
+
+KIS API 인증에 필요한 기본 정보와 토큰 캐시 경로를 저장합니다.
+
+## 7.2 `base_url` 저장
+
+```python
+self.base_url = base_url.rstrip("/")
+```
+
+`base_url` 끝에 `/`가 있으면 제거합니다.
+
+나중에 API 경로를 붙일 때 슬래시가 중복되는 것을 막기 위해서입니다.
+
+---
+
+## 7.3 인증 정보 저장
+
+```python
+self.appkey = appkey
+self.appsecret = appsecret
+```
+
+KIS API 토큰 발급에 필요한 앱키와 앱시크릿을 객체 내부에 저장합니다.
+
+---
+
+## 7.4 캐시 경로 저장
+
+```python
+self.cache_path = cache_path
+```
+
+토큰 캐시 파일 경로를 저장합니다.
+
+---
+
+## 7.5 로거 저장
+
+```python
+self.logger = logger
+```
+
+로그를 기록하기 위한 객체를 저장합니다.
+
+---
+
+## 7.6 타임아웃 설정 저장
+
+```python
+self.timeout_seconds = timeout_seconds
+```
+
+토큰 발급 요청의 최대 대기 시간을 저장합니다.
+
+---
+
+## 7.7 HTTP 세션 생성
+
+```python
+self._session = requests.Session()
+```
+
+`requests.Session()` 객체를 생성합니다.
+
+세션을 사용하면 HTTP 연결을 재사용할 수 있어 여러 요청을 보낼 때 더 효율적으로 동작할 수 있습니다.
+
+---
+
+## 7.8 캐시 토큰 로드
+
+```python
+self._cached_token = TokenCache.from_file(cache_path)
+```
+
+객체가 생성될 때 토큰 캐시 파일을 읽어옵니다.
+
+캐시 파일에서 유효한 토큰 정보를 읽으면 `_cached_token`에는 `TokenCache` 객체가 저장됩니다.
+
+캐시 파일이 없거나, 파일 형식이 잘못되었거나, 필요한 값이 비어 있으면 `_cached_token`에는 `None`이 저장됩니다.
+
+---
+
+# 8. `AuthManager.get_token()`
+
+```python
+def get_token(self) -> str:
+```
+
+`get_token()`은 API 요청에 사용할 접근 토큰을 반환하는 메서드입니다.
+
+이 메서드는 먼저 캐시된 토큰을 확인하고, 사용할 수 있으면 재사용합니다.
+
+사용할 수 있는 토큰이 없으면 새 토큰을 발급받아 캐시에 저장한 뒤 반환합니다.
+
+---
+
+## 8.2 오늘 날짜 구하기
+
+```python
+today = date.today().isoformat()
+```
+
+현재 날짜를 구해 문자열로 변환합니다.
+
+---
+
+## 8.3 캐시 토큰 재사용 조건
+
+```python
+if self._cached_token and self._cached_token.issued_date == today:
+```
+
+캐시 토큰을 재사용하려면 두 조건을 만족해야 합니다.
+
+첫 번째 조건은 캐시 파일에서 유효한 토큰을 읽어왔는지 확인합니다.
+
+두 번째 조건은 그 토큰이 오늘 발급된 토큰인지 확인합니다.
+
+---
+
+## 8.4 캐시 토큰 재사용
+
+```python
+self.logger.info("token reuse: cached token reused for %s", today)
+return self._cached_token.token
+```
+
+오늘 발급된 캐시 토큰이 있으면 새 토큰을 요청하지 않고 저장된 토큰을 반환합니다.
+
+이때 로거에 토큰을 재사용했다는 정보를 남깁니다.
+
+---
+
+## 8.5 새 토큰 발급 요청
+
+```python
+self.logger.info("token refresh: requesting a new mock-trading token")
+token = self._request_new_token()
+```
+
+캐시 토큰이 없거나, 캐시 토큰의 발급일이 오늘이 아니면 새 토큰을 요청합니다.
+
+새 토큰 발급은 `_request_new_token()` 메서드가 담당합니다.
+
+---
+
+## 8.6 새 캐시 객체 생성
+
+```python
+self._cached_token = TokenCache(token=token, issued_date=today)
+```
+
+새로 발급받은 토큰과 오늘 날짜를 사용해 `TokenCache` 객체를 만듭니다.
+
+---
+
+## 8.7 캐시 파일 저장
+
+```python
+self._cached_token.save(self.cache_path)
+```
+
+같은 날짜에는 토큰을 재사용할 수 있도록 새로 발급받은 토큰 정보를 파일에 저장합니다.
+
+---
+
+## 8.8 토큰 갱신 로그 기록
+
+```python
+self.logger.info("token refresh: token cached at %s", self.cache_path)
+```
+
+토큰이 캐시 파일에 저장되었음을 로그로 기록합니다.
+
+---
+
+## 8.9 토큰 반환
+
+```python
+return token
+```
+
+최종적으로 새로 발급받은 토큰 문자열을 반환합니다.
+
+---
+
+# 9. `AuthManager._request_new_token()`
+
+```python
+def _request_new_token(self) -> str:
+```
+
+`_request_new_token()`은 KIS API 서버에 새 접근 토큰 발급을 요청하는 내부 메서드입니다.
+
+메서드 이름 앞에 밑줄 `_`이 붙어 있으므로, 클래스 외부에서 직접 호출하기보다는 `get_token()`을 통해 간접적으로 사용하는 것을 의도한 메서드입니다.
+
+---
+
+## 9.2 토큰 발급 URL 생성
+
+```python
+url = f"{self.base_url}/oauth2/tokenP"
+```
+
+토큰 발급 API의 URL을 생성합니다.
+
+`base_url` 뒤에 `/oauth2/tokenP` 경로를 붙입니다.
+
+이 URL로 POST 요청을 보내 새 접근 토큰을 발급받습니다.
+
+---
+
+## 9.3 요청 본문 생성
+
+```python
+payload: dict[str, Any] = {
+    "grant_type": "client_credentials",
+    "appkey": self.appkey,
+    "appsecret": self.appsecret,
+}
+```
+
+토큰 발급 요청에 사용할 JSON 본문입니다.
+
+`grant_type`은 `"client_credentials"`로 설정되어 있습니다.
+
+이는 애플리케이션의 키와 시크릿을 사용해 토큰을 발급받는 방식입니다.
+
+---
+
+## 9.4 요청 헤더 생성
+
+```python
+headers = {
+    "content-type": "application/json",
+    "accept": "text/plain",
+    "charset": "UTF-8",
+}
+```
+
+토큰 발급 요청에 사용할 HTTP 헤더입니다.
+
+각 헤더의 의미는 다음과 같습니다.
+
+| 헤더             | 설명                      |
+| -------------- | ----------------------- |
+| `content-type` | 요청 본문이 JSON 형식임을 의미합니다. |
+| `accept`       | 응답 형식과 관련된 헤더입니다.       |
+| `charset`      | 문자 인코딩을 UTF-8로 지정합니다.   |
+
+---
+
+## 9.5 POST 요청 전송
+
+```python
+response = self._session.post(url, json=payload, headers=headers, timeout=self.timeout_seconds)
+```
+
+KIS API 서버에 토큰 발급 요청을 보냅니다.
+
+요청 방식은 POST입니다.
+
+각 인자의 역할은 다음과 같습니다.
+
+| 인자                             | 설명                   |
+| ------------------------------ | -------------------- |
+| `url`                          | 토큰 발급 API 주소입니다.     |
+| `json=payload`                 | 요청 본문을 JSON으로 전송합니다. |
+| `headers=headers`              | 요청 헤더를 함께 전송합니다.     |
+| `timeout=self.timeout_seconds` | 응답을 기다릴 최대 시간입니다.    |
+
+---
+
+## 9.6 HTTP 오류 확인
+
+```python
+response.raise_for_status()
+```
+
+HTTP 응답 상태 코드가 오류인지 확인합니다.
+
+상태 코드가 정상 범위가 아니면 `requests.HTTPError`가 발생합니다.
+
+---
+
+## 9.7 응답 JSON 변환
+
+```python
+data = response.json()
+```
+
+응답 본문을 JSON으로 해석하여 Python 객체로 변환합니다.
+
+
+---
+
+## 9.8 접근 토큰 추출
+
+```python
+token = str(data.get("access_token", "")).strip()
+```
+
+응답 JSON에서 `access_token` 값을 꺼냅니다.
+
+`access_token` 키가 없으면 빈 문자열을 사용합니다.
+
+꺼낸 값은 문자열로 변환한 뒤 앞뒤 공백을 제거합니다.
+
+---
+
+## 9.9 접근 토큰 유효성 확인
+
+```python
+if not token:
+    raise RuntimeError(f"Token response did not include access_token: {data}")
+```
+
+응답에 `access_token`이 없거나 빈 문자열이면 정상적인 토큰 발급 응답이 아니라고 판단합니다.
+
+이 경우 `RuntimeError`를 발생시킵니다.
+
+---
+
+## 9.10 새 토큰 반환
+
+```python
+return token
+```
+
+응답에서 정상적으로 추출한 접근 토큰 문자열을 반환합니다.
+
+---
+
+# 14. 전체 실행 흐름
+
+`AuthManager.get_token()`을 기준으로 전체 실행 흐름을 정리하면 다음과 같습니다.
+
+```text
+get_token()
+  ↓
+오늘 날짜를 YYYY-MM-DD 형식으로 구함
+  ↓
+메모리에 저장된 캐시 토큰 확인
+  ↓
+캐시 토큰이 있고 issued_date가 오늘이면 token 반환
+  ↓
+캐시 토큰이 없거나 오늘 날짜가 아니면 새 토큰 요청
+  ↓
+/oauth2/tokenP에 POST 요청
+  ↓
+응답 JSON에서 access_token 추출
+  ↓
+TokenCache 객체 생성
+  ↓
+토큰 캐시 파일 저장
+  ↓
+새 토큰 반환
+```
+
+---
 
 ## api_client.py: 공통 HTTP 클라이언트
 
