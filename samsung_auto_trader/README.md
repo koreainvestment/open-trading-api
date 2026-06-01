@@ -82,8 +82,7 @@ python main.py --poll-seconds 180 --offset-krw 1000 --quantity 1
 5. 각 주문 뒤에 잔고/보유종목을 다시 조회해 체결 여부를 추정합니다.
 6. 09:10~15:30 사이에만 반복하고, 15:30 이후 자동 종료합니다.
 
-## config.py: 환경변수 
-# 설정 모듈 README
+# config.py: 환경변수 
 
 이 문서는 환경변수에서 한국투자증권 KIS API 및 자동매매 프로그램 실행에 필요한 설정값을 읽어오는 코드에 대한 설명입니다.
 
@@ -97,13 +96,13 @@ python main.py --poll-seconds 180 --offset-krw 1000 --quantity 1
 
 ---
 
-# 1. 전체 코드의 역할
+## 1. 전체 코드의 역할
 
 이 코드는 자동매매 프로그램이 실행될 때 필요한 설정값을 환경변수에서 읽어옵니다.
 
 ---
 
-# 2. `_env()` 함수
+## 2. `_env()` 함수
 
 ```python
 def _env(name: str, default: str | None = None) -> str:
@@ -135,7 +134,7 @@ def _env(name: str, default: str | None = None) -> str:
 
 ---
 
-# 3. `parse_account()` 함수
+## 3. `parse_account()` 함수
 
 ```python
 def parse_account(account_value: str) -> tuple[str, str]:
@@ -231,7 +230,7 @@ raise ValueError(
 
 ---
 
-# 4. `Settings` 데이터 클래스
+## 4. `Settings` 데이터 클래스
 
 ```python
 @dataclass(frozen=True)
@@ -266,7 +265,7 @@ class Settings:
 
 ---
 
-# 5. `Settings` 필드 설명
+## 5. `Settings` 필드 설명
 
 ```python
 class Settings:
@@ -293,7 +292,7 @@ class Settings:
 
 ---
 
-# 6. `from_env()` 클래스 메서드
+## 6. `from_env()` 클래스 메서드
 
 ```python
 @classmethod
@@ -322,7 +321,7 @@ return cls(...)
 
 ---
 
-# 7. 필수 환경변수 읽기
+## 7. 필수 환경변수 읽기
 
 ```python
 account_number, account_product_code = parse_account(_env("GH_ACCOUNT"))
@@ -338,7 +337,7 @@ appsecret = _env("GH_APPSECRET")
 
 ---
 
-# 8. `Settings` 객체 생성
+## 8. `Settings` 객체 생성
 
 ```python
 return cls(
@@ -397,7 +396,7 @@ Settings(
 
 ---
 
-# 11. 환경변수 목록
+## 9. 환경변수 목록
 
 아래는 이 코드에서 사용하는 환경변수 전체 목록입니다.
 
@@ -420,7 +419,7 @@ Settings(
 
 ---
 
-# 12. `.env` 파일 예시
+# 10. `.env` 파일 예시
 
 로컬 환경에서 실행한다면 다음처럼 `.env` 파일을 만들 수 있습니다.
 
@@ -453,7 +452,7 @@ token_cache.json
 
 ---
 
-# 13. 사용 예시
+# 11. 사용 예시
 
 프로그램에서는 일반적으로 다음처럼 사용합니다.
 
@@ -506,7 +505,7 @@ trading_end = settings.trading_end
 
 ---
 
-# 14. 실행 흐름 요약
+# 12. 실행 흐름 요약
 
 `Settings.from_env()`가 호출되면 전체 흐름은 다음과 같습니다.
 
@@ -535,7 +534,7 @@ Settings 객체 반환
 
 ---
 
-## auth.py: 토큰 발급
+# auth.py: 토큰 발급
 
 @dataclass(frozen=True)
 class Settings:
