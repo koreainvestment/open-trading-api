@@ -82,6 +82,91 @@ python main.py --poll-seconds 180 --offset-krw 1000 --quantity 1
 5. 각 주문 뒤에 잔고/보유종목을 다시 조회해 체결 여부를 추정합니다.
 6. 09:10~15:30 사이에만 반복하고, 15:30 이후 자동 종료합니다.
 
-## 주의
+## config.py: 환경변수 
+def _env(name: str, default: str | None = None) -> str:
+    value = os.getenv(name, default)
+    if value is None or value == "":
+        raise ValueError(f"Missing required environment variable: {name}")
+    return value
+API_KEY 등 환경변수를 불러오는 함수
+os.getenv()는 환경변수를 읽는 함수이다. 이름에 맞는 환경변수를 가져오고, 없으면 default를 가져온다. 만약 그 값이 없으면 오류를 발생시킨다
 
-이 코드는 모의투자 전용 예제입니다. 실제 운용 전에 반드시 계좌 환경과 주문 가능 여부를 확인하고, 요청 제한이 낮다는 점을 고려해 폴링 간격을 충분히 길게 유지하세요.
+def parse_account(account_value: str) -> tuple[str, str]:
+    cleaned = re.sub(r"\s+", "", account_value)
+    if "-" in cleaned:
+        front, back = cleaned.split("-", 1)
+        if len(front) == 8 and len(back) == 2 and front.isdigit() and back.isdigit():
+            return front, back
+
+    digits = re.sub(r"\D", "", cleaned)
+    if len(digits) == 10:
+        return digits[:8], digits[8:]
+
+    raise ValueError(
+        "GH_ACCOUNT must contain the KIS account number in 8-2 format, for example '12345678-01' or '1234567801'."
+    )
+계좌번호 문자열을 정해진 형식으로 정리해서 앞 8자리와 뒤 2자리로 나누는 함수
+먼저 re.sub으로 계좌번호의 공백을 모두 없애준다
+계좌번호 중간에 -이 있으면 -을 기준으로 계좌번호를 나눈다
+앞이 8자리, 뒤가 2가지라 맞고 모두 숫자인지 확인한다
+그 다음 문자가 섞여있을 가능성을 대비하여 문자를 모두 제거하고 전체가 10자리가 맞으면 앞 8자리, 뒷 2자리를 나누어 반환한다
+형식이 맞지 않았으면 오류를 발생시킨다
+
+@dataclass(frozen=True)
+class Settings:
+    @classmethod
+    def from_env(cls) -> "Settings":
+                return cls()
+
+Settings는 프로그램 실행에 필요한 설정값을 저장하는 클래스
+계좌정보, API 키, 종목코드, 주문 수량, 요청 시간 제한 등을 관리한다
+@dataclass(frozen=True)는 __init__을 대신해주고 설정값을 고정한다
+@classmethod
+def from_env(cls)는 Settings 클래스를 환경변수와 설정값에서 필요한 값들을 자동으로 읽어 Settings 객체로 반환한다
+settings.account_number처럼 설정값을 사용할 수 있다
+
+@dataclass
+class TokenCache:
+    token: str
+    issued_date: str
+
+    @classmethod
+    def from_file(cls, path: Path) -> "TokenCache | None":
+        if not path.exists():
+            return None
+
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            return None
+
+        token = str(payload.get("token", "")).strip()
+        issued_date = str(payload.get("issued_date", "")).strip()
+        if not token or not issued_date:
+            return None
+        return cls(token=token, issued_date=issued_date)
+
+    def save(self, path: Path) -> None:
+        path.write_text(
+            json.dumps({"token": self.token, "issued_date": self.issued_date}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+API 토큰을 파일에 저장하고, 나중에 다시 불러오기 위한 TokenCache 클래스
+토큰과 날짜가 있는 파일을 저장한다. 만약 파일이 없다면 None을 반환한다
+파일을 읽어 json형식으로 만들고, 다시 딕셔너리 형식으로 변환한다
+파일이 깨져 있거나 JSON 형식이 아니면 None을 반환한다
+파일에서 token과 issued_date를 꺼내고, 없으면 ""을 불러온다
+token이나 issued_date 값이 비어 있으면 None을 반환한다
+모든 과정이 정상적으로 진행되면, TokenCache에 token과 issued_date가 저장되어 반환된다
+저장된 token과 issued_date는 딕셔너리 형식으로 만들고 다시 json형식으로 변환한다
+새로 발급받는 토큰을 저장할 때도 save를 사용한다
+
+
+
+
+
+
+
+
+
