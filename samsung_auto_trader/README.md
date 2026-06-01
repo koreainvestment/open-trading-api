@@ -1124,83 +1124,926 @@ TokenCache 객체 생성
 
 ---
 
-## api_client.py: 공통 HTTP 클라이언트
+# api_client.py: 공통 HTTP 클라이언트
 
+한국투자증권 KIS API에 HTTP 요청을 보내기 위한 클라이언트 코드에 대한 설명입니다.
+
+이 모듈의 목적은 KIS API를 사용할 때 필요한 공통 요청 로직을 하나의 클래스로 묶어 관리하는 것입니다.
+
+---
+
+# 1. 전체 코드의 역할
+
+KIS API를 사용하려면 요청마다 여러 정보가 필요합니다.
+
+이 코드의 `KISApiClient`는 이러한 작업을 한 곳에서 처리합니다.
+
+프로그램의 다른 모듈은 복잡한 인증 헤더 생성이나 오류 처리 과정을 직접 반복하지 않고, `get()` 또는 `post()` 메서드를 호출하여 KIS API에 요청을 보낼 수 있습니다.
+
+전체 흐름은 다음과 같습니다.
+
+```text
+KISApiClient 생성
+  ↓
+get() 또는 post() 호출
+  ↓
+_request()에서 공통 요청 처리
+  ↓
+AuthManager에서 접근 토큰 가져오기
+  ↓
+요청 헤더 생성
+  ↓
+GET이면 params 전송
+  ↓
+POST이면 json body 전송
+  ↓
+필요하면 hashkey 생성
+  ↓
+HTTP 요청 실행
+  ↓
+응답 상태 코드 확인
+  ↓
+KIS API 응답 코드 확인
+  ↓
+성공 시 payload 반환
+  ↓
+실패 시 재시도 또는 최종 예외 발생
+```
+
+---
+
+# 3. `KISResult` 데이터 클래스
+
+```python
+@dataclass
 class KISResult:
-한국투자증권 API 요청결과와 성공 여부를 확인하는 클래스
-KISResult
-│
-├─ status_code
-│  └─ HTTP 응답 코드
-│
-├─ data
-│  └─ API 응답 본문
-│
-└─ ok
-   └─ 요청 성공 여부를 True/False로 판단
-HTTP 상태 코드와 API 서버가 보내준 응답을 받고 응답 데이터를 딕셔너리에 저장
-ok 함수는 성공 여부를 판단
-@property로 함수 대신 변수처럼 사용 가능
-HTTP 요청 자체가 성공하고(self.status_code == 200), 한국투자증권 API 내부 응답 코드가 성공(rt_cd == "0")하면 성공한 것
+    status_code: int
+    data: dict[str, Any]
+```
 
+`KISResult`는 KIS API 응답 결과를 표현하기 위한 데이터 클래스입니다.
+
+이 클래스는 HTTP 상태 코드와 응답 데이터를 함께 담습니다.
+
+`status_code`는 HTTP 응답 상태 코드입니다.
+
+요청 자체가 서버와 정상적으로 통신되었는지를 나타냅니다.
+
+대표적으로 `200`은 HTTP 요청이 성공했다는 뜻입니다.
+
+`data`는 KIS API 서버에서 반환한 JSON 응답을 딕셔너리 형태로 저장하는 필드입니다.
+
+---
+
+# 4. `KISResult.ok` 속성
+
+```python
+@property
+def ok(self) -> bool:
+    rt_cd = str(self.data.get("rt_cd", "0"))
+    return self.status_code == 200 and rt_cd == "0"
+```
+
+`ok`는 응답이 성공인지 확인하는 읽기 전용 속성입니다.
+
+`@property`가 붙어 있기 때문에 메서드처럼 호출하지 않고 속성처럼 사용할 수 있습니다.
+
+---
+
+## 4.2 `rt_cd` 확인
+
+```python
+rt_cd = str(self.data.get("rt_cd", "0"))
+```
+
+KIS API 응답 데이터에서 `rt_cd` 값을 꺼냅니다.
+
+`rt_cd`는 KIS API의 처리 결과 코드를 의미합니다.
+
+이 코드에서는 `rt_cd`가 `"0"`이면 KIS API 내부 처리가 성공한 것으로 판단합니다.
+
+`data`에 `rt_cd` 키가 없으면 기본값 `"0"`을 사용합니다.
+
+또한 `str()`로 감싸서 숫자 형태로 들어온 값도 문자열로 비교할 수 있게 합니다.
+
+---
+
+## 4.3 성공 조건
+
+```python
+return self.status_code == 200 and rt_cd == "0"
+```
+
+`ok`가 `True`가 되려면 두 조건을 모두 만족해야 합니다.
+
+1. HTTP 상태 코드가 `200`이어야 한다.
+2. KIS API 응답 코드인 `rt_cd`가 `"0"`이어야 한다.
+
+---
+
+# 5. `KISApiClient` 클래스
+
+```python
 class KISApiClient:
-발급받은 토큰으로 한국투자증권 API에 GET/POST 요청을 보내는 공통 클라이언트 클래스
-KISApiClient
-│
-├─ __init__()
-│  └─ API 요청에 필요한 기본 정보 저장
-│
-├─ get()
-│  └─ 서버에서 정보를 불러옴
-│
-├─ post()
-│  └─ 서버에 데이터를 보냄
-│
-├─ get_hashkey()
-│  └─ POST 요청 본문에 대한 hashkey 발급
-│
-└─ _request()
-   ├─ URL 생성
-   ├─ AuthManager에서 토큰 가져오기
-   ├─ 공통 헤더 생성
-   ├─ GET/POST에 맞게 요청 데이터 설정
-   ├─ 필요 시 hashkey 추가
-   ├─ API 요청 실행
-   ├─ HTTP 오류 확인
-   ├─ KIS 응답 rt_cd 확인
-   ├─ 실패 시 재시도
-   └─ 성공 시 payload 반환
-   
-init()에서 API 요청을 보내기 위해 필요한 정보를 저장한다
-get()에서 서버에서 정보를 가져오는 함수. 실제 작동은 _request()에서
-post()는 서버에 데이터를 보내는 함수 
-body에 서버에 보낼 주문 정보를 넣음
-use_hashkey=True이면 요청 본문에 대해 hashkey를 발급받아 헤더에 추가
-get_hashkey()는 hashkey를 발급받는 함수
-hashkey는 내가 보내는 요청 본문이 변조되지 않았다는 것을 증명하기 위한 값이다
-먼저 hashkey 발급 전용 URL을 만들다
-서버에 body를 보내고, 그 body에 대한 hashkey를 요청한다
-응답에서 HASH값을 꺼내고, 없으면 오류를 발생시킨다
-_request()는 실제로 API 요청을 처리하는 함수
-API 서버 주소와 API 경로를 합쳐 최종 요청 주소를 만든다
-AuthManager으로 토큰을 요청하여 받는다
-header를 토큰, appkey, appsecret, tr_id(거래 요청 종류 ID) 등을 넣어 만든다
-request_kwargs로 공통 요청 요소를 만들고, get요청인지 post요청인지에 따라 다르게 처리한다
-get요청의 경우 조회조건이 params에 들어간다
-post요청의 경우 body 데이터가 json 본문에 들어간다. use_hashkey가 True이면 get_hashkey()로 hashkey를 발급받아 헤더에 추가한다
-요청이 실패할 경우 retry_count번 재시도한다
-요청의 종류에 따라 앞 request_kwargs가 작동
-오류의 종류에 따라 재시도 대상 오류와 예외 오류로 구별하여 작동한다
-서버가 응답하면 응답을 json형태로 변환한다
-API 내부 처리에서 실패한 경우에는 RuntimeError를 발생시킨다
-성공적으로 진행되면 최종적으로는 API 응답 데이터를 반환한다
-오류가 발생하면 last_error에 저장하고, 최종 실패했을 때 원래 오류를 함께 보여준다
+```
 
+`KISApiClient`는 KIS API 요청을 처리하는 클라이언트 클래스입니다.
 
+이 클래스는 다음 기능을 담당합니다.
 
+1. GET 요청 전송
+2. POST 요청 전송
+3. 접근 토큰을 포함한 요청 헤더 생성
+4. Hashkey 생성
+5. 응답 상태 코드 확인
+6. KIS API 응답 코드 확인
+7. 일시적 오류에 대한 재시도
+8. 오류 로그 기록
 
+---
 
+# 6. `KISApiClient.__init__()`
 
+```python
+def __init__(
+    self,
+    base_url: str,
+    appkey: str,
+    appsecret: str,
+    auth_manager: AuthManager,
+    logger,
+    timeout_seconds: int = 10,
+    retry_count: int = 2,
+    retry_backoff_seconds: float = 2.0,
+) -> None:
+```
+
+`KISApiClient` 객체를 초기화하는 생성자입니다.
+
+KIS API 요청에 필요한 기본 정보들을 객체 내부에 저장합니다.
+
+| 매개변수                    | 타입            | 설명                                 |
+| ----------------------- | ------------- | ---------------------------------- |
+| `base_url`              | `str`         | KIS API 서버의 기본 주소입니다.              |
+| `appkey`                | `str`         | KIS API 앱키입니다.                     |
+| `appsecret`             | `str`         | KIS API 앱시크릿입니다.                   |
+| `auth_manager`          | `AuthManager` | 접근 토큰을 관리하는 인증 관리자입니다.             |
+| `logger`                | 명시된 타입 없음     | 오류와 요청 실패를 기록하기 위한 로거입니다.          |
+| `timeout_seconds`       | `int`         | API 요청의 최대 대기 시간입니다. 기본값은 10초입니다.  |
+| `retry_count`           | `int`         | 요청 실패 시 재시도할 횟수입니다. 기본값은 2입니다.     |
+| `retry_backoff_seconds` | `float`       | 재시도 전 대기 시간의 기준값입니다. 기본값은 2.0초입니다. |
+
+---
+
+# 7. `get()` 메서드
+
+```python
+def get(self, path: str, tr_id: str, params: dict[str, Any], tr_cont: str = "") -> dict[str, Any]:
+    return self._request("GET", path, tr_id, params=params, tr_cont=tr_cont)
+```
+
+`get()`은 KIS API에 GET 요청을 보내는 공개 메서드입니다.
+
+GET 요청은 보통 서버에서 데이터를 조회할 때 사용됩니다.
+
+`get()`은 `_request()`에 다음 정보를 전달합니다.
+
+* 요청 방식: `"GET"`
+* API 경로: `path`
+* 거래 ID: `tr_id`
+* 조회 조건: `params`
+* 연속 조회 값: `tr_cont`
+
+즉, `get()`은 GET 요청에 필요한 값을 정리해서 공통 요청 메서드인 `_request()`로 넘겨주는 역할을 합니다.
+
+---
+
+# 8. `post()` 메서드
+
+```python
+def post(
+    self,
+    path: str,
+    tr_id: str,
+    body: dict[str, Any],
+    tr_cont: str = "",
+    use_hashkey: bool = True,
+) -> dict[str, Any]:
+    return self._request("POST", path, tr_id, body=body, tr_cont=tr_cont, use_hashkey=use_hashkey)
+```
+
+`post()`는 KIS API에 POST 요청을 보내는 공개 메서드입니다.
+
+POST 요청은 보통 서버에 데이터를 전달하여 어떤 동작을 수행할 때 사용됩니다.
+
+이 메서드도 직접 요청을 처리하지 않고 `_request()`에 요청 처리를 위임합니다.
+
+`post()`는 `_request()`에 다음 정보를 전달합니다.
+
+* 요청 방식: `"POST"`
+* API 경로: `path`
+* 거래 ID: `tr_id`
+* 요청 본문: `body`
+* 연속 조회 값: `tr_cont`
+* Hashkey 사용 여부: `use_hashkey`
+
+---
+
+# 9. `get_hashkey()` 메서드
+
+```python
+def get_hashkey(self, body: dict[str, Any]) -> str:
+```
+
+`get_hashkey()`는 KIS API의 Hashkey를 발급받는 메서드입니다.
+
+일부 POST 요청에서는 요청 본문에 대한 Hashkey를 헤더에 포함해야 합니다.
+
+이 메서드는 `/uapi/hashkey` API에 요청 본문을 보내고, 응답으로 받은 Hashkey 값을 반환합니다.
+
+---
+
+## 9.3 Hashkey URL 생성
+
+```python
+url = f"{self.base_url}/uapi/hashkey"
+```
+
+Hashkey 발급 API의 URL을 생성합니다.
+
+`base_url` 뒤에 `/uapi/hashkey` 경로를 붙입니다.
+
+---
+
+## 9.4 Hashkey 요청 헤더 생성
+
+```python
+headers = {
+    "content-type": "application/json",
+    "accept": "text/plain",
+    "charset": "UTF-8",
+    "appkey": self.appkey,
+    "appsecret": self.appsecret,
+}
+```
+
+Hashkey 요청에 필요한 헤더를 생성합니다.
+
+각 헤더의 의미는 다음과 같습니다.
+
+| 헤더             | 설명                      |
+| -------------- | ----------------------- |
+| `content-type` | 요청 본문이 JSON 형식임을 의미합니다. |
+| `accept`       | 응답 형식과 관련된 헤더입니다.       |
+| `charset`      | 문자 인코딩을 UTF-8로 지정합니다.   |
+| `appkey`       | KIS API 앱키입니다.          |
+| `appsecret`    | KIS API 앱시크릿입니다.        |
+
+---
+
+## 9.5 Hashkey 요청 전송
+
+```python
+response = self._session.post(url, json=body, headers=headers, timeout=self.timeout_seconds)
+```
+
+Hashkey 발급 API에 POST 요청을 보냅니다.
+
+요청 본문은 `json=body`로 전달됩니다.
+
+요청이 응답을 기다리는 최대 시간은 `self.timeout_seconds`입니다.
+
+---
+
+## 9.6 HTTP 오류 확인
+
+```python
+response.raise_for_status()
+```
+
+Hashkey 요청의 HTTP 상태 코드가 오류인지 확인합니다.
+
+상태 코드가 오류이면 `requests.HTTPError`가 발생합니다.
+
+---
+
+## 9.7 응답 JSON 변환
+
+```python
+payload = response.json()
+```
+
+Hashkey API의 응답 본문을 JSON으로 변환합니다.
+
+---
+
+## 9.8 Hashkey 추출
+
+```python
+hashkey = str(payload.get("HASH", "")).strip()
+```
+
+응답 JSON에서 `HASH` 값을 꺼냅니다.
+
+`HASH` 키가 없으면 빈 문자열을 사용합니다.
+
+꺼낸 값은 문자열로 변환한 뒤 앞뒤 공백을 제거합니다.
+
+---
+
+## 9.9 Hashkey 유효성 확인
+
+```python
+if not hashkey:
+    raise RuntimeError(f"Hashkey response did not include HASH: {payload}")
+```
+
+응답에서 Hashkey를 찾을 수 없거나 값이 비어 있으면 `RuntimeError`를 발생시킵니다.
+
+즉, HTTP 요청이 성공했더라도 응답 안에 `HASH` 값이 없으면 정상적인 Hashkey 발급 응답으로 보지 않습니다.
+
+---
+
+## 9.10 Hashkey 반환
+
+```python
+return hashkey
+```
+
+정상적으로 추출한 Hashkey 문자열을 반환합니다.
+
+---
+
+# 10. `_request()` 메서드
+
+```python
+def _request(
+    self,
+    method: str,
+    path: str,
+    tr_id: str,
+    params: dict[str, Any] | None = None,
+    body: dict[str, Any] | None = None,
+    tr_cont: str = "",
+    use_hashkey: bool = False,
+) -> dict[str, Any]:
+```
+
+`_request()`는 실제 API 요청을 처리하는 핵심 메서드입니다.
+
+`get()`과 `post()`는 모두 내부적으로 이 메서드를 호출합니다.
+
+메서드 이름 앞에 밑줄 `_`이 붙어 있으므로, 클래스 외부에서 직접 호출하기보다는 `get()`과 `post()`를 통해 사용하는 것을 의도한 내부 메서드입니다.
+
+| 매개변수          | 타입                       | 설명                                         |
+| ------------- | ------------------------ | ------------------------------------------ |
+| `method`      | `str`                    | HTTP 요청 방식입니다. `"GET"` 또는 `"POST"`가 사용됩니다. |
+| `path`        | `str`                    | API 경로입니다.                                 |
+| `tr_id`       | `str`                    | KIS API에서 요구하는 거래 ID입니다.                   |
+| `params`      | `dict[str, Any] \| None` | GET 요청에서 사용할 조회 조건입니다.                     |
+| `body`        | `dict[str, Any] \| None` | POST 요청에서 사용할 요청 본문입니다.                    |
+| `tr_cont`     | `str`                    | 연속 조회 여부를 나타내는 값입니다.                       |
+| `use_hashkey` | `bool`                   | Hashkey 사용 여부입니다.                          |
+
+반환값은 KIS API 서버에서 받은 JSON 응답 데이터입니다.
+
+요청이 성공하고, KIS API 응답 코드가 정상일 때만 반환됩니다.
+
+---
+
+# 11. 요청 URL 생성
+
+```python
+url = f"{self.base_url}{path}"
+```
+
+`base_url`과 `path`를 합쳐 최종 요청 URL을 생성합니다.
+
+`base_url`은 생성자에서 끝의 `/`가 제거된 상태로 저장되어 있으므로, `path`가 `/`로 시작하면 정상적인 URL 구조가 됩니다.
+
+---
+
+# 12. 접근 토큰 가져오기
+
+```python
+token = self.auth_manager.get_token()
+```
+
+API 요청을 보내기 전에 인증 관리자에서 접근 토큰을 가져옵니다.
+
+KIS API의 일반 요청은 접근 토큰을 필요로 하므로, 이 토큰은 요청 헤더의 `authorization` 값에 포함됩니다.
+
+---
+
+# 13. 요청 헤더 생성
+
+```python
+headers: dict[str, str] = {
+    "content-type": "application/json",
+    "accept": "text/plain",
+    "charset": "UTF-8",
+    "authorization": f"Bearer {token}",
+    "appkey": self.appkey,
+    "appsecret": self.appsecret,
+    "tr_id": tr_id,
+    "custtype": "P",
+    "tr_cont": tr_cont,
+}
+```
+
+KIS API 요청에 필요한 공통 헤더를 생성합니다.
+
+각 헤더의 의미는 다음과 같습니다.
+
+| 헤더              | 설명                             |
+| --------------- | ------------------------------ |
+| `content-type`  | 요청 본문 형식이 JSON임을 나타냅니다.        |
+| `accept`        | 응답 형식과 관련된 헤더입니다.              |
+| `charset`       | 문자 인코딩을 UTF-8로 지정합니다.          |
+| `authorization` | 접근 토큰을 담는 인증 헤더입니다.            |
+| `appkey`        | KIS API 앱키입니다.                 |
+| `appsecret`     | KIS API 앱시크릿입니다.               |
+| `tr_id`         | KIS API 거래 ID입니다.              |
+| `custtype`      | 고객 타입입니다. `"P"`는 개인 고객을 의미합니다. |
+| `tr_cont`       | 연속 조회 여부를 나타내는 값입니다.           |
+
+---
+
+# 14. 요청 옵션 생성
+
+```python
+request_kwargs: dict[str, Any] = {"headers": headers, "timeout": self.timeout_seconds}
+```
+
+실제 HTTP 요청에 전달할 공통 옵션을 만듭니다.
+
+모든 요청에는 다음 값이 포함됩니다.
+
+| 옵션        | 설명                |
+| --------- | ----------------- |
+| `headers` | 요청 헤더입니다.         |
+| `timeout` | 응답을 기다릴 최대 시간입니다. |
+
+---
+
+# 15. GET 요청 처리
+
+```python
+if method == "GET":
+    request_kwargs["params"] = params or {}
+```
+
+요청 방식이 GET이면 `params`를 요청 옵션에 추가합니다.
+
+GET 요청에서 `params`는 URL 쿼리 파라미터로 전송됩니다.
+
+즉, 조회 조건은 요청 본문이 아니라 URL 뒤에 붙는 방식으로 서버에 전달됩니다.
+
+`params`가 `None`이면 빈 딕셔너리 `{}`를 사용합니다.
+
+---
+
+# 16. POST 요청 처리
+
+```python
+else:
+    request_kwargs["json"] = body or {}
+    if use_hashkey:
+        headers["hashkey"] = self.get_hashkey(body or {})
+```
+
+요청 방식이 GET이 아니면 POST 요청으로 처리합니다.
+
+POST 요청에서는 `body`를 JSON 본문으로 전송합니다.
+
+---
+
+## 16.1 JSON 본문 설정
+
+```python
+request_kwargs["json"] = body or {}
+```
+
+`body` 값이 있으면 그 값을 JSON 본문으로 설정합니다.
+
+`body`가 `None`이면 빈 딕셔너리 `{}`를 사용합니다.
+
+---
+
+## 16.2 Hashkey 추가
+
+```python
+if use_hashkey:
+    headers["hashkey"] = self.get_hashkey(body or {})
+```
+
+`use_hashkey`가 `True`이면 `get_hashkey()`를 호출해 Hashkey를 생성합니다.
+
+생성된 Hashkey는 요청 헤더에 추가됩니다.
+
+---
+
+# 17. 재시도 준비
+
+```python
+last_error: Exception | None = None
+```
+
+마지막으로 발생한 오류를 저장하기 위한 변수입니다.
+
+요청이 최종적으로 실패했을 때, 마지막 오류를 원인으로 연결하기 위해 사용됩니다.
+
+---
+
+# 18. 재시도 반복문
+
+```python
+for attempt in range(self.retry_count + 1):
+```
+
+API 요청을 실행하는 반복문입니다.
+
+`retry_count`는 재시도 횟수입니다.
+
+---
+
+# 19. 실제 HTTP 요청 실행
+
+```python
+response = self._session.request(method, url, **request_kwargs)
+```
+
+`requests.Session`을 사용해 실제 HTTP 요청을 보냅니다.
+
+각 값의 의미는 다음과 같습니다.
+
+| 값                | 설명                                     |
+| ---------------- | -------------------------------------- |
+| `method`         | 요청 방식입니다.                              |
+| `url`            | 최종 요청 URL입니다.                          |
+| `request_kwargs` | 헤더, 타임아웃, GET 파라미터 또는 POST JSON 본문입니다. |
+
+---
+
+# 20. 재시도 가능한 HTTP 상태 코드 확인
+
+```python
+if response.status_code == 429 or response.status_code >= 500:
+    raise requests.HTTPError(f"retryable HTTP {response.status_code}", response=response)
+```
+
+응답 상태 코드가 `429`이거나 `500` 이상이면 재시도 가능한 HTTP 오류로 처리합니다.
+
+이 경우 즉시 `requests.HTTPError`를 발생시켜 예외 처리 구간으로 이동합니다.
+
+---
+
+# 21. 일반 HTTP 오류 확인
+
+```python
+response.raise_for_status()
+```
+
+HTTP 응답 상태 코드가 오류인지 확인합니다.
+
+`400`번대나 `500`번대 상태 코드가 있으면 `requests.HTTPError`가 발생합니다.
+
+---
+
+# 22. 응답 JSON 변환
+
+```python
+payload = response.json()
+```
+
+응답 본문을 JSON으로 변환합니다.
+
+변환에 실패하면 `json.JSONDecodeError`가 발생할 수 있습니다.
+
+---
+
+# 23. KIS API 응답 코드 확인
+
+```python
+if str(payload.get("rt_cd", "0")) != "0":
+    raise RuntimeError(
+        f"KIS API error: rt_cd={payload.get('rt_cd')} msg_cd={payload.get('msg_cd')} msg1={payload.get('msg1')}"
+    )
+```
+
+HTTP 요청 자체가 성공했더라도 KIS API 내부 처리 결과가 실패일 수 있습니다.
+
+KIS API 응답의 `rt_cd` 값이 `"0"`이 아니면 API 오류로 판단합니다.
+
+이 경우 `RuntimeError`를 발생시킵니다.
+
+오류 메시지에는 다음 값들이 포함됩니다.
+
+| 값        | 설명                   |
+| -------- | -------------------- |
+| `rt_cd`  | KIS API 처리 결과 코드입니다. |
+| `msg_cd` | KIS API 메시지 코드입니다.   |
+| `msg1`   | KIS API 메시지 내용입니다.   |
+
+---
+
+# 24. 정상 응답 반환
+
+```python
+return payload
+```
+
+HTTP 요청이 성공하고, KIS API 응답 코드도 정상이라면 응답 JSON 전체를 반환합니다.
+
+이 시점에서 `_request()`는 종료됩니다.
+
+---
+
+# 25. 예외 처리
+
+```python
+except (requests.Timeout, requests.ConnectionError, json.JSONDecodeError, RuntimeError, requests.HTTPError) as exc:
+```
+
+요청 처리 중 발생할 수 있는 주요 예외를 처리합니다.
+
+처리 대상은 다음과 같습니다.
+
+| 예외                         | 설명                                 |
+| -------------------------- | ---------------------------------- |
+| `requests.Timeout`         | 요청 시간이 초과된 경우입니다.                  |
+| `requests.ConnectionError` | 네트워크 연결 문제가 발생한 경우입니다.             |
+| `json.JSONDecodeError`     | 응답을 JSON으로 해석하지 못한 경우입니다.          |
+| `RuntimeError`             | KIS API 응답 오류 또는 직접 발생시킨 실행 오류입니다. |
+| `requests.HTTPError`       | HTTP 상태 코드 오류입니다.                  |
+
+---
+
+## 25.1 마지막 오류 저장
+
+```python
+last_error = exc
+```
+
+현재 발생한 예외를 `last_error`에 저장합니다.
+
+이 값은 모든 재시도가 실패했을 때 최종 예외의 원인으로 연결됩니다.
+
+---
+
+## 25.2 상태 코드 추출
+
+```python
+status_code = getattr(getattr(exc, "response", None), "status_code", None)
+```
+
+예외 객체에서 HTTP 응답 상태 코드를 추출합니다.
+
+일부 예외는 `response` 속성을 가지고 있지 않을 수 있으므로 `getattr()`을 사용해 안전하게 접근합니다.
+
+먼저 `exc.response`를 가져오고, 그 결과에서 다시 `status_code`를 가져옵니다.
+
+값을 가져올 수 없으면 `None`이 됩니다.
+
+---
+
+## 25.3 재시도 가능 여부 판단
+
+```python
+retryable = isinstance(exc, (requests.Timeout, requests.ConnectionError, json.JSONDecodeError, RuntimeError)) or status_code in {
+    429,
+} or (status_code is not None and status_code >= 500)
+```
+
+현재 발생한 오류가 재시도 가능한 오류인지 판단합니다.
+
+이 코드에서 재시도 가능한 경우는 다음과 같습니다.
+
+1. 요청 시간이 초과된 경우
+2. 네트워크 연결 오류가 발생한 경우
+3. JSON 파싱 오류가 발생한 경우
+4. `RuntimeError`가 발생한 경우
+5. HTTP 상태 코드가 `429`인 경우
+6. HTTP 상태 코드가 `500` 이상인 경우
+
+---
+
+## 25.4 마지막 시도 여부 확인
+
+```python
+is_last_attempt = attempt >= self.retry_count
+```
+
+현재 시도가 마지막 시도인지 확인합니다.
+
+`attempt`는 0부터 시작합니다.
+
+따라서 `attempt >= self.retry_count`이면 더 이상 재시도하지 않습니다.
+
+---
+
+## 25.5 오류 로그 기록
+
+```python
+self.logger.error(
+    "api error: method=%s path=%s attempt=%s/%s error=%s",
+    method,
+    path,
+    attempt + 1,
+    self.retry_count + 1,
+    exc,
+)
+```
+
+요청 실패 정보를 로그로 기록합니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+| 값                      | 설명              |
+| ---------------------- | --------------- |
+| `method`               | 요청 방식입니다.       |
+| `path`                 | API 경로입니다.      |
+| `attempt + 1`          | 현재 시도 횟수입니다.    |
+| `self.retry_count + 1` | 전체 최대 시도 횟수입니다. |
+| `exc`                  | 발생한 오류 내용입니다.   |
+
+이 로그를 통해 어떤 API 요청이 몇 번째 시도에서 실패했는지 확인할 수 있습니다.
+
+---
+
+## 25.6 반복 종료 조건
+
+```python
+if is_last_attempt or not retryable:
+    break
+```
+
+다음 중 하나에 해당하면 더 이상 재시도하지 않고 반복문을 종료합니다.
+
+1. 현재 시도가 마지막 시도인 경우
+2. 발생한 오류가 재시도 가능한 오류가 아닌 경우
+
+반복문이 종료되면 아래의 최종 실패 처리로 이동합니다.
+
+---
+
+## 25.7 재시도 전 대기
+
+```python
+time.sleep(self.retry_backoff_seconds * (attempt + 1))
+```
+
+재시도하기 전에 일정 시간 대기합니다.
+
+대기 시간은 다음 방식으로 계산됩니다.
+
+```text
+retry_backoff_seconds × (attempt + 1)
+```
+
+따라서 실패 횟수가 늘어날수록 대기 시간이 길어집니다.
+
+---
+
+# 26. 최종 실패 처리
+
+```python
+raise RuntimeError(f"Request failed after retries: {method} {path}") from last_error
+```
+
+모든 시도가 실패하면 최종적으로 `RuntimeError`를 발생시킵니다.
+
+오류 메시지에는 요청 방식과 API 경로가 포함됩니다.
+
+`from last_error`를 사용했기 때문에, 최종 오류에는 마지막으로 발생한 원래 예외가 연결됩니다.
+
+이를 통해 실제 실패 원인을 추적할 수 있습니다.
+
+---
+
+# 27. GET 요청 흐름
+
+GET 요청은 다음 순서로 처리됩니다.
+
+```text
+get()
+  ↓
+_request("GET", ...)
+  ↓
+요청 URL 생성
+  ↓
+AuthManager에서 접근 토큰 가져오기
+  ↓
+공통 헤더 생성
+  ↓
+params를 request_kwargs에 추가
+  ↓
+HTTP GET 요청 실행
+  ↓
+HTTP 상태 코드 확인
+  ↓
+응답 JSON 변환
+  ↓
+rt_cd 확인
+  ↓
+정상 payload 반환
+```
+
+GET 요청에서 핵심은 `params`입니다.
+
+`params`는 조회 조건을 담고 있으며, URL 쿼리 파라미터로 전송됩니다.
+
+---
+
+# 28. POST 요청 흐름
+
+POST 요청은 다음 순서로 처리됩니다.
+
+```text
+post()
+  ↓
+_request("POST", ...)
+  ↓
+요청 URL 생성
+  ↓
+AuthManager에서 접근 토큰 가져오기
+  ↓
+공통 헤더 생성
+  ↓
+body를 JSON 본문으로 설정
+  ↓
+use_hashkey가 True이면 hashkey 생성
+  ↓
+hashkey를 헤더에 추가
+  ↓
+HTTP POST 요청 실행
+  ↓
+HTTP 상태 코드 확인
+  ↓
+응답 JSON 변환
+  ↓
+rt_cd 확인
+  ↓
+정상 payload 반환
+```
+
+POST 요청에서 핵심은 `body`입니다.
+
+`body`는 서버에 전달할 요청 본문이며, JSON 형태로 전송됩니다.
+
+---
+
+# 29. Hashkey 처리 흐름
+
+Hashkey는 다음 순서로 처리됩니다.
+
+```text
+POST 요청 시작
+  ↓
+use_hashkey 확인
+  ↓
+get_hashkey(body) 호출
+  ↓
+/uapi/hashkey로 POST 요청
+  ↓
+응답 JSON에서 HASH 추출
+  ↓
+hashkey 헤더에 추가
+  ↓
+원래 POST 요청 실행
+```
+
+Hashkey는 원래 POST 요청을 보내기 전에 먼저 생성됩니다.
+
+그 후 생성된 Hashkey가 원래 요청의 헤더에 포함됩니다.
+
+---
+
+# 30. 재시도 처리 흐름
+
+API 요청 실패 시 재시도 흐름은 다음과 같습니다.
+
+```text
+요청 실행
+  ↓
+예외 발생
+  ↓
+last_error에 예외 저장
+  ↓
+재시도 가능한 오류인지 판단
+  ↓
+오류 로그 기록
+  ↓
+마지막 시도이거나 재시도 불가능하면 중단
+  ↓
+아니면 일정 시간 대기
+  ↓
+다시 요청 실행
+```
+
+모든 시도가 실패하면 최종적으로 `RuntimeError`가 발생합니다.
+
+---
 
 
 
