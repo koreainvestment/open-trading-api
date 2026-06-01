@@ -26,24 +26,34 @@ inquire_balance = domestic_stock_functions.inquire_balance
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 STOCK_CODE = "005930"  # 삼성전자
-INTERVAL = 60 * 30     # 30분
+INTERVAL = 60 * 10     # 10분
 
 BUY_RULES = [
-    (-5, 0.30),    # -5% 이하 하락 시 현금의 30% 매수
-    (-3, 0.20),    # -3% 이하 하락 시 현금의 20% 매수
-    (-1.5, 0.10),  # -1.5% 이하 하락 시 현금의 10% 매수
+    (-30, 0.25),    # -30% 이하 하락 시 현금의 50% 매수
+    (-25, 0.05),    # -25% 이하 하락 시 현금의 40% 매수
+    (-20, 0.10),    # -20% 이하 하락 시 현금의 30% 매수
+    (-15, 0.20),    # -15% 이하 하락 시 현금의 20% 매수
+    (-10, 0.30),    # -10% 이하 하락 시 현금의 10% 매수
+    (-5, 0.40),    # -5% 이하 하락 시 현금의 5% 매수
+    (-2.5, 0.50),    # -2.5% 이하 하락 시 현금의 2.5% 매수
 ]
 
 SELL_RULES = [
-    (7, 0.45),     # +7% 이상 상승 시 보유수량의 75% 매도
-    (4, 0.30),     # +4% 이상 상승 시 보유수량의 50% 매도
-    (2, 0.15),     # +2% 이상 상승 시 보유수량의 25% 매도
+    (30, 0.75),     # +30% 이상 상승 시 보유수량의 75% 매도
+    (25, 0.625),     # +25% 이상 상승 시 보유수량의 62.5% 매도
+    (20, 0.5),     # +20% 이상 상승 시 보유수량의 50% 매도
+    (15, 0.375),     # +15% 이상 상승 시 보유수량의 37.5% 매도
+    (10, 0.25),     # +10% 이상 상승 시 보유수량의 25% 매도
+    (5, 0.125),     # +5% 이상 상승 시 보유수량의 12.5% 매도
+    (2.5, 0.0625),     # +2.5% 이상 상승 시 보유수량의 6.25% 매도
+
 ]
 
 ka.auth(svr="vps", product="01")
 trenv = ka.getTREnv()
 
 logging.info("모의투자 인증 완료")
+
 
 
 def get_action_and_qty(change_rate, current_price, holding_qty):
@@ -128,6 +138,36 @@ def get_available_cash():
 
     return 0
 
+cash = get_available_cash()
+logging.info(f"주문가능현금: {cash:,}원")
+
+def initial_buy():
+    holding_qty = get_current_holding_qty()
+
+    if holding_qty >= 20:
+        logging.info("초기 보유수량 충족")
+        return
+
+    buy_qty = 20 - holding_qty
+
+    logging.info(f"초기 진입 → 삼성전자 {buy_qty}주 매수")
+
+    df = order_cash(
+        env_dv="demo",
+        ord_dv="buy",
+        cano=trenv.my_acct,
+        acnt_prdt_cd=trenv.my_prod,
+        pdno=STOCK_CODE,
+        ord_dvsn="01",
+        ord_qty=str(buy_qty),
+        ord_unpr="0",
+        excg_id_dvsn_cd="KRX"
+    )
+
+    print(df)
+
+initial_buy()
+
 while True:
     try:
         price_df = inquire_price("demo", "J", STOCK_CODE)
@@ -198,5 +238,5 @@ while True:
     except Exception as e:
         logging.error(f"오류 발생: {e}")
 
-    logging.info("30분 대기 후 다시 실행")
+    logging.info("10분 대기 후 다시 실행")
     time.sleep(INTERVAL)

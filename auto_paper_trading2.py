@@ -25,7 +25,7 @@ inquire_balance = domestic_stock_functions.inquire_balance
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-STOCK_CODE = "000150"  # 두산
+STOCK_CODE = "034020"  # 두산에너빌리티
 INTERVAL = 60 * 10     # 10분
 
 BUY_RULES = [
@@ -137,6 +137,39 @@ def get_available_cash():
 
     return 0
 
+cash = get_available_cash()
+
+logging.info(f"주문가능현금: {cash:,}원")
+
+def initial_buy():
+    holding_qty = get_current_holding_qty()
+
+    if holding_qty >= 20:
+        logging.info("초기 보유수량 충족")
+        return
+
+    buy_qty = 20 - holding_qty
+
+    logging.info(f"초기 진입 → 두산에너빌리티 {buy_qty}주 매수")
+
+    df = order_cash(
+        env_dv="demo",
+        ord_dv="buy",
+        cano=trenv.my_acct,
+        acnt_prdt_cd=trenv.my_prod,
+        pdno=STOCK_CODE,
+        ord_dvsn="01",
+        ord_qty=str(buy_qty),
+        ord_unpr="0",
+        excg_id_dvsn_cd="KRX"
+    )
+
+    print(df)
+
+initial_buy()
+
+time.sleep(1)
+
 while True:
     try:
         price_df = inquire_price("demo", "J", STOCK_CODE)
@@ -207,5 +240,5 @@ while True:
     except Exception as e:
         logging.error(f"오류 발생: {e}")
 
-    logging.info("30분 대기 후 다시 실행")
+    logging.info("10분 대기 후 다시 실행")
     time.sleep(INTERVAL)
