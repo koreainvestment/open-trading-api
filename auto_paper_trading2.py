@@ -138,7 +138,11 @@ def get_available_cash():
     return 0
 
 cash = get_available_cash()
+
 logging.info(f"주문가능현금: {cash:,}원")
+
+print("===== SUMMARY =====")
+print(summary_df.T)
 
 def initial_buy():
     holding_qty = get_current_holding_qty()
@@ -166,6 +170,8 @@ def initial_buy():
     print(df)
 
 initial_buy()
+
+time.sleep(1)
 
 while True:
     try:
