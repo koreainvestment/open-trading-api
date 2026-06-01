@@ -54,6 +54,7 @@ trenv = ka.getTREnv()
 
 logging.info("모의투자 인증 완료")
 
+initial_buy()
 
 def get_action_and_qty(change_rate, current_price, holding_qty):
     """
@@ -136,6 +137,31 @@ def get_available_cash():
                 pass
 
     return 0
+
+def initial_buy():
+    holding_qty = get_current_holding_qty()
+
+    if holding_qty >= 200:
+        logging.info("초기 보유수량 충족")
+        return
+
+    buy_qty = 200 - holding_qty
+
+    logging.info(f"초기 진입 → 삼성전자 {buy_qty}주 매수")
+
+    df = order_cash(
+        env_dv="demo",
+        ord_dv="buy",
+        cano=trenv.my_acct,
+        acnt_prdt_cd=trenv.my_prod,
+        pdno=STOCK_CODE,
+        ord_dvsn="01",
+        ord_qty=str(buy_qty),
+        ord_unpr="0",
+        excg_id_dvsn_cd="KRX"
+    )
+
+    print(df)
 
 while True:
     try:
