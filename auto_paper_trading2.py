@@ -143,7 +143,7 @@ logging.info(f"주문가능현금: {cash:,}원")
 def initial_buy():
     holding_qty = get_current_holding_qty()
 
-    if holding_qty >= 20:
+    if holding_qty >= 30:
         logging.info("초기 보유수량 충족")
         return
 
