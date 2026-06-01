@@ -3193,29 +3193,2370 @@ return snapshot
 
 최종적으로 생성된 `AccountSnapshot` 객체를 반환합니다.
 
-# 
+# orders.py: 매수/매도 주문
+
+한국투자증권 KIS API를 사용해 국내 주식 지정가 주문을 실행하는 코드에 대한 설명입니다.
+
+이 코드는 크게 두 부분으로 구성됩니다.
+
+1. 주문 결과를 표현하는 `OrderResult` 데이터 클래스
+2. 주문 요청을 담당하는 `OrderService` 클래스
+
+이 모듈의 목적은 매수 또는 매도 지정가 주문을 KIS API에 요청하고, 주문 요청 결과를 `OrderResult` 객체로 정리하는 것입니다.
+
+---
+
+# 1. 전체 코드의 역할
+
+이 코드는 국내 주식 지정가 주문을 실행합니다.
+
+주문에 필요한 정보는 다음과 같습니다.
+
+* 매수 또는 매도 구분
+* 종목 코드
+* 주문 수량
+* 주문 가격
+* 계좌번호
+* 계좌상품코드
+* KIS API 거래 ID
+* 주문 요청 본문
+* Hashkey 사용 여부
+
+`OrderService`는 주문 요청에 필요한 값을 JSON 본문으로 구성한 뒤, `KISApiClient.post()`를 사용해 KIS API의 주문 API로 요청을 보냅니다.
+
+주문이 정상적으로 접수되면 응답에서 주문번호를 추출하고, 주문 결과를 `OrderResult` 객체로 반환합니다.
+
+전체 흐름은 다음과 같습니다.
+
+```text
+OrderService 생성
+  ↓
+place_limit_order() 호출
+  ↓
+side 값 정리 및 검증
+  ↓
+매수/매도에 맞는 tr_id 선택
+  ↓
+주문 요청 payload 생성
+  ↓
+주문 요청 로그 기록
+  ↓
+KISApiClient.post()로 주문 API 호출
+  ↓
+응답 output에서 주문번호 추출
+  ↓
+OrderResult 객체 생성
+  ↓
+주문 접수 로그 기록
+  ↓
+OrderResult 반환
+```
+
+---
+
+# 2. `OrderResult` 데이터 클래스
+
+```python
+@dataclass(frozen=True)
+class OrderResult:
+    side: str
+    symbol: str
+    quantity: int
+    price: int
+    accepted: bool
+    order_no: str | None
+    raw: dict[str, Any]
+```
+
+`OrderResult`는 주문 요청 결과를 표현하는 데이터 클래스입니다.
+
+KIS API에 주문 요청을 보낸 뒤, 주문이 어떤 조건으로 접수되었는지와 API 원본 응답을 함께 저장합니다.
+
+## 3.1 `side`
+
+```python
+side: str
+```
+
+주문 방향입니다.
+
+이 코드에서는 다음 두 값 중 하나가 들어갑니다.
+
+```text
+buy
+sell
+```
+
+`buy`는 매수 주문을 의미하고, `sell`은 매도 주문을 의미합니다.
+
+---
+
+## 3.2 `symbol`
+
+```python
+symbol: str
+```
+
+주문 대상 종목 코드입니다.
 
 
+---
+
+## 3.3 `quantity`
+
+```python
+quantity: int
+```
+
+주문 수량입니다.
+
+---
+
+## 3.4 `price`
+
+```python
+price: int
+```
+
+주문 가격입니다.
+
+---
+
+## 3.5 `accepted`
+
+```python
+accepted: bool
+```
+
+주문 요청이 접수되었는지 여부를 나타내는 값입니다.
+
+현재 코드에서는 `KISApiClient.post()`가 정상 응답을 반환한 경우에만 `OrderResult` 객체가 생성됩니다.
+
+따라서 이 코드에서 생성되는 `OrderResult`의 `accepted` 값은 항상 `True`입니다.
+
+주문 요청 중 오류가 발생하면 `KISApiClient` 또는 API 요청 과정에서 예외가 발생하므로 `OrderResult`가 생성되지 않습니다.
+
+---
+
+## 3.6 `order_no`
+
+```python
+order_no: str | None
+```
+
+KIS API 응답에서 추출한 주문번호입니다.
+
+주문번호를 찾을 수 있으면 문자열로 저장합니다.
+
+주문번호를 찾을 수 없으면 `None`이 됩니다.
+
+---
+
+## 3.7 `raw`
+
+```python
+raw: dict[str, Any]
+```
+
+KIS API 주문 응답 전체를 저장하는 필드입니다.
+
+---
+
+# 4. `OrderService` 클래스
+
+```python
+class OrderService:
+```
+
+`OrderService`는 주문 요청 기능을 제공하는 서비스 클래스입니다.
+
+`KISApiClient`를 통해 API 요청을 보냅니다.
+
+---
+
+# 5. `OrderService.__init__()`
+
+```python
+class OrderService:
+    def __init__(self, client: KISApiClient, logger, account_number: str, account_product_code: str) -> None:
+        self.client = client
+        self.logger = logger
+        self.account_number = account_number
+        self.account_product_code = account_product_code
+```
+
+`OrderService` 객체를 초기화하는 생성자입니다.
+
+| 매개변수                   | 타입             | 설명                           |
+| ---------------------- | -------------- | ---------------------------- |
+| `client`               | `KISApiClient` | KIS API 요청을 보내는 클라이언트 객체입니다. |
+| `logger`               | 명시된 타입 없음      | 주문 요청과 주문 접수 결과를 기록하는 로거입니다. |
+| `account_number`       | `str`          | 계좌번호 앞 8자리입니다.               |
+| `account_product_code` | `str`          | 계좌상품코드 2자리입니다.               |
+
+---
+
+# 6. `place_limit_order()` 메서드
+
+```python
+def place_limit_order(self, side: str, symbol: str, quantity: int, price: int) -> OrderResult:
+```
+
+`place_limit_order()`는 지정가 주문을 실행하는 메서드입니다.
+
+매수 또는 매도 방향, 종목 코드, 주문 수량, 주문 가격을 입력받아 KIS API 주문 요청을 보냅니다.
+
+| 매개변수       | 타입    | 설명                                    |
+| ---------- | ----- | ------------------------------------- |
+| `side`     | `str` | 주문 방향입니다. `"buy"` 또는 `"sell"`이어야 합니다. |
+| `symbol`   | `str` | 주문할 종목 코드입니다.                         |
+| `quantity` | `int` | 주문 수량입니다.                             |
+| `price`    | `int` | 지정가 주문 가격입니다.                         |
+
+반환값은 `OrderResult` 객체입니다.
+
+주문 방향, 종목 코드, 주문 수량, 주문 가격, 주문 접수 여부, 주문번호, 원본 응답 데이터가 포함됩니다.
+
+---
+
+# 7. 주문 방향 정리
+
+```python
+side = side.lower().strip()
+```
+
+입력받은 주문 방향 문자열을 정리합니다.
+
+처리 내용은 다음과 같습니다.
+
+1. `lower()`로 모든 문자를 소문자로 바꿉니다.
+2. `strip()`으로 앞뒤 공백을 제거합니다.
+3. 
+---
+
+# 8. 주문 방향 검증
+
+```python
+if side not in {"buy", "sell"}:
+    raise ValueError("side must be 'buy' or 'sell'")
+```
+
+정리된 `side` 값이 `"buy"` 또는 `"sell"`인지 확인합니다.
+
+둘 중 하나가 아니면 `ValueError`를 발생시킵니다.
+
+---
+
+# 9. 거래 ID 선택
+
+```python
+tr_id = "VTTC0012U" if side == "buy" else "VTTC0011U"
+```
+
+주문 방향에 따라 KIS API 거래 ID를 선택합니다.
+
+| 주문 방향  | `tr_id`     |
+| ------ | ----------- |
+| `buy`  | `VTTC0012U` |
+| `sell` | `VTTC0011U` |
+
+---
+
+# 10. 주문 요청 본문 생성
+
+```python
+payload = {
+    "CANO": self.account_number,
+    "ACNT_PRDT_CD": self.account_product_code,
+    "PDNO": symbol,
+    "ORD_DVSN": "00",
+    "ORD_QTY": str(quantity),
+    "ORD_UNPR": str(price),
+    "EXCG_ID_DVSN_CD": "KRX",
+    "SLL_TYPE": "01",
+    "CNDT_PRIC": "",
+}
+```
+
+이 딕셔너리는 KIS API 주문 요청의 JSON 본문입니다.
+
+POST 요청을 보낼 때 이 값이 `body`로 전달됩니다.
 
 
+| 필드                | 설명             |
+| ----------------- | -------------- |
+| `CANO`            | 계좌번호 앞 8자리입니다. |
+| `ACNT_PRDT_CD`    | 계좌상품코드 2자리입니다. |
+| `PDNO`            | 주문할 종목 코드입니다.  |
+| `ORD_DVSN`        | 주문 구분입니다.      |
+| `ORD_QTY`         | 주문 수량입니다.      |
+| `ORD_UNPR`        | 주문 가격입니다.      |
+| `EXCG_ID_DVSN_CD` | 거래소 구분 코드입니다.  |
+| `SLL_TYPE`        | 매도 유형 구분 값입니다. |
+| `CNDT_PRIC`       | 조건 가격 값입니다.    |
+
+---
+
+# 11. 주문 요청 로그 기록
+
+```python
+self.logger.info(
+    "%s order request: symbol=%s quantity=%s price=%s",
+    side,
+    symbol,
+    quantity,
+    f"{price:,}",
+)
+```
+
+실제 API 요청을 보내기 전에 주문 요청 정보를 로그로 남깁니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+* 주문 방향
+* 종목 코드
+* 주문 수량
+* 주문 가격
+
+---
+
+# 12. 주문 API 호출
+
+```python
+response = self.client.post(
+    "/uapi/domestic-stock/v1/trading/order-cash",
+    tr_id=tr_id,
+    body=payload,
+    use_hashkey=True,
+)
+```
+
+이 코드는 `KISApiClient`의 `post()` 메서드를 사용해 KIS API 주문 요청을 보냅니다.
+
+---
+
+## 12.1 API 경로
+
+```python
+"/uapi/domestic-stock/v1/trading/order-cash"
+```
+
+이 경로는 국내 주식 현금 주문 API의 경로입니다.
+
+`KISApiClient`는 이 경로를 `base_url`과 합쳐 최종 요청 URL을 만듭니다.
+
+---
+
+## 12.2 `tr_id`
+
+```python
+tr_id=tr_id
+```
+
+앞에서 주문 방향에 따라 선택한 거래 ID를 전달합니다.
+
+---
+
+## 12.3 `body`
+
+```python
+body=payload
+```
+
+주문 요청 본문입니다.
+
+계좌번호, 종목 코드, 주문 수량, 주문 가격 등이 들어 있습니다.
+
+이 값은 POST 요청의 JSON 본문으로 전송됩니다.
+
+---
+
+## 12.4 `use_hashkey`
+
+```python
+use_hashkey=True
+```
+
+주문 요청에 Hashkey를 사용하도록 설정합니다.
+
+`use_hashkey=True`이면 `KISApiClient` 내부에서 요청 본문을 기준으로 Hashkey를 생성하고, 요청 헤더에 포함합니다.
+
+주문 요청은 중요한 거래 요청이므로 Hashkey를 사용하도록 되어 있습니다.
+
+---
+
+# 13. 응답 `output` 추출
+
+```python
+output = response.get("output", {}) if isinstance(response.get("output", {}), dict) else {}
+```
+
+KIS API 주문 응답에서 `output` 값을 꺼냅니다.
+
+만약 `output`이 딕셔너리가 아니라면 빈 딕셔너리 `{}`를 사용합니다.
+
+---
+
+# 14. 주문번호 추출
+
+```python
+order_no = str(output.get("odno") or output.get("ORD_NO") or output.get("order_no") or "").strip() or None
+```
+
+주문 응답에서 주문번호를 추출합니다.
+
+응답 필드명이 상황에 따라 다를 수 있으므로 여러 후보 키를 순서대로 확인합니다.
+
+주문번호가 존재하면 문자열로 저장되고, 없으면 `None`이 됩니다.
+
+---
+
+# 15. `OrderResult` 객체 생성
+
+```python
+result = OrderResult(
+    side=side,
+    symbol=symbol,
+    quantity=quantity,
+    price=price,
+    accepted=True,
+    order_no=order_no,
+    raw=response,
+)
+```
+
+주문 응답을 바탕으로 `OrderResult` 객체를 생성합니다.
+
+각 필드에 들어가는 값은 다음과 같습니다.
+
+| `OrderResult` 필드 | 값          | 설명                         |
+| ---------------- | ---------- | -------------------------- |
+| `side`           | `side`     | 정리된 주문 방향입니다.              |
+| `symbol`         | `symbol`   | 주문 종목 코드입니다.               |
+| `quantity`       | `quantity` | 주문 수량입니다.                  |
+| `price`          | `price`    | 주문 가격입니다.                  |
+| `accepted`       | `True`     | 주문 요청이 정상적으로 접수되었음을 의미합니다. |
+| `order_no`       | `order_no` | 응답에서 추출한 주문번호입니다.          |
+| `raw`            | `response` | KIS API 원본 응답입니다.          |
+
+---
+
+# 16. 주문 접수 로그 기록
+
+```python
+self.logger.info("%s order accepted: order_no=%s", side, order_no or "unknown")
+```
+
+주문 요청이 정상적으로 처리되면 주문 접수 로그를 남깁니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+* 주문 방향
+* 주문번호
+
+주문번호가 없는 경우에는 `"unknown"`으로 기록됩니다.
+
+---
+
+# 17. `OrderResult` 반환
+
+```python
+return result
+```
+
+최종적으로 생성된 `OrderResult` 객체를 반환합니다.
+
+이 객체는 프로그램의 다른 모듈에서 주문 결과 확인, 주문번호 저장, 주문 후 체결 확인 등에 사용할 수 있습니다.
+
+---
+
+# trader.py: 자동매매 실행
+
+시장 데이터 조회, 계좌 조회, 주문 실행 서비스를 조합하여 자동매매 사이클을 수행하는 코드에 대한 설명입니다.
+
+이 코드는 크게 여섯 부분으로 구성됩니다.
+
+1. 서비스 클래스 import 처리
+2. 한 번의 매매 관찰 결과를 표현하는 `TradingObservation` 데이터 클래스
+3. 주문 가격을 호가 단위에 맞추는 `_round_to_tick()` 함수
+4. 특정 종목의 보유 수량을 찾는 `_held_quantity()` 함수
+5. 계좌에서 사용할 현금 값을 선택하는 `_cash_value()` 함수
+6. 자동매매 실행을 담당하는 `SamsungAutoTrader` 클래스
+
+이 모듈의 목적은 특정 종목에 대해 현재가를 조회하고, 계좌 상태를 확인한 뒤, 매수 주문과 매도 주문을 순서대로 실행하는 자동매매 흐름을 구성하는 것입니다.
+
+---
+
+# 1. 전체 코드의 역할
+
+이 코드는 자동매매 프로그램의 중심 실행 로직입니다.
+
+앞선 모듈들이 각각 다음 역할을 담당했다면:
+
+* `MarketDataService`: 현재가 조회
+* `AccountService`: 계좌 잔고 및 보유 종목 조회
+* `OrderService`: 매수·매도 주문 실행
+
+이 코드는 위 세 서비스를 조합하여 하나의 자동매매 사이클을 실행합니다.
+
+자동매매 사이클의 주요 흐름은 다음과 같습니다.
+
+```text
+현재가 조회
+  ↓
+주문 전 계좌 상태 조회
+  ↓
+현재가 기준 매수 목표가 계산
+  ↓
+현재가 기준 매도 목표가 계산
+  ↓
+매수 지정가 주문 실행
+  ↓
+매수 후 계좌 상태 확인
+  ↓
+매수 체결 가능성 로그 기록
+  ↓
+매도 지정가 주문 실행
+  ↓
+매도 후 계좌 상태 확인
+  ↓
+매도 체결 가능성 로그 기록
+```
+
+정해진 거래 시작 시간 전이면 기다리고, 거래 종료 시간이 지나면 자동매매를 종료합니다.
+
+---
+
+# 2. import 처리
+
+```python
+try:
+    from .account import AccountService, AccountSnapshot
+    from .market_data import MarketDataService, Quote
+    from .orders import OrderService, OrderResult
+except ImportError:  # pragma: no cover
+    from account import AccountService, AccountSnapshot
+    from market_data import MarketDataService, Quote
+    from orders import OrderService, OrderResult
+```
+
+이 코드는 자동매매에 필요한 다른 모듈의 클래스들을 가져옵니다.
+
+먼저 상대 import를 시도합니다.
+
+```python
+from .account import AccountService, AccountSnapshot
+from .market_data import MarketDataService, Quote
+from .orders import OrderService, OrderResult
+```
+
+상대 import는 이 파일이 패키지 내부 모듈로 실행될 때 사용됩니다.
+
+상대 import가 실패하면 일반 import 방식으로 다시 시도합니다.
+
+```python
+from account import AccountService, AccountSnapshot
+from market_data import MarketDataService, Quote
+from orders import OrderService, OrderResult
+```
+
+| 클래스                 | 역할                           |
+| ------------------- | ---------------------------- |
+| `AccountService`    | 계좌 상태를 조회하는 서비스입니다.          |
+| `AccountSnapshot`   | 특정 시점의 계좌 상태를 담는 데이터 클래스입니다. |
+| `MarketDataService` | 시장 가격 정보를 조회하는 서비스입니다.       |
+| `Quote`             | 현재가 정보를 담는 데이터 클래스입니다.       |
+| `OrderService`      | 주문 요청을 실행하는 서비스입니다.          |
+| `OrderResult`       | 주문 결과를 담는 데이터 클래스입니다.        |
+
+---
+
+# 3. `TradingObservation` 데이터 클래스
+
+```python
+@dataclass(frozen=True)
+class TradingObservation:
+    quote: Quote
+    before: AccountSnapshot
+    after_buy: AccountSnapshot
+    after_sell: AccountSnapshot
+    buy_order: OrderResult
+    sell_order: OrderResult
+```
+
+`TradingObservation`은 한 번의 자동매매 사이클에서 발생한 주요 데이터를 묶어서 표현하는 데이터 클래스입니다.
+
+현재가 정보, 주문 전 계좌 상태, 매수 후 계좌 상태, 매도 후 계좌 상태, 매수 주문 결과, 매도 주문 결과를 하나로 저장합니다.
+
+| 필드           | 타입                | 설명                |
+| ------------ | ----------------- | ----------------- |
+| `quote`      | `Quote`           | 현재가 조회 결과입니다.     |
+| `before`     | `AccountSnapshot` | 주문 실행 전 계좌 상태입니다. |
+| `after_buy`  | `AccountSnapshot` | 매수 주문 후 계좌 상태입니다. |
+| `after_sell` | `AccountSnapshot` | 매도 주문 후 계좌 상태입니다. |
+| `buy_order`  | `OrderResult`     | 매수 주문 결과입니다.      |
+| `sell_order` | `OrderResult`     | 매도 주문 결과입니다.      |
+
+---
+
+# 4. `_round_to_tick()` 함수
+
+```python
+def _round_to_tick(price: int, side: str) -> int:
+    if price <= 0:
+        return 0
+
+    if price < 1000:
+        tick = 1
+    elif price < 5000:
+        tick = 5
+    elif price < 10000:
+        tick = 10
+    elif price < 50000:
+        tick = 50
+    elif price < 100000:
+        tick = 100
+    elif price < 500000:
+        tick = 500
+    else:
+        tick = 1000
+
+    if side == "buy":
+        return max(tick, (price // tick) * tick)
+    return max(tick, ((price + tick - 1) // tick) * tick)
+```
+
+`_round_to_tick()` 함수는 주문 가격을 호가 단위에 맞게 조정하는 보조 함수입니다.
+
+이 함수는 입력받은 가격을 해당 가격 구간의 호가 단위에 맞춰 조정합니다.
+
+| 매개변수    | 타입    | 설명                                      |
+| ------- | ----- | --------------------------------------- |
+| `price` | `int` | 조정할 주문 가격입니다.                           |
+| `side`  | `str` | 주문 방향입니다. `"buy"` 또는 `"sell"` 값이 사용됩니다. |
+
+반환값은 호가 단위에 맞게 조정된 정수 가격입니다.
+
+---
+
+## 4.3 가격이 0 이하인 경우
+
+```python
+if price <= 0:
+    return 0
+```
+
+이 경우 바로 `0`을 반환합니다.
+
+---
+
+## 4.4 호가 단위 결정
+
+```python
+if price < 1000:
+    tick = 1
+elif price < 5000:
+    tick = 5
+elif price < 10000:
+    tick = 10
+elif price < 50000:
+    tick = 50
+elif price < 100000:
+    tick = 100
+elif price < 500000:
+    tick = 500
+else:
+    tick = 1000
+```
+
+입력 가격에 따라 호가 단위를 결정합니다.
+
+| 가격 구간                   |  호가 단위 |
+| ----------------------- | -----: |
+| 1,000원 미만               |     1원 |
+| 1,000원 이상 5,000원 미만     |     5원 |
+| 5,000원 이상 10,000원 미만    |    10원 |
+| 10,000원 이상 50,000원 미만   |    50원 |
+| 50,000원 이상 100,000원 미만  |   100원 |
+| 100,000원 이상 500,000원 미만 |   500원 |
+| 500,000원 이상             | 1,000원 |
+
+---
+
+## 4.5 주문 가격 조정
+
+```python
+if side == "buy":
+    return max(tick, (price // tick) * tick)
+```
+
+주문 방향이 `"buy"`이면 가격을 호가 단위에 맞춰 아래쪽으로 내립니다.
+
+```python
+return max(tick, ((price + tick - 1) // tick) * tick)
+```
+
+주문 방향이 `"buy"`가 아니면 매도 주문으로 보고 가격을 호가 단위에 맞춰 위쪽으로 올립니다.
+
+---
+
+# 5. `_held_quantity()` 함수
+
+```python
+def _held_quantity(snapshot: AccountSnapshot, symbol: str) -> int:
+    for holding in snapshot.holdings:
+        if holding.symbol == symbol:
+            return holding.quantity
+    return 0
+```
+
+`_held_quantity()` 함수는 계좌 스냅샷에서 특정 종목의 보유 수량을 찾는 보조 함수입니다.
+
+| 매개변수       | 타입                | 설명           |
+| ---------- | ----------------- | ------------ |
+| `snapshot` | `AccountSnapshot` | 계좌 상태 정보입니다. |
+| `symbol`   | `str`             | 찾을 종목 코드입니다. |
+
+---
+
+## 5.3 보유 종목 순회
+
+```python
+for holding in snapshot.holdings:
+```
+
+계좌 스냅샷의 보유 종목 목록을 하나씩 확인합니다.
+
+각 항목은 `Holding` 객체입니다.
+
+---
+
+## 5.4 종목 코드 비교
+
+```python
+if holding.symbol == symbol:
+    return holding.quantity
+```
+
+보유 종목의 `symbol`이 찾고자 하는 `symbol`과 같으면 해당 보유 수량을 반환합니다.
+
+---
+
+## 5.5 보유하지 않은 경우
+
+```python
+return 0
+```
+
+보유 종목 목록을 모두 확인했는데 일치하는 종목이 없으면 `0`을 반환합니다.
+
+---
+
+# 6. `_cash_value()` 함수
+
+```python
+def _cash_value(snapshot: AccountSnapshot) -> int:
+    return snapshot.available_cash or snapshot.cash
+```
+
+`_cash_value()` 함수는 계좌 스냅샷에서 사용할 현금 값을 선택하는 보조 함수입니다.
+
+| 매개변수       | 타입                | 설명           |
+| ---------- | ----------------- | ------------ |
+| `snapshot` | `AccountSnapshot` | 계좌 상태 정보입니다. |
 
 
+1. `snapshot.available_cash`가 0이 아니면 이 값을 반환합니다.
+2. `snapshot.available_cash`가 0이면 `snapshot.cash`를 반환합니다.
 
+즉, 주문 가능 현금을 우선적으로 사용하고, 주문 가능 현금이 없을 때 현금 잔고를 대신 사용합니다.
 
+---
 
+# 7. `SamsungAutoTrader` 클래스
 
+```python
+class SamsungAutoTrader:
+```
 
+`SamsungAutoTrader`는 자동매매 실행을 담당하는 클래스입니다.
 
+이름은 `SamsungAutoTrader`이지만, 실제로는 생성자에서 전달받는 `symbol` 값을 기준으로 동작합니다.
 
+따라서 기본 설정에서 삼성전자 종목 코드가 들어가면 삼성전자 자동매매기로 동작하고, 다른 종목 코드가 들어가면 해당 종목을 대상으로 동일한 로직을 수행할 수 있습니다.
 
+---
 
+# 8. `SamsungAutoTrader.__init__()`
 
+```python
+def __init__(
+    self,
+    symbol: str,
+    market_code: str,
+    price_offset_krw: int,
+    order_quantity: int,
+    poll_interval_seconds: int,
+    verify_delay_seconds: int,
+    trading_start: dt_time,
+    trading_end: dt_time,
+    market_data: MarketDataService,
+    account: AccountService,
+    orders: OrderService,
+    logger,
+) -> None:
+```
 
+`SamsungAutoTrader` 객체를 초기화하는 생성자입니다.
 
+자동매매에 필요한 설정값과 서비스 객체들을 저장합니다.
 
+| 매개변수                    | 타입                  | 설명                        |
+| ----------------------- | ------------------- | ------------------------- |
+| `symbol`                | `str`               | 자동매매 대상 종목 코드입니다.         |
+| `market_code`           | `str`               | 시장 구분 코드입니다.              |
+| `price_offset_krw`      | `int`               | 현재가 기준 주문 가격 조정 폭입니다.     |
+| `order_quantity`        | `int`               | 한 번에 주문할 수량입니다.           |
+| `poll_interval_seconds` | `int`               | 자동매매 사이클 사이의 대기 시간입니다.    |
+| `verify_delay_seconds`  | `int`               | 주문 후 계좌 상태 확인 전 대기 시간입니다. |
+| `trading_start`         | `dt_time`           | 자동매매 시작 시간입니다.            |
+| `trading_end`           | `dt_time`           | 자동매매 종료 시간입니다.            |
+| `market_data`           | `MarketDataService` | 현재가 조회 서비스입니다.            |
+| `account`               | `AccountService`    | 계좌 조회 서비스입니다.             |
+| `orders`                | `OrderService`      | 주문 실행 서비스입니다.             |
+| `logger`                | 명시된 타입 없음           | 실행 상태와 오류를 기록하는 로거입니다.    |
 
+---
 
+# 9. `run()` 메서드
 
+```python
+def run(self) -> None:
+```
+
+`run()`은 자동매매 루프를 시작하는 메서드입니다.
+
+거래 시간대를 확인하고, 거래 시간이 시작되면 반복적으로 자동매매 사이클을 실행합니다.
+
+이 메서드는 자동매매 실행만 수행하고 값을 반환하지 않습니다.
+
+---
+
+## 9.2 거래 시간 설정 로그
+
+```python
+self.logger.info("trading window configured: %s - %s", self.trading_start, self.trading_end)
+```
+
+자동매매 시작 시 설정된 거래 가능 시간대를 로그로 기록합니다.
+
+---
+
+## 9.3 거래 시작 시간까지 대기
+
+```python
+self._wait_until_window()
+```
+
+현재 시간이 거래 시작 시간보다 이르면 거래 시작 시간까지 대기합니다.
+
+이미 거래 시간이 시작되었다면 바로 다음 단계로 넘어갑니다.
+
+거래 종료 시간이 지났다면 `_wait_until_window()` 내부에서 로그를 남기고 반환합니다.
+
+---
+
+## 9.4 거래 종료 여부 확인
+
+```python
+if datetime.now(self.timezone).time() >= self.trading_end:
+    self.logger.info("trading window ended")
+    return
+```
+
+거래 시작 대기 후 현재 시간이 거래 종료 시간 이상이면 자동매매를 실행하지 않고 종료합니다.
+
+---
+
+## 9.5 거래 시작 로그
+
+```python
+self.logger.info("trading window started")
+```
+
+거래 가능 시간이 시작되었음을 로그로 기록합니다.
+
+---
+
+## 9.6 자동매매 반복문
+
+```python
+while True:
+```
+
+거래 종료 시간이 될 때까지 반복적으로 자동매매 사이클을 실행합니다.
+
+반복문 안에서는 다음 작업을 수행합니다.
+
+1. 현재 시간 확인
+2. 거래 종료 시간 확인
+3. 거래 시작 전이면 대기
+4. 한 번의 자동매매 사이클 실행
+5. 다음 사이클까지 대기
+
+---
+
+## 9.7 현재 시간 확인
+
+```python
+now = datetime.now(self.timezone)
+```
+
+한국 시간 기준 현재 시각을 가져옵니다.
+
+---
+
+## 9.8 거래 종료 시간 확인
+
+```python
+if now.time() >= self.trading_end:
+    self.logger.info("trading window ended")
+    return
+```
+
+현재 시간이 거래 종료 시간 이상이면 자동매매 루프를 종료합니다.
+
+---
+
+## 9.9 거래 시작 전인 경우
+
+```python
+if now.time() < self.trading_start:
+    self._wait_until_window()
+    continue
+```
+
+현재 시간이 아직 거래 시작 전이면 거래 시작 시간까지 대기한 뒤 반복문 처음으로 돌아갑니다.
+
+---
+
+## 9.10 자동매매 사이클 실행
+
+```python
+try:
+    self._run_one_cycle()
+except Exception as exc:  # pragma: no cover - defensive runtime guard
+    self.logger.exception("cycle failed: %s", exc)
+```
+
+`_run_one_cycle()`을 호출하여 한 번의 자동매매 사이클을 실행합니다.
+
+실행 중 예외가 발생하면 프로그램 전체가 즉시 종료되지 않도록 예외를 잡고 로그를 남깁니다.
+
+`logger.exception()`은 오류 메시지와 함께 예외 traceback을 기록합니다.
+
+---
+
+## 9.11 다음 사이클까지 대기 시간 계산
+
+```python
+sleep_seconds = self._seconds_until_next_cycle()
+```
+
+다음 자동매매 사이클까지 몇 초를 기다릴지 계산합니다.
+
+이 값은 설정된 조회 주기와 거래 종료까지 남은 시간 중 더 작은 값입니다.
+
+---
+
+## 9.12 대기 시간이 0 이하인 경우
+
+```python
+if sleep_seconds <= 0:
+    continue
+```
+
+대기 시간이 0 이하이면 바로 다음 반복으로 넘어갑니다.
+
+---
+
+## 9.13 다음 조회 전 대기
+
+```python
+self.logger.info("sleeping before next poll: %ss", sleep_seconds)
+time.sleep(sleep_seconds)
+```
+
+다음 자동매매 사이클 전까지 대기합니다.
+
+대기 시간은 로그에 기록됩니다.
+
+---
+
+# 10. `_run_one_cycle()` 메서드
+
+```python
+def _run_one_cycle(self) -> None:
+```
+
+`_run_one_cycle()`은 한 번의 자동매매 사이클을 실행하는 내부 메서드입니다.
+
+현재가 조회, 주문 전 계좌 조회, 매수 주문, 매수 후 확인, 매도 주문, 매도 후 확인을 순서대로 수행합니다.
+
+---
+
+## 10.1 현재가 조회
+
+```python
+quote = self.market_data.get_current_price(self.symbol, self.market_code)
+```
+
+`MarketDataService`를 사용해 자동매매 대상 종목의 현재가를 조회합니다.
+
+조회 결과는 `Quote` 객체로 반환됩니다.
+
+---
+
+## 10.2 주문 전 계좌 상태 조회
+
+```python
+before = self.account.get_snapshot()
+```
+
+주문을 실행하기 전 계좌 상태를 조회합니다.
+
+이 값은 이후 매수 주문이 실제로 반영되었는지 판단하는 기준이 됩니다.
+
+---
+
+## 10.3 주문 전 계좌 상태 로그
+
+```python
+self._log_snapshot("holdings before order", before)
+```
+
+주문 전 계좌 상태를 로그로 기록합니다.
+
+대상 종목 보유 수량, 현금, 주문 가능 금액, 총 평가 금액이 기록됩니다.
+
+---
+
+## 10.4 매수 목표가 계산
+
+```python
+buy_price = _round_to_tick(max(1, quote.price - self.price_offset_krw), "buy")
+```
+
+현재가에서 `price_offset_krw`만큼 뺀 값을 기준으로 매수 목표가를 계산합니다.
+
+계산된 가격은 `_round_to_tick()`을 통해 호가 단위에 맞게 조정됩니다.
+
+`max(1, ...)`을 사용하기 때문에 가격이 1원보다 작아지지 않도록 합니다.
+
+매수 주문이므로 호가 단위에 맞춰 아래쪽으로 조정됩니다.
+
+---
+
+## 10.5 매도 목표가 계산
+
+```python
+sell_price = _round_to_tick(quote.price + self.price_offset_krw, "sell")
+```
+
+현재가에서 `price_offset_krw`만큼 더한 값을 기준으로 매도 목표가를 계산합니다.
+
+계산된 가격은 `_round_to_tick()`을 통해 호가 단위에 맞게 조정됩니다.
+
+매도 주문이므로 호가 단위에 맞춰 위쪽으로 조정됩니다.
+
+---
+
+## 10.6 매수 주문 요청 로그
+
+```python
+self.logger.info(
+    "buy order request: symbol=%s current=%s target=%s quantity=%s",
+    self.symbol,
+    f"{quote.price:,}",
+    f"{buy_price:,}",
+    self.order_quantity,
+)
+```
+
+매수 주문을 실행하기 전에 주문 정보를 로그로 기록합니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+* 종목 코드
+* 현재가
+* 매수 목표가
+* 주문 수량
+
+---
+
+## 10.7 매수 주문 실행
+
+```python
+buy_order = self.orders.place_limit_order("buy", self.symbol, self.order_quantity, buy_price)
+```
+
+`OrderService`를 사용해 매수 지정가 주문을 실행합니다.
+
+주문 방향은 `"buy"`이고, 대상 종목, 주문 수량, 매수 목표가가 함께 전달됩니다.
+
+반환값은 `OrderResult` 객체입니다.
+
+---
+
+## 10.8 매수 후 대기
+
+```python
+time.sleep(self.verify_delay_seconds)
+```
+
+매수 주문 후 바로 계좌를 조회하지 않고 일정 시간 기다립니다.
+
+주문 직후에는 API 응답이나 계좌 상태가 즉시 반영되지 않을 수 있기 때문에, `verify_delay_seconds`만큼 대기한 뒤 계좌를 다시 조회합니다.
+
+---
+
+## 10.9 매수 후 계좌 상태 조회
+
+```python
+after_buy = self.account.get_snapshot()
+```
+
+매수 주문 후 계좌 상태를 다시 조회합니다.
+
+---
+
+## 10.10 매수 후 계좌 상태 로그
+
+```python
+self._log_snapshot("holdings after buy", after_buy)
+```
+
+매수 주문 후 계좌 상태를 로그로 기록합니다.
+
+---
+
+## 10.11 매수 체결 가능성 확인 로그
+
+```python
+self._log_execution("buy", before, after_buy)
+```
+
+주문 전 계좌 상태와 매수 후 계좌 상태를 비교하여 매수 주문이 체결되었을 가능성이 있는지 로그로 기록합니다.
+
+---
+
+## 10.12 매도 주문 요청 로그
+
+```python
+self.logger.info(
+    "sell order request: symbol=%s current=%s target=%s quantity=%s",
+    self.symbol,
+    f"{quote.price:,}",
+    f"{sell_price:,}",
+    self.order_quantity,
+)
+```
+
+매도 주문을 실행하기 전에 주문 정보를 로그로 기록합니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+* 종목 코드
+* 현재가
+* 매도 목표가
+* 주문 수량
+
+---
+
+## 10.13 매도 주문 실행
+
+```python
+sell_order = self.orders.place_limit_order("sell", self.symbol, self.order_quantity, sell_price)
+```
+
+`OrderService`를 사용해 매도 지정가 주문을 실행합니다.
+
+주문 방향은 `"sell"`이고, 대상 종목, 주문 수량, 매도 목표가가 함께 전달됩니다.
+
+반환값은 `OrderResult` 객체입니다.
+
+---
+
+## 10.14 매도 후 대기
+
+```python
+time.sleep(self.verify_delay_seconds)
+```
+
+매도 주문 후 계좌 상태가 반영될 시간을 주기 위해 일정 시간 대기합니다.
+
+---
+
+## 10.15 매도 후 계좌 상태 조회
+
+```python
+after_sell = self.account.get_snapshot()
+```
+
+매도 주문 후 계좌 상태를 다시 조회합니다.
+
+---
+
+## 10.16 매도 후 계좌 상태 로그
+
+```python
+self._log_snapshot("holdings after sell", after_sell)
+```
+
+매도 주문 후 계좌 상태를 로그로 기록합니다.
+
+---
+
+## 10.17 매도 체결 가능성 확인 로그
+
+```python
+self._log_execution("sell", after_buy, after_sell)
+```
+
+매수 후 계좌 상태와 매도 후 계좌 상태를 비교하여 매도 주문이 체결되었을 가능성이 있는지 로그로 기록합니다.
+
+---
+
+## 10.18 `TradingObservation` 객체 생성
+
+```python
+TradingObservation(
+    quote=quote,
+    before=before,
+    after_buy=after_buy,
+    after_sell=after_sell,
+    buy_order=buy_order,
+    sell_order=sell_order,
+)
+```
+
+한 번의 자동매매 사이클에서 발생한 주요 데이터를 `TradingObservation` 객체로 묶습니다.
+
+다만 현재 코드에서는 이 객체를 변수에 저장하거나 반환하지 않습니다.
+
+따라서 객체는 생성되지만 이후 로직에서 사용되지는 않습니다.
+
+---
+
+# 11. `_log_snapshot()` 메서드
+
+```python
+def _log_snapshot(self, label: str, snapshot: AccountSnapshot) -> None:
+```
+
+`_log_snapshot()`은 계좌 상태를 로그로 기록하는 내부 메서드입니다.
+
+대상 종목의 보유 수량, 현금, 주문 가능 현금, 총 평가 금액을 기록합니다.
+
+| 매개변수       | 타입                | 설명                   |
+| ---------- | ----------------- | -------------------- |
+| `label`    | `str`             | 로그에 표시할 계좌 상태 설명입니다. |
+| `snapshot` | `AccountSnapshot` | 로그로 기록할 계좌 상태입니다.    |
+
+---
+
+## 11.2 대상 종목 보유 수량 확인
+
+```python
+target_qty = _held_quantity(snapshot, self.symbol)
+```
+
+계좌 스냅샷에서 자동매매 대상 종목의 보유 수량을 찾습니다.
+
+---
+
+## 11.3 계좌 상태 로그 기록
+
+```python
+self.logger.info(
+    "%s: symbol=%s qty=%s cash=%s available=%s total=%s",
+    label,
+    self.symbol,
+    target_qty,
+    f"{_cash_value(snapshot):,}",
+    f"{snapshot.available_cash:,}",
+    f"{snapshot.total_value:,}",
+)
+```
+
+계좌 상태를 로그로 기록합니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+* 로그 라벨
+* 종목 코드
+* 해당 종목 보유 수량
+* 현금 값
+* 주문 가능 현금
+* 총 평가 금액
+* 
+---
+
+# 12. `_log_execution()` 메서드
+
+```python
+def _log_execution(self, side: str, before: AccountSnapshot, after: AccountSnapshot) -> None:
+```
+
+`_log_execution()`은 주문 전후 계좌 상태를 비교하여 주문이 체결되었을 가능성을 로그로 기록하는 내부 메서드입니다.
+
+| 매개변수     | 타입                | 설명                                    |
+| -------- | ----------------- | ------------------------------------- |
+| `side`   | `str`             | 주문 방향입니다. `"buy"` 또는 `"sell"`이 사용됩니다. |
+| `before` | `AccountSnapshot` | 주문 전 계좌 상태입니다.                        |
+| `after`  | `AccountSnapshot` | 주문 후 계좌 상태입니다.                        |
+
+---
+
+## 12.2 주문 전후 보유 수량 확인
+
+```python
+before_qty = _held_quantity(before, self.symbol)
+after_qty = _held_quantity(after, self.symbol)
+```
+
+주문 전과 주문 후의 대상 종목 보유 수량을 각각 확인합니다.
+
+---
+
+## 12.3 주문 전후 현금 확인
+
+```python
+before_cash = _cash_value(before)
+after_cash = _cash_value(after)
+```
+
+주문 전과 주문 후의 현금 값을 각각 확인합니다.
+
+---
+
+## 12.4 매수 체결 가능성 판단
+
+```python
+if side == "buy":
+    executed = after_qty > before_qty or after_cash < before_cash
+```
+
+주문 방향이 매수이면 다음 중 하나라도 참일 때 체결 가능성이 있다고 판단합니다.
+
+1. 주문 후 보유 수량이 주문 전보다 증가했다.
+2. 주문 후 현금이 주문 전보다 감소했다.
+
+---
+
+## 12.5 매도 체결 가능성 판단
+
+```python
+else:
+    executed = after_qty < before_qty or after_cash > before_cash
+```
+
+주문 방향이 매수가 아니면 매도 주문으로 처리합니다.
+
+매도 주문에서는 다음 중 하나라도 참일 때 체결 가능성이 있다고 판단합니다.
+
+1. 주문 후 보유 수량이 주문 전보다 감소했다.
+2. 주문 후 현금이 주문 전보다 증가했다.
+
+---
+
+## 12.6 체결 가능성 로그 기록
+
+```python
+self.logger.info(
+    "%s execution check: %s (qty %s -> %s, cash %s -> %s)",
+    side,
+    "executed seems likely" if executed else "no clear execution signal",
+    before_qty,
+    after_qty,
+    f"{before_cash:,}",
+    f"{after_cash:,}",
+)
+```
+
+체결 가능성 판단 결과를 로그로 기록합니다.
+
+로그에는 다음 정보가 포함됩니다.
+
+* 주문 방향
+* 체결 가능성 판단 결과
+* 주문 전 보유 수량
+* 주문 후 보유 수량
+* 주문 전 현금
+* 주문 후 현금
+
+`executed`가 참이면 `"executed seems likely"`가 기록됩니다.
+
+`executed`가 거짓이면 `"no clear execution signal"`이 기록됩니다.
+
+---
+
+# 13. `_wait_until_window()` 메서드
+
+```python
+def _wait_until_window(self) -> None:
+```
+
+`_wait_until_window()`는 현재 시간이 거래 시작 시간 전이면 거래 시작 시간까지 기다리는 내부 메서드입니다.
+
+---
+
+## 13.1 현재 시간 확인
+
+```python
+now = datetime.now(self.timezone)
+```
+
+한국 시간 기준 현재 시각을 가져옵니다.
+
+---
+
+## 13.2 거래 종료 시간이 지난 경우
+
+```python
+if now.time() >= self.trading_end:
+    self.logger.info("trading window already ended")
+    return
+```
+
+현재 시간이 거래 종료 시간 이상이면 이미 거래 시간이 끝난 상태입니다.
+
+이 경우 대기하지 않고 바로 반환합니다.
+
+---
+
+## 13.3 이미 거래 시작 시간이 지난 경우
+
+```python
+if now.time() >= self.trading_start:
+    return
+```
+
+현재 시간이 거래 시작 시간 이상이면 이미 거래 가능한 시간입니다.
+
+이 경우 대기하지 않고 바로 반환합니다.
+
+---
+
+## 13.4 거래 시작 시각 생성
+
+```python
+target = datetime.combine(now.date(), self.trading_start, tzinfo=self.timezone)
+```
+
+오늘 날짜와 설정된 거래 시작 시간을 결합하여 거래 시작 시각을 만듭니다.
+
+---
+
+## 13.5 대기 시간 계산
+
+```python
+wait_seconds = max(0, int((target - now).total_seconds()))
+```
+
+거래 시작 시각까지 남은 초를 계산합니다.
+
+음수가 나오지 않도록 `max(0, ...)`을 사용합니다.
+
+---
+
+## 13.6 거래 시작 전 대기 로그
+
+```python
+self.logger.info("waiting for trading window start: %ss", wait_seconds)
+```
+
+거래 시작까지 몇 초를 기다리는지 로그로 기록합니다.
+
+---
+
+## 13.7 거래 시작 시간까지 대기
+
+```python
+time.sleep(wait_seconds)
+```
+
+계산된 시간만큼 프로그램 실행을 일시 중지합니다.
+
+---
+
+# 14. `_seconds_until_next_cycle()` 메서드
+
+```python
+def _seconds_until_next_cycle(self) -> int:
+```
+
+`_seconds_until_next_cycle()`은 다음 자동매매 사이클까지 기다릴 시간을 계산하는 내부 메서드입니다.
+
+---
+
+## 14.1 현재 시간 확인
+
+```python
+now = datetime.now(self.timezone)
+```
+
+한국 시간 기준 현재 시각을 가져옵니다.
+
+---
+
+## 14.2 거래 종료 시각 생성
+
+```python
+end_dt = datetime.combine(now.date(), self.trading_end, tzinfo=self.timezone)
+```
+
+오늘 날짜와 설정된 거래 종료 시간을 결합하여 거래 종료 시각을 만듭니다.
+
+---
+
+## 14.3 거래 종료까지 남은 시간 계산
+
+```python
+remaining = int((end_dt - now).total_seconds())
+```
+
+현재 시각부터 거래 종료 시각까지 남은 초를 계산합니다.
+
+---
+
+## 14.4 다음 사이클 대기 시간 반환
+
+```python
+return max(0, min(self.poll_interval_seconds, remaining))
+```
+
+다음 사이클까지 기다릴 시간을 반환합니다.
+
+계산 방식은 다음과 같습니다.
+
+1. `poll_interval_seconds`와 `remaining` 중 더 작은 값을 선택합니다.
+2. 선택된 값이 음수이면 `0`을 반환합니다.
+
+즉, 거래 종료 시간이 얼마 남지 않았다면 polling 간격 전체를 기다리지 않고 남은 시간까지만 기다리도록 합니다.
+
+---
+
+# 15. 실행 흐름 요약
+
+`run()`을 기준으로 전체 실행 흐름을 정리하면 다음과 같습니다.
+
+```text
+run()
+  ↓
+거래 시간 설정 로그 기록
+  ↓
+거래 시작 시간까지 대기
+  ↓
+거래 종료 시간이 지났으면 종료
+  ↓
+거래 시작 로그 기록
+  ↓
+반복문 시작
+  ↓
+현재 시간 확인
+  ↓
+거래 종료 시간이 지났으면 종료
+  ↓
+거래 시작 전이면 대기
+  ↓
+_run_one_cycle() 실행
+  ↓
+예외 발생 시 로그 기록
+  ↓
+다음 사이클까지 대기 시간 계산
+  ↓
+대기 시간이 있으면 sleep
+  ↓
+반복
+```
+
+---
+
+# 16. 한 번의 매매 사이클 요약
+
+`_run_one_cycle()`을 기준으로 한 번의 매매 사이클을 정리하면 다음과 같습니다.
+
+```text
+_run_one_cycle()
+  ↓
+현재가 조회
+  ↓
+주문 전 계좌 상태 조회
+  ↓
+주문 전 계좌 상태 로그 기록
+  ↓
+매수 목표가 계산
+  ↓
+매도 목표가 계산
+  ↓
+매수 주문 요청 로그 기록
+  ↓
+매수 지정가 주문 실행
+  ↓
+대기
+  ↓
+매수 후 계좌 상태 조회
+  ↓
+매수 후 계좌 상태 로그 기록
+  ↓
+매수 체결 가능성 로그 기록
+  ↓
+매도 주문 요청 로그 기록
+  ↓
+매도 지정가 주문 실행
+  ↓
+대기
+  ↓
+매도 후 계좌 상태 조회
+  ↓
+매도 후 계좌 상태 로그 기록
+  ↓
+매도 체결 가능성 로그 기록
+  ↓
+TradingObservation 객체 생성
+```
+
+---
+
+# main.py: 프로그램 실행
+
+이 문서는 자동매매 프로그램을 실행하기 위한 진입점 코드에 대한 설명입니다.
+
+이 코드는 명령행 인자를 처리하고, 환경변수 기반 설정을 불러온 뒤, 인증 관리자, API 클라이언트, 서비스 객체, 자동매매 실행 객체를 생성하여 프로그램을 시작합니다.
+
+이 모듈은 전체 자동매매 프로그램을 조립하고 실행하는 역할을 합니다.
+
+---
+
+# 1. 전체 코드의 역할
+
+이 코드는 자동매매 프로그램의 시작점입니다.
+
+앞선 모듈들이 각각 다음 역할을 담당했다면:
+
+* `Settings`: 환경변수에서 설정값을 읽어옴
+* `setup_logging`: 로깅 시스템 설정
+* `AuthManager`: KIS API 접근 토큰 관리
+* `KISApiClient`: KIS API 요청 처리
+* `MarketDataService`: 현재가 조회
+* `AccountService`: 계좌 조회
+* `OrderService`: 주문 실행
+* `SamsungAutoTrader`: 자동매매 루프 실행
+
+이 코드는 위 객체들을 순서대로 생성하고 연결합니다.
+
+전체 실행 흐름은 다음과 같습니다.
+
+```text
+main()
+  ↓
+명령행 인자 파서 생성
+  ↓
+명령행 인자 파싱
+  ↓
+환경변수에서 Settings 생성
+  ↓
+명령행 인자가 있으면 Settings 일부 값 덮어쓰기
+  ↓
+로거 생성
+  ↓
+AuthManager 생성
+  ↓
+KISApiClient 생성
+  ↓
+MarketDataService 생성
+  ↓
+AccountService 생성
+  ↓
+OrderService 생성
+  ↓
+SamsungAutoTrader 생성
+  ↓
+trader.run() 실행
+```
+
+---
+
+# 2. `build_parser()` 함수
+
+```python
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Samsung Electronics mock auto trader for KIS Open API")
+    parser.add_argument("--poll-seconds", type=int, help="override polling interval in seconds")
+    parser.add_argument("--offset-krw", type=int, help="override price offset around current price")
+    parser.add_argument("--quantity", type=int, help="override order quantity")
+    return parser
+```
+
+`build_parser()` 함수는 명령행 인자를 처리하기 위한 `argparse.ArgumentParser` 객체를 생성합니다.
+
+이 함수의 목적은 프로그램 실행 시 사용자가 일부 설정값을 명령행 옵션으로 덮어쓸 수 있게 하는 것입니다.
+
+---
+
+## 2.1 반환값
+
+```python
+-> argparse.ArgumentParser
+```
+
+반환값은 설정이 완료된 `ArgumentParser` 객체입니다.
+
+`main()` 함수에서는 이 객체를 사용해 실제 명령행 인자를 파싱합니다.
+
+---
+
+## 2.2 `ArgumentParser` 생성
+
+```python
+parser = argparse.ArgumentParser(description="Samsung Electronics mock auto trader for KIS Open API")
+```
+
+`argparse.ArgumentParser`는 Python 표준 라이브러리의 명령행 인자 처리 도구입니다.
+
+`description`은 프로그램 설명 문구입니다.
+
+이 설명은 사용자가 도움말을 확인할 때 표시됩니다.
+
+```text
+Samsung Electronics mock auto trader for KIS Open API
+```
+
+이 문구는 이 프로그램이 KIS Open API를 사용하는 삼성전자 모의 자동매매 프로그램이라는 의미를 가집니다.
+
+---
+
+## 2.3 `--poll-seconds` 인자
+
+```python
+parser.add_argument("--poll-seconds", type=int, help="override polling interval in seconds")
+```
+
+`--poll-seconds`는 자동매매 사이클 사이의 대기 시간을 명령행에서 지정하기 위한 옵션입니다.
+
+이 값은 정수로 처리됩니다.
+
+```python
+type=int
+```
+
+이 옵션이 지정되면 기존 `Settings` 객체의 `poll_interval_seconds` 값을 덮어씁니다.
+
+즉, 환경변수에서 설정한 조회 주기보다 명령행 인자가 더 우선합니다.
+
+---
+
+## 2.4 `--offset-krw` 인자
+
+```python
+parser.add_argument("--offset-krw", type=int, help="override price offset around current price")
+```
+
+`--offset-krw`는 현재가 기준 주문 가격 조정 폭을 명령행에서 지정하기 위한 옵션입니다.
+
+이 값도 정수로 처리됩니다.
+
+자동매매 로직에서는 현재가를 기준으로 다음 가격을 계산할 때 사용됩니다.
+
+* 매수 목표가: 현재가 - 가격 조정 폭
+* 매도 목표가: 현재가 + 가격 조정 폭
+
+이 옵션이 지정되면 기존 `Settings` 객체의 `price_offset_krw` 값을 덮어씁니다.
+
+---
+
+## 2.5 `--quantity` 인자
+
+```python
+parser.add_argument("--quantity", type=int, help="override order quantity")
+```
+
+`--quantity`는 한 번에 주문할 수량을 명령행에서 지정하기 위한 옵션입니다.
+
+이 값도 정수로 처리됩니다.
+
+이 옵션이 지정되면 기존 `Settings` 객체의 `order_quantity` 값을 덮어씁니다.
+
+---
+
+## 2.6 파서 반환
+
+```python
+return parser
+```
+
+모든 명령행 인자 설정이 끝난 뒤 `parser` 객체를 반환합니다.
+
+---
+
+# 3. `_replace_settings()` 함수
+
+```python
+def _replace_settings(settings: Settings, **changes) -> Settings:
+    values = settings.__dict__.copy()
+    values.update(changes)
+    return Settings(**values)
+```
+
+`_replace_settings()` 함수는 기존 `Settings` 객체의 일부 값만 변경한 새로운 `Settings` 객체를 만드는 보조 함수입니다.
+
+`Settings` 클래스가 `frozen=True`로 정의되어 있다면, 객체 생성 후 필드 값을 직접 수정할 수 없습니다.
+
+따라서 기존 설정값을 복사한 뒤, 변경할 값만 덮어써서 새 `Settings` 객체를 생성합니다.
+
+---
+
+## 3.1 매개변수
+
+| 매개변수        | 타입         | 설명           |
+| ----------- | ---------- | ------------ |
+| `settings`  | `Settings` | 기존 설정 객체입니다. |
+| `**changes` | 키워드 인자     | 변경할 설정값들입니다. |
+
+---
+
+## 3.2 반환값
+
+```python
+-> Settings
+```
+
+반환값은 일부 값이 변경된 새로운 `Settings` 객체입니다.
+
+기존 `settings` 객체를 직접 수정하지 않습니다.
+
+---
+
+## 3.3 기존 설정값 복사
+
+```python
+values = settings.__dict__.copy()
+```
+
+`settings.__dict__`는 `Settings` 객체가 가진 필드 값을 딕셔너리 형태로 담고 있습니다.
+
+`.copy()`를 호출하여 기존 설정값을 복사합니다.
+
+이렇게 하면 원래 `settings` 객체는 그대로 두고, 복사본만 수정할 수 있습니다.
+
+---
+
+## 3.4 변경값 반영
+
+```python
+values.update(changes)
+```
+
+`changes`에 담긴 값을 기존 설정값 복사본에 반영합니다.
+
+예를 들어 `changes`에 다음 값이 들어왔다면:
+
+```python
+poll_interval_seconds=60
+```
+
+복사된 설정값 중 `poll_interval_seconds` 값이 `60`으로 변경됩니다.
+
+---
+
+## 3.5 새 `Settings` 객체 생성
+
+```python
+return Settings(**values)
+```
+
+변경된 딕셔너리를 사용하여 새로운 `Settings` 객체를 생성합니다.
+
+`**values`는 딕셔너리의 키와 값을 `Settings` 생성자의 키워드 인자로 풀어서 전달한다는 의미입니다.
+
+---
+
+# 4. `main()` 함수
+
+```python
+def main() -> None:
+```
+
+`main()` 함수는 자동매매 프로그램 실행의 핵심 진입점입니다.
+
+명령행 인자를 처리하고, 설정을 불러오고, 필요한 객체들을 생성한 뒤, 자동매매를 시작합니다.
+
+---
+
+## 4.1 반환값
+
+```python
+-> None
+```
+
+`main()` 함수는 프로그램을 실행하는 역할만 하며 별도의 값을 반환하지 않습니다.
+
+---
+
+# 5. 명령행 인자 파싱
+
+```python
+args = build_parser().parse_args()
+```
+
+`build_parser()`로 명령행 인자 파서를 만든 뒤, `parse_args()`를 호출하여 실제 명령행 인자를 읽습니다.
+
+파싱 결과는 `args` 객체에 저장됩니다.
+
+이 객체에는 다음 속성이 들어갈 수 있습니다.
+
+* `args.poll_seconds`
+* `args.offset_krw`
+* `args.quantity`
+
+사용자가 해당 옵션을 지정하지 않았다면 각 값은 `None`입니다.
+
+---
+
+# 6. 환경변수 기반 설정 생성
+
+```python
+settings = Settings.from_env()
+```
+
+`Settings.from_env()`를 호출하여 환경변수에서 자동매매 설정값을 읽어옵니다.
+
+이 단계에서 다음 값들이 설정 객체로 정리됩니다.
+
+* 계좌번호
+* 계좌상품코드
+* 앱키
+* 앱시크릿
+* KIS API 서버 주소
+* 매매 대상 종목
+* 시장 코드
+* 주문 수량
+* 가격 조정 폭
+* polling 간격
+* 주문 확인 대기 시간
+* 요청 타임아웃
+* 재시도 설정
+* 거래 시작 시간
+* 거래 종료 시간
+* 토큰 캐시 파일 경로
+
+이 설정값은 이후 객체들을 생성할 때 사용됩니다.
+
+---
+
+# 7. 명령행 인자로 설정값 덮어쓰기
+
+환경변수에서 읽어온 설정값 중 일부는 명령행 인자로 덮어쓸 수 있습니다.
+
+이 코드에서는 세 가지 설정값을 덮어쓸 수 있습니다.
+
+1. polling 간격
+2. 가격 조정 폭
+3. 주문 수량
+
+---
+
+## 7.1 polling 간격 덮어쓰기
+
+```python
+if args.poll_seconds is not None:
+    settings = _replace_settings(settings, poll_interval_seconds=args.poll_seconds)
+```
+
+사용자가 `--poll-seconds` 값을 지정했다면, 기존 `settings`의 `poll_interval_seconds` 값을 변경한 새 `Settings` 객체를 만듭니다.
+
+기존 `Settings` 객체를 직접 수정하지 않고 `_replace_settings()`를 사용해 새 객체를 생성합니다.
+
+---
+
+## 7.2 가격 조정 폭 덮어쓰기
+
+```python
+if args.offset_krw is not None:
+    settings = _replace_settings(settings, price_offset_krw=args.offset_krw)
+```
+
+사용자가 `--offset-krw` 값을 지정했다면, 기존 `settings`의 `price_offset_krw` 값을 변경한 새 `Settings` 객체를 만듭니다.
+
+이 값은 자동매매에서 현재가 기준 매수·매도 목표가를 계산할 때 사용됩니다.
+
+---
+
+## 7.3 주문 수량 덮어쓰기
+
+```python
+if args.quantity is not None:
+    settings = _replace_settings(settings, order_quantity=args.quantity)
+```
+
+사용자가 `--quantity` 값을 지정했다면, 기존 `settings`의 `order_quantity` 값을 변경한 새 `Settings` 객체를 만듭니다.
+
+이 값은 매수 주문과 매도 주문의 수량으로 사용됩니다.
+
+---
+
+# 8. 로거 생성
+
+```python
+logger = setup_logging(logging.INFO)
+```
+
+`setup_logging()`을 호출하여 프로그램에서 사용할 로거를 생성합니다.
+
+로그 레벨은 `logging.INFO`로 설정됩니다.
+
+이 로거는 이후 모든 주요 객체에 전달되어 실행 상태, 주문 요청, 계좌 조회 결과, 오류 등을 기록하는 데 사용됩니다.
+
+---
+
+## 8.1 시작 로그 기록
+
+```python
+logger.info("starting Samsung auto trader for %s", settings.symbol)
+```
+
+자동매매 프로그램이 어떤 종목으로 시작되는지 로그로 기록합니다.
+
+`settings.symbol`은 자동매매 대상 종목 코드입니다.
+
+---
+
+# 9. `AuthManager` 생성
+
+```python
+auth_manager = AuthManager(
+    base_url=settings.base_url,
+    appkey=settings.appkey,
+    appsecret=settings.appsecret,
+    cache_path=settings.token_cache_path,
+    logger=logger,
+    timeout_seconds=settings.request_timeout_seconds,
+)
+```
+
+`AuthManager`는 KIS API 접근 토큰을 관리하는 객체입니다.
+
+이 객체는 토큰 캐시 파일을 확인하고, 필요한 경우 새 토큰을 발급받습니다.
+
+---
+
+## 9.1 전달되는 설정값
+
+| 인자                | 전달값                                | 설명                |
+| ----------------- | ---------------------------------- | ----------------- |
+| `base_url`        | `settings.base_url`                | KIS API 서버 주소입니다. |
+| `appkey`          | `settings.appkey`                  | KIS API 앱키입니다.    |
+| `appsecret`       | `settings.appsecret`               | KIS API 앱시크릿입니다.  |
+| `cache_path`      | `settings.token_cache_path`        | 토큰 캐시 파일 경로입니다.   |
+| `logger`          | `logger`                           | 로그 기록용 로거입니다.     |
+| `timeout_seconds` | `settings.request_timeout_seconds` | 토큰 요청 타임아웃 시간입니다. |
+
+---
+
+# 10. `KISApiClient` 생성
+
+```python
+client = KISApiClient(
+    base_url=settings.base_url,
+    appkey=settings.appkey,
+    appsecret=settings.appsecret,
+    auth_manager=auth_manager,
+    logger=logger,
+    timeout_seconds=settings.request_timeout_seconds,
+    retry_count=settings.retry_count,
+    retry_backoff_seconds=settings.retry_backoff_seconds,
+)
+```
+
+`KISApiClient`는 KIS API에 실제 HTTP 요청을 보내는 클라이언트입니다.
+
+인증 토큰은 직접 관리하지 않고, 앞에서 생성한 `auth_manager`를 통해 가져옵니다.
+
+---
+
+## 10.1 전달되는 설정값
+
+| 인자                      | 전달값                                | 설명                  |
+| ----------------------- | ---------------------------------- | ------------------- |
+| `base_url`              | `settings.base_url`                | KIS API 서버 주소입니다.   |
+| `appkey`                | `settings.appkey`                  | KIS API 앱키입니다.      |
+| `appsecret`             | `settings.appsecret`               | KIS API 앱시크릿입니다.    |
+| `auth_manager`          | `auth_manager`                     | 접근 토큰 관리자입니다.       |
+| `logger`                | `logger`                           | 로그 기록용 로거입니다.       |
+| `timeout_seconds`       | `settings.request_timeout_seconds` | API 요청 타임아웃입니다.     |
+| `retry_count`           | `settings.retry_count`             | API 요청 재시도 횟수입니다.   |
+| `retry_backoff_seconds` | `settings.retry_backoff_seconds`   | 재시도 전 대기 시간 기준값입니다. |
+
+---
+
+# 11. 서비스 객체 생성
+
+API 클라이언트를 기반으로 자동매매에서 사용할 세 가지 서비스 객체를 생성합니다.
+
+---
+
+## 11.1 시장 데이터 서비스 생성
+
+```python
+market_data = MarketDataService(client, logger)
+```
+
+`MarketDataService`는 현재가 조회를 담당합니다.
+
+이 객체는 `client`를 사용해 KIS API 현재가 조회 API를 호출합니다.
+
+---
+
+## 11.2 계좌 서비스 생성
+
+```python
+account = AccountService(client, logger, settings.account_number, settings.account_product_code)
+```
+
+`AccountService`는 계좌 잔고와 보유 종목 조회를 담당합니다.
+
+계좌 조회에는 계좌번호와 계좌상품코드가 필요하므로, `settings.account_number`와 `settings.account_product_code`를 함께 전달합니다.
+
+---
+
+## 11.3 주문 서비스 생성
+
+```python
+orders = OrderService(client, logger, settings.account_number, settings.account_product_code)
+```
+
+`OrderService`는 매수·매도 주문 실행을 담당합니다.
+
+주문 요청에도 계좌번호와 계좌상품코드가 필요하므로, 계좌 서비스와 동일하게 해당 값을 전달합니다.
+
+---
+
+# 12. `SamsungAutoTrader` 생성
+
+```python
+trader = SamsungAutoTrader(
+    symbol=settings.symbol,
+    market_code=settings.market_code,
+    price_offset_krw=settings.price_offset_krw,
+    order_quantity=settings.order_quantity,
+    poll_interval_seconds=settings.poll_interval_seconds,
+    verify_delay_seconds=settings.verify_delay_seconds,
+    trading_start=settings.trading_start,
+    trading_end=settings.trading_end,
+    market_data=market_data,
+    account=account,
+    orders=orders,
+    logger=logger,
+)
+```
+
+`SamsungAutoTrader`는 자동매매 루프를 실행하는 객체입니다.
+
+이 객체는 설정값과 서비스 객체들을 모두 전달받아 실제 자동매매 사이클을 수행합니다.
+
+---
+
+## 12.1 전달되는 설정값
+
+| 인자                      | 전달값                              | 설명                     |
+| ----------------------- | -------------------------------- | ---------------------- |
+| `symbol`                | `settings.symbol`                | 자동매매 대상 종목 코드입니다.      |
+| `market_code`           | `settings.market_code`           | 시장 구분 코드입니다.           |
+| `price_offset_krw`      | `settings.price_offset_krw`      | 현재가 기준 주문 가격 조정 폭입니다.  |
+| `order_quantity`        | `settings.order_quantity`        | 한 번에 주문할 수량입니다.        |
+| `poll_interval_seconds` | `settings.poll_interval_seconds` | 자동매매 사이클 사이의 대기 시간입니다. |
+| `verify_delay_seconds`  | `settings.verify_delay_seconds`  | 주문 후 계좌 확인 전 대기 시간입니다. |
+| `trading_start`         | `settings.trading_start`         | 자동매매 시작 시간입니다.         |
+| `trading_end`           | `settings.trading_end`           | 자동매매 종료 시간입니다.         |
+| `market_data`           | `market_data`                    | 현재가 조회 서비스입니다.         |
+| `account`               | `account`                        | 계좌 조회 서비스입니다.          |
+| `orders`                | `orders`                         | 주문 실행 서비스입니다.          |
+| `logger`                | `logger`                         | 로그 기록용 로거입니다.          |
+
+---
+
+# 13. 자동매매 실행
+
+```python
+trader.run()
+```
+
+`SamsungAutoTrader`의 `run()` 메서드를 호출하여 자동매매를 시작합니다.
+
+이 메서드는 거래 시작 시간과 종료 시간을 확인하면서, 거래 가능 시간 동안 자동매매 사이클을 반복합니다.
+
+자동매매 사이클 안에서는 다음 작업이 수행됩니다.
+
+1. 현재가 조회
+2. 계좌 상태 조회
+3. 매수 목표가 계산
+4. 매수 주문 실행
+5. 매수 후 계좌 상태 확인
+6. 매도 목표가 계산
+7. 매도 주문 실행
+8. 매도 후 계좌 상태 확인
+9. 다음 사이클까지 대기
+
+---
+
+# 14. 스크립트 직접 실행 처리
+
+```python
+if __name__ == "__main__":
+    main()
+```
+
+이 코드는 현재 파일이 직접 실행될 때만 `main()` 함수를 호출하도록 합니다.
+
+---
+
+## 14.1 `__name__`의 의미
+
+Python 파일은 직접 실행될 수도 있고, 다른 파일에서 import될 수도 있습니다.
+
+현재 파일이 직접 실행되면 `__name__` 값은 다음과 같습니다.
+
+```python
+"__main__"
+```
+
+반대로 다른 모듈에서 import되면 `__name__`에는 해당 모듈 이름이 들어갑니다.
+
+---
+
+## 14.2 직접 실행 시 `main()` 호출
+
+```python
+if __name__ == "__main__":
+    main()
+```
+
+이 조건문 덕분에 파일을 직접 실행할 때는 자동매매 프로그램이 시작됩니다.
+
+반면 다른 파일에서 이 모듈을 import할 때는 자동으로 실행되지 않습니다.
+
+즉, 이 코드는 실행 진입점과 import 가능한 모듈의 역할을 분리합니다.
+
+---
+
+# 15. 실행 흐름 요약
+
+`main()`을 기준으로 전체 실행 흐름을 정리하면 다음과 같습니다.
+
+```text
+main()
+  ↓
+명령행 인자 파싱
+  ↓
+Settings.from_env()로 기본 설정 생성
+  ↓
+--poll-seconds가 있으면 polling 간격 변경
+  ↓
+--offset-krw가 있으면 가격 조정 폭 변경
+  ↓
+--quantity가 있으면 주문 수량 변경
+  ↓
+setup_logging()으로 로거 생성
+  ↓
+시작 로그 기록
+  ↓
+AuthManager 생성
+  ↓
+KISApiClient 생성
+  ↓
+MarketDataService 생성
+  ↓
+AccountService 생성
+  ↓
+OrderService 생성
+  ↓
+SamsungAutoTrader 생성
+  ↓
+trader.run() 호출
+```
+
+---
+
+# 16. 각 구성 요소의 책임
+
+## 16.1 `build_parser()`의 책임
+
+`build_parser()`는 명령행 인자 파서를 생성합니다.
+
+주요 책임은 다음과 같습니다.
+
+1. 프로그램 설명을 가진 `ArgumentParser`를 생성한다.
+2. polling 간격 변경 옵션을 등록한다.
+3. 가격 조정 폭 변경 옵션을 등록한다.
+4. 주문 수량 변경 옵션을 등록한다.
+5. 완성된 파서를 반환한다.
+
+---
+
+## 16.2 `_replace_settings()`의 책임
+
+`_replace_settings()`는 불변 설정 객체의 일부 값을 바꾼 새 설정 객체를 생성합니다.
+
+주요 책임은 다음과 같습니다.
+
+1. 기존 `Settings` 객체의 필드 값을 복사한다.
+2. 변경할 값을 복사본에 반영한다.
+3. 변경된 값으로 새 `Settings` 객체를 생성한다.
+4. 기존 `Settings` 객체를 직접 수정하지 않는다.
+
+---
+
+## 16.3 `main()`의 책임
+
+`main()`은 자동매매 프로그램 전체를 시작합니다.
+
+주요 책임은 다음과 같습니다.
+
+1. 명령행 인자를 파싱한다.
+2. 환경변수에서 기본 설정을 읽는다.
+3. 명령행 인자가 있으면 설정값을 덮어쓴다.
+4. 로거를 생성한다.
+5. 인증 관리자를 생성한다.
+6. KIS API 클라이언트를 생성한다.
+7. 현재가 조회 서비스를 생성한다.
+8. 계좌 조회 서비스를 생성한다.
+9. 주문 서비스를 생성한다.
+10. 자동매매 실행 객체를 생성한다.
+11. 자동매매 루프를 실행한다.
+
+---
+
+# 17. 핵심 정리
+
+이 모듈은 자동매매 프로그램의 실행 진입점입니다.
+
+핵심 동작은 다음과 같습니다.
+
+1. `build_parser()`는 명령행 인자 파서를 만듭니다.
+2. 명령행 인자로 polling 간격, 가격 조정 폭, 주문 수량을 덮어쓸 수 있습니다.
+3. `Settings.from_env()`는 환경변수에서 기본 설정을 읽습니다.
+4. `_replace_settings()`는 기존 설정 객체를 직접 수정하지 않고 새 설정 객체를 만듭니다.
+5. `setup_logging()`은 로거를 설정합니다.
+6. `AuthManager`는 KIS API 접근 토큰을 관리합니다.
+7. `KISApiClient`는 KIS API 요청을 처리합니다.
+8. `MarketDataService`는 현재가 조회를 담당합니다.
+9. `AccountService`는 계좌 조회를 담당합니다.
+10. `OrderService`는 주문 실행을 담당합니다.
+11. `SamsungAutoTrader`는 자동매매 루프를 실행합니다.
+12. `if __name__ == "__main__": main()` 구조를 통해 파일을 직접 실행할 때만 프로그램이 시작됩니다.
+
+즉, 이 코드는 설정, 인증, API 클라이언트, 서비스 객체, 자동매매 실행 객체를 모두 연결하여 실제 자동매매 프로그램을 시작하는 역할을 합니다.
 
 
 
