@@ -54,8 +54,7 @@ trenv = ka.getTREnv()
 
 logging.info("모의투자 인증 완료")
 
-cash = get_available_cash()
-logging.info(f"주문가능현금: {cash:,}원")
+
 
 def get_action_and_qty(change_rate, current_price, holding_qty):
     """
@@ -138,6 +137,9 @@ def get_available_cash():
                 pass
 
     return 0
+
+cash = get_available_cash()
+logging.info(f"주문가능현금: {cash:,}원")
 
 def initial_buy():
     holding_qty = get_current_holding_qty()
