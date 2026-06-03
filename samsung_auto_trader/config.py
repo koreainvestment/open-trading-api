@@ -5,6 +5,9 @@ APP_SECRET = os.getenv("GH_APPSECRET")
 ACCOUNT = os.getenv("GH_ACCOUNT")
 
 SYMBOL = "005930"
+MARKET_DIV_CODE = "J"
+
+MOCK_BASE_URL = "https://openapivts.koreainvestment.com:29443"
 
 TRADING_START = "09:10"
 TRADING_END = "15:30"
@@ -12,4 +15,10 @@ TRADING_END = "15:30"
 POLL_INTERVAL_SECONDS = 60
 ORDER_PRICE_GAP = 1000
 
-MOCK_BASE_URL = "https://openapivts.koreainvestment.com:29443"
+TOKEN_CACHE_FILE = "token_cache.json"
+
+# 아래 TR ID는 공식 예제에서 반드시 확인 후 수정
+TR_ID_PRICE = "FHKST01010100"
+TR_ID_BUY_ORDER = "VTTC0802U"
+TR_ID_SELL_ORDER = "VTTC0801U"
+TR_ID_BALANCE = "VTTC8434R"
