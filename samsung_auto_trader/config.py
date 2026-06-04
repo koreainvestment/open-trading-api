@@ -1,8 +1,10 @@
+# 설정값들 한 곳에 모아두기
 import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
+#GitHub Codespaces Secret 또는 환경변수에서 API key, secret, 계좌번호를 불러온다.
 APP_KEY = os.getenv("GH_APPKEY")
 APP_SECRET = os.getenv("GH_APPSECRET")
 ACCOUNT = os.getenv("GH_ACCOUNT")
@@ -44,7 +46,7 @@ PATH_INQUIRE_PRICE = "/uapi/domestic-stock/v1/quotations/inquire-price"
 PATH_INQUIRE_BALANCE = "/uapi/domestic-stock/v1/trading/inquire-balance"
 PATH_ORDER_CASH = "/uapi/domestic-stock/v1/trading/order-cash"
 
-# TR IDs
+# TR IDs  # 한국투자 API가 어떤 요청인지 구분하는 코드
 TR_ID_PRICE = "FHKST01010100"
 TR_ID_BALANCE_DEMO = "VTTC8434R"
 TR_ID_BUY_DEMO = "VTTC0012U"
