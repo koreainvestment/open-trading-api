@@ -24,12 +24,12 @@ def main() -> None:
 
     # 현재가 조회 서비스 생성
     market_data = MarketDataService(client=client, logger=logger) 
-    #계좌 조회 서비스 생성
+    # 계좌 조회 서비스 생성
     account = AccountService(client=client, logger=logger)
-    주문 서비스 생성
+    # 주문 서비스 생성
     orders = OrderService(client=client, logger=logger)
 
-    자동매매 객체 생성
+    # 자동매매 객체 생성
     trader = SamsungAutoTrader(
         market_data=market_data,
         account=account,
@@ -37,7 +37,7 @@ def main() -> None:
         logger=logger,
     )
 
-    자동매매 실행
+    # 자동매매 실행
     trader.run()
 
 
