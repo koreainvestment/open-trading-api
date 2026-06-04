@@ -4,8 +4,9 @@ from config import TR_ID_BALANCE
 
 
 class AccountService:
-    def __init__(self, client):
+    def __init__(self, client, logger=None):
         self.client = client
+        self.logger = logger
 
     # 계좌 전체 잔고조회 API를 호출한다.
     def get_balance(self) -> dict[str, Any]:
