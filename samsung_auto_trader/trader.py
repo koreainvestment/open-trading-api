@@ -1,3 +1,17 @@
+# 자동매매 핵심 로직
+# 흐름
+# 1. 현재 시간이 거래시간인지 확인
+# 2. 현재가 조회
+# 3. 보유수량 조회
+# 4. 매도가능수량 조회
+# 5. 매수가 계산
+# 6. 매도가 계산
+# 7. 호가단위 보정
+# 8. 매수 주문
+# 9. 잔고 확인
+# 10. 매도가능수량이 있으면 매도 주문
+# 11. 반복
+
 import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -10,7 +24,8 @@ from config import (
     ORDER_PRICE_GAP,
 )
 
-KST = ZoneInfo("Asia/Seoul")
+# Codespaces는 UTC 시간이므로 한국 주식시장 기준인 KST로 시간 계산
+KST = ZoneInfo("Asia/Seoul") 
 
 
 class SamsungAutoTrader:
@@ -20,17 +35,20 @@ class SamsungAutoTrader:
         self.orders = orders
         self.logger = logger
 
+    # 현재 시간이 09:10~15:30 사이인지 확인
     def is_trading_window(self) -> bool:
         now = datetime.now(KST).time()
         start = datetime.strptime(TRADING_START, "%H:%M").time()
         end = datetime.strptime(TRADING_END, "%H:%M").time()
         return start <= now <= end
 
+    # 15:30 이후면 자동매매 종료
     def is_after_trading_end(self) -> bool:
         now = datetime.now(KST).time()
         end = datetime.strptime(TRADING_END, "%H:%M").time()
         return now > end
 
+    # 가격대별 호가단위를 반환
     def get_tick_size(self, price: int) -> int:
         if price < 2_000:
             return 1
@@ -46,12 +64,15 @@ class SamsungAutoTrader:
             return 500
         return 1_000
 
+    # 주문가격을 호가단위에 맞게 조정
     def adjust_price_to_tick(self, price: int, direction: str) -> int:
         tick = self.get_tick_size(price)
 
+        # 매수는 보수적으로 아래 호가로 내림.
         if direction == "buy":
             return price - (price % tick)
 
+        # 매도는 보수적으로 위 호가로 올림.
         if direction == "sell":
             remainder = price % tick
             if remainder == 0:
@@ -60,22 +81,27 @@ class SamsungAutoTrader:
 
         raise ValueError(f"Invalid direction: {direction}")
 
+    # 자동매매를 1회 실행
     def run_once(self) -> None:
         now_kst = datetime.now(KST)
         self.logger.info(f"Current KST time: {now_kst.strftime('%Y-%m-%d %H:%M:%S')}")
 
+        # 현재가 조회
         current_price = self.market_data.get_current_price(SYMBOL)
         self.logger.info(f"Current price of {SYMBOL}: {current_price}")
 
+        # 현재 보유수량 확인.
         before_quantity = self.account.get_holding_quantity(SYMBOL)
         sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
 
         self.logger.info(f"{SYMBOL} holding quantity before order: {before_quantity}")
         self.logger.info(f"{SYMBOL} sellable quantity before order: {sellable_quantity}")
 
+        # 현재가 기준 주문가격 계산.
         raw_buy_price = current_price - ORDER_PRICE_GAP
         raw_sell_price = current_price + ORDER_PRICE_GAP
 
+        # 호가단위에 맞게 보정.
         buy_price = self.adjust_price_to_tick(raw_buy_price, "buy")
         sell_price = self.adjust_price_to_tick(raw_sell_price, "sell")
 
@@ -92,6 +118,7 @@ class SamsungAutoTrader:
             f"Submitting buy order: symbol={SYMBOL}, quantity={quantity}, price={buy_price}"
         )
 
+        # 매수 주문 전송
         buy_result = self.orders.buy_limit(
             symbol=SYMBOL,
             quantity=quantity,
@@ -102,18 +129,22 @@ class SamsungAutoTrader:
 
         time.sleep(10)
 
+        # 매수 후 보유수량 확인.
         after_buy_quantity = self.account.get_holding_quantity(SYMBOL)
 
         self.logger.info(f"{SYMBOL} quantity after buy order: {after_buy_quantity}")
 
+        # 보유수량이 늘었으면 체결된 것으로 추정. 그대로면 아직 체결 확인 안 됨
         if after_buy_quantity > before_quantity:
             self.logger.info("Buy execution seems to have occurred.")
         else:
             self.logger.info("Buy execution not confirmed yet.")
 
+        # 매도가능수량 확인
         sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
         self.logger.info(f"{SYMBOL} sellable quantity before sell order: {sellable_quantity}")
 
+        # 매도가능수량이 0이면 매도 주문을 넣지 않음
         if sellable_quantity <= 0:
             self.logger.info("No sellable quantity. Skipping sell order.")
             return
@@ -124,6 +155,7 @@ class SamsungAutoTrader:
             f"Submitting sell order: symbol={SYMBOL}, quantity={sell_quantity}, price={sell_price}"
         )
 
+        # 매도가능수량이 있을 때만 매도 주문.
         sell_result = self.orders.sell_limit(
             symbol=SYMBOL,
             quantity=sell_quantity,
@@ -132,6 +164,7 @@ class SamsungAutoTrader:
 
         self.logger.info(f"Sell order result: {sell_result}")
 
+        # API 호출을 너무 자주 하지 않기 위해 대기
         time.sleep(10)
 
         after_sell_quantity = self.account.get_holding_quantity(SYMBOL)
@@ -143,6 +176,7 @@ class SamsungAutoTrader:
         else:
             self.logger.info("Sell execution not confirmed yet.")
 
+    # 거래시간 동안 run_once()를 반복 실행
     def run(self) -> None:
         self.logger.info("Samsung auto trader started.")
         self.logger.info(f"Trading window: {TRADING_START} ~ {TRADING_END} KST")
