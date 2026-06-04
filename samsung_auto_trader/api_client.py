@@ -1,3 +1,5 @@
+# 한국투자 API 요청을 공통 처리하는 파일
+
 import time
 from typing import Any, Dict, Optional
 
@@ -23,6 +25,7 @@ class KisApiClient:
         self.access_token = access_token
         self.logger = logger
 
+    # 한국투자 API 요청에 필요한 header 생성
     def _headers(self, tr_id: str, tr_cont: str = "") -> Dict[str, str]:
         return {
             "Content-Type": "application/json",
@@ -34,6 +37,7 @@ class KisApiClient:
             "custtype": "P",
         }
 
+    # GET 방식 API 요청을 보낸다. 현재가 조회, 잔고조회 등에 사용
     def get(
         self,
         path: str,
@@ -49,6 +53,7 @@ class KisApiClient:
             tr_cont=tr_cont,
         )
 
+    # POST 방식 API 요청을 보낸다. 매수 주문, 매도 주문 등에 사용
     def post(
         self,
         path: str,
@@ -64,6 +69,7 @@ class KisApiClient:
             tr_cont=tr_cont,
         )
 
+    # 요청 실패 시 몇 번 재시도한다. timeout, API error, 서버 지연 등을 처리한다.
     def _request(
         self,
         method: str,
