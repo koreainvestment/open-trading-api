@@ -1,6 +1,6 @@
 from typing import Any
 
-from config import TR_ID_BALANCE
+from config import CANO, ACNT_PRDT_CD, PATH_INQUIRE_BALANCE, TR_ID_BALANCE
 
 
 class AccountService:
@@ -11,8 +11,8 @@ class AccountService:
     # 계좌 전체 잔고조회 API를 호출한다.
     def get_balance(self) -> dict[str, Any]:
         params = {
-            "CANO": self.client.account_no,
-            "ACNT_PRDT_CD": self.client.account_product_code,
+            "CANO": CANO,
+            "ACNT_PRDT_CD": ACNT_PRDT_CD,
             "AFHR_FLPR_YN": "N",
             "OFL_YN": "",
             "INQR_DVSN": "02",
@@ -25,7 +25,7 @@ class AccountService:
         }
 
         result = self.client.get(
-            path="/uapi/domestic-stock/v1/trading/inquire-balance",
+            path=PATH_INQUIRE_BALANCE,
             tr_id=TR_ID_BALANCE,
             params=params,
         )
