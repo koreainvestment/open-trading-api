@@ -6,8 +6,8 @@ from config import (
     ACNT_PRDT_CD,
     CANO,
     PATH_ORDER_CASH,
-    TR_ID_BUY_DEMO,
-    TR_ID_SELL_DEMO,
+    TR_ID_BUY,
+    TR_ID_SELL,
 )
 
 
@@ -30,7 +30,7 @@ class OrderService:
 
         return self.client.post(
             path=PATH_ORDER_CASH,
-            tr_id=TR_ID_BUY_DEMO,
+            tr_id=TR_ID_BUY,
             data=body,
         )
 
@@ -48,7 +48,7 @@ class OrderService:
 
         return self.client.post(
             path=PATH_ORDER_CASH,
-            tr_id=TR_ID_SELL_DEMO,
+            tr_id=TR_ID_SELL,
             data=body,
         )
 
