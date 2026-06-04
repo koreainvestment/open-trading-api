@@ -1,3 +1,5 @@
+# 매수/매도 주문 전송
+
 from typing import Any, Dict
 
 from config import (
@@ -14,6 +16,7 @@ class OrderService:
         self.client = client
         self.logger = logger
 
+    # 지정가 매수 주문
     def buy_limit(self, symbol: str, quantity: int, price: int) -> Dict[str, Any]:
         body = self._build_order_body(
             symbol=symbol,
@@ -31,6 +34,7 @@ class OrderService:
             data=body,
         )
 
+    # 지정가 매도 주문
     def sell_limit(self, symbol: str, quantity: int, price: int) -> Dict[str, Any]:
         body = self._build_order_body(
             symbol=symbol,
@@ -56,12 +60,12 @@ class OrderService:
         is_sell: bool,
     ) -> Dict[str, str]:
         return {
-            "CANO": CANO,
-            "ACNT_PRDT_CD": ACNT_PRDT_CD,
-            "PDNO": symbol,
-            "ORD_DVSN": "00",
-            "ORD_QTY": str(quantity),
-            "ORD_UNPR": str(price),
+            "CANO": CANO, # 계좌번호 앞부분
+            "ACNT_PRDT_CD": ACNT_PRDT_CD, # 계좌상품코드
+            "PDNO": symbol, # 종목코드
+            "ORD_DVSN": "00", # 주문구분, 00은 지정가
+            "ORD_QTY": str(quantity), # 주문수량
+            "ORD_UNPR": str(price), # 주문가격
             "EXCG_ID_DVSN_CD": "KRX",
             "SLL_TYPE": "01" if is_sell else "",
             "CNDT_PRIC": "",
