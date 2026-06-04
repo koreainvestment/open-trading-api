@@ -7,6 +7,7 @@ class AccountService:
     def __init__(self, client):
         self.client = client
 
+    # 계좌 전체 잔고조회 API를 호출한다.
     def get_balance(self) -> dict[str, Any]:
         params = {
             "CANO": self.client.account_no,
@@ -30,6 +31,7 @@ class AccountService:
 
         return result
 
+    # 특정 종목의 보유수량 hldg_qty를 가져온다.
     def get_holding_quantity(self, symbol: str) -> int:
         balance = self.get_balance()
 
@@ -39,6 +41,7 @@ class AccountService:
 
         return 0
 
+    # 특정 종목의 매도가능수량 ord_psbl_qty를 가져온다.
     def get_sellable_quantity(self, symbol: str) -> int:
         balance = self.get_balance()
 
@@ -48,6 +51,7 @@ class AccountService:
 
         return 0
 
+    # 계좌의 현금 또는 주문가능금액을 가져온다.
     def get_available_cash(self) -> int:
         balance = self.get_balance()
         output2 = balance.get("output2", [])
