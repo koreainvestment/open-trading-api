@@ -1,2 +1,5 @@
-requests
-python-dotenv
+# 필요한 파이썬 패키지 목록
+# 설치를 위해 터미널에 pip install -r requirements.txt
+
+requests # API 호출용
+python-dotenv # .env 파일을 쓸 경우 환경변수 로드용
