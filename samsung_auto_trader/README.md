@@ -56,7 +56,7 @@ pip install -r requirements.txt<br>
 <img width="355" height="227" alt="image" src="https://github.com/user-attachments/assets/759895f4-0cab-4198-8232-5b197fa52c6f" /> <br>
 <br>
 <br>
-모의 투자 실행<br>
+자동 모의 투자 실행<br>
 python main.py<br>
 <br>
 <img width="1299" height="730" alt="image" src="https://github.com/user-attachments/assets/fc35d437-1159-459a-b062-23a5241e52b2" /><br>
