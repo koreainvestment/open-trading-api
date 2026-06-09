@@ -1155,8 +1155,8 @@
           "default_value": null,
           "description": "[필수] 급등/급락구분 (ex. 0:급락, 1:급등)"
         },
-        "mixn": {
-          "name": "mixn",
+        "minx": {
+          "name": "minx",
           "type": "str",
           "required": true,
           "default_value": null,

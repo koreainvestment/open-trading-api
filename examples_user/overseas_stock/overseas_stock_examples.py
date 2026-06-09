@@ -139,7 +139,7 @@ print(result2)
 # [해외주식] 시세분석 > 해외주식 신고/신저가[해외주식-042]
 ##############################################################################################
 
-result1, result2 = new_highlow(excd="AMS", mixn="0", vol_rang="0", gubn="1", gubn2="1")
+result1, result2 = new_highlow(excd="AMS", minx="0", vol_rang="0", gubn="1", gubn2="1")
 print(result1)
 print(result2)
 
@@ -195,7 +195,7 @@ print(df)
 # [해외주식] 시세분석 > 해외주식 가격급등락[해외주식-038]
 ##############################################################################################
 
-result1, result2 = price_fluct(excd="NAS", gubn="0", mixn="0", vol_rang="0")
+result1, result2 = price_fluct(excd="NAS", gubn="0", minx="0", vol_rang="0")
 print(result1)
 print(result2)
 
@@ -251,7 +251,7 @@ print(result2)
 # [해외주식] 시세분석 > 해외주식 거래량급증[해외주식-039]
 ##############################################################################################
 
-result1, result2 = volume_surge(excd="NYS", mixn="0", vol_rang="0")
+result1, result2 = volume_surge(excd="NYS", minx="0", vol_rang="0")
 print(result1)
 print(result2)
 

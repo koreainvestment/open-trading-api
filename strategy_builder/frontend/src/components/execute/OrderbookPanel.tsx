@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Loader2, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { getOrderbook, type OrderbookData } from "@/lib/api/market";
 import { cn } from "@/lib/utils";
+import { getWsBase } from "@/lib/api/client";
 
 interface OrderbookPanelProps {
   stockCode: string;
@@ -13,8 +14,6 @@ interface OrderbookPanelProps {
   /** Enable WebSocket real-time updates */
   realtime?: boolean;
 }
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export function OrderbookPanel({
   stockCode,
@@ -71,7 +70,7 @@ export function OrderbookPanel({
     }
 
     try {
-      const wsUrl = `${API_BASE.replace("http", "ws")}/api/market/ws/${stockCode}`;
+      const wsUrl = `${getWsBase()}/api/market/ws/${stockCode}`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
@@ -85,7 +84,12 @@ export function OrderbookPanel({
         try {
           const data = JSON.parse(event.data);
           if (data.type === "orderbook" && data.data) {
-            setOrderbook(data.data);
+            setOrderbook((prev) => ({
+              ...prev,
+              ...data.data,
+              // WS가 current_price를 보내지 않으면 기존 값 유지
+              current_price: data.data.current_price ?? prev?.current_price,
+            } as typeof prev));
           }
         } catch {
           // Ignore parse errors
