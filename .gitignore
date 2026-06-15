@@ -157,6 +157,15 @@ KIS/
 .master/
 .kis_token*.json
 
+# ===== Project safety =====
+.env
+token_cache.json
+*.log
+logs/
+outputs/*.csv
+__pycache__/
+.ipynb_checkpoints/
+
 # ===== Lean workspace =====
 .lean-workspace/
 
