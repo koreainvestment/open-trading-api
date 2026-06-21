@@ -25,15 +25,6 @@ class OrderService:
             is_sell=False,
         )
 
-        if self.logger:
-            self.logger.info("Buy order request: %s", body)
-
-        return self.client.post(
-            path=PATH_ORDER_CASH,
-            tr_id=TR_ID_BUY,
-            data=body,
-        )
-
     # 지정가 매도 주문
     def sell_limit(self, symbol: str, quantity: int, price: int) -> Dict[str, Any]:
         body = self._build_order_body(
@@ -43,14 +34,7 @@ class OrderService:
             is_sell=True,
         )
 
-        if self.logger:
-            self.logger.info("Sell order request: %s", body)
-
-        return self.client.post(
-            path=PATH_ORDER_CASH,
-            tr_id=TR_ID_SELL,
-            data=body,
-        )
+    
 
     def _build_order_body(
         self,
