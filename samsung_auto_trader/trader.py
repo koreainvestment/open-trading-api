@@ -84,18 +84,18 @@ class SamsungAutoTrader:
     # 자동매매를 1회 실행
     def run_once(self) -> None:
         now_kst = datetime.now(KST)
-        self.logger.info(f"Current KST time: {now_kst.strftime('%Y-%m-%d %H:%M:%S')}")
+        self.logger.info(f"현재 한국 시간: {now_kst.strftime('%Y-%m-%d %H:%M:%S')}")
 
         # 현재가 조회
         current_price = self.market_data.get_current_price(SYMBOL)
-        self.logger.info(f"Current price of {SYMBOL}: {current_price}")
+        self.logger.info(f"{SYMBOL}의 현재 가격: {current_price}")
 
         # 현재 보유수량 확인.
         before_quantity = self.account.get_holding_quantity(SYMBOL)
         sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
 
-        self.logger.info(f"{SYMBOL} holding quantity before order: {before_quantity}")
-        self.logger.info(f"{SYMBOL} sellable quantity before order: {sellable_quantity}")
+        self.logger.info(f"{SYMBOL} 주문 전 수량: {before_quantity}")
+        self.logger.info(f"{SYMBOL} 주문 전 판매 가능한 수량: {sellable_quantity}")
 
         # 현재가 기준 주문가격 계산.
         raw_buy_price = current_price - ORDER_PRICE_GAP
@@ -105,8 +105,8 @@ class SamsungAutoTrader:
         buy_price = self.adjust_price_to_tick(raw_buy_price, "buy")
         sell_price = self.adjust_price_to_tick(raw_sell_price, "sell")
 
-        self.logger.info(f"Raw buy price: {raw_buy_price}, adjusted buy price: {buy_price}")
-        self.logger.info(f"Raw sell price: {raw_sell_price}, adjusted sell price: {sell_price}")
+        self.logger.info(f"살 가격: {buy_price}")
+        self.logger.info(f"팔 가격: {sell_price}")
 
         quantity = 1
 
@@ -115,7 +115,7 @@ class SamsungAutoTrader:
             return
 
         self.logger.info(
-            f"Submitting buy order: symbol={SYMBOL}, quantity={quantity}, price={buy_price}"
+            f"매수 주문 제출: symbol={SYMBOL}, 수량={quantity}, 구매가격={buy_price}"
         )
 
         # 매수 주문 전송
@@ -132,27 +132,27 @@ class SamsungAutoTrader:
         # 매수 후 보유수량 확인.
         after_buy_quantity = self.account.get_holding_quantity(SYMBOL)
 
-        self.logger.info(f"{SYMBOL} quantity after buy order: {after_buy_quantity}")
+        self.logger.info(f"{SYMBOL} 주문 후 수량: {after_buy_quantity}")
 
         # 보유수량이 늘었으면 체결된 것으로 추정. 그대로면 아직 체결 확인 안 됨
         if after_buy_quantity > before_quantity:
-            self.logger.info("Buy execution seems to have occurred.")
+            self.logger.info("매수 주문이 체결되었습니다.")
         else:
-            self.logger.info("Buy execution not confirmed yet.")
+            self.logger.info("매수 주문이 미체결되었습니.")
 
         # 매도가능수량 확인
         sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
-        self.logger.info(f"{SYMBOL} sellable quantity before sell order: {sellable_quantity}")
+        self.logger.info(f"{SYMBOL} 주문 전 판매 가능한 수량: {sellable_quantity}")
 
         # 매도가능수량이 0이면 매도 주문을 넣지 않음
         if sellable_quantity <= 0:
-            self.logger.info("No sellable quantity. Skipping sell order.")
+            self.logger.info("매도가능수량이 없습니다.")
             return
 
         sell_quantity = min(1, sellable_quantity)
 
         self.logger.info(
-            f"Submitting sell order: symbol={SYMBOL}, quantity={sell_quantity}, price={sell_price}"
+            f"매도 주문을 제출합니다: symbol={SYMBOL}, 수량={sell_quantity}, 판매가격={sell_price}"
         )
 
         # 매도가능수량이 있을 때만 매도 주문.
@@ -162,19 +162,19 @@ class SamsungAutoTrader:
             price=sell_price,
         )
 
-        self.logger.info(f"Sell order result: {sell_result}")
+        self.logger.info(f"매도 주문 결과: {sell_result}")
 
         # API 호출을 너무 자주 하지 않기 위해 대기
         time.sleep(10)
 
         after_sell_quantity = self.account.get_holding_quantity(SYMBOL)
 
-        self.logger.info(f"{SYMBOL} quantity after sell order: {after_sell_quantity}")
+        self.logger.info(f"{SYMBOL} 매도주문 후 수량: {after_sell_quantity}")
 
         if after_sell_quantity < after_buy_quantity:
-            self.logger.info("Sell execution seems to have occurred.")
+            self.logger.info("매도 주문이 체결되었습니다.")
         else:
-            self.logger.info("Sell execution not confirmed yet.")
+            self.logger.info("매도 주문이 미체결되었습니다.")
 
     # 거래시간 동안 run_once()를 반복 실행
     def run(self) -> None:
@@ -183,10 +183,10 @@ class SamsungAutoTrader:
 
         while True:
             now_kst = datetime.now(KST)
-            self.logger.info(f"Current KST time: {now_kst.strftime('%Y-%m-%d %H:%M:%S')}")
+            self.logger.info(f"현재 한국 시간: {now_kst.strftime('%Y-%m-%d %H:%M:%S')}")
 
             if self.is_after_trading_end():
-                self.logger.info("Trading window ended. Stopping trader.")
+                self.logger.info("거래시간이 끝났습니다. trader를 멈춥니다.")
                 break
 
             if not self.is_trading_window():
