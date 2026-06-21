@@ -125,7 +125,7 @@ class SamsungAutoTrader:
             price=buy_price,
         )
 
-        self.logger.info(f"Buy order result: {buy_result}")
+        self.logger.info(f"매수 주문 결과: {buy_result}")
 
         time.sleep(10)
 
