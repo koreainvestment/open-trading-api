@@ -83,10 +83,10 @@ def get_access_token(logger=None) -> str:
     # API 호출 안 하고 토큰 재사용
     if cached:
         if logger:
-            logger.info("Reusing cached access token for today.")
+            logger.info("토큰을 재사용 합니다.")
         return cached
 
     if logger:
-        logger.info("No valid cached token. Issuing new access token.") 
+        logger.info("새로운 토큰을 발급합니다.") 
 
     return issue_new_token()
