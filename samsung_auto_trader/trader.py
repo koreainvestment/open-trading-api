@@ -89,6 +89,10 @@ class SamsungAutoTrader:
         current_price = self.market_data.get_current_price(SYMBOL)
         self.logger.info(f"{SYMBOL}의 현재 가격: {current_price}")
 
+        # 현재 잔고
+        available_cash = self.account.get_available_cash(SYMBOL)
+        self.logger.info(f"현재 잔고: {available_cash}")
+        
         # 현재 보유수량 확인.
         before_quantity = self.account.get_holding_quantity(SYMBOL)
         sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
@@ -128,6 +132,10 @@ class SamsungAutoTrader:
 
         time.sleep(10)
 
+        # 매수 후 잔고 확인
+        after_available_cash = self.account.get_available_cash(SYMBOL)
+        self.logger.info(f"주문 후 잔고: {after_available_cash}")
+        
         # 매수 후 보유수량 확인.
         after_buy_quantity = self.account.get_holding_quantity(SYMBOL)
 
