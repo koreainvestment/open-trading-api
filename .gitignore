@@ -175,4 +175,6 @@ backtester/examples/output/*.py
 # ===== Claude settings =====
 settings.local.json
 
-.serena/
+.serena/samsung_auto_trader/token_cache.json
+samsung_auto_trader/__pycache__/
+samsung_auto_trader/token_cache.json
