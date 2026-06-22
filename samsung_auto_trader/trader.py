@@ -149,7 +149,7 @@ class SamsungAutoTrader:
 
         # 매도가능수량 확인
         sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
-        self.logger.info(f"{SYMBOL} 주문 전 판매 가능한 수량: {sellable_quantity}")
+        self.logger.info(f"{SYMBOL} 주문 후 판매 가능한 수량: {sellable_quantity}")
 
         # 매도가능수량이 0이면 매도 주문을 넣지 않음
         if sellable_quantity <= 0:
