@@ -105,8 +105,8 @@ class SamsungAutoTrader:
         buy_price = self.adjust_price_to_tick(raw_buy_price, "buy")
         sell_price = self.adjust_price_to_tick(raw_sell_price, "sell")
 
-        self.logger.info(f"살 가격: {buy_price}")
-        self.logger.info(f"팔 가격: {sell_price}")
+        self.logger.info(f"매수 가격: {buy_price}")
+        self.logger.info(f"매도 가격: {sell_price}")
 
         quantity = 1
 
@@ -138,7 +138,7 @@ class SamsungAutoTrader:
         if after_buy_quantity > before_quantity:
             self.logger.info("매수 주문이 체결되었습니다.")
         else:
-            self.logger.info("매수 주문이 미체결되었습니.")
+            self.logger.info("매수 주문이 미체결되었습니다.")
 
         # 매도가능수량 확인
         sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
