@@ -200,4 +200,4 @@ python main.py
 
 <img src="https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/execution_log.png">
 
-<img src="https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/account.png" width="500">
+<img src="https://github.com/Kon9kongE2/open-trading-api/blob/presen/picture/account.jpeg" width="500">
