@@ -84,7 +84,6 @@ class SamsungAutoTrader:
     # 자동매매를 1회 실행
     def run_once(self) -> None:
         now_kst = datetime.now(KST)
-        self.logger.info(f"현재 한국 시간: {now_kst.strftime('%Y-%m-%d %H:%M:%S')}")
 
         # 현재가 조회
         current_price = self.market_data.get_current_price(SYMBOL)
