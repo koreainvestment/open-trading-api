@@ -32,8 +32,5 @@ class MarketDataService:
 
         price = int(str(price_text).replace(",", ""))
 
-        # Current price of 005930: 356500와 같은 로그 출력
-        if self.logger:
-            self.logger.info("Current price of %s: %s", symbol, price)
 
         return price
