@@ -25,8 +25,6 @@ class OrderService:
             is_sell=False,
         )
 
-        if self.logger:
-            self.logger.info(f"매수 주문 요청 body={body}")
 
         result = self.client.post(
             path=PATH_ORDER_CASH,
@@ -34,8 +32,6 @@ class OrderService:
             data=body,
         )
 
-        if self.logger:
-            self.logger.info(f"매수 주문 응답={result}")
 
         return result
 
@@ -48,17 +44,12 @@ class OrderService:
             is_sell=True,
         )
 
-        if self.logger:
-            self.logger.info(f"매도 주문 요청 body={body}")
 
         result = self.client.post(
             path=PATH_ORDER_CASH,
             tr_id=TR_ID_SELL,
             data=body,
         )
-
-        if self.logger:
-            self.logger.info(f"매도 주문 응답={result}")
 
         return result
 
