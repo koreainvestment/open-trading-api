@@ -108,9 +108,7 @@ class KisApiClient:
                 last_error = e
                 if self.logger:
                     self.logger.warning(
-                        "API request failed. method=%s path=%s attempt=%s error=%s",
-                        method,
-                        path,
+                        "API request failed. attempt=%s error=%s"
                         attempt,
                         e,
                     )
