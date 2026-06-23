@@ -6,7 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 #GitHub Codespaces Secret 또는 환경변수에서 API key, secret, 계좌번호를 불러온다.
 APP_KEY = "PSzJDY1n4UEorZOCtijH5BoKKSCldXsr25fU"
-APP_SECRET = esK0A1W5CZY3IrkBYkC0Bx2KJ/Lo3tcoFMH/QHuxAl7l8dHA5zcj/qDJa7+mSR43MiYE7u475e3ZAm5NyVxM6OqOadFutx3aHtyU0sctCqsdjjkzp2+bHDY4+0Yu2GZe8yn6KG4rGX40wkgE/5FK4AK70HFiiSHUveO8XNCX/7ThcA/oRno=
+APP_SECRET = "esK0A1W5CZY3IrkBYkC0Bx2KJ/Lo3tcoFMH/QHuxAl7l8dHA5zcj/qDJa7+mSR43MiYE7u475e3ZAm5NyVxM6OqOadFutx3aHtyU0sctCqsdjjkzp2+bHDY4+0Yu2GZe8yn6KG4rGX40wkgE/5FK4AK70HFiiSHUveO8XNCX/7ThcA/oRno="
 ACCOUNT = "5017750401"
 
 if not APP_KEY:
