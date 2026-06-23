@@ -5,9 +5,9 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 #GitHub Codespaces Secret 또는 환경변수에서 API key, secret, 계좌번호를 불러온다.
-APP_KEY = os.getenv("GH_APPKEY")
-APP_SECRET = os.getenv("GH_APPSECRET")
-ACCOUNT = os.getenv("GH_ACCOUNT")
+APP_KEY = "PSxNDkc6Qgca4tWSqMs62c95V2ZL9RS1KM6l"
+APP_SECRET = "YouBNhGZTFp/5lOj0w9BkQCMpod6tsn71ErFvnk6Wyfa7w+reBIEehY3i01o2TGQphxvSxJs9H+2iHql2YLPX+7bDWRJaCetuu8R5J2qtx85vIZqJ8ggNXid+wdaXSz04TEH+ivBjEzN539o8O1uAMk55BfvQ6CqKbRwLpSCPsC95MQyWg0="
+ACCOUNT = "5019455601"
 
 if not APP_KEY:
     raise RuntimeError("GH_APPKEY environment variable is missing.")
