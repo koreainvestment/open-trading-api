@@ -19,7 +19,7 @@ class AccountService:
             "UNPR_DVSN": "01",
             "FUND_STTL_ICLD_YN": "N",
             "FNCG_AMT_AUTO_RDPT_YN": "N",
-            "PRCS_DVSN": "01",
+            "PRCS_DVSN": "00",
             "CTX_AREA_FK100": "",
             "CTX_AREA_NK100": "",
         }
