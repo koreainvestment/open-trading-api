@@ -2,14 +2,14 @@
 # 흐름
 # 1. 현재 시간이 거래시간인지 확인
 # 2. 현재가 조회
-# 3. 보유수량 조회
-# 4. 매도가능수량 조회
-# 5. 매수가 계산
-# 6. 매도가 계산
-# 7. 호가단위 보정
-# 8. 매수 주문
-# 9. 잔고 확인
-# 10. 매도가능수량이 있으면 매도 주문
+# 3. 잔고/보유수량/매도가능수량을 한 번에 조회
+# 4. 매수가 계산
+# 5. 매도가 계산
+# 6. 호가단위 보정
+# 7. 매수 주문
+# 8. 매수 후 잔고/보유수량/매도가능수량 확인
+# 9. 매도가능수량이 있으면 매도 주문
+# 10. 매도 후 잔고/보유수량 확인
 # 11. 반복
 
 import time
@@ -22,14 +22,15 @@ from config import (
     TRADING_END,
     POLL_INTERVAL_SECONDS,
     ORDER_PRICE_GAP,
+    DEFAULT_ORDER_QTY,
 )
 
 # Codespaces는 UTC 시간이므로 한국 주식시장 기준인 KST로 시간 계산
-KST = ZoneInfo("Asia/Seoul") 
+KST = ZoneInfo("Asia/Seoul")
 
 
 class SamsungAutoTrader:
-    def __init__(self, market_data, account, orders, logger):
+    def __init__(self, market_data, account, orders, logger) -> None:
         self.market_data = market_data
         self.account = account
         self.orders = orders
@@ -68,11 +69,11 @@ class SamsungAutoTrader:
     def adjust_price_to_tick(self, price: int, direction: str) -> int:
         tick = self.get_tick_size(price)
 
-        # 매수는 보수적으로 아래 호가로 내림.
+        # 매수는 보수적으로 아래 호가로 내림
         if direction == "buy":
             return price - (price % tick)
 
-        # 매도는 보수적으로 위 호가로 올림.
+        # 매도는 보수적으로 위 호가로 올림
         if direction == "sell":
             remainder = price % tick
             if remainder == 0:
@@ -81,47 +82,45 @@ class SamsungAutoTrader:
 
         raise ValueError(f"Invalid direction: {direction}")
 
+    def log_snapshot(self, label: str, snapshot) -> None:
+        self.logger.info(f"{label} 잔고: {snapshot.available_cash}")
+        self.logger.info(f"{label} {SYMBOL} 보유수량: {snapshot.holding_quantity}")
+        self.logger.info(f"{label} {SYMBOL} 매도가능수량: {snapshot.sellable_quantity}")
+
     # 자동매매를 1회 실행
     def run_once(self) -> None:
-        now_kst = datetime.now(KST)
-
-        # 현재가 조회
+        # 1. 현재가 조회
         current_price = self.market_data.get_current_price(SYMBOL)
         self.logger.info(f"{SYMBOL}의 현재 가격: {current_price}")
 
-        # 현재 잔고
-        available_cash = self.account.get_available_cash()
-        self.logger.info(f"현재 잔고: {available_cash}")
-        
-        # 현재 보유수량 확인.
-        before_quantity = self.account.get_holding_quantity(SYMBOL)
-        sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
+        # 2. 주문 전 계좌 상태 조회
+        # 기존에는 현금, 보유수량, 매도가능수량 조회가 각각 API를 호출했다.
+        # 이제는 get_account_snapshot() 한 번으로 모두 가져온다.
+        before = self.account.get_account_snapshot(SYMBOL)
+        self.log_snapshot("주문 전", before)
 
-        self.logger.info(f"{SYMBOL} 주문 전 수량: {before_quantity}")
-        self.logger.info(f"{SYMBOL} 주문 전 판매 가능한 수량: {sellable_quantity}")
-
-        # 현재가 기준 주문가격 계산.
+        # 3. 현재가 기준 주문가격 계산
         raw_buy_price = current_price - ORDER_PRICE_GAP
         raw_sell_price = current_price + ORDER_PRICE_GAP
 
-        # 호가단위에 맞게 보정.
+        # 4. 호가단위에 맞게 보정
         buy_price = self.adjust_price_to_tick(raw_buy_price, "buy")
         sell_price = self.adjust_price_to_tick(raw_sell_price, "sell")
 
         self.logger.info(f"매수 가격: {buy_price}")
         self.logger.info(f"매도 가격: {sell_price}")
 
-        quantity = 1
+        quantity = DEFAULT_ORDER_QTY
 
         if buy_price <= 0:
             self.logger.warning(f"Invalid buy price: {buy_price}")
             return
 
+        # 5. 매수 주문 제출
         self.logger.info(
             f"매수 주문 제출: symbol={SYMBOL}, 수량={quantity}, 구매가격={buy_price}"
         )
 
-        # 매수 주문 전송
         buy_result = self.orders.buy_limit(
             symbol=SYMBOL,
             quantity=quantity,
@@ -130,39 +129,32 @@ class SamsungAutoTrader:
 
         self.logger.info(f"매수 주문 결과: {buy_result}")
 
+        # 주문 직후 바로 잔고를 조회하면 아직 반영되지 않을 수 있으므로 잠시 대기
         time.sleep(10)
 
-        # 매수 후 잔고 확인
-        after_available_cash = self.account.get_available_cash()
-        self.logger.info(f"주문 후 잔고: {after_available_cash}")
-        
-        # 매수 후 보유수량 확인.
-        after_buy_quantity = self.account.get_holding_quantity(SYMBOL)
+        # 6. 매수 후 계좌 상태 조회
+        # 여기서도 get_account_snapshot() 한 번만 호출한다.
+        after_buy = self.account.get_account_snapshot(SYMBOL)
+        self.log_snapshot("매수 주문 후", after_buy)
 
-        self.logger.info(f"{SYMBOL} 주문 후 수량: {after_buy_quantity}")
-
-        # 보유수량이 늘었으면 체결된 것으로 추정. 그대로면 아직 체결 확인 안 됨
-        if after_buy_quantity > before_quantity:
+        # 보유수량이 늘었으면 체결된 것으로 추정
+        if after_buy.holding_quantity > before.holding_quantity:
             self.logger.info("매수 주문이 체결되었습니다.")
         else:
             self.logger.info("매수 주문이 미체결되었습니다.")
 
-        # 매도가능수량 확인
-        sellable_quantity = self.account.get_sellable_quantity(SYMBOL)
-        self.logger.info(f"{SYMBOL} 주문 후 판매 가능한 수량: {sellable_quantity}")
-
-        # 매도가능수량이 0이면 매도 주문을 넣지 않음
-        if sellable_quantity <= 0:
+        # 7. 매도가능수량이 없으면 매도 주문을 넣지 않음
+        if after_buy.sellable_quantity <= 0:
             self.logger.info("매도가능수량이 없습니다.")
             return
 
-        sell_quantity = min(1, sellable_quantity)
+        sell_quantity = min(quantity, after_buy.sellable_quantity)
 
+        # 8. 매도 주문 제출
         self.logger.info(
-            f"매도 주문을 제출합니다: symbol={SYMBOL}, 수량={sell_quantity}, 판매가격={sell_price}"
+            f"매도 주문 제출: symbol={SYMBOL}, 수량={sell_quantity}, 판매가격={sell_price}"
         )
 
-        # 매도가능수량이 있을 때만 매도 주문.
         sell_result = self.orders.sell_limit(
             symbol=SYMBOL,
             quantity=sell_quantity,
@@ -171,14 +163,14 @@ class SamsungAutoTrader:
 
         self.logger.info(f"매도 주문 결과: {sell_result}")
 
-        # API 호출을 너무 자주 하지 않기 위해 대기
+        # 주문 직후 바로 잔고를 조회하면 아직 반영되지 않을 수 있으므로 잠시 대기
         time.sleep(10)
 
-        after_sell_quantity = self.account.get_holding_quantity(SYMBOL)
+        # 9. 매도 후 계좌 상태 조회
+        after_sell = self.account.get_account_snapshot(SYMBOL)
+        self.log_snapshot("매도 주문 후", after_sell)
 
-        self.logger.info(f"{SYMBOL} 매도주문 후 수량: {after_sell_quantity}")
-
-        if after_sell_quantity < after_buy_quantity:
+        if after_sell.holding_quantity < after_buy.holding_quantity:
             self.logger.info("매도 주문이 체결되었습니다.")
         else:
             self.logger.info("매도 주문이 미체결되었습니다.")
