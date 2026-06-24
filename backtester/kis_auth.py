@@ -624,7 +624,7 @@ open_map: dict = {}
 
 def add_open_map(
         name: str,
-        request: Callable[[str, str, ...], (dict, list[str])],
+        request: Callable[..., tuple[dict, list[str]]],
         data: str | list[str],
         kwargs: dict = None,
 ):
@@ -756,7 +756,7 @@ class KISWebSocket:
     async def send(
             cls,
             ws: websockets.ClientConnection,
-            request: Callable[[str, str, ...], (dict, list[str])],
+            request: Callable[..., tuple[dict, list[str]]],
             tr_type: str,
             data: str,
             kwargs: dict = None,
@@ -774,7 +774,7 @@ class KISWebSocket:
     async def send_multiple(
             self,
             ws: websockets.ClientConnection,
-            request: Callable[[str, str, ...], (dict, list[str])],
+            request: Callable[..., tuple[dict, list[str]]],
             tr_type: str,
             data: list | str,
             kwargs: dict = None,
@@ -790,7 +790,7 @@ class KISWebSocket:
     @classmethod
     def subscribe(
             cls,
-            request: Callable[[str, str, ...], (dict, list[str])],
+            request: Callable[..., tuple[dict, list[str]]],
             data: list | str,
             kwargs: dict = None,
     ):
@@ -799,7 +799,7 @@ class KISWebSocket:
     def unsubscribe(
             self,
             ws: websockets.ClientConnection,
-            request: Callable[[str, str, ...], (dict, list[str])],
+            request: Callable[..., tuple[dict, list[str]]],
             data: list | str,
     ):
         self.send_multiple(ws, request, "2", data)
