@@ -59,8 +59,10 @@ pip install -r requirements.txt<br>
 자동 모의 투자 실행<br>
 python main.py<br>
 <br>
-<img width="1299" height="730" alt="image" src="https://github.com/user-attachments/assets/fc35d437-1159-459a-b062-23a5241e52b2" /><br>
-<img width="1300" height="507" alt="image" src="https://github.com/user-attachments/assets/7bcf98a6-f952-4c79-aecc-411a3714e6c3" /><br>
+<img width="868" height="244" alt="image" src="https://github.com/user-attachments/assets/ab2d97e4-30fc-47d8-9174-a4d58eed5c38" /><br>
+
+<img width="911" height="222" alt="image" src="https://github.com/user-attachments/assets/5f894641-59b8-4618-a5fc-7997a056a335" /><br>
+
 <br>
 <br>
 09:10 ~ 15:30이 아닐 경우<br>
