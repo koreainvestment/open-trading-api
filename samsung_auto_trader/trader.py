@@ -21,7 +21,8 @@ from config import (
     TRADING_START,
     TRADING_END,
     POLL_INTERVAL_SECONDS,
-    ORDER_PRICE_GAP,
+    ORDER_PRICE_GAP_upper,
+    ORDER_PRICE_GAP_lower,
     DEFAULT_ORDER_QTY,
 )
 
@@ -100,8 +101,8 @@ class SamsungAutoTrader:
         self.log_snapshot("주문 전", before)
 
         # 3. 현재가 기준 주문가격 계산
-        raw_buy_price = current_price - ORDER_PRICE_GAP
-        raw_sell_price = current_price + ORDER_PRICE_GAP
+        raw_buy_price = current_price - ORDER_PRICE_GAP_lower
+        raw_sell_price = current_price + ORDER_PRICE_GAP_upper
 
         # 4. 호가단위에 맞게 보정
         buy_price = self.adjust_price_to_tick(raw_buy_price, "buy")
