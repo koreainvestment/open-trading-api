@@ -91,7 +91,7 @@ def register_prompts(mcp: FastMCP):
        try:
            # 예시: 주식현재가 조회 (실제 함수명은 GitHub 소스코드 확인 후 사용)
            result = [함수명 확인](
-               env_dv="real",
+               env_dv="demo",
                fid_cond_mrkt_div_code="J", 
                fid_input_iscd="{stock_code}"
            )

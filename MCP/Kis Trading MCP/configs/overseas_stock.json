@@ -19,7 +19,7 @@
           "fid_input_date_1": "20220401",
           "fid_input_date_2": "20220613",
           "fid_period_div_code": "D",
-          "env_dv": "real"
+          "env_dv": "demo"
         }
       }
     ]
@@ -57,7 +57,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "tr_cont": {
@@ -136,7 +136,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "dataframe1": {
@@ -336,7 +336,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "dataframe1": {
@@ -1441,7 +1441,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "dataframe1": {
@@ -1527,7 +1527,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real"
+          "default_value": "demo"
         },
         "dataframe1": {
           "name": "dataframe1",
@@ -1600,7 +1600,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real"
+          "default_value": "demo"
         },
         "tr_cont": {
           "name": "tr_cont",
@@ -1723,7 +1723,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real"
+          "default_value": "demo"
         },
         "tr_cont": {
           "name": "tr_cont",
@@ -1797,7 +1797,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "tr_cont": {
@@ -1968,7 +1968,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         }
       }
@@ -2054,7 +2054,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         }
       }

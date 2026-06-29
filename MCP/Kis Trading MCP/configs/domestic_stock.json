@@ -6,13 +6,13 @@
       {
         "api_type": "inquire_elw_price",
         "params": {
-          "env_dv": "real"
+          "env_dv": "demo"
         }
       },
       {
         "api_type": "inquire_price",
         "params": {
-          "env_dv": "real",
+          "env_dv": "demo",
           "fid_cond_mrkt_div_code": "J",
           "fid_input_iscd": "005930"
         }
@@ -45,8 +45,8 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
-          "description": "[추가] 실전모의구분 (real:실전, demo:모의, 기본값: 'real')"
+          "default_value": "demo",
+          "description": "[추가] 실전모의구분 (real:실전, demo:모의, 기본값: 'demo')"
         },
         "tr_cont": {
           "name": "tr_cont",
@@ -2300,8 +2300,8 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
-          "description": "[추가] 실전모의구분 (real:실전, demo:모의, 기본값: 'real')"
+          "default_value": "demo",
+          "description": "[추가] 실전모의구분 (real:실전, demo:모의, 기본값: 'demo')"
         },
         "dataframe1": {
           "name": "dataframe1",

@@ -8,7 +8,7 @@
         "params": {
           "fid_cond_mrkt_div_code": "F",
           "fid_input_iscd": "101W09",
-          "env_dv": "real"
+          "env_dv": "demo"
         }
       },
       {

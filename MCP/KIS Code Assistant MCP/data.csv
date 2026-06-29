@@ -4041,7 +4041,7 @@ fid_etc_cls_code (str): [필수] 기타 구분 코드","Tuple[pd.DataFrame, pd.D
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/inquire_time_itemchartprice/inquire_time_itemchartprice.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/inquire_time_itemchartprice/chk_inquire_time_itemchartprice.py
 domestic_stock,ELW시세,ELW 현재가 시세,inquire_elw_price,[국내주식] ELW시세 ELW 현재가 시세[v1_국내주식-014] ELW 현재가 시세 API를 호출하여 DataFrame으로 반환합니다.,"fid_cond_mrkt_div_code (str): FID 조건 시장 분류 코드 (예: 'W')
 fid_input_iscd (str): FID 입력 종목코드 (예: '000660')
-env_dv (str): [추가] 실전모의구분 (real:실전, demo:모의, 기본값: 'real')
+env_dv (str): [추가] 실전모의구분 (real:실전, demo:모의, 기본값: 'demo')
 tr_cont (str): 연속 거래 여부 (기본값: '')
 dataframe (Optional[pd.DataFrame]): 누적 데이터프레임 (기본값: None)
 depth (int): 현재 재귀 깊이 (기본값: 0)
@@ -4109,7 +4109,7 @@ fid_input_iscd (str): 0001 : 종합 0002 : 대형주 ... 포탈 (FAQ : 종목정
 fid_input_date_1 (str): 조회 시작일자 (ex. 20220501)
 fid_input_date_2 (str): 조회 종료일자 (ex. 20220530)
 fid_period_div_code (str): D:일봉 W:주봉, M:월봉, Y:년봉
-env_dv (str): [추가] 실전모의구분 (real:실전, demo:모의, 기본값: 'real')
+env_dv (str): [추가] 실전모의구분 (real:실전, demo:모의, 기본값: 'demo')
 dataframe1 (Optional[pd.DataFrame]): 누적 데이터프레임 (output1)
 dataframe2 (Optional[pd.DataFrame]): 누적 데이터프레임 (output2)
 tr_cont (str): 연속 거래 여부
