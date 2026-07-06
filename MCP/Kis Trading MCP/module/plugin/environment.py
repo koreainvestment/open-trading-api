@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 # Environment 설정을 위한 namedtuple 정의
 EnvironmentConfig = namedtuple('EnvironmentConfig', [
-    'mcp_type', 'mcp_host', 'mcp_port', 'mcp_path'
+    'mcp_type', 'mcp_host', 'mcp_port', 'mcp_path', 'mcp_access_token'
 ])
 
 
@@ -37,7 +37,8 @@ def setup_environment(env: str) -> EnvironmentConfig:
 
     return EnvironmentConfig(
         mcp_type=mcp_type,
-        mcp_host=os.getenv("MCP_HOST", "localhost"),
+        mcp_host=os.getenv("MCP_HOST", "127.0.0.1"),
         mcp_port=mcp_port,
-        mcp_path=os.getenv("MCP_PATH", "/mcp")
+        mcp_path=os.getenv("MCP_PATH", "/mcp"),
+        mcp_access_token=os.getenv("MCP_ACCESS_TOKEN"),
     )

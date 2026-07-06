@@ -47,6 +47,7 @@ ENV KIS_URL_REST=""
 ENV KIS_URL_REST_PAPER=""
 ENV KIS_URL_WS=""
 ENV KIS_URL_WS_PAPER=""
+ENV MCP_ACCESS_TOKEN=""
 
 # 시작 스크립트 생성
 RUN echo '#!/bin/bash\n\

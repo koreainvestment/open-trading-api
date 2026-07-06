@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, List
 import json
 import os
+import re
 import time
 import shutil
 import subprocess
@@ -11,6 +12,73 @@ from fastmcp import FastMCP, Context
 from module.plugin import MasterFileManager
 from module.plugin.database import Database
 import module.factory as factory
+
+ALLOWED_ENV_DV = frozenset({"real", "demo"})
+TRENV_EXPR_PATTERN = re.compile(r"^ka\._TRENV\.\w+$")
+FUNCTION_NAME_PATTERN = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
+
+# 사용자 입력을 포함하지 않는 고정 실행 템플릿 (function_name만 서버 검증 후 치환)
+API_RUNNER_TEMPLATE = """
+# MCP API runner (fixed template)
+if __name__ == "__main__":
+    import json
+    import sys
+    import kis_auth as ka
+
+    with open("params.json", "r", encoding="utf-8") as f:
+        _mcp_cfg = json.load(f)
+
+    _env_dv = _mcp_cfg["env_dv"]
+    if _env_dv == "demo":
+        ka.auth("vps")
+    else:
+        ka.auth()
+
+    _kwargs = {}
+    for _k, _v in _mcp_cfg["params"].items():
+        if isinstance(_v, dict) and "__expr__" in _v:
+            _expr = _v["__expr__"]
+            if not _expr.startswith("ka._TRENV."):
+                raise ValueError(f"Invalid expression: {_expr}")
+            _kwargs[_k] = eval(_expr)
+        else:
+            _kwargs[_k] = _v
+
+    try:
+        result = __FUNCTION_NAME__(**_kwargs)
+    except TypeError as e:
+        print(f"TypeError: {str(e)}")
+        print()
+        if _mcp_cfg.get("has_stock_name"):
+            print("해결방법: find_stock_code로 종목을 검색하세요.")
+        else:
+            print("해결방법: find_api_detail로 API 상세 정보를 확인하세요")
+        sys.exit(1)
+
+    try:
+        if isinstance(result, tuple):
+            output = {}
+            for i, item in enumerate(result):
+                if hasattr(item, 'to_dict'):
+                    output[f"output{i+1}"] = item.to_dict('records') if not item.empty else []
+                else:
+                    output[f"output{i+1}"] = str(item)
+
+            import json as _json
+            print(_json.dumps(output, ensure_ascii=False, indent=2))
+        elif hasattr(result, 'empty') and not result.empty:
+            print(result.to_json(orient='records', force_ascii=False))
+        elif isinstance(result, dict):
+            import json as _json
+            print(_json.dumps(result, ensure_ascii=False))
+        elif isinstance(result, (list, tuple)):
+            import json as _json
+            print(_json.dumps(result, ensure_ascii=False))
+        else:
+            print(str(result))
+    except Exception as e:
+        print(f"오류 발생: {str(e)}")
+"""
 
 
 class ApiExecutor:
@@ -25,6 +93,33 @@ class ApiExecutor:
 
         # temp 디렉토리 생성
         os.makedirs(self.temp_base_dir, exist_ok=True)
+
+    @staticmethod
+    def _validate_env_dv(env_dv: Any) -> str:
+        """env_dv 허용값 검증 (real/demo만 허용)"""
+        if env_dv not in ALLOWED_ENV_DV:
+            raise ValueError("env_dv must be either 'real' or 'demo'")
+        return env_dv
+
+    @staticmethod
+    def _validate_function_name(function_name: str) -> str:
+        """다운로드된 API 함수명 검증"""
+        if not FUNCTION_NAME_PATTERN.match(function_name):
+            raise ValueError(f"Invalid function name: {function_name}")
+        return function_name
+
+    @classmethod
+    def _serialize_params_for_runner(cls, params: Dict[str, Any]) -> Dict[str, Any]:
+        """params.json용 안전한 직렬화 (trenv 표현식은 화이트리스트)"""
+        serialized = {}
+        for key, value in params.items():
+            if isinstance(value, str) and value.startswith("ka._TRENV."):
+                if not TRENV_EXPR_PATTERN.match(value):
+                    raise ValueError(f"Invalid trenv expression: {value}")
+                serialized[key] = {"__expr__": value}
+            else:
+                serialized[key] = value
+        return serialized
 
     def _create_temp_directory(self, request_id: str) -> str:
         """임시 디렉토리 생성"""
@@ -115,7 +210,7 @@ class ApiExecutor:
             if not function_match:
                 raise Exception("코드에서 함수를 찾을 수 없습니다.")
 
-            function_name = function_match.group(1)
+            function_name = cls._validate_function_name(function_match.group(1))
             function_params = function_match.group(2)
 
             # 3. 함수가 max_depth 파라미터를 받는지 확인
@@ -169,75 +264,37 @@ class ApiExecutor:
                     print(f"[경고] {api_type} API에서 excg_id_dvsn_cd 파라미터가 필요합니다. (예: NASD, NYSE, KRX)")
                     # overseas_stock 등은 사용자가 명시적으로 제공해야 함
 
-            # 5. 함수 호출 코드 생성 (ka.auth() - env_dv에 따라 분기)
-            # env_dv 값에 따른 인증 방식 결정
-            env_dv = params.get('env_dv', 'demo')
-            if env_dv == 'demo':
-                auth_code = 'ka.auth("vps")'
+            # 5. env_dv 검증 (인증 분기 및 API 함수 인자용)
+            env_dv = cls._validate_env_dv(adjusted_params.pop("env_dv", "demo"))
+            if "env_dv" in function_params:
+                adjusted_params["env_dv"] = env_dv
+            if env_dv == "demo":
                 print(f"[모의투자] {function_name} 함수에 ka.auth(\"vps\") 적용")
             else:
-                auth_code = 'ka.auth()'
                 print(f"[실전투자] {function_name} 함수에 ka.auth() 적용")
-            
-            call_code = f"""
-# API 함수 호출
-if __name__ == "__main__":
-    try:
-        # 인증 초기화 (env_dv={env_dv})
-        {auth_code}
 
-        result = {function_name}({", ".join([f"{k}={v if isinstance(v, str) and v.startswith('ka._TRENV.') else repr(v)}" for k, v in adjusted_params.items()])})
-    except TypeError as e:
-        # 🚨 핵심 오류 메시지만 출력
-        print(f"❌ TypeError: {{str(e)}}")
-        print()
-        
-        # 파라미터 오류 처리 - LLM 교육용 메시지
-        if 'stock_name' in {repr(list(params.keys()))}:
-            print("💡 해결방법: find_stock_code로 종목을 검색하세요.")
-        else:
-            print("💡 해결방법: find_api_detail로 API 상세 정보를 확인하세요")
-        import sys
-        sys.exit(1)
-    
-    try:
-        
-        # N개 튜플 반환 함수 처리 (예: inquire_balance는 (df1, df2) 반환)
-        if isinstance(result, tuple):
-            # 튜플인 경우 - N개의 DataFrame 처리
-            output = {{}}
-            for i, item in enumerate(result):
-                if hasattr(item, 'to_dict'):
-                    # DataFrame인 경우
-                    output[f"output{{i+1}}"] = item.to_dict('records') if not item.empty else []
-                else:
-                    # 일반 객체인 경우
-                    output[f"output{{i+1}}"] = str(item)
-            
-            import json
-            print(json.dumps(output, ensure_ascii=False, indent=2))
-        elif hasattr(result, 'empty') and not result.empty:
-            print(result.to_json(orient='records', force_ascii=False))
-        elif isinstance(result, dict):
-            import json
-            print(json.dumps(result, ensure_ascii=False))
-        elif isinstance(result, (list, tuple)):
-            import json
-            print(json.dumps(result, ensure_ascii=False))
-        else:
-            print(str(result))
-    except Exception as e:
-        print(f"오류 발생: {{str(e)}}")
-"""
+            runner_code = API_RUNNER_TEMPLATE.replace("__FUNCTION_NAME__", function_name)
 
-            # 6. 코드 끝에 함수 호출 추가
-            modified_code = code + call_code
+            temp_dir = os.path.dirname(api_code_path)
+            params_payload = {
+                "env_dv": env_dv,
+                "params": cls._serialize_params_for_runner(adjusted_params),
+                "has_stock_name": "stock_name" in params,
+            }
+            params_json_path = os.path.join(temp_dir, "params.json")
+            with open(params_json_path, "w", encoding="utf-8") as f:
+                json.dump(params_payload, f, ensure_ascii=False)
+
+            # 6. 코드 끝에 고정 실행 템플릿 추가
+            modified_code = code + runner_code
 
             # 7. 수정된 코드 저장
             with open(api_code_path, 'w', encoding='utf-8') as f:
                 f.write(modified_code)
 
             return api_code_path
+        except ValueError:
+            raise
         except Exception as e:
             raise Exception(f"코드 수정 실패: {str(e)}")
 
@@ -298,6 +355,9 @@ if __name__ == "__main__":
 
         try:
             await ctx.info(f"API 실행 시작: {api_type}")
+
+            # env_dv 사전 검증 (코드 생성 전 차단)
+            self._validate_env_dv(params.get("env_dv", "demo"))
 
             # 1. 임시 디렉토리 생성
             # FastMCP Context에서 request_id 안전하게 가져오기

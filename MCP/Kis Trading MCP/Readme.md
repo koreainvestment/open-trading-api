@@ -117,11 +117,13 @@ docker build -t kis-trade-mcp:latest .
 
 #### **4단계: Docker 컨테이너 실행**
 
-**기본 실행:**
+**기본 실행 (로컬 전용 바인딩 권장):**
 ```bash
 docker run -d \
   --name kis-trade-mcp \
-  -p 3000:3000 \
+  -p 127.0.0.1:3000:3000 \
+  -e MCP_HOST=0.0.0.0 \
+  -e MCP_ACCESS_TOKEN="your_strong_random_token" \
   -e KIS_APP_KEY="your_app_key" \
   -e KIS_APP_SECRET="your_app_secret" \
   -e KIS_PAPER_APP_KEY="your_paper_app_key" \
@@ -176,7 +178,13 @@ Claude Desktop 설정 파일에 MCP 서버를 등록하세요.
   "mcpServers": {
     "kis-trade-mcp": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "http://localhost:3000/sse"]
+      "args": [
+        "-y",
+        "mcp-remote",
+        "http://localhost:3000/sse",
+        "--header",
+        "Authorization: Bearer your_strong_random_token"
+      ]
     }
   }
 }
@@ -188,11 +196,19 @@ Claude Desktop 설정 파일에 MCP 서버를 등록하세요.
   "mcpServers": {
     "kis-trade-mcp": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "http://localhost:3000/sse"]
+      "args": [
+        "-y",
+        "mcp-remote",
+        "http://localhost:3000/sse",
+        "--header",
+        "Authorization: Bearer your_strong_random_token"
+      ]
     }
   }
 }
 ```
+
+> `your_strong_random_token`은 Docker 실행 시 설정한 `MCP_ACCESS_TOKEN`과 동일한 값이어야 합니다.
 
 ## 💬 사용법 및 질문 예시
 
@@ -345,10 +361,13 @@ docker exec kis-trade-mcp ping github.com
 
 ## 🔒 보안 고려사항
 
+- **로컬 바인딩 우선**: 기본 `MCP_HOST`는 `127.0.0.1`입니다. Docker 사용 시에도 호스트에서는 `-p 127.0.0.1:3000:3000`으로 로컬 접근만 허용하세요.
+- **MCP 접근 토큰 필수**: SSE/HTTP 모드에서는 `MCP_ACCESS_TOKEN` 환경변수가 필수입니다. MCP 클라이언트는 `Authorization: Bearer <token>` 또는 `X-Api-Key` 헤더로 동일한 토큰을 전달해야 합니다.
+- **입력값 검증**: `env_dv`는 `real`/`demo`만 허용되며, API 실행 파라미터는 JSON(`params.json`)으로 전달되어 생성 코드에 사용자 입력이 직접 삽입되지 않습니다.
 - **컨테이너 격리**: 호스트 시스템과 완전히 분리된 환경에서 실행
 - **환경변수 보안**: 민감한 정보는 환경변수로 전달, 코드에 하드코딩 금지
 - **임시 파일 정리**: 각 API 호출 후 임시 파일 자동 삭제
-- **네트워크 격리**: 필요한 경우 Docker 네트워크를 통한 추가 격리
+- **네트워크 격리**: 외부 공개가 필요 없는 경우 stdio 모드 사용을 권장합니다
 
 ## ⚠️ 제한사항 및 성능
 
