@@ -29,7 +29,7 @@ class McpAuthMiddleware(Middleware):
         if get_http_headers is None:
             raise ToolError("Unauthorized: HTTP authentication is not available")
 
-        headers = get_http_headers() or {}
+        headers = get_http_headers(include={"authorization"}) or {}
         auth_header = headers.get("authorization") or headers.get("Authorization", "")
         api_key = headers.get("x-api-key") or headers.get("X-Api-Key", "")
 
