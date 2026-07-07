@@ -29,7 +29,8 @@ class McpAuthMiddleware(Middleware):
         if get_http_headers is None:
             raise ToolError("Unauthorized: HTTP authentication is not available")
 
-        headers = get_http_headers() or {}
+        # get_http_headers()는 기본적으로 authorization 헤더를 제거하므로 명시적으로 포함시킨다
+        headers = get_http_headers(include={"authorization"}) or {}
         auth_header = headers.get("authorization") or headers.get("Authorization", "")
         api_key = headers.get("x-api-key") or headers.get("X-Api-Key", "")
 
