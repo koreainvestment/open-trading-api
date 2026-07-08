@@ -1,0 +1,45 @@
+{
+  "name": "@koreainvestment/kis-code-assistant-mcp",
+  "version": "0.1.1",
+  "description": "한국투자증권 Open API 검색 및 샘플코드 MCP 서버",
+  "type": "module",
+  "bin": {
+    "kis-code-assistant-mcp": "./bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "src/prompts/prompt.py",
+    "src/utils/api_searcher.py",
+    "server.py",
+    "data.csv",
+    "pyproject.toml",
+    "uv.lock",
+    ".python-version",
+    "README.md",
+    "LICENSE",
+    "images/"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "korea-investment",
+    "kis",
+    "openapi",
+    "trading",
+    "stock"
+  ],
+  "license": "MIT",
+  "author": "Korea Investment & Securities",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koreainvestment/open-trading-api.git",
+    "directory": "MCP/KIS Code Assistant MCP"
+  },
+  "bugs": {
+    "url": "https://github.com/koreainvestment/open-trading-api/issues"
+  },
+  "homepage": "https://github.com/koreainvestment/open-trading-api/tree/main/MCP/KIS%20Code%20Assistant%20MCP#readme"
+}

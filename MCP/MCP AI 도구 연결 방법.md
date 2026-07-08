@@ -48,7 +48,28 @@ MCP는 Claude를 개발한 Anthropic에서 만든 프로토콜로, AI 모델이 
 
 GitHub 저장소: [open-trading-api/MCP/KIS Code Assistant MCP](https://github.com/koreainvestment/open-trading-api/tree/main/MCP/KIS%20Code%20Assistant%20MCP)
 
-#### 사전 준비: 저장소 클론 및 패키지 설치
+**요구사항:** Node.js 18+, Python 3.12+, [uv](https://docs.astral.sh/uv/)
+
+#### 1. Claude Desktop (NPM/npx, 권장)
+
+Claude Desktop 설정 파일(`claude_desktop_config.json`)에 아래 내용을 추가합니다.
+
+> 설정 파일 위치
+> - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+> - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "kis-code-assistant-mcp": {
+      "command": "npx",
+      "args": ["-y", "@koreainvestment/kis-code-assistant-mcp"]
+    }
+  }
+}
+```
+
+#### 1-1. Claude Desktop (소스 클론 + uv)
 
 ```bash
 # 1. 저장소 클론
@@ -58,14 +79,6 @@ cd open-trading-api/MCP/KIS\ Code\ Assistant\ MCP
 # 2. 패키지 설치
 uv sync
 ```
-
-#### 1. Claude Desktop
-
-Claude Desktop 설정 파일(`claude_desktop_config.json`)에 아래 내용을 추가합니다.
-
-> 설정 파일 위치
-> - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-> - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -116,7 +129,18 @@ Cursor MCP 설정:
 }
 ```
 
-> Cursor는 stdio 방식도 지원합니다. Claude Desktop과 동일한 설정을 사용할 수 있습니다.
+> Cursor는 stdio 방식도 지원합니다. Claude Desktop과 동일한 npx 설정을 사용할 수 있습니다.
+>
+> ```json
+> {
+>   "mcpServers": {
+>     "kis-code-assistant-mcp": {
+>       "command": "npx",
+>       "args": ["-y", "@koreainvestment/kis-code-assistant-mcp"]
+>     }
+>   }
+> }
+> ```
 
 KIS Code Assistant MCP가 연결되었는지 확인 (경로: `Settings` > `MCP Servers`)
     

@@ -192,7 +192,7 @@ version = "3.22.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
-    { name = "docstring-parser", marker = "python_full_version < '4.0'" },
+    { name = "docstring-parser", marker = "python_full_version < '4'" },
     { name = "rich" },
     { name = "rich-rst" },
 ]
@@ -389,6 +389,7 @@ dependencies = [
     { name = "fastmcp" },
     { name = "pandas" },
     { name = "requests" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
@@ -396,6 +397,7 @@ requires-dist = [
     { name = "fastmcp", specifier = ">=2.11.3" },
     { name = "pandas", specifier = ">=2.3.1" },
     { name = "requests", specifier = ">=2.32.4" },
+    { name = "uvicorn", specifier = ">=0.34.0" },
 ]
 
 [[package]]
