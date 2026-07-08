@@ -34,8 +34,32 @@
 - Python 3.12 이상
 - [uv](https://docs.astral.sh/uv/) 패키지 매니저
 - Docker (HTTP 서버 방식 사용 시)
+- Node.js 18 이상 (NPM/npx 방식 사용 시)
 
-### 📋 설치 단계
+### 🚀 빠른 설치 (NPM / npx, 권장)
+
+Claude Desktop, Cursor 등 MCP 클라이언트에서 아래 설정만 추가하면 됩니다. 별도 클론 없이 `npx`로 실행합니다.
+
+**요구사항:** Node.js 18+, Python 3.12+, [uv](https://docs.astral.sh/uv/)
+
+```json
+{
+  "mcpServers": {
+    "kis-code-assistant-mcp": {
+      "command": "npx",
+      "args": ["-y", "@koreainvestment/kis-code-assistant-mcp"]
+    }
+  }
+}
+```
+
+터미널에서 직접 실행해 보려면:
+
+```bash
+npx -y @koreainvestment/kis-code-assistant-mcp
+```
+
+### 📋 소스에서 설치 (개발자용)
 
 #### **1단계: 프로젝트 클론**
 ```bash
@@ -79,6 +103,21 @@ curl http://localhost:8081/health
 
 ### 📝 Claude Desktop
 
+**NPM/npx (권장):**
+
+```json
+{
+  "mcpServers": {
+    "kis-code-assistant-mcp": {
+      "command": "npx",
+      "args": ["-y", "@koreainvestment/kis-code-assistant-mcp"]
+    }
+  }
+}
+```
+
+**소스 클론 + uv:**
+
 Claude Desktop 설정 파일(`claude_desktop_config.json`)에 아래 내용을 추가합니다.
 
 **설정 파일 위치:**
@@ -118,7 +157,7 @@ Docker 컨테이너 또는 로컬 HTTP 서버를 실행한 뒤, Cursor의 `Setti
 }
 ```
 
-> Cursor는 stdio 방식도 지원합니다. Claude Desktop과 동일한 설정을 사용할 수 있습니다.
+> Cursor는 stdio 방식도 지원합니다. Claude Desktop과 동일한 npx 설정을 사용할 수 있습니다.
 
 ## 💬 사용법 및 질문 예시
 
@@ -175,6 +214,9 @@ user_request: "삼성전자 주가 확인하고 싶어"  # 자연어 요청 (필
 
 ```
 KIS Code Assistant MCP/
+├── package.json           # NPM 패키지 설정
+├── bin/
+│   └── cli.js             # npx 실행 진입점
 ├── server.py              # MCP 서버 메인 파일
 ├── data.csv               # API 정보 데이터
 ├── pyproject.toml         # 프로젝트 설정 및 의존성
@@ -196,7 +238,14 @@ KIS Code Assistant MCP/
 
 ### 일반적인 문제들
 
-**1. Claude Desktop에서 서버가 연결되지 않는 경우**
+**1. npx 실행 시 uv를 찾지 못하는 경우**
+```bash
+which uv    # macOS/Linux
+where uv    # Windows
+```
+- [uv 설치](https://docs.astral.sh/uv/getting-started/installation/) 후 PATH에 등록되어 있는지 확인
+
+**2. Claude Desktop에서 서버가 연결되지 않는 경우 (소스 설치)**
 ```bash
 # uv 경로 확인
 which uv    # macOS/Linux
@@ -206,7 +255,7 @@ where uv    # Windows
 - `--directory` 경로가 절대 경로인지 확인
 - Claude Desktop을 완전히 종료 후 재시작
 
-**2. Cursor에서 ECONNREFUSED 오류**
+**3. Cursor에서 ECONNREFUSED 오류**
 ```bash
 # 서버가 실행 중인지 확인
 curl http://localhost:8081/health
@@ -216,7 +265,7 @@ docker ps --filter "name=kis-code-assistant-mcp"
 ```
 - HTTP 서버 또는 Docker 컨테이너가 실행 중이어야 합니다
 
-**3. Docker 컨테이너가 시작되지 않는 경우**
+**4. Docker 컨테이너가 시작되지 않는 경우**
 ```bash
 # 로그 확인
 docker logs kis-code-assistant-mcp
@@ -225,7 +274,7 @@ docker logs kis-code-assistant-mcp
 docker restart kis-code-assistant-mcp
 ```
 
-**4. 검색 결과가 없는 경우**
+**5. 검색 결과가 없는 경우**
 - 다른 검색 키워드로 재시도
 - `function_name` → `api_name` → `subcategory` 순으로 검색 범위를 넓혀보세요
 - 최대 10개 결과만 반환됩니다 (`total_count`로 전체 개수 확인 가능)

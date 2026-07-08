@@ -3,6 +3,7 @@ import os
 import re
 import sys
 import time
+import tomllib
 
 import requests
 import uvicorn
@@ -18,15 +19,25 @@ from src.utils.api_searcher import APISearcher
 # MAIN CONFIGURATION AND SETUP
 # =============================================================================
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+def load_version() -> str:
+    pyproject_path = os.path.join(script_dir, "pyproject.toml")
+    with open(pyproject_path, "rb") as pyproject_file:
+        return tomllib.load(pyproject_file)["project"]["version"]
+
+
+VERSION = load_version()
+
 # Initialize main MCP instance
 mcp = FastMCP(
     name="kis-code-assistant-mcp",
-    version="0.1.0",
+    version=VERSION,
     instructions="If the user requests stock market information, trading-related code, or investment data, ALWAYS call this tool. Do NOT generate the code yourself without first checking the API search results."
 )
 
 # Data configuration
-script_dir = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(script_dir, "data.csv")
 
 # Initialize API searcher
@@ -776,7 +787,7 @@ def main():
         return JSONResponse({
             "status": "healthy",
             "server": "kis-code-assistant-mcp",
-            "version": "0.1.0",
+            "version": VERSION,
             "mcp_capabilities": ["tools", "resources", "prompts"]
         })
 
@@ -807,7 +818,7 @@ def main():
         return JSONResponse({
             "name": "한국투자 코딩가이드 MCP (KIS Code Assistant MCP)",
             "status": "running",
-            "version": "0.1.0"
+            "version": VERSION
         })
 
     # IMPORTANT: add CORS middleware for browser based clients
