@@ -228,7 +228,7 @@ def story_beginner():
     output_dir = Path("./examples/output/beginner_example")
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / "main.py"
-    output_file.write_text(code)
+    output_file.write_text(code, encoding="utf-8")
     
     print(f"\n✅ 전략 코드가 저장되었습니다!")
     print(f"   경로: {output_file}")
@@ -345,7 +345,7 @@ def story_compare():
             # 파일 저장
             strategy_dir = output_dir / strategy["id"]
             strategy_dir.mkdir(exist_ok=True)
-            (strategy_dir / "main.py").write_text(code)
+            (strategy_dir / "main.py").write_text(code, encoding="utf-8")
             
             results.append({
                 "name": strategy["name"],
@@ -461,7 +461,7 @@ def story_research():
         filename = f"sma_{params['fast_period']}_{params['slow_period']}"
         strategy_dir = output_dir / filename
         strategy_dir.mkdir(exist_ok=True)
-        (strategy_dir / "main.py").write_text(code)
+        (strategy_dir / "main.py").write_text(code, encoding="utf-8")
         
         print(f"\n  📁 {label}")
         print(f"     파라미터: short={params['fast_period']}, long={params['slow_period']}")

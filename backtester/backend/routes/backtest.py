@@ -592,8 +592,8 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
             strategy_id=definition.id,
             strategy_name=definition.name,
         )
-        # 코드 저장
-        project.main_py.write_text(code)
+        # 코드 저장 (utf-8 명시 — 한글 주석/문자열 cp949 default 방지)
+        project.main_py.write_text(code, encoding="utf-8")
 
         lean_run = LeanExecutor.run(project)
 
@@ -736,8 +736,8 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
             strategy_id=schema.id,
             strategy_name=schema.name,
         )
-        # 코드 저장
-        project.main_py.write_text(code)
+        # 코드 저장 (utf-8 명시 — 한글 주석/문자열 cp949 default 방지)
+        project.main_py.write_text(code, encoding="utf-8")
 
         lean_run = LeanExecutor.run(project)
 

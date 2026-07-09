@@ -210,16 +210,24 @@ class LeanExecutor:
         logger.debug(f"[Lean] 명령어: {' '.join(cmd)}")
         
         try:
+            # 근본 fix (2026-07-01): text=True 시 subprocess 가 locale-preferred
+            # encoding (Windows: cp949) 로 stdout decode 시도. Lean container 안
+            # python 은 UTF-8 로 출력 → cp949 decode fail → stdout=None →
+            # `result.stdout + result.stderr` = None + str = TypeError.
+            # encoding='utf-8' + errors='replace' 명시로 crash 방지.
             result = subprocess.run(
                 cmd,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=timeout,
             )
-            
+
             finished_at = datetime.now()
             duration = (finished_at - started_at).total_seconds()
-            stdout = result.stdout + result.stderr
+            # 방어 코드 — 극단 케이스 (subprocess kill 등) 에도 None+str 방지.
+            stdout = (result.stdout or "") + (result.stderr or "")
             
             if result.returncode != 0:
                 error_msg = f"Lean 백테스트 실패 (exit code: {result.returncode})\n{stdout[-2000:]}"

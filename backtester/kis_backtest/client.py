@@ -221,7 +221,7 @@ class LeanClient:
         )
         
         # 4. 전략 코드 저장
-        project.main_py.write_text(strategy_code)
+        project.main_py.write_text(strategy_code, encoding="utf-8")
         
         # 5. 데이터 변환 및 저장
         logger.info(f"[Backtest] 데이터 변환 중")
@@ -298,7 +298,7 @@ class LeanClient:
         )
         
         # 3. 알고리즘 코드 저장
-        project.main_py.write_text(algorithm_code)
+        project.main_py.write_text(algorithm_code, encoding="utf-8")
         
         # 4. 데이터 변환
         DataConverter.export(data, str(project.data_dir), market_type)
@@ -734,7 +734,7 @@ class LeanClient:
         )
 
         # 5. 전략 코드 저장
-        project.main_py.write_text(strategy_code)
+        project.main_py.write_text(strategy_code, encoding="utf-8")
 
         # 6. 데이터 변환 및 저장
         DataConverter.export(data_dict, str(project.data_dir), market_type)
