@@ -127,7 +127,7 @@ def order(
         sll_type = ""
     elif ord_dv == "sell":
         if ovrs_excg_cd in ("NASD", "NYSE", "AMEX"):
-            tr_id = "TTTT1006U"  # 미국 매도 주문 [모의투자] VTTT1006U
+            tr_id = "TTTT1006U"  # 미국 매도 주문 [모의투자] VTTT1001U
         elif ovrs_excg_cd == "SEHK":
             tr_id = "TTTS1001U"  # 홍콩 매도 주문 [모의투자] VTTS1001U
         elif ovrs_excg_cd == "SHAA":

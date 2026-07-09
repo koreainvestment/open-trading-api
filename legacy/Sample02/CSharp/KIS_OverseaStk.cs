@@ -77,7 +77,7 @@ namespace KIS_Oversea
                     case "NASD":
                     case "NYSE":
                     case "AMEX":
-                        trID = "TTTT1006U"; // 미국 매도 주문 [모의투자] VTTT1006U
+                        trID = "TTTT1006U"; // 미국 매도 주문 [모의투자] VTTT1001U
                         break;
                     case "SHEK":
                         trID = "TTTS1001U"; // 홍콩 매도 주문 [모의투자] VTTS1001U
