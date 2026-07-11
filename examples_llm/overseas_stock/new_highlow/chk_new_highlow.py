@@ -70,7 +70,7 @@ def main():
     # API 호출
     logging.info("API 호출")
     try:
-        result1, result2 = new_highlow(excd="AMS", mixn="0", vol_rang="0", gubn="1", gubn2="1")
+        result1, result2 = new_highlow(excd="AMS", minx="0", vol_rang="0", gubn="1", gubn2="1")
     except ValueError as e:
         logging.error("에러 발생: %s" % str(e))
         return

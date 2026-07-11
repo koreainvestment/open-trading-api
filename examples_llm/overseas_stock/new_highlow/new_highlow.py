@@ -25,7 +25,7 @@ API_URL = "/uapi/overseas-stock/v1/ranking/new-highlow"
 
 def new_highlow(
     excd: str,  # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
-    mixn: str,  # [필수] N분전콤보값 (ex. 0:1분전, 1:2분전, 2:3분전, 3:5분전, 4:10분전, 5:15분전, 6:20분전, 7:30분전, 8:60분전, 9:120분전)
+    minx: str,  # [필수] N분전콤보값 (ex. 0:1분전, 1:2분전, 2:3분전, 3:5분전, 4:10분전, 5:15분전, 6:20분전, 7:30분전, 8:60분전, 9:120분전)
     vol_rang: str,  # [필수] 거래량조건 (ex. 0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상)
     gubn: str,  # [필수] 신고/신저 구분 (ex. 0:신저,1:신고)
     gubn2: str,  # [필수] 일시돌파/돌파 구분 (ex. 0:일시돌파0, 1:돌파유지1)
@@ -43,7 +43,7 @@ def new_highlow(
     
     Args:
         excd (str): [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
-        mixn (str): [필수] N분전콤보값 (ex. 0:1분전, 1:2분전, 2:3분전, 3:5분전, 4:10분전, 5:15분전, 6:20분전, 7:30분전, 8:60분전, 9:120분전)
+        minx (str): [필수] N분전콤보값 (ex. 0:1분전, 1:2분전, 2:3분전, 3:5분전, 4:10분전, 5:15분전, 6:20분전, 7:30분전, 8:60분전, 9:120분전)
         vol_rang (str): [필수] 거래량조건 (ex. 0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상)
         gubn (str): [필수] 신고/신저 구분 (ex. 0:신저,1:신고)
         gubn2 (str): [필수] 일시돌파/돌파 구분 (ex. 0:일시돌파0, 1:돌파유지1)
@@ -59,7 +59,7 @@ def new_highlow(
         Tuple[pd.DataFrame, pd.DataFrame]: (output1 데이터, output2 데이터)
         
     Example:
-        >>> output1, output2 = new_highlow(excd="AMS", mixn="0", vol_rang="0", gubn="1", gubn2="1")
+        >>> output1, output2 = new_highlow(excd="AMS", minx="0", vol_rang="0", gubn="1", gubn2="1")
         >>> print(output1)
         >>> print(output2)
     """
@@ -67,8 +67,8 @@ def new_highlow(
     if excd == "":
         raise ValueError("excd is required (e.g. 'NYS')")
     
-    if mixn == "":
-        raise ValueError("mixn is required (e.g. '0')")
+    if minx == "":
+        raise ValueError("minx is required (e.g. '0')")
     
     if vol_rang == "":
         raise ValueError("vol_rang is required (e.g. '0')")
@@ -91,7 +91,7 @@ def new_highlow(
 
     params = {
         "EXCD": excd,
-        "MIXN": mixn,
+        "MINX": minx,
         "VOL_RANG": vol_rang,
         "GUBN": gubn,
         "GUBN2": gubn2,
@@ -124,7 +124,7 @@ def new_highlow(
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return new_highlow(
-                excd, mixn, vol_rang, gubn, gubn2, keyb, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
+                excd, minx, vol_rang, gubn, gubn2, keyb, auth, "N", dataframe1, dataframe2, depth + 1, max_depth
             )
         else:
             logging.info("Data fetch complete.")

@@ -1,0 +1,15 @@
+[project]
+name = "kis-code-assistant-mcp"
+version = "0.1.0"
+description = "한국투자증권 Open API 검색 및 샘플코드 MCP 서버"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Korea Investment & Securities" }]
+keywords = ["mcp", "kis", "openapi", "korea-investment", "trading"]
+dependencies = [
+    "fastmcp>=2.11.3",
+    "pandas>=2.3.1",
+    "requests>=2.32.4",
+    "uvicorn>=0.34.0",
+]

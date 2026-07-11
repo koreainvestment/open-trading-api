@@ -3,7 +3,7 @@ name = "kis-github"
 version = "1.0.0"
 description = "korea investment open api sample codes"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
     "pandas>=2.3.1",
     "pycryptodome>=3.23.0",

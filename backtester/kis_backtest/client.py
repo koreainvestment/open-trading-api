@@ -21,7 +21,7 @@ from .exceptions import ConfigurationError, AlgorithmError, DockerError
 from .lean.project_manager import LeanProject, LeanProjectManager
 from .lean.executor import LeanExecutor, LeanRun
 from .lean.data_converter import DataConverter
-from .lean.result_formatter import ResultFormatter, parse_lean_value
+from .lean.result_formatter import parse_lean_value
 
 # 전략 시스템
 from .strategies.registry import StrategyRegistry, STRATEGY_REGISTRY
@@ -490,14 +490,14 @@ class LeanClient:
             total_return=total_return,
             total_return_pct=total_return_pct,  # 정규화된 값 (0.16985)
             cagr=cagr,  # 정규화된 값
-            sharpe_ratio=parse_val(stats.get("Sharpe Ratio", 0)),
-            sortino_ratio=parse_val(stats.get("Sortino Ratio", 0)),
+            sharpe_ratio=parse_lean_value(stats.get("Sharpe Ratio", 0)),
+            sortino_ratio=parse_lean_value(stats.get("Sortino Ratio", 0)),
             max_drawdown=max_drawdown,  # 정규화된 값
-            total_trades=int(parse_val(stats.get("Total Orders", 0))),
+            total_trades=int(parse_lean_value(stats.get("Total Orders", 0))),
             win_rate=win_rate,  # 정규화된 값
-            profit_factor=parse_val(stats.get("Profit-Loss Ratio", 0)),
-            average_win=parse_val(stats.get("Average Win", 0)),
-            average_loss=parse_val(stats.get("Average Loss", 0)),
+            profit_factor=parse_lean_value(stats.get("Profit-Loss Ratio", 0)),
+            average_win=parse_lean_value(stats.get("Average Win", 0)),
+            average_loss=parse_lean_value(stats.get("Average Loss", 0)),
             equity_curve=equity_curve,  # pd.Series (또는 None)
             trades=lean_run.get_trades(),
             raw_statistics=stats,

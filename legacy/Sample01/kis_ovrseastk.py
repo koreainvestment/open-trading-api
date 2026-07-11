@@ -63,7 +63,7 @@ def get_overseas_order(ord_dv="", excg_cd="", itm_no="", qty=0, unpr=0, tr_cont=
             return None
     elif ord_dv == "sell":
         if excg_cd in ("NASD", "NYSE", "AMEX"):
-            tr_id = "TTTT1006U"  # 미국 매도 주문 [모의투자] VTTT1006U
+            tr_id = "TTTT1006U"  # 미국 매도 주문 [모의투자] VTTT1001U
         elif excg_cd == "SHEK":
             tr_id = "TTTS1001U"  # 홍콩 매도 주문 [모의투자] VTTS1001U
         elif excg_cd == "SHAA":

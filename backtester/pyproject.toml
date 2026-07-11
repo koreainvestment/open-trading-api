@@ -3,7 +3,7 @@ name = "kis-backtest"
 version = "1.0.0"
 description = "KIS Backtesting Library - QuantConnect Lean + KIS API Integration"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 dependencies = [
     "mcp[cli]>=1.9.4",

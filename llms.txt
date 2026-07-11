@@ -1,0 +1,30 @@
+# Korea Investment & Securities (KIS) Open Trading API
+
+> Python examples and utilities for the KIS Open API, supporting automated trading, market data retrieval, account management, and strategy development.
+
+## Core Modules & Examples
+
+- [Examples for LLMs](examples_llm/): Atomic, single-function API examples optimized for AI-assisted code generation, validation, and endpoint-level understanding. Includes the authentication module (`kis_auth.py`) used throughout the examples.
+- [Examples for Users](examples_user/): Comprehensive end-to-end workflow examples categorized by asset class (e.g., domestic stock, overseas stock, futures). Includes the authentication module (`kis_auth.py`) and demonstrates complete trading processes via multiple API calls.
+
+## Configuration & Guides
+
+- [Configuration Template](kis_devlp.yaml): Provides a template for environment configuration, including sandbox (paper trading) and production environments, API credentials (App Keys/Secrets) and account settings.
+- [System Requirements & Setup](README.md): Main documentation including setup instructions. The project requires Python 3.11+ and recommends using the `uv` package manager.
+
+## Advanced Strategy & Backtesting
+
+- [Strategy Builder](strategy_builder/): Visual, no-code strategy builder and execution engine that generates Python code and exports a `.kis.yaml` file for backtesting.
+- [Backtester](backtester/): QuantConnect Lean-based backtesting engine to validate `.kis.yaml` file-based strategies with historical market data and performance metrics.
+
+## Official KIS Resources
+
+- [KIS Developers Portal](https://apiportal.koreainvestment.com): Official developers portal for KIS Open API, including API documentation, authentication guides, developer tools, and support resources.
+- [KIS AI Extensions](https://github.com/koreainvestment/kis-ai-extensions): MCP-based plugins enabling natural language control of the KIS Open API pipeline (strategy design → backtesting → order execution) via Claude, Cursor, Codex and Gemini.
+
+## AI Agent Guidance
+
+- Prefer `examples_llm/` for endpoint-level implementations.
+- Use `examples_user/` for complete trading workflows.
+- Reuse existing authentication helpers when available.
+- Follow request structures and parameter conventions demonstrated in the examples.

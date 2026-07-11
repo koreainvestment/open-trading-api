@@ -2,7 +2,7 @@ from strategy.strategy_06_breakout_fail import BreakoutFailStrategy
 from strategy_core.registry import register
 
 
-@register('breakout_fail', '역추세')
+@register('breakout_fail', '손절')
 class BreakoutFailPreset:
     strategy_class = BreakoutFailStrategy
     name = '돌파 실패'

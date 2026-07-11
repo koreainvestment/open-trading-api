@@ -19,7 +19,7 @@
           "fid_input_date_1": "20220401",
           "fid_input_date_2": "20220613",
           "fid_period_div_code": "D",
-          "env_dv": "real"
+          "env_dv": "demo"
         }
       }
     ]
@@ -57,7 +57,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "tr_cont": {
@@ -136,7 +136,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "dataframe1": {
@@ -336,7 +336,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "dataframe1": {
@@ -1155,8 +1155,8 @@
           "default_value": null,
           "description": "[필수] 급등/급락구분 (ex. 0:급락, 1:급등)"
         },
-        "mixn": {
-          "name": "mixn",
+        "minx": {
+          "name": "minx",
           "type": "str",
           "required": true,
           "default_value": null,
@@ -1441,7 +1441,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "dataframe1": {
@@ -1527,7 +1527,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real"
+          "default_value": "demo"
         },
         "dataframe1": {
           "name": "dataframe1",
@@ -1600,7 +1600,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real"
+          "default_value": "demo"
         },
         "tr_cont": {
           "name": "tr_cont",
@@ -1723,7 +1723,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real"
+          "default_value": "demo"
         },
         "tr_cont": {
           "name": "tr_cont",
@@ -1797,7 +1797,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         },
         "tr_cont": {
@@ -1962,13 +1962,13 @@
           "type": "str",
           "required": true,
           "default_value": null,
-          "description": "[Header tr_id TTTT1002U(미국 매수 주문)] 00 : 지정가 32 : LOO(장개시지정가) 34 : LOC(장마감지정가) * 모의투자 VTTT1002U(미국 매수 주문)로는 00:지정가만 가능  [Header tr_id TTTT1006U(미국 매도 주문)] 00 : 지정가 31 : MOO(장개시시장가) 32 : LOO(장개시지정가) 33 : MOC(장마감시장가) 34 : LOC(장마감지정가) * 모의투자 VTTT1006U(미국 매도 주문)로는 00:지정가만 가능  [Header tr_id TTTS1001U(홍콩 매도 주문)] 00 : 지정가 50 : 단주지정가 * 모의투자 VTTS1001U(홍콩 매도 주문)로는 00:지정가만 가능  [그외 tr_id] 제거"
+          "description": "[Header tr_id TTTT1002U(미국 매수 주문)] 00 : 지정가 32 : LOO(장개시지정가) 34 : LOC(장마감지정가) * 모의투자 VTTT1002U(미국 매수 주문)로는 00:지정가만 가능  [Header tr_id TTTT1006U(미국 매도 주문)] 00 : 지정가 31 : MOO(장개시시장가) 32 : LOO(장개시지정가) 33 : MOC(장마감시장가) 34 : LOC(장마감지정가) * 모의투자 VTTT1001U(미국 매도 주문)로는 00:지정가만 가능  [Header tr_id TTTS1001U(홍콩 매도 주문)] 00 : 지정가 50 : 단주지정가 * 모의투자 VTTS1001U(홍콩 매도 주문)로는 00:지정가만 가능  [그외 tr_id] 제거"
         },
         "env_dv": {
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         }
       }
@@ -2054,7 +2054,7 @@
           "name": "env_dv",
           "type": "str",
           "required": true,
-          "default_value": "real",
+          "default_value": "demo",
           "description": "실전모의구분 (real:실전, demo:모의)"
         }
       }
