@@ -7,7 +7,6 @@ import {
   Briefcase,
   RefreshCw,
   Clock,
-  X,
   Wallet,
   Loader2,
 } from "lucide-react";

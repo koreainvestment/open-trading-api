@@ -46,6 +46,8 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* 수익/손실 색상 */

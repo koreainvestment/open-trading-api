@@ -103,36 +103,6 @@ export function SignalList({ signals, onSelect, selectedCode }: SignalListProps)
   );
 }
 
-interface StrengthBarProps {
-  strength: number;
-  action: SignalAction;
-}
-
-function StrengthBar({ strength, action }: StrengthBarProps) {
-  const percentage = Math.round(strength * 100);
-  const style = ACTION_STYLES[action];
-
-  return (
-    <div className="w-20">
-      <div className="flex items-center justify-end gap-1 mb-1">
-        <span className={`text-sm font-medium ${style.text}`}>{percentage}%</span>
-      </div>
-      <div className="h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all ${
-            action === "BUY"
-              ? "bg-red-500"
-              : action === "SELL"
-              ? "bg-blue-500"
-              : "bg-slate-400"
-          }`}
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
 function Activity({ className }: { className?: string }) {
   return (
     <svg

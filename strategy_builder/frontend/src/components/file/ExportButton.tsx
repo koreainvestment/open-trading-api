@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { Download, Loader2, FileText } from "lucide-react";
+import { useState, useCallback } from "react";
+import { Download, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ExportButtonProps {

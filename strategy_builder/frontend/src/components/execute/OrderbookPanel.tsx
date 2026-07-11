@@ -17,7 +17,6 @@ interface OrderbookPanelProps {
 
 export function OrderbookPanel({
   stockCode,
-  stockName,
   onPriceSelect,
   className,
   realtime = true,

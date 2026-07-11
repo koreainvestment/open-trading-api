@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   X,
   AlertTriangle,
@@ -47,21 +47,15 @@ export function OrderConfirmModal({
   const [limitPrice, setLimitPrice] = useState(signal.target_price || currentPrice);
   const [showOrderbook, setShowOrderbook] = useState(true);
 
-  // Update limit price when current price loads (if no target_price)
-  useEffect(() => {
-    if (!signal.target_price && currentPrice > 0) {
-      setLimitPrice(currentPrice);
-    }
-  }, [currentPrice, signal.target_price]);
-
+  const effectiveLimitPrice = limitPrice || currentPrice;
   const action: OrderAction = signal.action === "BUY" ? "BUY" : "SELL";
-  const price = orderType === "market" ? currentPrice : limitPrice;
+  const price = orderType === "market" ? currentPrice : effectiveLimitPrice;
   const estimatedAmount = price * quantity;
   const isBuy = action === "BUY";
 
   // Max quantity: buyable amount for BUY, holding quantity for SELL
   const maxQuantity = isBuy
-    ? (buyable && limitPrice > 0 ? Math.floor(buyable.amount / limitPrice) : 0)
+    ? (buyable && effectiveLimitPrice > 0 ? Math.floor(buyable.amount / effectiveLimitPrice) : 0)
     : (sellableQty ?? 0);
 
   const handlePriceSelect = useCallback((selectedPrice: number) => {
@@ -81,7 +75,7 @@ export function OrderConfirmModal({
       stock_name: signal.name,
       action,
       order_type: orderType,
-      price: orderType === "limit" ? limitPrice : undefined,
+      price: orderType === "limit" ? effectiveLimitPrice : undefined,
       quantity,
       signal_reason: signal.reason,
     };
@@ -274,7 +268,7 @@ export function OrderConfirmModal({
                 <div className="relative">
                   <input
                     type="number"
-                    value={limitPrice}
+                    value={effectiveLimitPrice}
                     onChange={(e) => setLimitPrice(Number(e.target.value))}
                     className="w-full px-4 py-3 pr-12 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary focus:border-transparent"
                   />

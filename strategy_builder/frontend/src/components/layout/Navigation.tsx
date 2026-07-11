@@ -54,7 +54,7 @@ export function Navigation() {
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
                     aria-label={item.label}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-ring ${
+                    className={`flex min-h-11 items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors focus-ring ${
                       isActive
                         ? "bg-primary/10 text-primary"
                         : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
@@ -83,7 +83,7 @@ export function Navigation() {
               {/* 설정 버튼 (톱니바퀴) */}
               <button
                 onClick={() => setIsSettingsOpen(true)}
-                className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring"
+                className="min-h-11 min-w-11 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring"
                 aria-label="설정 열기"
               >
                 <Settings className="w-5 h-5 text-slate-600 dark:text-slate-400" aria-hidden="true" />

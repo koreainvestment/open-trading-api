@@ -118,8 +118,9 @@ export function IndicatorSelector({
       if (pending === undefined) return;
       onUpdateIndicator(indicatorId, { displayName: pending.trim() || undefined });
       setPendingAliases((prev) => {
-        const { [indicatorId]: _, ...rest } = prev;
-        return rest;
+        const next = { ...prev };
+        delete next[indicatorId];
+        return next;
       });
     },
     [pendingAliases, onUpdateIndicator]

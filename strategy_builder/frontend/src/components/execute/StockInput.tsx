@@ -113,7 +113,7 @@ export function StockInput({ stocks, onChange }: StockInputProps) {
     requestAnimationFrame(() => {
       isInitialLoadRef.current = false;
     });
-  }, []);
+  }, [onChange, resolveMultipleNames]);
 
   // Save to localStorage when stocks change (초기 로드 시 skip)
   useEffect(() => {
