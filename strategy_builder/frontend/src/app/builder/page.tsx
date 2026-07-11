@@ -275,7 +275,7 @@ export default function BuilderPage() {
         <button
           onClick={() => setShowPreview(!showPreview)}
           className={cn(
-            "lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-ring",
+            "lg:hidden min-h-11 min-w-11 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-ring",
             showPreview
               ? "bg-primary text-white"
               : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
@@ -287,9 +287,9 @@ export default function BuilderPage() {
       </div>
 
       {/* Main Layout */}
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid xl:grid-cols-3 gap-6">
         {/* Left: Strategy List */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className="min-w-0 xl:col-span-1 space-y-4">
           {/* Preset strategies */}
           <div className="card">
             <h2 className="text-subheading text-slate-900 dark:text-white mb-4 flex items-center gap-2">
@@ -370,10 +370,10 @@ export default function BuilderPage() {
         </div>
 
         {/* Right: Visual Builder */}
-        <div className="lg:col-span-2">
-          <div className="grid lg:grid-cols-2 gap-4">
+        <div className="min-w-0 xl:col-span-2">
+          <div className="grid min-w-0 lg:grid-cols-2 gap-4">
             {/* Builder Panel */}
-            <div className={cn("card flex flex-col", showPreview && "hidden lg:block")} style={{ maxHeight: "calc(100vh - 180px)" }}>
+            <div className={cn("card min-w-0 flex flex-col", showPreview && "hidden lg:block")} style={{ maxHeight: "calc(100vh - 180px)" }}>
               {/* Stepper Navigation - compact horizontal */}
               <nav
                 className="flex items-center mb-4 overflow-x-auto scrollbar-thin"
@@ -518,7 +518,7 @@ export default function BuilderPage() {
             </div>
 
             {/* Preview Panel */}
-            <div className={cn("card", !showPreview && "hidden lg:block")}>
+            <div className={cn("card min-w-0", !showPreview && "hidden lg:block")}>
               {showPreview && (
                 <button
                   onClick={() => setShowPreview(false)}

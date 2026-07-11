@@ -2,7 +2,7 @@
  * Market API
  */
 
-import { apiGet, type ApiResponse } from "./client";
+import { apiGet } from "./client";
 
 export interface OrderbookData {
   stock_code: string;

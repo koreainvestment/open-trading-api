@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { Plus, Trash2, AlertCircle, GripVertical, Sparkles, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, Trash2, AlertCircle, GripVertical, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type {
   BuilderIndicator,
@@ -16,7 +16,6 @@ import type {
 import {
   OPERATOR_OPTIONS,
   OPERATOR_SENTENCE_LABELS,
-  CROSS_OPERATORS,
   CONDITION_TEMPLATES,
   CANDLESTICK_TEMPLATES,
   CANDLESTICK_SIGNAL_LABELS,
@@ -66,8 +65,6 @@ export function ConditionBuilder({
 }: ConditionBuilderProps) {
   const [showTemplates, setShowTemplates] = useState(false);
   const [showCandlestickTemplates, setShowCandlestickTemplates] = useState(false);
-  const [expandedTemplateCategory, setExpandedTemplateCategory] = useState<string | null>("oscillator");
-  const [expandedCandleCategory, setExpandedCandleCategory] = useState<string | null>("reversal");
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
