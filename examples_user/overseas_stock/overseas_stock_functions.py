@@ -927,18 +927,36 @@ def inquire_nccs(
     Args:
         cano (str): 계좌번호 체계(8-2)의 앞 8자리
         acnt_prdt_cd (str): 계좌번호 체계(8-2)의 뒤 2자리
-        ovrs_excg_cd (str): NASD : 나스닥 NYSE : 뉴욕  AMEX : 아멕스 SEHK : 홍콩 SHAA : 중국상해 SZAA : 중국심천 TKSE : 일본 HASE : 베트남 하노이 VNSE : 베트남 호치민  * NASD 인 경우만 미국전체로 조회되며 나머지 거래소 코드는 해당 거래소만 조회됨 * 공백 입력 시 다음조회가 불가능하므로, 반드시 거래소코드 입력해야 함
+        ovrs_excg_cd (str): 해외거래소코드(필수).
+            기존 설명은 NASD를 "나스닥"과 "미국전체"로 동시에 표기합니다.
+            따라서 이 문서에서는 확인 전까지 NASD의 조회 범위를 확정하지 않습니다.
+            NYSE : 뉴욕, AMEX : 아멕스, SEHK : 홍콩, SHAA : 중국상해,
+            SZAA : 중국심천, TKSE : 일본, HASE : 베트남 하노이,
+            VNSE : 베트남 호치민
         sort_sqn (str): DS : 정순 그외 : 역순  [header tr_id: TTTS3018R] ""(공란)
         FK200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_FK200값 : 다음페이지 조회시(2번째부터)
         NK200 (str): 공란 : 최초 조회시 이전 조회 Output CTX_AREA_NK200값 : 다음페이지 조회시(2번째부터)
-        env_dv (str): 실전모의구분 (real:실전, demo:모의)
+        env_dv (str): 실전모의구분 (real:실전, demo:모의).
+            현재 구현은 이 값으로 TR ID를 분기하지 않고 TTTS3018R을 사용합니다.
         tr_cont (str): 연속 거래 여부
         dataframe (Optional[pd.DataFrame]): 누적 데이터프레임
         depth (int): 현재 재귀 깊이
         max_depth (int): 최대 재귀 깊이 (기본값: 10)
         
     Returns:
-        Optional[pd.DataFrame]: 해외주식 미체결내역 데이터
+        Optional[pd.DataFrame]: 해외주식 미체결내역 데이터.
+            반환값에는 전체 조회 완료, 부분 조회, 실패를 구분하는 상태가 없습니다.
+
+    Notes:
+        현재 샘플 구현은 응답 헤더 tr_cont가 M 또는 F이면 응답의
+        ctx_area_fk200과 ctx_area_nk200을 다음 요청에 전달하고
+        tr_cont="N"으로 다시 호출합니다. 이는 현재 코드의 동작 설명이며,
+        API 연속조회 계약을 확정하는 문구가 아닙니다.
+
+        max_depth 도달 또는 후속 API 호출 실패 시 이미 수집한 DataFrame을
+        반환합니다. 따라서 빈 DataFrame은 정상 0건과 첫 호출 실패를
+        구분하지 않으며, 비어 있지 않은 DataFrame도 전체 페이지 완료를
+        보장하지 않습니다.
         
     Example:
         >>> df = inquire_nccs(
