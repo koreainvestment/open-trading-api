@@ -225,7 +225,9 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
             save_token(my_token, my_expired)  # 새로 발급 받은 토큰 저장
         else:
             print("Get Authentification token fail!\nYou have to restart your app!!!")
-            return
+            raise RuntimeError(
+                f"접근토큰 발급 실패 [{rescode}] {res.text}"
+            )
     else:
         my_token = saved_token  # 기존 발급 토큰 확인되어 기존 토큰 사용
 
@@ -297,7 +299,8 @@ class APIResp:
     def _setHeader(self):
         fld = dict()
         for x in self._resp.headers.keys():
-            if x.islower():
+            # 하이픈이 포함된 헤더명(x-content-type-options 등)은 namedtuple 필드명으로 쓸 수 없음
+            if x.islower() and x.isidentifier():
                 fld[x] = self._resp.headers.get(x)
         _th_ = namedtuple("header", fld.keys())
 
