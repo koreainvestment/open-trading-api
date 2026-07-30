@@ -3,7 +3,7 @@ package dart_test
 import (
 	"fmt"
 	"github.com/kis-open-api/go/internal/external/dart"
-	"github.com/kis-open-api/go/internal/dartfiling/testhelpers"
+	"github.com/kis-open-api/go/internal/testhelpers"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"

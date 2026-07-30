@@ -143,7 +143,7 @@ type FileAnalyzer struct {
 }
 
 const (
-	defaultModel     = shared.ResponsesModel("gpt-5.2")
+	defaultModel     = shared.ResponsesModel("gpt-5.6-luna")
 	PreviewByteLimit = 128 * 1024 // cap what we send to the model, 128KB
 )
 

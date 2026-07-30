@@ -14,7 +14,7 @@ import (
 	"github.com/kis-open-api/go/internal/dartfiling/db"
 	"github.com/kis-open-api/go/internal/dartfiling/models"
 	"github.com/kis-open-api/go/internal/dartfiling/routes"
-	"github.com/kis-open-api/go/internal/dartfiling/testhelpers"
+	"github.com/kis-open-api/go/internal/testhelpers"
 
 	"github.com/gin-gonic/gin"
 	. "github.com/onsi/ginkgo/v2"

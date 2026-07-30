@@ -1,6 +1,9 @@
 CMD_DIR ?= cmd
+DATABASE_URL ?= postgresql://sunjinlee@localhost:5432/dart?sslmode=disable
+TEST_DATABASE_URL ?= postgresql://sunjinlee@localhost:5432/dart_test?sslmode=disable
+MIGRATIONS_DIR ?= internal/db/migrations
 
-.PHONY: run build test takesnapshot creditbalance now dart-filing-cli dart-filing-api dart-filing-worker
+.PHONY: run build test takesnapshot creditbalance now dart-filing-cli dart-filing-api dart-filing-worker migrate-up migrate-down migrate-create migrate-test-redo
 
 now:
 	go run ./cmd/agent report intraday-pulse
@@ -42,3 +45,34 @@ build: ## Build the app
 
 test: ## Run the tests
 	go test ./...
+
+migrate-up: ## Run all up migrations
+ifndef DATABASE_URL
+	$(error DATABASE_URL is not set)
+endif
+	migrate -path=$(MIGRATIONS_DIR) -database "$(DATABASE_URL)" -verbose up
+
+migrate-down: ## Run last migration down
+ifndef DATABASE_URL
+	$(error DATABASE_URL is not set)
+endif
+	migrate -path=$(MIGRATIONS_DIR) -database "$(DATABASE_URL)" -verbose down 1
+
+migrate-create: ## Create new migration files. Usage: make migrate-create NAME=your_desc
+ifndef NAME
+	$(error NAME is not set)
+endif
+	migrate create -ext sql -dir $(MIGRATIONS_DIR) -seq ${NAME}
+
+migrate-test-up:
+ifndef TEST_DATABASE_URL
+	$(error TEST_DATABASE_URL is not set)
+endif
+	migrate -path=$(MIGRATIONS_DIR) -database "$(TEST_DATABASE_URL)" -verbose up
+
+migrate-test-redo:
+ifndef TEST_DATABASE_URL
+	$(error TEST_DATABASE_URL is not set)
+endif
+	migrate -path=$(MIGRATIONS_DIR) -database "$(TEST_DATABASE_URL)" -verbose down 1
+	migrate -path=$(MIGRATIONS_DIR) -database "$(TEST_DATABASE_URL)" -verbose up

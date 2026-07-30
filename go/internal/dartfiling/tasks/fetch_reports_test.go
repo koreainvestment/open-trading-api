@@ -9,7 +9,7 @@ import (
 	"github.com/kis-open-api/go/internal/dartfiling/models"
 	"github.com/kis-open-api/go/internal/external/openai"
 	"github.com/kis-open-api/go/internal/dartfiling/tasks"
-	"github.com/kis-open-api/go/internal/dartfiling/testhelpers"
+	"github.com/kis-open-api/go/internal/testhelpers"
 	"strings"
 
 	"github.com/hibiken/asynq"
