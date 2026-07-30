@@ -2,11 +2,33 @@ package testhelpers
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/joho/godotenv"
 	g "github.com/onsi/gomega"
 	"gorm.io/gorm"
 )
+
+func LoadTestEnv() {
+	dir, err := os.Getwd()
+	if err != nil {
+		return
+	}
+	for {
+		testEnvPath := filepath.Join(dir, ".env.test")
+		if _, err := os.Stat(testEnvPath); err == nil {
+			_ = godotenv.Overload(testEnvPath)
+			return
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+}
 
 func CleanupDB(db *gorm.DB) {
 	var dbName string
