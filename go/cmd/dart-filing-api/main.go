@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/kis-open-api/go/internal/dartfiling/config"
-	"github.com/kis-open-api/go/internal/dartfiling/db"
-	"github.com/kis-open-api/go/internal/dartfiling/routes"
 	"log"
+
+	"github.com/kis-open-api/go/internal/dartfiling/config"
+	"github.com/kis-open-api/go/internal/dartfiling/routes"
+	"github.com/kis-open-api/go/internal/db"
 
 	_ "github.com/joho/godotenv/autoload"
 )

@@ -38,6 +38,11 @@ type MockTransport struct {
 	mutex        sync.Mutex
 }
 
+var (
+	DefaultTransport                           = NewMockTransport()
+	originalDefaultTransport http.RoundTripper = http.DefaultTransport
+)
+
 func NewMockTransport() *MockTransport {
 	return &MockTransport{
 		Expectations: make([]*Expectation, 0),
@@ -45,6 +50,12 @@ func NewMockTransport() *MockTransport {
 	}
 }
 
+// New creates a new expectation registered to the package-level DefaultTransport (gonock style).
+func New(baseURL string) *Expectation {
+	return DefaultTransport.New(baseURL)
+}
+
+// New creates a new expectation registered to this MockTransport instance.
 func (t *MockTransport) New(baseURL string) *Expectation {
 	u, err := url.Parse(baseURL)
 	if err != nil {
@@ -52,7 +63,7 @@ func (t *MockTransport) New(baseURL string) *Expectation {
 	}
 
 	if u.Scheme == "" || u.Host == "" {
-		panic(fmt.Sprintf("mock transport: base URL must include scheme and host (e.g. http://%s)", baseURL))
+		panic(fmt.Sprintf("mock transport: base URL must include scheme and host (e.g., http://%s)", baseURL))
 	}
 
 	exp := &Expectation{
@@ -184,6 +195,39 @@ func (t *MockTransport) Verify() error {
 	}
 
 	return nil
+}
+
+// IsDone returns whether all expectations on DefaultTransport have been matched.
+func IsDone() bool {
+	DefaultTransport.mutex.Lock()
+	defer DefaultTransport.mutex.Unlock()
+	for _, exp := range DefaultTransport.Expectations {
+		if !exp.isMatched {
+			return false
+		}
+	}
+	return true
+}
+
+// Activate overrides http.DefaultClient.Transport with DefaultTransport.
+func Activate() {
+	if http.DefaultClient.Transport == DefaultTransport {
+		return
+	}
+
+	if http.DefaultClient.Transport != nil {
+		originalDefaultTransport = http.DefaultClient.Transport
+	} else {
+		originalDefaultTransport = http.DefaultTransport
+	}
+
+	http.DefaultClient.Transport = DefaultTransport
+}
+
+// Deactivate restores http.DefaultClient.Transport and resets DefaultTransport.
+func Deactivate() {
+	http.DefaultClient.Transport = originalDefaultTransport
+	DefaultTransport.Reset()
 }
 
 func (t *MockTransport) RoundTrip(req *http.Request) (*http.Response, error) {

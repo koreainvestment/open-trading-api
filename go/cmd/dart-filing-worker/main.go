@@ -2,14 +2,15 @@ package main
 
 import (
 	"errors"
-	"github.com/kis-open-api/go/internal/dartfiling/config"
-	"github.com/kis-open-api/go/internal/dartfiling/db"
-	"github.com/kis-open-api/go/internal/dartfiling/tasks"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/kis-open-api/go/internal/dartfiling/config"
+	"github.com/kis-open-api/go/internal/dartfiling/tasks"
+	"github.com/kis-open-api/go/internal/db"
 
 	"github.com/hibiken/asynq"
 )
