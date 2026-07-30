@@ -1,0 +1,1 @@
+ALTER TABLE raw_reports DROP COLUMN report_name;
