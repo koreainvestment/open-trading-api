@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - "POSTGRES_USER=sunjinlee"
+      - "POSTGRES_DB=dart"
+    volumes:
+      - db-volume:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - open-trading-network
+
+  redis:
+    image: redis/redis-stack-server:7.4.0-v8
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - open-trading-network
+
+  dart-filing-worker:
+    build:
+      context: ./go
+      dockerfile: Dockerfile_dart_filing_worker
+    env_file:
+      - ./go/.env
+    networks:
+      - open-trading-network
+    depends_on:
+      - db
+      - redis
+
+  dart-filing-api:
+    build:
+      context: ./go
+      dockerfile: Dockerfile_dart_filing_api
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./go/.env
+    networks:
+      - open-trading-network
+    depends_on:
+      - db
+      - redis
+
+networks:
+  open-trading-network:
+    name: open-trading-network
+    driver: bridge
+
+volumes:
+  db-volume:
+  redis-data:
