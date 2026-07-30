@@ -159,12 +159,12 @@ func NewFileAnalyzerFromEnv() (*FileAnalyzer, error) {
 		return nil, ErrMissingAPIKey
 	}
 
-	client := openai.NewClient(option.WithAPIKey(apiKey))
+	client := openai.NewClient(option.WithAPIKey(apiKey), option.WithHTTPClient(http.DefaultClient))
 	return &FileAnalyzer{client: &client, model: defaultModel}, nil
 }
 
 func NewFileAnalyzer(apiKey string, model ...shared.ResponsesModel) *FileAnalyzer {
-	client := openai.NewClient(option.WithAPIKey(apiKey))
+	client := openai.NewClient(option.WithAPIKey(apiKey), option.WithHTTPClient(http.DefaultClient))
 	if len(model) > 0 {
 		return &FileAnalyzer{client: &client, model: model[0]}
 	}

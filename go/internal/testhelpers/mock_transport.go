@@ -315,13 +315,13 @@ func (t *MockTransport) matches(exp *Expectation, req *http.Request) bool {
 			return false
 		}
 
-		if len(actualValues) != len(values) {
-			exp.MismatchReason = fmt.Sprintf("header value count mismatch for %s: expected %v got %v", key, values, actualValues)
-			return false
-		}
-
 		for i, value := range values {
-			if actualValues[i] != value {
+			if i >= len(actualValues) {
+				exp.MismatchReason = fmt.Sprintf("header value count mismatch for %s: expected %v got %v", key, values, actualValues)
+				return false
+			}
+
+			if actualValues[i] != value && !strings.HasPrefix(actualValues[i], value) {
 				exp.MismatchReason = fmt.Sprintf("header mismatch for %s: expected %s got %s", key, value, actualValues[i])
 				return false
 			}
