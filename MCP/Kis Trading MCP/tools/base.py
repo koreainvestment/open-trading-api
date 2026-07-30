@@ -211,7 +211,7 @@ class ApiExecutor:
             code = re.sub(r"import sys\n", "", code)  # import sys도 제거
 
             # 2. 코드에서 함수명과 시그니처 추출
-            function_match = re.search(r'def\s+(\w+)\s*\((.*?)\):', code, re.DOTALL)
+            function_match = re.search(r'def\s+(\w+)\s*\((.*?)\)\s*(?:->\s*[\w.\[\], ]+)?\s*:', code, re.DOTALL)
             if not function_match:
                 raise Exception("코드에서 함수를 찾을 수 없습니다.")
 
