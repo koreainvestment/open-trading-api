@@ -1,0 +1,1 @@
+ALTER TABLE analyses ADD COLUMN used_tokens BIGINT NOT NULL DEFAULT 0;

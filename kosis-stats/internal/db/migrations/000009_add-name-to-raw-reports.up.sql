@@ -1,0 +1,1 @@
+ALTER TABLE raw_reports ADD COLUMN report_name VARCHAR(1024);

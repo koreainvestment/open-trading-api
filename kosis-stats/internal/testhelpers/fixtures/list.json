@@ -1,0 +1,109 @@
+{
+  "status": "000",
+  "message": "정상",
+  "page_no": 1,
+  "page_count": 10,
+  "total_count": 9,
+  "total_page": 1,
+  "list": [
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "분기보고서 (2025.09)",
+      "rcept_no": "20251114001374",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251114",
+      "rm": ""
+    },
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "단일판매ㆍ공급계약체결              ",
+      "rcept_no": "20251113800665",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251113",
+      "rm": "유"
+    },
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "동일인등출자계열회사와의상품ㆍ용역거래변경",
+      "rcept_no": "20251113000076",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251113",
+      "rm": "공"
+    },
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "기업설명회(IR)개최(안내공시)              ",
+      "rcept_no": "20251103800259",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251103",
+      "rm": "유"
+    },
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "연결재무제표기준영업(잠정)실적(공정공시)              ",
+      "rcept_no": "20251031800472",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251031",
+      "rm": "유"
+    },
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "[기재정정]특수관계인과의내부거래",
+      "rcept_no": "20251030000425",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251030",
+      "rm": "공"
+    },
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "기업설명회(IR)개최(안내공시)              ",
+      "rcept_no": "20251014800166",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251014",
+      "rm": "유"
+    },
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "[기재정정]타법인주식및출자증권취득결정              ",
+      "rcept_no": "20251001800663",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251001",
+      "rm": "유"
+    },
+    {
+      "corp_code": "00356361",
+      "corp_name": "LG화학",
+      "stock_code": "051910",
+      "corp_cls": "Y",
+      "report_nm": "타법인주식및출자증권처분결정              ",
+      "rcept_no": "20251001800565",
+      "flr_nm": "LG화학",
+      "rcept_dt": "20251001",
+      "rm": "유"
+    }
+  ]
+}

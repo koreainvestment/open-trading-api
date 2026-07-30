@@ -1,0 +1,1 @@
+ALTER TABLE companies DROP COLUMN category;
