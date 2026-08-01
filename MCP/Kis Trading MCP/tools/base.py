@@ -7,7 +7,6 @@ import sys
 import time
 import shutil
 import subprocess
-import requests
 from fastmcp import FastMCP, Context
 
 from module.plugin import MasterFileManager
@@ -83,7 +82,7 @@ if __name__ == "__main__":
 
 
 class ApiExecutor:
-    """API 실행 클래스 - GitHub에서 코드를 다운로드하고 실행"""
+    """API 실행 클래스 - 로컬에 동봉된 examples_llm 사본을 사용해 코드를 실행"""
 
     def __init__(self, tool_name: str):
         """초기화"""
@@ -95,6 +94,11 @@ class ApiExecutor:
             self.venv_python = os.path.join(venv_dir, "Scripts", "python.exe")
         else:
             self.venv_python = os.path.join(venv_dir, "bin", "python")
+
+        # examples_llm은 GitHub에서 매번 내려받지 않고 로컬에 함께 배포된 사본을 사용
+        self.examples_llm_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "examples_llm"
+        )
 
         # temp 디렉토리 생성
         os.makedirs(self.temp_base_dir, exist_ok=True)
@@ -108,7 +112,7 @@ class ApiExecutor:
 
     @staticmethod
     def _validate_function_name(function_name: str) -> str:
-        """다운로드된 API 함수명 검증"""
+        """로컬 사본에서 읽은 API 함수명 검증"""
         if not FUNCTION_NAME_PATTERN.match(function_name):
             raise ValueError(f"Invalid function name: {function_name}")
         return function_name
@@ -133,37 +137,35 @@ class ApiExecutor:
         os.makedirs(temp_dir, exist_ok=True)
         return temp_dir
 
-    @classmethod
-    def _download_file(cls, url: str, file_path: str) -> bool:
-        """파일 다운로드"""
+    def _copy_kis_auth(self, temp_dir: str) -> bool:
+        """kis_auth.py 로컬 사본 복사"""
+        kis_auth_src = os.path.join(self.examples_llm_dir, "kis_auth.py")
+        kis_auth_dst = os.path.join(temp_dir, "kis_auth.py")
         try:
-            response = requests.get(url, timeout=30)
-            response.raise_for_status()
-
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(response.text)
+            shutil.copyfile(kis_auth_src, kis_auth_dst)
             return True
         except Exception as e:
-            print(f"파일 다운로드 실패: {url}, 오류: {str(e)}")
+            print(f"kis_auth.py 복사 실패: {kis_auth_src}, 오류: {str(e)}")
             return False
 
-    def _download_kis_auth(self, temp_dir: str) -> bool:
-        """kis_auth.py 다운로드"""
-        kis_auth_url = "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/kis_auth.py"
-        kis_auth_path = os.path.join(temp_dir, "kis_auth.py")
-        return self._download_file(kis_auth_url, kis_auth_path)
+    def _copy_api_code(self, github_url: str, temp_dir: str, api_type: str) -> str:
+        """API 코드 로컬 사본 복사"""
+        # github_url은 .../examples_llm/<category>/<api_type> 형태이므로
+        # examples_llm 이후 경로만 추출하여 로컬 사본 경로를 구성
+        marker = "examples_llm/"
+        idx = github_url.find(marker)
+        if idx == -1:
+            raise Exception(f"지원하지 않는 github_url 형식: {github_url}")
+        relative_dir = github_url[idx + len(marker):]
 
-    def _download_api_code(self, github_url: str, temp_dir: str, api_type: str) -> str:
-        """API 코드 다운로드"""
-        # GitHub URL을 raw URL로 변환하고 api_type/api_type.py를 붙여서 실제 파일 경로 생성
-        raw_url = github_url.replace('/tree/', '/').replace('github.com', 'raw.githubusercontent.com')
-        full_url = f"{raw_url}/{api_type}.py"
-        api_code_path = os.path.join(temp_dir, "api_code.py")
+        api_code_src = os.path.join(self.examples_llm_dir, relative_dir, f"{api_type}.py")
+        api_code_dst = os.path.join(temp_dir, "api_code.py")
 
-        if self._download_file(full_url, api_code_path):
-            return api_code_path
-        else:
-            raise Exception(f"API 코드 다운로드 실패: {full_url}")
+        if not os.path.isfile(api_code_src):
+            raise Exception(f"API 코드 파일을 찾을 수 없습니다: {api_code_src}")
+
+        shutil.copyfile(api_code_src, api_code_dst)
+        return api_code_dst
 
     @classmethod
     def _extract_trenv_params_from_example(cls, api_code_content: str) -> Dict[str, str]:
@@ -372,12 +374,12 @@ class ApiExecutor:
                 request_id = "unknown"
             temp_dir = self._create_temp_directory(request_id)
 
-            # 2. kis_auth.py 다운로드
-            if not self._download_kis_auth(temp_dir):
-                raise Exception("kis_auth.py 다운로드 실패")
+            # 2. kis_auth.py 로컬 사본 복사
+            if not self._copy_kis_auth(temp_dir):
+                raise Exception("kis_auth.py 복사 실패")
 
-            # 3. API 코드 다운로드
-            api_code_path = self._download_api_code(github_url, temp_dir, api_type)
+            # 3. API 코드 로컬 사본 복사
+            api_code_path = self._copy_api_code(github_url, temp_dir, api_type)
 
             # 4. 코드 수정
             self._modify_api_code(api_code_path, params, api_type)
