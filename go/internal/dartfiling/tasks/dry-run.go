@@ -3,18 +3,24 @@ package tasks
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"log"
+	"strings"
+
 	"github.com/kis-open-api/go/internal/external/dart"
 	"github.com/kis-open-api/go/internal/external/openai"
 	"github.com/kis-open-api/go/internal/external/xbrl"
-	"log"
-	"strings"
 )
 
 func FetchReportDryRun(dartClient *dart.DartClient, fileAnalyzer *openai.FileAnalyzer, receiptNumber string) error {
 	rawDocument, err := dartClient.GetDocument(receiptNumber)
-	if err == dart.ErrDocumentNotFound {
+	if errors.Is(err, dart.ErrDocumentNotFound) {
 		log.Printf("document not found: %s", receiptNumber)
 		return nil
+	}
+	if err != nil {
+		log.Printf("failed to get document %s: %v", receiptNumber, err)
+		return err
 	}
 
 	doc, err := xbrl.ParseXBRL([]byte(rawDocument))

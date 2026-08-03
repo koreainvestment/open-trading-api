@@ -69,6 +69,42 @@ go run ./cmd/agent report credit-balance --ratio --days 60
 go run ./cmd/agent report safety-devices
 ```
 
+## DART Filing Worker CLI (`cmd/dart-filing-worker-cli`)
+
+[DART Filing Worker CLI](cmd/dart-filing-worker-cli/main.go)는 DART 공시 데이터 수집, 기업 마스터 백필 및 특정 기업 공시 분석을 수행하는 CLI 도구입니다.
+
+```bash
+# 1. 전체 기업 마스터(companies 테이블) 백필
+make dart-filing-cli-companies
+# 또는
+go run ./cmd/dart-filing-worker-cli companies
+
+# 2. 특정 기업 공시 수집 및 AI 분석 저장 (예: 삼성전자 corp_code="00126380", 최근 5건 제한)
+make dart-filing-cli-company CORP_CODE="00126380" LIMIT=5
+# 또는
+go run ./cmd/dart-filing-worker-cli company 00126380 5
+
+# 3. 전체 최근 공시 수집 및 분석 저장
+go run ./cmd/dart-filing-worker-cli reports
+
+# 4. 단일 공시 건 AI 분석 Dry-run 테스트 (DB 미저장)
+make dart-filing-cli RECEIPT_NO="20240321000725"
+# 또는
+go run ./cmd/dart-filing-worker-cli dry-run 20240321000725
+```
+
+## DART Filing Web Frontend (`web`)
+
+[go/web](web) 디렉토리의 Vite + React 프론트엔드 애플리케이션을 실행하고 빌드하는 명령어입니다.
+
+```bash
+# Web 프론트엔드 개발 서버 실행 (Vite dev server)
+make dart-filing-web
+
+# Web 프론트엔드 프로덕션 빌드 (Vite build)
+make dart-filing-web-build
+```
+
 ## Run And Test
 
 ```bash

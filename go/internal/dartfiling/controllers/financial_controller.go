@@ -262,7 +262,6 @@ func (fc *FinancialController) GetAllReports(c *gin.Context) {
 		if err != nil {
 			log.Printf("[WARN] failed to parse end date: %v", err)
 		} else {
-			log.Printf("start date: %v %v %v %v", d, startDate.IsZero(), startDate.After(d), startDate.Equal(d))
 			if !startDate.IsZero() && (startDate.After(d) || startDate.Equal(d)) {
 				d = startDate.Add(24 * time.Hour)
 			}
@@ -271,7 +270,7 @@ func (fc *FinancialController) GetAllReports(c *gin.Context) {
 		}
 	}
 
-	if err != scope.Limit(limit).Scan(&reports).Error {
+	if err := scope.Limit(limit).Scan(&reports).Error; err != nil {
 		log.Printf("failed to get all reports: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Something went wrong"})
 		return

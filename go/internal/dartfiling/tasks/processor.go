@@ -45,7 +45,19 @@ func (p *TaskProcessor) HandleFetchReportsTask(ctx context.Context, t *asynq.Tas
 
 	log.Printf("Fetching reports for %+v", payload)
 
-	rawReports, err := p.dartClient.GetRecentRawReports()
+	var pageInfos []dart.PageInfo
+	if (payload.CorpCode != nil && *payload.CorpCode != "") || (payload.Limit != nil && *payload.Limit > 0) {
+		info := dart.PageInfo{}
+		if payload.CorpCode != nil {
+			info.CorpCode = *payload.CorpCode
+		}
+		if payload.Limit != nil {
+			info.Limit = *payload.Limit
+		}
+		pageInfos = append(pageInfos, info)
+	}
+
+	rawReports, err := p.dartClient.GetRecentRawReports(pageInfos...)
 	if err != nil {
 		log.Printf("failed to fetch reports: %v", err)
 		return nil
@@ -87,7 +99,7 @@ func (p *TaskProcessor) HandleFetchReportsTask(ctx context.Context, t *asynq.Tas
 			return err
 		}
 
-		rawReport := models.RawReport{
+		dbRawReport := models.RawReport{
 			ReceiptNumber: rawReport.RceptNo,
 			ReportName:    rawReport.ReportNm,
 			CorpCode:      rawReport.CorpCode,
@@ -97,7 +109,7 @@ func (p *TaskProcessor) HandleFetchReportsTask(ctx context.Context, t *asynq.Tas
 		}
 
 		result := gorm.WithResult()
-		err = gorm.G[models.RawReport](p.DB, result).Create(ctx, &rawReport)
+		err = gorm.G[models.RawReport](p.DB, result).Create(ctx, &dbRawReport)
 		if err != nil {
 			return err
 		}
@@ -113,7 +125,7 @@ func (p *TaskProcessor) HandleFetchReportsTask(ctx context.Context, t *asynq.Tas
 		var analysis interface{}
 		var usedTokens int64
 		if reportLength > openai.PreviewByteLimit {
-			log.Printf("analyzing report with batch API: %s", rawReport.ReceiptNumber)
+			log.Printf("analyzing report with batch API: %s", dbRawReport.ReceiptNumber)
 			analysis, usedTokens, err = p.fileAnalyzer.AnalyzeReportBatch(ctx, string(j), reportType)
 			if err != nil {
 				log.Printf("failed to analyze report: %v", err)
@@ -131,10 +143,11 @@ func (p *TaskProcessor) HandleFetchReportsTask(ctx context.Context, t *asynq.Tas
 			if v.CompanyName == "" {
 				company, err := gorm.G[models.Company](p.DB).Where("corp_code = ?", rawReport.CorpCode).First(ctx)
 				if err != nil {
-					log.Printf("failed to get company: %v", err)
-					continue
+					log.Printf("company not found in DB for corp_code=%s (%v), using report CorpName", rawReport.CorpCode, err)
+					v.CompanyName = rawReport.CorpName
+				} else {
+					v.CompanyName = company.CorpName
 				}
-				v.CompanyName = company.CorpName
 			}
 
 			if v.SchemaSuggestion != "" {
@@ -147,7 +160,7 @@ func (p *TaskProcessor) HandleFetchReportsTask(ctx context.Context, t *asynq.Tas
 				rt := models.ReportType{
 					Name:              v.Type,
 					Structure:         json.RawMessage(structureJSON),
-					SourceRawReportID: rawReport.ID,
+					SourceRawReportID: dbRawReport.ID,
 				}
 
 				result := gorm.WithResult()
@@ -168,12 +181,12 @@ func (p *TaskProcessor) HandleFetchReportsTask(ctx context.Context, t *asynq.Tas
 		}
 
 		analyses = append(analyses, models.Analysis{
-			RawReportID: rawReport.ID,
+			RawReportID: dbRawReport.ID,
 			UsedTokens:  usedTokens,
 			Analysis:    analysisJSON,
 		})
 
-		log.Printf("processed raw report: %s, %s, %d, %d", rawReport.ReceiptNumber, rawReport.CorpCode, rawReport.BlobSize, usedTokens)
+		log.Printf("processed raw report: %s, %s, %d, %d", dbRawReport.ReceiptNumber, dbRawReport.CorpCode, dbRawReport.BlobSize, usedTokens)
 
 		totalUsedTokens += usedTokens
 

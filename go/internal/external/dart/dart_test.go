@@ -152,5 +152,23 @@ var _ = Describe("DartClient", func() {
 			Expect(list[0].CorpName).To(Equal("테스트"))
 			Expect(list[0].ReportNm).To(Equal("분기보고서 (2025.03)"))
 		})
+
+		It("filters by corp code if provided in page info", func() {
+			startDate := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
+			endDate := time.Date(2025, 3, 1, 0, 0, 0, 0, time.UTC)
+			pathWithQueryString := fmt.Sprintf("/api/list.json?corp_code=00123456&crtfc_key=%s&bgn_de=%s&end_de=%s&page_no=1&page_count=100", apiKey, startDate.Format("20060102"), endDate.Format("20060102"))
+
+			testhelpers.New("https://opendart.fss.or.kr").
+				Get(pathWithQueryString).
+				Reply(200).
+				BodyString(payload)
+
+			list, err := client.GetRecentRawReports(dart.PageInfo{CorpCode: "00123456", StartDate: startDate, EndDate: endDate})
+			Expect(err).NotTo(HaveOccurred())
+			Expect(testhelpers.IsDone()).To(BeTrue())
+
+			Expect(list).To(HaveLen(1))
+			Expect(list[0].CorpCode).To(Equal("00123456"))
+		})
 	})
 })

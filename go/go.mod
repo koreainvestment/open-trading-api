@@ -1,6 +1,6 @@
 module github.com/kis-open-api/go
 
-go 1.25.0
+go 1.26
 
 require (
 	github.com/PuerkitoBio/goquery v1.10.3
@@ -10,8 +10,9 @@ require (
 	github.com/onsi/ginkgo/v2 v2.27.5
 	github.com/onsi/gomega v1.39.0
 	github.com/openai/openai-go/v3 v3.47.0
-	github.com/redis/go-redis/v9 v9.7.0
 	golang.org/x/net v0.57.0
+	golang.org/x/sync v0.22.0
+	golang.org/x/text v0.40.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1
 )
@@ -51,6 +52,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.4 // indirect
 	github.com/quic-go/qpack v0.5.1 // indirect
 	github.com/quic-go/quic-go v0.54.0 // indirect
+	github.com/redis/go-redis/v9 v9.7.0 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/spf13/cast v1.7.0 // indirect
 	github.com/tidwall/gjson v1.19.0 // indirect
@@ -64,11 +66,8 @@ require (
 	golang.org/x/arch v0.20.0 // indirect
 	golang.org/x/crypto v0.54.0 // indirect
 	golang.org/x/mod v0.37.0 // indirect
-	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.40.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
 	golang.org/x/tools v0.47.0 // indirect
 	google.golang.org/protobuf v1.36.9 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

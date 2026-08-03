@@ -370,6 +370,14 @@ var _ = Describe("FinancialController", func() {
 			}`))
 		})
 
+		It("ignores an unparseable start_date instead of erroring", func() {
+			req := httptest.NewRequest(http.MethodGet, "/api/v1/reports?start_date=garbage", nil)
+			resp := httptest.NewRecorder()
+
+			router.ServeHTTP(resp, req)
+			Expect(resp.Code).To(Equal(http.StatusOK))
+		})
+
 		It("sets end_date to the next day if it's the same as start_date", func() {
 			req := httptest.NewRequest(http.MethodGet, "/api/v1/reports?start_date=2025-11-23&end_date=2025-11-23", nil)
 			resp := httptest.NewRecorder()

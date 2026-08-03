@@ -7,8 +7,8 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 	"github.com/kis-open-api/go/internal/external/xbrl"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -59,6 +59,8 @@ type CorpCodeXML struct {
 type PageInfo struct {
 	StartDate time.Time
 	EndDate   time.Time
+	CorpCode  string
+	Limit     int
 }
 
 // defined error that document not found
@@ -183,28 +185,44 @@ func (c *DartClient) GetRecentRawReports(pageInfo ...PageInfo) ([]List, error) {
 	code := ""
 	size := 100
 	page := 1
+	limit := 0
 
 	var startDate string
 	var endDate string
 
 	if len(pageInfo) > 0 {
-		startDate = pageInfo[0].StartDate.Format("20060102")
-		endDate = pageInfo[0].EndDate.Format("20060102")
-	} else {
+		if pageInfo[0].CorpCode != "" {
+			code = pageInfo[0].CorpCode
+		}
+		if pageInfo[0].Limit > 0 {
+			limit = pageInfo[0].Limit
+		}
+		if !pageInfo[0].StartDate.IsZero() {
+			startDate = pageInfo[0].StartDate.Format("20060102")
+		}
+		if !pageInfo[0].EndDate.IsZero() {
+			endDate = pageInfo[0].EndDate.Format("20060102")
+		}
+	}
+	if startDate == "" || endDate == "" {
 		today := time.Now()
 		startDate = today.AddDate(0, 0, -5).Format("20060102")
 		endDate = today.Format("20060102")
 	}
 
-	log.Printf("Getting recent raw reports. Page: %d, Size: %d, StartDate: %s, EndDate: %s", page, size, startDate, endDate)
+	log.Printf("Getting recent raw reports. Page: %d, Size: %d, CorpCode: %s, Limit: %d, StartDate: %s, EndDate: %s", page, size, code, limit, startDate, endDate)
 
 	res, err := c.getDisclosureList(code, startDate, endDate, page, size)
 	if err != nil {
 		return nil, err
 	}
 
-	for page < res.TotalPage {
-		log.Printf("Getting next page of recent raw reports. Page: %d, Size: %d, StartDate: %s, EndDate: %s", page, size, startDate, endDate)
+	if limit > 0 && len(res.List) > limit {
+		res.List = res.List[:limit]
+	}
+
+	for page < res.TotalPage && (limit == 0 || len(res.List) < limit) {
+		log.Printf("Getting next page of recent raw reports. Page: %d, Size: %d, CorpCode: %s, StartDate: %s, EndDate: %s", page, size, code, startDate, endDate)
 
 		page++
 		nextPageRes, err := c.getDisclosureList(code, startDate, endDate, page, size)
@@ -212,6 +230,10 @@ func (c *DartClient) GetRecentRawReports(pageInfo ...PageInfo) ([]List, error) {
 			return nil, err
 		}
 		res.List = append(res.List, nextPageRes.List...)
+		if limit > 0 && len(res.List) >= limit {
+			res.List = res.List[:limit]
+			break
+		}
 	}
 
 	return res.List, nil

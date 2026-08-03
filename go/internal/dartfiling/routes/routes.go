@@ -21,7 +21,7 @@ func SetupRouter(db *gorm.DB, cfg *config.Config) *gin.Engine {
 	wildcardOpen := allowedOriginsRaw == "*"
 	var allowedOrigins []string
 	if !wildcardOpen {
-		for _, o := range strings.Split(cfg.AllowedOrigins, ",") {
+		for _, o := range strings.Split(allowedOriginsRaw, ",") {
 			o = strings.TrimSpace(o)
 			if o != "" && o != "*" {
 				allowedOrigins = append(allowedOrigins, o)

@@ -5,8 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gorm.io/gorm"
 	"github.com/kis-open-api/go/internal/dartfiling/config"
+	"gorm.io/gorm"
 )
 
 func TestCORS(t *testing.T) {
@@ -97,5 +97,20 @@ func TestCORSWildcard(t *testing.T) {
 	// Literal * is same for every request; Vary: Origin not required for CORS caching
 	if got := w.Header().Get("Vary"); got != "" {
 		t.Errorf("wildcard CORS should not require Vary: Origin; got %q", got)
+	}
+}
+
+func TestCORSEmptyOriginsIsClosed(t *testing.T) {
+	db := &gorm.DB{}
+	cfg := &config.Config{AllowedOrigins: ""}
+	router := SetupRouter(db, cfg)
+
+	req, _ := http.NewRequest("GET", "/health", nil)
+	req.Header.Set("Origin", "http://malicious.com")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	if got := w.Header().Get("Access-Control-Allow-Origin"); got != "" {
+		t.Errorf("empty ALLOWED_ORIGINS must not emit any Allow-Origin header; got %q", got)
 	}
 }
