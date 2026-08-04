@@ -23,13 +23,28 @@ API_RUNNER_TEMPLATE = """
 # MCP API runner (fixed template)
 if __name__ == "__main__":
     import json
+    import os
     import sys
+    from datetime import datetime
     import kis_auth as ka
 
     with open("params.json", "r", encoding="utf-8") as f:
         _mcp_cfg = json.load(f)
 
     _env_dv = _mcp_cfg["env_dv"]
+    _svr = "vps" if _env_dv == "demo" else "prod"
+    # kis_auth.py caches its access token in a file keyed only by
+    # calendar date (KIS{YYYYMMDD}), with no distinction between real
+    # (svr="prod") and paper (svr="vps") trading. A real-mode call and a
+    # demo-mode call on the same day would otherwise silently overwrite
+    # each other's cached token, causing confusing auth failures. Key the
+    # cache by (date, svr) instead by overriding the module-level path
+    # before authenticating -- read_token()/save_token() resolve
+    # token_tmp as a module global, so this redirects both.
+    ka.token_tmp = os.path.join(
+        os.path.expanduser("~"), "KIS", "config",
+        f"KIS{datetime.today().strftime('%Y%m%d')}_{_svr}",
+    )
     if _env_dv == "demo":
         ka.auth("vps")
     else:
