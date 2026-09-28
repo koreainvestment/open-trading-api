@@ -424,9 +424,9 @@ export default function BacktestPage() {
       </div>
 
       {/* 2컬럼 레이아웃 */}
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid xl:grid-cols-3 gap-6">
         {/* 왼쪽: 설정 */}
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           {/* 파일 드롭존 */}
           <FileDropZone
             onFileSelect={handleImport}
@@ -612,7 +612,7 @@ export default function BacktestPage() {
         </div>
 
         {/* 오른쪽: 결과 */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="min-w-0 xl:col-span-2 space-y-4">
           {error && (
             <div className="card bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
               <div className="flex items-start gap-3">

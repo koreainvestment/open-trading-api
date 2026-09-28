@@ -295,13 +295,13 @@ export function EquityChart({
   }, [chartData]);
 
   // Stable tooltip component that captures tradeMarkers via closure
-  const EquityTooltip = useMemo(() => {
-    const Comp = (props: any) => (
-      <EquityTooltipInner {...props} tradeMarkers={tradeMarkers} />
-    );
-    Comp.displayName = "EquityTooltip";
-    return Comp;
-  }, [tradeMarkers]);
+  const EquityTooltip = useMemo(
+    () =>
+      function EquityTooltipWithMarkers(props: any) {
+        return <EquityTooltipInner {...props} tradeMarkers={tradeMarkers} />;
+      },
+    [tradeMarkers]
+  );
 
   return (
     <div className="card">
