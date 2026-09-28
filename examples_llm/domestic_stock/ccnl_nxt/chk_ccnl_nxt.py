@@ -66,7 +66,8 @@ COLUMN_MAPPING = {
     "PRDY_SMNS_HOUR_ACML_VOL_RATE": "전일 동시간 누적 거래량 비율",
     "HOUR_CLS_CODE": "시간 구분 코드",
     "MRKT_TRTM_CLS_CODE": "임의종료구분코드",
-    "VI_STND_PRC": "정적VI발동기준가"
+    "VI_STND_PRC": "정적VI발동기준가",
+    "MARKET_CLS_CODE": "장 구분 코드"
 }
 
 NUMERIC_COLUMNS = [
@@ -77,7 +78,7 @@ NUMERIC_COLUMNS = [
     "매수비율", "전일 거래량 대비 등락율", "시가대비", "고가대비", "저가대비",
     "매도호가 잔량1", "매수호가 잔량1", "총 매도호가 잔량", "총 매수호가 잔량",
     "거래량 회전율", "전일 동시간 누적 거래량", "전일 동시간 누적 거래량 비율",
-    "정적VI발동기준가"
+    "정적VI발동기준가", "장 구분 코드"
 ]
 
 
