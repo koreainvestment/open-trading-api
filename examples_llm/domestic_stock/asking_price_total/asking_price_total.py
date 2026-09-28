@@ -124,6 +124,7 @@ def asking_price_total(
         "NMID_PRC",
         "NMID_TOTAL_RSQN",
         "NMID_CLS_CODE",
+        "ANTC_EXCH_CLS_CODE"
     ]
 
     return msg, columns
