@@ -346,7 +346,7 @@ async def _run_backtest_task(
                 strategy_id=definition.id,
                 strategy_name=definition.name,
             )
-            project.main_py.write_text(code)
+            project.main_py.write_text(code, encoding="utf-8")
 
             lean_run = await asyncio.to_thread(LeanExecutor.run, project)
 
