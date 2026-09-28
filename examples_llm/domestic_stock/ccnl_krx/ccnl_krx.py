@@ -79,7 +79,7 @@ def ccnl_krx(
         "NEW_MKOP_CLS_CODE", "TRHT_YN", "ASKP_RSQN1", "BIDP_RSQN1",
         "TOTAL_ASKP_RSQN", "TOTAL_BIDP_RSQN", "VOL_TNRT",
         "PRDY_SMNS_HOUR_ACML_VOL", "PRDY_SMNS_HOUR_ACML_VOL_RATE",
-        "HOUR_CLS_CODE", "MRKT_TRTM_CLS_CODE", "VI_STND_PRC"
+        "HOUR_CLS_CODE", "MRKT_TRTM_CLS_CODE", "VI_STND_PRC","MARKET_CLS_CODE"
     ]
 
     return msg, columns
