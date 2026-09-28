@@ -75,7 +75,8 @@ def asking_price_krx(
         "TOTAL_ASKP_RSQN", "TOTAL_BIDP_RSQN", "OVTM_TOTAL_ASKP_RSQN", "OVTM_TOTAL_BIDP_RSQN",
         "ANTC_CNPR", "ANTC_CNQN", "ANTC_VOL", "ANTC_CNTG_VRSS", "ANTC_CNTG_VRSS_SIGN",
         "ANTC_CNTG_PRDY_CTRT", "ACML_VOL", "TOTAL_ASKP_RSQN_ICDC", "TOTAL_BIDP_RSQN_ICDC",
-        "OVTM_TOTAL_ASKP_ICDC", "OVTM_TOTAL_BIDP_ICDC", "STCK_DEAL_CLS_CODE"
+        "OVTM_TOTAL_ASKP_ICDC", "OVTM_TOTAL_BIDP_ICDC", "STCK_DEAL_CLS_CODE",
+        "MID_PRC", "MIDP_TOTAL_RSQN", "MIDP_CLS_CODE", "MARKET_CLS_CODE"
     ]
 
     return msg, columns
@@ -306,6 +307,7 @@ def asking_price_total(
         "NMID_PRC",
         "NMID_TOTAL_RSQN",
         "NMID_CLS_CODE",
+        "ANTC_EXCH_CLS_CODE"
     ]
 
     return msg, columns
@@ -377,7 +379,7 @@ def ccnl_krx(
         "NEW_MKOP_CLS_CODE", "TRHT_YN", "ASKP_RSQN1", "BIDP_RSQN1",
         "TOTAL_ASKP_RSQN", "TOTAL_BIDP_RSQN", "VOL_TNRT",
         "PRDY_SMNS_HOUR_ACML_VOL", "PRDY_SMNS_HOUR_ACML_VOL_RATE",
-        "HOUR_CLS_CODE", "MRKT_TRTM_CLS_CODE", "VI_STND_PRC"
+        "HOUR_CLS_CODE", "MRKT_TRTM_CLS_CODE", "VI_STND_PRC", "MARKET_CLS_CODE"
     ]
 
     return msg, columns
@@ -503,7 +505,7 @@ def ccnl_nxt(
         "NEW_MKOP_CLS_CODE", "TRHT_YN", "ASKP_RSQN1", "BIDP_RSQN1",
         "TOTAL_ASKP_RSQN", "TOTAL_BIDP_RSQN", "VOL_TNRT",
         "PRDY_SMNS_HOUR_ACML_VOL", "PRDY_SMNS_HOUR_ACML_VOL_RATE",
-        "HOUR_CLS_CODE", "MRKT_TRTM_CLS_CODE", "VI_STND_PRC"
+        "HOUR_CLS_CODE", "MRKT_TRTM_CLS_CODE", "VI_STND_PRC","MARKET_CLS_CODE"
     ]
 
     return msg, columns
@@ -601,6 +603,7 @@ def ccnl_total(
         "HOUR_CLS_CODE",
         "MRKT_TRTM_CLS_CODE",
         "VI_STND_PRC",
+        "MARKET_CLS_CODE"
     ]
 
     return msg, columns
