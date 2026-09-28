@@ -106,6 +106,7 @@ def ccnl_total(
         "HOUR_CLS_CODE",
         "MRKT_TRTM_CLS_CODE",
         "VI_STND_PRC",
+        "MARKET_CLS_CODE"
     ]
 
     return msg, columns
