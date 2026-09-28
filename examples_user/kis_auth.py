@@ -138,7 +138,7 @@ def isPaperTrading():  # 모의투자 매매
 def changeTREnv(token_key, svr="prod", product=_cfg["my_prod"]):
     cfg = dict()
 
-    global _isPaper
+    global _isPaper, _smartSleep
     if svr == "prod":  # 실전투자
         ak1 = "my_app"  # 실전투자용 앱키
         ak2 = "my_sec"  # 실전투자용 앱시크리트
