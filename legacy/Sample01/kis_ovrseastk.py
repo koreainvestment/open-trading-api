@@ -73,7 +73,7 @@ def get_overseas_order(ord_dv="", excg_cd="", itm_no="", qty=0, unpr=0, tr_cont=
         elif excg_cd == "TKSE":
             tr_id = "TTTS0307U"  # 일본 매도 주문 [모의투자] VTTS0307U
         elif excg_cd in ("HASE", "VNSE"):
-            tr_id = "TTTS0310U"  # 베트남(하노이,호치민) 매도 주문 [모의투자] VTTS0311U
+            tr_id = "TTTS0310U"  # 베트남(하노이,호치민) 매도 주문 [모의투자] VTTS0310U
         else:
             print("해외거래소코드 확인요망!!!")
             return None
