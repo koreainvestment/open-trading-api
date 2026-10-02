@@ -1,0 +1,6 @@
+.env
+token_cache.json
+logs/
+__pycache__/
+*.pyc
+
