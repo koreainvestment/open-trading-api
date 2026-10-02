@@ -4,13 +4,13 @@ my_app: ""
 my_sec: ""
 
 #모의투자
-paper_app: ""
-paper_sec: ""
+paper_app: "PSzJDY1n4UEorZOCtijH5BoKKSCldXsr25fU"
+paper_sec: "K0A1W5CZY3IrkBYkC0Bx2KJ/Lo3tcoFMH/QHuxAl7l8dHA5zcj/qDJa7+mSR43MiYE7u475e3ZAm5NyVxM6OqOadFutx3aHtyU0sctCqsdjjkzp2+bHDY4+0Yu2GZe8yn6KG4rGX40wkgE/5FK4AK70HFiiSHUveO8XNCX/7ThcA/oRno="
 
 #계좌번호 앞 8자리
 my_acct_stock: "12345678"
 my_acct_future: ""
-my_paper_stock: ""
+my_paper_stock: "50177504"
 my_paper_future: ""
 
 #계좌번호 뒤 2자리
