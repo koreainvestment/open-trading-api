@@ -1,0 +1,29 @@
+# package.json "files"가 있으면 npm은 이 파일을 적용하지 않습니다.
+# 포함 범위는 package.json files의 glob이 결정합니다.
+.venv/
+__pycache__/
+**/__pycache__/
+**/__pycache__/**
+*.py[cod]
+**/*.py[cod]
+*.egg-info/
+**/*.egg-info/
+**/*.egg-info/**
+.pytest_cache/
+.mypy_cache/
+build/
+dist/
+wheels/
+.DS_Store
+.idea/
+.vscode/
+*.log
+tmp/
+.git/
+.gitignore
+.dockerignore
+Dockerfile
+tests/
+*.db
+*.csv
+*.tmp

@@ -1,0 +1,46 @@
+{
+  "name": "@koreainvestment/kis-trading-mcp",
+  "version": "0.1.0",
+  "description": "한국투자증권 OPEN API MCP 서버 - LLM이 쉽게 사용할 수 있는 금융 API 래퍼",
+  "type": "module",
+  "bin": {
+    "kis-trading-mcp": "./bin/cli.js"
+  },
+  "files": [
+    "bin/cli.js",
+    "server.py",
+    "module/**/*.py",
+    "tools/**/*.py",
+    "model/**/*.py",
+    "configs/**/*.json",
+    "pyproject.toml",
+    "uv.lock",
+    ".python-version",
+    ".env.live",
+    "Readme.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "korea-investment",
+    "kis",
+    "openapi",
+    "trading",
+    "stock"
+  ],
+  "license": "MIT",
+  "author": "Korea Investment & Securities",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koreainvestment/open-trading-api.git",
+    "directory": "MCP/Kis Trading MCP"
+  },
+  "bugs": {
+    "url": "https://github.com/koreainvestment/open-trading-api/issues"
+  },
+  "homepage": "https://github.com/koreainvestment/open-trading-api/tree/main/MCP/Kis%20Trading%20MCP#readme"
+}

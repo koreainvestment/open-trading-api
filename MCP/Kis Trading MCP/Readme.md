@@ -1,12 +1,10 @@
-# 중요 : MCP에 대한 내용을 완전히 숙지하신 뒤 사용해 주십시오. 
-#       이 프로그램을 실행하여 발생한 모든 책임은 사용자 본인에게 있습니다.
+# 한국투자증권 트레이딩 MCP (KIS Trading MCP)
 
-# 한국투자증권 OPEN API MCP 서버 - 설치 가이드
+`@koreainvestment/kis-trading-mcp`는 한국투자증권 OPEN API를 Claude Desktop, Cursor 등 MCP 클라이언트에서 쓰게 해 주는 서버입니다. 국내·해외 주식, 선물옵션, 채권, ETF/ETN, ELW의 시세, 잔고, 주문을 대화로 요청할 수 있습니다.
 
-한국투자증권의 다양한 금융 API를 Claude Desktop·Cursor 등 AI 도구에서 사용할 수 있도록 하는 설치 가이드입니다.
+> MCP와 한국투자증권 OPEN API 이용 조건을 숙지한 뒤 사용하세요. 이 프로그램을 실행하여 발생한 모든 책임은 사용자 본인에게 있습니다. 자세한 내용은 [투자 책임 고지](#️-투자-책임-고지)를 참고하세요.
 
-> **권장 연결 방식:** Docker + SSE (모든 OS에서 안정적)  
-> **대안:** stdio 로컬 연동 (고급 사용자, 아래 [stdio 로컬 연동](#-stdio-로컬-연동-고급) 참고)
+가장 간단한 사용 방법은 저장소를 클론하지 않고 `npx`로 연결하는 것입니다. 컨테이너로 실행하려면 [Docker + SSE](#-docker--sse로-실행)를, 소스를 직접 실행하려면 [소스에서 설치 (개발자용)](#-소스에서-설치-개발자용)를 사용하세요.
 
 ## 🚀 주요 기능
 
@@ -34,11 +32,121 @@
 - 🔐 **자동 설정**: 서버 시작 시 KIS 인증 설정 자동 생성
 - 🖥️ **크로스 플랫폼**: Windows, macOS, Linux 모두 지원
 
-## 📦 Docker 설치 및 설정
+## 📦 설치 및 설정
+
+### 사용 전 준비
+
+`npx`로 실행할 때는 이 저장소를 클론하지 않아도 됩니다. 아래만 준비하면 됩니다.
+
+- Node.js 18 이상
+- Python 3.11 이상
+- [uv](https://docs.astral.sh/uv/)
+- [한국투자증권 개발자 센터](https://apiportal.koreainvestment.com/)에서 발급한 Open API 앱키
+
+Docker로 실행할 때만 Docker 20.10 이상이 추가로 필요합니다.
+
+### 🚀 빠른 설치 (NPM / npx, 권장)
+
+Claude Desktop, Cursor 등 MCP 클라이언트가 `npx`로 서버를 실행합니다.
+
+터미널에서 직접 실행해 보려면:
+
+```bash
+npx -y @koreainvestment/kis-trading-mcp
+```
+
+`npx` 진입점은 `MCP_TYPE=stdio`를 내부에서 설정합니다. 설정 파일에 `MCP_TYPE`을 따로 넣지 않아도 됩니다. SSE 또는 streamable-http로 띄우려면 아래 Docker 또는 소스 실행을 사용하세요.
+
+#### 인증정보
+
+한국투자증권 API를 호출하려면 MCP 클라이언트 설정의 `env`에 앱키를 넣습니다. 서버 프로세스가 뜨는 것 자체에는 앱키가 필수는 아니지만, 없으면 시세·잔고·주문 호출은 동작하지 않습니다.
+
+| 환경변수 | 필요 여부 | 설명 |
+|---------|-----------|------|
+| `KIS_APP_KEY` | 필수 | 실전 App Key |
+| `KIS_APP_SECRET` | 필수 | 실전 App Secret |
+| `KIS_PAPER_APP_KEY` | 모의투자 시 | 모의 App Key |
+| `KIS_PAPER_APP_SECRET` | 모의투자 시 | 모의 App Secret |
+| `KIS_HTS_ID` | 선택 | HTS ID |
+| `KIS_ACCT_STOCK` | 선택 | 실전 증권 계좌번호 |
+| `KIS_ACCT_FUTURE` | 선택 | 실전 선물옵션 계좌번호 |
+| `KIS_PAPER_STOCK` | 선택 | 모의 증권 계좌번호 |
+| `KIS_PAPER_FUTURE` | 선택 | 모의 선물옵션 계좌번호 |
+| `KIS_PROD_TYPE` | 선택 | 계좌상품코드. 기본값은 종합계좌 `01` |
+
+#### Claude Desktop
+
+**설정 파일 위치:**
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "kis-trading": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@koreainvestment/kis-trading-mcp"
+      ],
+      "env": {
+        "KIS_APP_KEY": "your_app_key",
+        "KIS_APP_SECRET": "your_app_secret",
+        "KIS_PAPER_APP_KEY": "your_paper_app_key",
+        "KIS_PAPER_APP_SECRET": "your_paper_app_secret",
+        "KIS_HTS_ID": "your_hts_id",
+        "KIS_ACCT_STOCK": "12345678",
+        "KIS_ACCT_FUTURE": "87654321",
+        "KIS_PAPER_STOCK": "11111111",
+        "KIS_PAPER_FUTURE": "22222222",
+        "KIS_PROD_TYPE": "01"
+      }
+    }
+  }
+}
+```
+
+Claude Desktop을 재시작하면 대화창의 도구 목록에서 `kis-trading` 연결을 확인할 수 있습니다.
+
+#### Cursor
+
+`Settings > MCP Servers`에 같은 설정을 추가합니다. Cursor도 이 npx stdio 실행을 사용합니다.
+
+```json
+{
+  "mcpServers": {
+    "kis-trading": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@koreainvestment/kis-trading-mcp"
+      ],
+      "env": {
+        "KIS_APP_KEY": "your_app_key",
+        "KIS_APP_SECRET": "your_app_secret",
+        "KIS_PAPER_APP_KEY": "your_paper_app_key",
+        "KIS_PAPER_APP_SECRET": "your_paper_app_secret",
+        "KIS_HTS_ID": "your_hts_id",
+        "KIS_ACCT_STOCK": "12345678",
+        "KIS_ACCT_FUTURE": "87654321",
+        "KIS_PAPER_STOCK": "11111111",
+        "KIS_PAPER_FUTURE": "22222222",
+        "KIS_PROD_TYPE": "01"
+      }
+    }
+  }
+}
+```
+
+## 🐳 Docker + SSE로 실행
+
+저장소를 클론한 뒤 컨테이너에서 SSE 서버를 실행하는 방법입니다.
 
 ### 📋 Docker 설치
 
-#### 🚀 빠른 설치 (권장)
+#### Docker Desktop 설치
 **공식 Docker Desktop을 사용하세요:**
 - [Docker Desktop for Mac](https://www.docker.com/products/docker-desktop/)
 - [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)  
@@ -210,13 +318,13 @@ Claude Desktop 설정 파일에 MCP 서버를 등록하세요.
 
 > `your_strong_random_token`은 Docker 실행 시 설정한 `MCP_ACCESS_TOKEN`과 동일한 값이어야 합니다.
 
-### 🔌 stdio 로컬 연동 (고급)
+## 📋 소스에서 설치 (개발자용)
 
-Docker 없이 Claude Desktop·Cursor에 직접 연결하는 방식입니다. MCP 클라이언트가 서버 프로세스를 직접 실행합니다.
+저장소를 클론한 뒤 `uv`로 stdio 서버를 직접 실행하는 방법입니다. MCP 클라이언트가 서버 프로세스를 실행합니다. 클론 없이 같은 stdio 방식으로 쓰려면 [NPM / npx 빠른 설치](#-빠른-설치-npm--npx-권장)를 사용하세요.
 
 **요구사항:** Python 3.11+, [uv](https://docs.astral.sh/uv/), 한국투자증권 Open API 인증정보
 
-#### 1단계: 프로젝트 준비
+### 1단계: 프로젝트 준비
 
 ```bash
 git clone https://github.com/koreainvestment/open-trading-api.git
@@ -224,7 +332,7 @@ cd "open-trading-api/MCP/Kis Trading MCP"
 uv sync
 ```
 
-#### 2단계: Claude Desktop 설정 (stdio)
+### 2단계: Claude Desktop 설정 (stdio)
 
 **설정 파일 위치:**
 - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -256,7 +364,7 @@ uv sync
 - `MCP_TYPE=stdio`를 반드시 설정하세요. `.env.live` 기본값은 `sse`입니다.
 - Claude Desktop 재시작 후 채팅에서 "삼성전자 현재가 알려줘" 등으로 테스트할 수 있습니다.
 
-#### 3단계: MCP Inspector로 테스트 (선택)
+### 3단계: MCP Inspector로 테스트 (선택)
 
 Claude Desktop 없이 서버 동작을 확인하려면:
 
@@ -268,13 +376,14 @@ ENV=live MCP_TYPE=stdio uv run python server.py
 $env:ENV="live"; $env:MCP_TYPE="stdio"; npx @modelcontextprotocol/inspector uv run python server.py
 ```
 
-#### ⚠️ stdio 사용 시 주의사항
+### ⚠️ stdio 사용 시 주의사항
 
-| 환경 | 권장 여부 | 비고 |
-|------|-----------|------|
-| macOS / Linux (stdio) | ✅ 사용 가능 | |
-| Windows (stdio) | ⚠️ 가능 (패치 후) | v2.11.2+ FastMCP 비동기 API 호환 필요 |
-| Windows / macOS / Linux (Docker) | ✅ **권장** | 가장 안정적 |
+| 환경 | 사용 | 비고 |
+|------|------|------|
+| npx (stdio) | ✅ 간편 실행 | `MCP_TYPE`을 따로 넣지 않음 |
+| macOS / Linux (`uv` stdio) | ✅ 사용 가능 | 소스 클론 후 실행 |
+| Windows (`uv` stdio) | ⚠️ 가능 (패치 후) | v2.11.2+ FastMCP 비동기 API 호환 필요 |
+| Docker + SSE | ✅ 사용 가능 | 컨테이너로 격리해 실행 |
 
 - stdio 모드는 `MCP_ACCESS_TOKEN`이 필요 없습니다 (HTTP 인증 미사용).
 - API 실행 시 `.venv` 가상환경이 필요합니다 (`uv sync`로 생성).
@@ -436,7 +545,7 @@ docker exec kis-trade-mcp ping github.com
 - **컨테이너 격리**: 호스트 시스템과 완전히 분리된 환경에서 실행
 - **환경변수 보안**: 민감한 정보는 환경변수로 전달, 코드에 하드코딩 금지
 - **임시 파일 정리**: 각 API 호출 후 임시 파일 자동 삭제
-- **네트워크 격리**: 외부 공개가 필요 없는 경우 stdio 모드 사용을 고려할 수 있습니다. 다만 **안정성과 크로스 플랫폼 호환을 위해 Docker + SSE 방식을 권장**합니다.
+- **네트워크 격리**: 외부에 포트를 열지 않으려면 `npx` 또는 `uv`의 stdio 모드를 사용하세요. SSE/HTTP로 열 때는 Docker와 `MCP_ACCESS_TOKEN`으로 접근을 제한하세요.
 
 ## ⚠️ 제한사항 및 성능
 
