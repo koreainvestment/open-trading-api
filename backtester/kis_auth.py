@@ -232,8 +232,16 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
             ).access_token_token_expired  # 토큰값 만료일시 가져오기
             save_token(my_token, my_expired)  # 새로 발급 받은 토큰 저장
         else:
-            print("Get Authentification token fail!\nYou have to restart your app!!!")
-            return
+            # 근본 fix (2026-06-30): silent return 제거.
+            # 종전 동작은 print + return 으로 _TRENV 빈 tuple 그대로 유지 →
+            # 호출자가 getTREnv().my_url 접근 시 AttributeError "tuple has no
+            # attribute 'my_url'" 발생. caller 가 진짜 원인 (인증 실패) 모름.
+            # 명확한 RuntimeError 로 변경하여 호출자가 yaml/키 점검 가능.
+            err_body = (res.text[:300] if hasattr(res, 'text') else f"HTTP {rescode}")
+            raise RuntimeError(
+                f"KIS OAuth token issue failed (HTTP {rescode}): {err_body}\n"
+                f"yaml의 {ak1}/{ak2} (svr={svr}) 점검 필요."
+            )
     else:
         my_token = saved_token  # 기존 발급 토큰 확인되어 기존 토큰 사용
 
