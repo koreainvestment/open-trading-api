@@ -134,7 +134,7 @@ function highlightPython(content: string): React.ReactNode[] {
     }
 
     // Keywords
-    let highlighted = line;
+    const highlighted = line;
     const parts: React.ReactNode[] = [];
     const keywords = /\b(def|class|if|elif|else|return|import|from|and|or|not|True|False|None|self|async|await|try|except|raise|with|as|for|in|while|break|continue|pass|lambda|yield)\b/g;
     const builtins = /\b(print|len|range|int|float|str|list|dict|set|tuple|bool|type|super|isinstance|getattr|setattr|hasattr|property)\b/g;

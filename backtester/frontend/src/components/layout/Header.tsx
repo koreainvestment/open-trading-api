@@ -53,7 +53,7 @@ export function Header() {
               </span>
               <button
                 onClick={() => setIsSettingsOpen(true)}
-                className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="min-h-11 min-w-11 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus-ring"
                 aria-label="설정 열기"
               >
                 <Settings className="w-5 h-5 text-slate-600 dark:text-slate-400" />

@@ -62,7 +62,7 @@ docker-compose*.yml
 
 # 문서
 *.md
-!README.md
+!Readme.md
 
 # 테스트
 test_*.py

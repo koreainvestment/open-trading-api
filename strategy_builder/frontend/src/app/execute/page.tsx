@@ -220,9 +220,9 @@ export default function ExecutePage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Left Panel - Strategy & Stocks */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="min-w-0 xl:col-span-1 space-y-6">
             {/* Strategy Selector */}
             <div className="card p-6">
               <StrategySelector
@@ -265,7 +265,7 @@ export default function ExecutePage() {
           </div>
 
           {/* Center Panel - Signals */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="min-w-0 xl:col-span-1 space-y-6">
             <div className="card p-6">
               <h3 className="text-subheading mb-4">시그널 결과</h3>
               <SignalList
@@ -282,7 +282,7 @@ export default function ExecutePage() {
           </div>
 
           {/* Right Panel - Holdings */}
-          <div className="lg:col-span-1">
+          <div className="min-w-0 xl:col-span-1">
             <HoldingsList
               holdings={holdings}
               pendingOrders={pendingOrders}

@@ -29,9 +29,9 @@ export function useTradingMode(): UseTradingModeReturn {
 
   // Cooldown timer countdown
   useEffect(() => {
-    if (status.cooldown_remaining && status.cooldown_remaining > 0) {
-      setCooldownTimer(status.cooldown_remaining);
-    }
+    const remaining = status.cooldown_remaining ?? 0;
+    const frame = requestAnimationFrame(() => setCooldownTimer(remaining));
+    return () => cancelAnimationFrame(frame);
   }, [status.cooldown_remaining]);
 
   useEffect(() => {

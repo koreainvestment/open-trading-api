@@ -20,9 +20,13 @@ export function useLocalStrategies() {
 
   // Load strategies on mount
   useEffect(() => {
-    setStorageAvailable(isStorageAvailable());
-    setStrategies(loadAllStrategies());
-    setIsLoading(false);
+    const frame = requestAnimationFrame(() => {
+      setStorageAvailable(isStorageAvailable());
+      setStrategies(loadAllStrategies());
+      setIsLoading(false);
+    });
+
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   // Refresh strategies

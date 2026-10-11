@@ -97,6 +97,8 @@ body {
   background: var(--color-bg);
   color: var(--color-text-primary);
   font-family: var(--font-noto-sans-kr), var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* Typography Scale */
