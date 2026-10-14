@@ -12,6 +12,7 @@ import time
 from pathlib import Path
 from typing import Literal
 
+from kis_backtest.errors import BOUNDARY_ERRORS
 from kis_backtest.models.result import BacktestResult
 from kis_backtest.report import KISReportGenerator
 from kis_mcp.schemas import error_response, success_response
@@ -142,6 +143,6 @@ def get_report(
             message=f"HTML 리포트 생성 완료: {generated}",
         )
 
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("get_report: HTML 생성 실패")
         return error_response(f"HTML 리포트 생성 실패: {exc}")

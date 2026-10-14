@@ -435,7 +435,7 @@ class KRXEquity(PythonData):
             data["Low"] = float(cols[3])
             data["Close"] = float(cols[4])
             data["Volume"] = int(cols[5])
-        except Exception:
+        except (IndexError, ValueError):
             return None
 
         return data
@@ -465,7 +465,7 @@ class KRXIndex(PythonData):
             data["Low"] = float(cols[3])
             data["Close"] = float(cols[4])
             data["Volume"] = int(cols[5]) if len(cols) > 5 and cols[5] else 0
-        except Exception:
+        except (IndexError, ValueError):
             return None
 
         return data'''
@@ -497,7 +497,7 @@ class USEquity(PythonData):
             data["Low"] = float(cols[3])
             data["Close"] = float(cols[4])
             data["Volume"] = int(cols[5])
-        except Exception:
+        except (IndexError, ValueError):
             return None
         
         return data'''

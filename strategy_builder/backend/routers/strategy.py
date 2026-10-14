@@ -9,7 +9,7 @@ import logging
 import datetime
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel
 
 from strategy_core import StrategyRegistry
@@ -20,6 +20,7 @@ from strategy_core.executor import (
     execute_from_builder_state,
     execute_custom_file,
 )
+from core.errors import BOUNDARY_ERRORS
 from backend import authenticate, is_authenticated, get_current_mode
 import kis_auth as ka
 from strategy_core.dsl.codegen import StrategyCodeGenerator, generate_strategy_file
@@ -158,8 +159,9 @@ async def list_custom_strategies():
                     'buy_condition': buy_condition,
                     'sell_condition': sell_condition,
                 })
-            except Exception:
-                pass
+            except BOUNDARY_ERRORS:
+                # 파일별 처리 경계: 읽기/파싱에 실패한 파일은 목록에서 제외
+                continue
 
     return {"strategies": custom_strategies}
 
@@ -240,7 +242,8 @@ async def execute_strategy(request: ExecuteRequest):
             import re
             custom_name = strategy_id.removeprefix('custom:')
             if not re.fullmatch(r'[a-zA-Z0-9_]+', custom_name):
-                raise HTTPException(400, "유효하지 않은 전략 ID")
+                log("error", "전략 실행 오류: 유효하지 않은 전략 ID")
+                return ExecuteResponse(status='error', logs=logs, message='유효하지 않은 전략 ID')
             log("info", f"커스텀 전략: {custom_name}")
             log("info", f"종목: {', '.join(stocks)}")
 
@@ -295,7 +298,7 @@ async def execute_strategy(request: ExecuteRequest):
             logs=logs,
         )
 
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         log("error", f"전략 실행 오류: {str(e)}")
         return ExecuteResponse(status='error', logs=logs, message=str(e))
 
@@ -325,7 +328,7 @@ async def build_strategy(request: BuildRequest):
             "strategy_name": request.name,
         }
 
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         return {
             "status": "error",
             "message": f"전략 생성 실패: {str(e)}",
@@ -354,7 +357,7 @@ async def preview_strategy(request: BuildRequest):
             "required_days": strategy.get_required_days(),
         }
 
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         return {
             "status": "error",
             "message": str(e),
@@ -397,7 +400,7 @@ async def preview_code_from_state(request: dict):
             "sell_dsl": sell_condition,
         }
 
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         return {
             "status": "error",
             "message": str(e),

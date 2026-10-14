@@ -9,6 +9,7 @@ import logging
 from typing import Any, Dict, List, Optional
 
 import kis_backtest.strategies.preset  # 전략 자동 등록
+from kis_backtest.errors import BOUNDARY_ERRORS
 from kis_backtest.strategies.registry import StrategyRegistry
 from kis_backtest.file.saver import StrategyFileSaver
 from kis_backtest.file.loader import StrategyFileLoader
@@ -27,7 +28,7 @@ def list_presets() -> dict:
     try:
         strategies = StrategyRegistry.list_all_with_params()
         return success_response(strategies)
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("list_presets 실패")
         return error_response(str(exc))
 
@@ -55,7 +56,7 @@ def get_preset_yaml(
             )
         yaml_str = StrategyFileSaver.to_yaml_string(definition)
         return success_response({"strategy_id": strategy_id, "yaml": yaml_str})
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("get_preset_yaml 실패")
         return error_response(str(exc))
 
@@ -73,7 +74,7 @@ def validate_yaml(yaml_content: str) -> dict:
         schema = StrategyFileLoader.load_schema_with_params(yaml_content)
     except ValueError as exc:
         return success_response({"valid": False, "errors": [str(exc)], "warnings": []})
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("validate_yaml 실패")
         return error_response(str(exc))
 
@@ -112,6 +113,6 @@ def list_indicators() -> dict:
                 }
             )
         return success_response(indicators)
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("list_indicators 실패")
         return error_response(str(exc))

@@ -3,6 +3,7 @@
  */
 
 import type { StoredStrategy, BuilderState } from "@/types/builder";
+import { randomToken } from "@/lib/utils";
 
 const STORAGE_KEY = "kis2_custom_strategies";
 const MAX_STRATEGIES = 50;
@@ -11,7 +12,7 @@ const MAX_STRATEGIES = 50;
  * Generate unique ID for new strategy
  */
 function generateId(): string {
-  return `custom_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `custom_${Date.now()}_${randomToken(4)}`;
 }
 
 /**

@@ -15,6 +15,9 @@ import httpx
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
+from core.errors import BOUNDARY_ERRORS
+from core.log_sanitize import log_error
+
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["symbols"])
 
@@ -127,8 +130,8 @@ def _load_from_csv(exchange: str) -> list[dict]:
                         "exchange": parts[2],
                         "exchange_name": "코스피" if parts[2] == "kospi" else "코스닥",
                     })
-    except Exception as e:
-        logger.error(f"CSV 로드 오류 ({exchange}): {e}")
+    except (OSError, UnicodeDecodeError) as e:
+        logger.error(f"CSV 로드 오류 ({exchange}): {log_error(e)}")
 
     return symbols
 
@@ -144,8 +147,9 @@ def _save_to_csv(exchange: str, symbols: list[dict]):
             for s in symbols:
                 f.write(f"{s['code']},{s['name']},{s['exchange']}\n")
         logger.info(f"CSV 저장 완료: {csv_path} ({len(symbols)}개)")
-    except Exception as e:
-        logger.error(f"CSV 저장 오류 ({exchange}): {e}")
+    except (OSError, KeyError, UnicodeEncodeError) as e:
+        # 파일 쓰기 실패(OSError), 항목 키 누락(KeyError), 인코딩 불가 문자(UnicodeEncodeError)
+        logger.error(f"CSV 저장 오류 ({exchange}): {log_error(e)}")
 
 
 def _get_all_symbols() -> list[dict]:
@@ -414,8 +418,9 @@ def _parse_kospi_kosdaq_mst(content: bytes, exchange: str) -> list[dict]:
                     "exchange": exchange,
                     "exchange_name": "코스피" if exchange == "kospi" else "코스닥",
                 })
-    except Exception as e:
-        logger.error(f"마스터파일 파싱 오류 ({exchange}): {e}")
+    except (AttributeError, TypeError) as e:
+        # content가 bytes가 아닌 경우 (decode는 errors="ignore"로 예외 없음)
+        logger.error(f"마스터파일 파싱 오류 ({exchange}): {log_error(e)}")
     
     return symbols
 
@@ -440,9 +445,8 @@ async def _download_and_parse(exchange: str, timeout: float = 60.0) -> tuple[lis
         # ZIP 압축 해제
         try:
             with zipfile.ZipFile(BytesIO(content)) as zf:
-                for name in zf.namelist():
-                    extracted = zf.read(name)
-                    break
+                names = zf.namelist()
+                extracted = zf.read(names[0]) if names else content
         except zipfile.BadZipFile:
             extracted = content
         
@@ -463,8 +467,9 @@ async def _download_and_parse(exchange: str, timeout: float = 60.0) -> tuple[lis
         error = f"HTTP {e.response.status_code}"
         logger.error(f"HTTP 오류 ({exchange}): {error}")
         return [], error
-    except Exception as e:
-        logger.error(f"수집 실패 ({exchange}): {e}")
+    except BOUNDARY_ERRORS as e:
+        # 수집 API 경계: 실패는 (빈 목록, 오류 메시지)로 반환해 라우트가 응답으로 변환
+        logger.error(f"수집 실패 ({exchange}): {log_error(e)}")
         return [], str(e)
 
 

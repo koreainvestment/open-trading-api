@@ -13,6 +13,7 @@ from backend.schemas.strategy import (
     StrategyBuildRequest,
     StrategyBuildResponse,
 )
+from kis_backtest.errors import BOUNDARY_ERRORS
 from kis_backtest.strategies.registry import StrategyRegistry
 import kis_backtest.strategies.preset  # 전략 자동 등록
 
@@ -120,7 +121,7 @@ async def build_strategy(request: StrategyBuildRequest) -> StrategyBuildResponse
             data=definition.to_dict(),
             message="전략 빌드 성공",
         )
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -147,7 +148,7 @@ async def get_strategy_yaml(strategy_id: str) -> dict:
                 "yaml": yaml_content,
             },
         }
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=500, detail=f"YAML 생성 실패: {e}")
 
 
@@ -174,7 +175,7 @@ async def get_strategy_python(strategy_id: str) -> dict:
                 "python": python_content,
             },
         }
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=500, detail=f"Python 코드 생성 실패: {e}")
 
 

@@ -19,12 +19,22 @@ from pathlib import Path
 # 프로젝트 루트 추가
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+import requests
+
 from kis_backtest import LeanClient
+from kis_backtest.errors import BOUNDARY_ERRORS
 from kis_backtest.providers.kis import KISAuth, KISDataProvider
 
 # 날짜 설정: 오늘 기준 1년 데이터
 TODAY = date.today().strftime("%Y-%m-%d")
 ONE_YEAR_AGO = (date.today() - timedelta(days=365)).strftime("%Y-%m-%d")
+
+# 인증 단계 예외: 설정 누락(ValueError/KeyError), 토큰 발급 실패 후 환경 미설정(AttributeError),
+# 토큰 파일 I/O(OSError), 네트워크 오류(requests.RequestException)
+AUTH_ERRORS = (ValueError, KeyError, AttributeError, OSError, requests.RequestException)
+
+# 예제 함수 경계: 한 예제의 실패를 출력하고 다음으로 진행 (Lean·데이터·코드생성 오류 전반)
+BACKTEST_ERRORS = BOUNDARY_ERRORS
 
 
 def create_client():
@@ -35,7 +45,7 @@ def create_client():
         mode_str = "모의투자" if auth.is_paper else "실전투자"
         print(f"  ✓ KIS 인증 ({mode_str})")
         return LeanClient(data_provider=data_provider)
-    except Exception as e:
+    except AUTH_ERRORS as e:
         print(f"  ✗ 인증 실패: {e}")
         print("    KIS API 인증 정보를 설정하세요.")
         return None
@@ -104,10 +114,8 @@ def example_basic_usage():
         print(f"  승률: {result.win_rate:.1%}")
 
         return result
-    except Exception as e:
+    except BACKTEST_ERRORS as e:
         print(f"  ❌ 백테스트 실패: {e}")
-        import traceback
-        traceback.print_exc()
         return None
 
 
@@ -211,7 +219,7 @@ def example_various_indicators():
             )
             results[name] = result
             print(f"  {name:15}: 수익률 {result.total_return_pct:+.2f}%, 샤프 {result.sharpe_ratio:.2f}")
-        except Exception as e:
+        except BACKTEST_ERRORS as e:
             print(f"  {name:15}: ❌ 오류 - {e}")
 
     return results
@@ -319,7 +327,7 @@ def example_complex_conditions():
             print(f"     샤프: {result.sharpe_ratio:.2f}")
             print(f"     MDD: {result.max_drawdown:.2f}%")
             print(f"     거래수: {result.total_trades}")
-        except Exception as e:
+        except BACKTEST_ERRORS as e:
             print(f"\n  ❌ {name}: {e}")
 
 
@@ -403,7 +411,7 @@ def example_crossover_events():
                 end_date=TODAY,
             )
             print(f"  {name:15}: 수익률 {result.total_return_pct:+.2f}%, 거래 {result.total_trades}회")
-        except Exception as e:
+        except BACKTEST_ERRORS as e:
             print(f"  {name:15}: ❌ {e}")
 
 
@@ -500,7 +508,7 @@ def example_risk_management():
                 end_date=TODAY,
             )
             print(f"  {name:25} {result.total_return_pct:>+9.2f}% {result.max_drawdown:>9.2f}% {result.win_rate:>7.1%} {result.total_trades:>6}")
-        except Exception as e:
+        except BACKTEST_ERRORS as e:
             print(f"  {name:25} ❌ {e}")
 
 
@@ -576,7 +584,7 @@ def example_compare_strategies():
             )
             results[name] = result
             print(f"  ✅ {name}")
-        except Exception as e:
+        except BACKTEST_ERRORS as e:
             print(f"  ❌ {name}: {e}")
 
     if not results:
@@ -659,10 +667,9 @@ if __name__ == "__main__":
             print("=" * 70)
             try:
                 func()
-            except Exception as e:
+            # 한 예제 실패가 나머지 예제 실행을 막지 않도록 예제별로 처리
+            except BOUNDARY_ERRORS as e:
                 print(f"❌ 오류: {e}")
-                import traceback
-                traceback.print_exc()
             print()
     else:
         examples[args.example]()

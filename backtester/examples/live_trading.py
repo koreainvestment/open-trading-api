@@ -23,8 +23,18 @@ from pathlib import Path
 # 프로젝트 루트 추가
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from kis_backtest import LeanClient
+import requests
+
+from kis_backtest import LeanClient, LeanError
 from kis_backtest.providers.kis import KISAuth, KISDataProvider, KISBrokerageProvider
+
+# 인증 단계 예외: 설정 누락(ValueError/KeyError), 토큰 발급 실패 후 환경 미설정(AttributeError),
+# 토큰 파일 I/O(OSError), 네트워크 오류(requests.RequestException), brokerage 미설정(LeanError)
+AUTH_ERRORS = (LeanError, ValueError, KeyError, AttributeError, OSError, requests.RequestException)
+
+# 시세/주문/잔고 조회 예외: KIS API 오류(KISError 등 LeanError 계열), 응답 파싱·모델 검증
+# (ValueError/KeyError/TypeError), 네트워크 오류(requests.RequestException)
+LIVE_ERRORS = (LeanError, ValueError, KeyError, TypeError, requests.RequestException)
 
 
 # ============================================================================
@@ -50,7 +60,7 @@ def create_live_client():
         )
         return client.live()
 
-    except Exception as e:
+    except AUTH_ERRORS as e:
         print(f"  ✗ 인증 실패: {e}")
         print("\n💡 KIS API 인증 정보를 설정하세요.")
         return None
@@ -79,7 +89,7 @@ def run_manual_order():
         quote = live.get_quote(symbol)
         print(f"  현재가: {quote.price:,.0f}원")
         print(f"  전일대비: {quote.change:+,.0f}원 ({quote.change_pct:+.2f}%)")
-    except Exception as e:
+    except LIVE_ERRORS as e:
         print(f"  시세 조회 실패: {e}")
         return
 
@@ -101,7 +111,7 @@ def run_manual_order():
         print(f"    주문번호: {order.id}")
         print(f"    상태: {order.status}")
 
-    except Exception as e:
+    except LIVE_ERRORS as e:
         print(f"\n  ✗ 주문 실패: {e}")
 
 
@@ -124,10 +134,10 @@ def run_position_management():
     print("\n[잔고] 계좌 잔고 조회 중...")
     try:
         balance = live.get_balance()
-        print(f"  예수금: {balance.cash:,.0f}원")
+        print(f"  예수금: {balance.total_cash:,.0f}원")
         print(f"  출금가능금액: {balance.available_cash:,.0f}원")
-        print(f"  총평가금액: {balance.total_value:,.0f}원")
-    except Exception as e:
+        print(f"  총평가금액: {balance.total_equity:,.0f}원")
+    except LIVE_ERRORS as e:
         print(f"  잔고 조회 실패: {e}")
 
     # 포지션 조회
@@ -150,7 +160,7 @@ def run_position_management():
                 print(f"    현재가: {pos.current_price:,.0f}원")
                 print(f"    평가손익: {pnl_sign}{pos.unrealized_pnl:,.0f}원 ({pnl_sign}{pnl_pct:.2f}%)")
 
-    except Exception as e:
+    except LIVE_ERRORS as e:
         print(f"  포지션 조회 실패: {e}")
 
 
@@ -175,7 +185,7 @@ def run_limit_order():
     try:
         quote = live.get_quote(symbol)
         current_price = quote.price
-    except Exception as e:
+    except LIVE_ERRORS as e:
         print(f"시세 조회 실패: {e}")
         return
 
@@ -215,7 +225,7 @@ def run_limit_order():
         else:
             print(f"  ✗ 취소 실패 (이미 체결되었거나 취소됨)")
 
-    except Exception as e:
+    except LIVE_ERRORS as e:
         print(f"\n  ✗ 오류: {e}")
 
 
@@ -360,8 +370,8 @@ def run_history_query():
     try:
         bars = live.get_history(
             symbol=symbol,
-            start=start_date.strftime("%Y-%m-%d"),
-            end=end_date.strftime("%Y-%m-%d"),
+            start=start_date,
+            end=end_date,
         )
 
         print(f"\n수신 데이터: {len(bars)}건")
@@ -376,7 +386,7 @@ def run_history_query():
                 f"거래량 {bar.volume:,}"
             )
 
-    except Exception as e:
+    except LIVE_ERRORS as e:
         print(f"데이터 조회 실패: {e}")
 
 

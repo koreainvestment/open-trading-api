@@ -16,6 +16,7 @@ _RATE_LIMIT_MAX_RETRIES = 3
 from ...models import Bar, Quote, Resolution, IndexBar
 from ...models.trading import Subscription
 from ...models.market_data import StockInfo, FinancialData
+from ...errors import user_code_errors
 from ...exceptions import KISError
 from .auth import KISAuth
 from .constants import ApiPath, TrId, EXCHANGE_TO_KIS
@@ -298,7 +299,8 @@ class KISDataProvider:
                     volume=price.volume,
                 )
                 on_bar(symbol, bar)
-            except Exception as e:
+            except user_code_errors(on_bar) as e:
+                # 사용자 on_bar 콜백 래퍼: 어떤 오류도 WebSocket 수신 루프로 전파하지 않음
                 logger.error(f"Bar 변환 오류: {e}")
         
         self._ws_client.subscribe_price(symbols, price_to_bar)
@@ -348,7 +350,8 @@ class KISDataProvider:
                     volume=price.volume,
                 )
                 on_bar(symbol, bar)
-            except Exception as e:
+            except user_code_errors(on_bar) as e:
+                # 사용자 on_bar 콜백 래퍼: 어떤 오류도 WebSocket 수신 루프로 전파하지 않음
                 logger.error(f"Bar 변환 오류: {e}")
         
         self._ws_client.subscribe_price(symbols, price_to_bar)

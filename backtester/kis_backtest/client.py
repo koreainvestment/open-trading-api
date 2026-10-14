@@ -15,7 +15,12 @@ from .models import BacktestResult, Bar, Resolution
 from .models.result import OptimizationResult
 from .providers import DataProvider, BrokerageProvider
 from .report import KISReportGenerator, BaseTheme
-from .exceptions import ConfigurationError, AlgorithmError, DockerError
+from .errors import BOUNDARY_ERRORS, user_code_errors
+from .exceptions import (
+    AlgorithmError,
+    ConfigurationError,
+    DockerError,
+)
 
 # Lean 모듈
 from .lean.project_manager import LeanProject, LeanProjectManager
@@ -29,6 +34,9 @@ from .strategies.generator import StrategyGenerator, generate_strategy
 from .codegen.generator import LeanCodeGenerator
 
 logger = logging.getLogger(__name__)
+
+# 캐시 CSV 읽기/파싱 오류 (UnicodeDecodeError 는 ValueError 하위)
+_CACHE_ERRORS = (OSError, ValueError, IndexError)
 
 
 class LeanClient:
@@ -370,7 +378,7 @@ class LeanClient:
                 if first_date <= start_date_dt + tolerance and last_date >= end_date_dt - tolerance:
                     return True
                 return False
-            except Exception:
+            except _CACHE_ERRORS:
                 return False
 
         def load_from_cache(csv_path: Path) -> pd.DataFrame:
@@ -400,7 +408,7 @@ class LeanClient:
                         data_dict[symbol] = df
                         logger.info(f"  - {symbol}: 캐시 사용 ({len(df)}건)")
                         continue
-                except Exception as e:
+                except _CACHE_ERRORS as e:
                     logger.warning(f"  - {symbol} 캐시 로드 실패: {e}")
 
             # 2. API 호출 (간격 적용)
@@ -430,7 +438,7 @@ class LeanClient:
                     data_dict[symbol] = df
                     logger.info(f"  - {symbol}: API 조회 ({len(df)}건)")
 
-            except Exception as e:
+            except BOUNDARY_ERRORS as e:
                 logger.warning(f"  - {symbol} 데이터 수집 실패: {e}")
 
         if not data_dict:
@@ -478,7 +486,8 @@ class LeanClient:
                     from datetime import datetime
                     dates = pd.to_datetime([datetime.fromtimestamp(ts) for ts in timestamps])
                     equity_curve = pd.Series(values, index=dates, name="equity")
-            except Exception as e:
+            except (ValueError, TypeError, OverflowError, OSError) as e:
+                # int()/fromtimestamp() 범위·형식 오류, Series 길이 불일치
                 logger.warning(f"equity_curve 변환 실패: {e}")
                 equity_curve = None
 
@@ -542,7 +551,7 @@ class LeanClient:
             logger.info(f"[Benchmark] KOSPI 수집 완료 ({len(curve)}일)")
             return curve
 
-        except Exception as e:
+        except BOUNDARY_ERRORS as e:
             logger.warning(f"[Benchmark] KOSPI 수집 실패: {e}")
             return None
     
@@ -1185,12 +1194,14 @@ class LiveClient:
                             updated_at=datetime.now()
                         )
                         on_fill(order)
-                    except Exception as e:
+                    except user_code_errors(on_fill) as e:
+                        # 사용자 on_fill 콜백 래퍼: 어떤 오류도 WebSocket 수신 루프로 전파하지 않음
                         logger.error(f"Order 변환 오류: {e}")
                 
                 # kis_devlp.yaml에 my_htsid가 설정되어 있으면 자동 구독
                 ws_client.subscribe_fills(notice_to_order)
-            except Exception as e:
+            except (ImportError, ValueError) as e:
+                # subscribe_fills: HTS ID 미설정 시 ValueError
                 logger.warning(f"체결 통보 구독 실패 (my_htsid 미설정?): {e}")
         
         self._ws_client = ws_client

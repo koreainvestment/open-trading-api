@@ -10,7 +10,9 @@ Usage:
 인증 없이 공개 URL에서 다운로드합니다.
 """
 
+import http.client
 import zipfile
+import zlib
 from io import BytesIO
 from pathlib import Path
 import urllib.request
@@ -142,7 +144,9 @@ def main():
             if added > 0:
                 print(f"  ✅ {added}개 종목 추가됨")
             
-        except Exception as e:
+        # 네트워크/파일 I/O(OSError: URLError·timeout 포함), 불완전 HTTP 응답(HTTPException),
+        # 압축 데이터 손상(zlib.error), 기존 CSV 인코딩 오류(UnicodeDecodeError)
+        except (OSError, http.client.HTTPException, zlib.error, UnicodeDecodeError) as e:
             print(f"  ❌ 오류: {e}")
     
     print()

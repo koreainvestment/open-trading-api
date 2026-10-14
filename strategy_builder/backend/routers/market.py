@@ -7,6 +7,8 @@ import logging
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Query
 
 from core import data_fetcher
+from core.errors import BOUNDARY_ERRORS
+from core.log_sanitize import log_error, log_token
 from core.websocket_manager import get_ws_manager
 from backend import authenticate, is_authenticated
 
@@ -74,8 +76,8 @@ async def get_orderbook(
             "data": orderbook
         }
 
-    except Exception as e:
-        logging.error(f"호가 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"호가 조회 에러: {log_error(e)}")
         return {
             "status": "error",
             "message": str(e)
@@ -130,8 +132,8 @@ async def get_current_price(
             "data": price_data
         }
 
-    except Exception as e:
-        logging.error(f"현재가 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"현재가 조회 에러: {log_error(e)}")
         return {
             "status": "error",
             "message": str(e)
@@ -163,7 +165,7 @@ async def websocket_orderbook(websocket: WebSocket, stock_code: str):
         }
     """
     await websocket.accept()
-    logging.info(f"WebSocket 연결: {stock_code}")
+    logging.info(f"WebSocket 연결: {log_token(stock_code)}")
 
     ws_manager = get_ws_manager()
 
@@ -171,16 +173,16 @@ async def websocket_orderbook(websocket: WebSocket, stock_code: str):
     if not ws_manager.running:
         try:
             await ws_manager.start()
-        except Exception as e:
-            logging.error(f"WebSocket 매니저 시작 실패: {e}")
+        except BOUNDARY_ERRORS as e:
+            logging.error(f"WebSocket 매니저 시작 실패: {log_error(e)}")
             await websocket.close(code=1011, reason="Internal error")
             return
 
     # 호가 구독
     try:
         await ws_manager.subscribe_orderbook(stock_code, websocket)
-    except Exception as e:
-        logging.error(f"호가 구독 실패: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"호가 구독 실패: {log_error(e)}")
         await websocket.close(code=1011, reason="Subscription failed")
         return
 
@@ -192,10 +194,11 @@ async def websocket_orderbook(websocket: WebSocket, stock_code: str):
             except WebSocketDisconnect:
                 break
 
-    except Exception as e:
-        logging.error(f"WebSocket 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        # 웹소켓 세션 경계: 어떤 오류도 전파하지 않고 finally 에서 구독 해제
+        logging.error(f"WebSocket 에러: {log_error(e)}")
 
     finally:
         # 구독 해제
         await ws_manager.unsubscribe_orderbook(stock_code, websocket)
-        logging.info(f"WebSocket 연결 종료: {stock_code}")
+        logging.info(f"WebSocket 연결 종료: {log_token(stock_code)}")

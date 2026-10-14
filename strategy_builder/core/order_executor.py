@@ -14,6 +14,8 @@ import pandas as pd
 
 import kis_auth as ka
 from core import data_fetcher
+from core.errors import BOUNDARY_ERRORS
+from core.log_sanitize import log_error, log_text, log_token
 from core.position_manager import PositionManager
 from core.risk_manager import RiskManager
 from core.signal import Action, Signal
@@ -59,25 +61,25 @@ class OrderExecutor:
         """
         # 1. HOLD 시그널 무시
         if signal.action == Action.HOLD:
-            logging.info(f"HOLD 시그널 - 주문 생략: {signal.stock_name}")
+            logging.info(f"HOLD 시그널 - 주문 생략: {log_text(signal.stock_name)}")
             return pd.DataFrame()
 
         # 2. 시그널 강도 체크
         if not signal.is_actionable():
-            logging.info(f"약한 시그널 - 주문 생략: {signal} (strength < 0.5)")
+            logging.info(f"약한 시그널 - 주문 생략: {log_token(signal.stock_code)} (strength={signal.strength:.2f} < 0.5)")
             return pd.DataFrame()
 
         # 3. 매수: 중복 보유 체크 (allow_duplicate_buy가 False일 때만)
         if signal.action == Action.BUY and not self.allow_duplicate_buy:
             if self.position_manager.check_duplicate(signal.stock_code):
-                logging.warning(f"이미 보유 중 - 매수 생략: {signal.stock_name}")
+                logging.warning(f"이미 보유 중 - 매수 생략: {log_text(signal.stock_name)}")
                 return pd.DataFrame()
 
         # 4. 매도: 보유 여부 체크
         if signal.action == Action.SELL:
             quantity = self.position_manager.get_holding_quantity(signal.stock_code)
             if quantity <= 0:
-                logging.warning(f"미보유 종목 - 매도 생략: {signal.stock_name}")
+                logging.warning(f"미보유 종목 - 매도 생략: {log_text(signal.stock_name)}")
                 return pd.DataFrame()
 
         # 5. 주문 파라미터 결정
@@ -85,7 +87,7 @@ class OrderExecutor:
         ord_qty = self._calculate_quantity(signal)
 
         if ord_qty <= 0:
-            logging.warning(f"주문 수량 0 - 주문 생략: {signal.stock_name}")
+            logging.warning(f"주문 수량 0 - 주문 생략: {log_text(signal.stock_name)}")
             return pd.DataFrame()
 
         # 6. 주문 실행
@@ -214,11 +216,10 @@ class OrderExecutor:
 
             ord_type_name = "시장가" if ord_dvsn == "01" else "지정가"
             logging.info(
-                f"주문 실행: {signal.stock_name} "
+                f"주문 실행: {log_text(signal.stock_name)} "
                 f"{signal.action.value.upper()} "
                 f"{ord_qty}주 @ {ord_unpr}원 ({ord_type_name}, ord_dvsn={ord_dvsn})"
             )
-            logging.info(f"[DEBUG] tr_id={tr_id}, CANO={trenv.my_acct}, ACNT_PRDT_CD={trenv.my_prod}, PDNO={signal.stock_code}, env_dv={self.env_dv}")
 
             res = ka._url_fetch(
                 "/uapi/domestic-stock/v1/trading/order-cash",
@@ -227,18 +228,18 @@ class OrderExecutor:
 
             if res.isOK():
                 result = pd.DataFrame([res.getBody().output])
-                logging.info(f"주문 성공: {result.to_dict()}")
+                logging.info(f"주문 성공: 주문번호 {log_token(result.iloc[0].get('ODNO', ''))}")
 
                 # 포지션 캐시 갱신
                 self.position_manager.refresh()
 
                 return result
             else:
-                logging.error(f"주문 실패: {signal.stock_name}")
+                logging.error(f"주문 실패: {log_text(signal.stock_name)}")
                 res.printError("/uapi/domestic-stock/v1/trading/order-cash")
                 return pd.DataFrame()
 
-        except Exception as e:
-            logging.error(f"주문 실행 에러: {e}")
+        except BOUNDARY_ERRORS as e:
+            logging.error(f"주문 실행 에러: {log_error(e)}")
             return pd.DataFrame()
 

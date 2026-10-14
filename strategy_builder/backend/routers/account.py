@@ -9,6 +9,8 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from core import data_fetcher
+from core.errors import BOUNDARY_ERRORS
+from core.log_sanitize import log_error, log_token
 from backend import is_authenticated, get_current_mode
 import kis_auth as ka
 
@@ -121,8 +123,8 @@ async def get_account_info():
             logs=logs
         )
 
-    except Exception as e:
-        logging.error(f"계좌 정보 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"계좌 정보 조회 에러: {log_error(e)}")
         add_log("error", f"조회 실패: {str(e)}")
         return AccountInfoResponse(
             status="error",
@@ -191,8 +193,8 @@ async def get_holdings():
             logs=logs
         )
 
-    except Exception as e:
-        logging.error(f"보유 종목 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"보유 종목 조회 에러: {log_error(e)}")
         add_log("error", f"조회 실패: {str(e)}")
         return HoldingsResponse(
             status="error",
@@ -263,8 +265,8 @@ async def get_balance():
             logs=logs
         )
 
-    except Exception as e:
-        logging.error(f"예수금 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"예수금 조회 에러: {log_error(e)}")
         add_log("error", f"조회 실패: {str(e)}")
         return BalanceResponse(
             status="error",
@@ -321,8 +323,8 @@ async def get_buyable(stock_code: str, price: int = 0):
             }
         }
 
-    except Exception as e:
-        logging.error(f"매수가능 조회 에러 ({stock_code}): {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"매수가능 조회 에러 ({log_token(stock_code)}): {log_error(e)}")
         return {
             "status": "error",
             "message": str(e)

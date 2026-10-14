@@ -69,13 +69,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
+    // 서버 로그아웃 실패 여부와 무관하게 로컬 인증 상태는 항상 초기화
+    setStatus(DEFAULT_STATUS);
     try {
       await apiLogout();
-    } catch {
-      // Ignore logout errors
+      setError(null);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "로그아웃 오류";
+      setError(`서버 로그아웃 실패: ${message}`);
     }
-    setStatus(DEFAULT_STATUS);
-    setError(null);
   }, []);
 
   const switchMode = useCallback(async (mode: AuthMode): Promise<boolean> => {

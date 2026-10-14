@@ -209,7 +209,7 @@ class LeanProjectManager:
             currency=currency,
         )
         
-        logger.debug(f"[Lean] 프로젝트 생성: {project_dir} (market: {market_type})")
+        logger.info(f"[Lean] 프로젝트 생성: {run_id} (market: {market_type})")
         return project
     
     @classmethod
@@ -367,7 +367,8 @@ class LeanProjectManager:
                     return strategy
             
             return "custom"
-        except Exception:
+        except (OSError, UnicodeDecodeError):
+            # 파일 읽기 실패(권한/삭제 경합) 또는 비 UTF-8 인코딩
             return "unknown"
     
     @classmethod
@@ -464,7 +465,9 @@ class LeanProjectManager:
             config_path.write_text(json.dumps(config, indent=2))
             logger.info(f"[Lean] 프로젝트 이름 변경: {run_id} → {display_name}")
             return True
-        except Exception as e:
+        except (OSError, ValueError, TypeError) as e:
+            # OSError: 읽기/쓰기 실패, ValueError: JSONDecodeError/UnicodeDecodeError,
+            # TypeError: config.json 최상위가 dict 가 아닌 경우
             logger.error(f"[Lean] 이름 변경 실패: {run_id} - {e}")
             return False
     

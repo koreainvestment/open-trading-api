@@ -36,6 +36,7 @@ from typing import Dict, List, Optional, Any
 import pandas as pd
 import requests
 import websockets
+from websockets.exceptions import ConnectionClosed
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 
@@ -46,7 +47,16 @@ if str(_root) not in sys.path:
 
 import kis_auth as ka
 
+from ...errors import BOUNDARY_ERRORS, user_code_errors
+
 logger = logging.getLogger(__name__)
+
+# AES 복호화 오류: 잘못된 key/iv 길이·패딩·base64(binascii.Error) → ValueError,
+# key/iv None → AttributeError, 비문자열 입력 → TypeError
+_DECRYPT_ERRORS = (ValueError, KeyError, TypeError, AttributeError)
+
+# 실시간 데이터 파싱 오류: pd.errors.ParserError/EmptyDataError 는 ValueError 하위
+_PARSE_ERRORS = (ValueError, TypeError, pd.errors.ParserError)
 
 
 # ============================================
@@ -391,8 +401,6 @@ class KISWebSocket:
     
     async def _handle_message(self, ws, raw: str) -> None:
         """수신 메시지 처리"""
-        logger.debug(f"수신: {raw[:100]}...")
-        
         # 실시간 데이터 (0 또는 1로 시작)
         if raw[0] in ["0", "1"]:
             await self._handle_realtime_data(raw)
@@ -416,7 +424,6 @@ class KISWebSocket:
         
         # PINGPONG 처리
         if rsp["is_pingpong"]:
-            logger.debug(f"PINGPONG 수신 및 응답")
             await ws.pong(raw)
             return
         
@@ -430,7 +437,7 @@ class KISWebSocket:
         """실시간 데이터 처리"""
         parts = raw.split("|")
         if len(parts) < 4:
-            logger.warning(f"잘못된 데이터 형식: {raw[:50]}")
+            logger.warning(f"잘못된 데이터 형식: type={type(raw).__name__}, len={len(raw)}, parts={len(parts)}")
             return
         
         encrypted = parts[0] == "1"
@@ -443,8 +450,8 @@ class KISWebSocket:
         if encrypted and dm.get("key") and dm.get("iv"):
             try:
                 data = aes_cbc_base64_dec(dm["key"], dm["iv"], data)
-            except Exception as e:
-                logger.error(f"복호화 실패: {e}")
+            except _DECRYPT_ERRORS as e:
+                logger.error(f"복호화 실패: {type(e).__name__}")
                 return
         
         # 컬럼 정보 가져오기
@@ -464,7 +471,7 @@ class KISWebSocket:
                 names=columns,
                 dtype=object
             )
-        except Exception as e:
+        except _PARSE_ERRORS as e:
             logger.error(f"데이터 파싱 오류: {e}")
             return
         
@@ -496,7 +503,7 @@ class KISWebSocket:
                 
                 self._price_callback(price_data.symbol, price_data)
                 
-            except Exception as e:
+            except user_code_errors(self._price_callback) as e:
                 logger.error(f"체결가 콜백 오류: {e}")
     
     def _process_fill_data(self, df: pd.DataFrame) -> None:
@@ -522,7 +529,7 @@ class KISWebSocket:
                 
                 self._fill_callback(notice)
                 
-            except Exception as e:
+            except user_code_errors(self._fill_callback) as e:
                 logger.error(f"체결통보 콜백 오류: {e}")
     
     # ========================================
@@ -583,13 +590,14 @@ class KISWebSocket:
                     # 메시지 수신
                     await self._subscriber(ws)
                     
-            except websockets.exceptions.ConnectionClosed as e:
+            except ConnectionClosed as e:
                 logger.warning(f"연결 종료: {e}")
                 self._retry_count += 1
                 if self._running:
                     logger.info(f"재연결 시도 {self._retry_count}/{self._max_retries}")
                     await asyncio.sleep(2)
-            except Exception as e:
+            except user_code_errors(self._price_callback, self._fill_callback) as e:
+                # 재연결 루프: 연결·파싱·콜백 오류 모두 재시도 카운트로 처리
                 logger.error(f"WebSocket 오류: {e}")
                 self._retry_count += 1
                 if self._running:

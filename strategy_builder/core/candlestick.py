@@ -55,7 +55,9 @@ def detect_pattern(df: pd.DataFrame, pattern_id: str) -> int:
 
     try:
         return detector(df)
-    except Exception:
+    except (KeyError, IndexError, ValueError, TypeError, ZeroDivisionError):
+        # OHLC 컬럼 누락(KeyError), 캔들 부족(IndexError), 수치 변환 실패(ValueError/TypeError),
+        # 고가=저가인 캔들의 범위 0 나눗셈(ZeroDivisionError)
         return 0
 
 

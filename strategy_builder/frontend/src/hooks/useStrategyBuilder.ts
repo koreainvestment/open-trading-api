@@ -16,6 +16,7 @@ import type {
   YamlCondition,
 } from "@/types/builder";
 import { getIndicatorById, CANDLESTICK_PATTERNS } from "@/lib/builder/constants";
+import { randomToken } from "@/lib/utils";
 
 // 캔들스틱 패턴 ID Set (빠른 lookup)
 const CANDLESTICK_IDS = new Set(CANDLESTICK_PATTERNS.map(p => p.id));
@@ -106,7 +107,7 @@ function generateAutoConditions(
   // 일목균형표 전용
   const ichimokuInds = regularIndicators.filter(ind => ind.indicatorId === "ichimoku");
   ichimokuInds.forEach(ind => {
-    const ts = Date.now() + Math.random();
+    const ts = `${Date.now()}_${randomToken(4)}`;
     entry.push({
       id: `auto_entry_${ts}_ichi`,
       left: { type: "indicator", indicatorAlias: ind.alias, indicatorOutput: "tenkan" },
@@ -122,7 +123,7 @@ function generateAutoConditions(
   });
 
   regularIndicators.forEach(ind => {
-    const ts = Date.now() + Math.random();
+    const ts = `${Date.now()}_${randomToken(4)}`;
     const id = ind.indicatorId;
 
     if (id === "ichimoku") return;
@@ -437,7 +438,7 @@ function generateAutoConditions(
 
   // 캔들스틱 조건 생성
   candlestickIndicators.forEach(ind => {
-    const ts = Date.now() + Math.random();
+    const ts = `${Date.now()}_${randomToken(4)}`;
     entry.push({
       id: `auto_entry_${ts}_candle`,
       isCandlestick: true,
@@ -700,7 +701,7 @@ function builderReducer(state: BuilderState, action: BuilderAction): BuilderStat
       const seenIds = new Set<string>();
       const fixedIndicators = loaded.indicators.map((ind) => {
         if (seenIds.has(ind.id)) {
-          return { ...ind, id: `${ind.indicatorId}_${Date.now()}_${Math.random().toString(36).substr(2, 5)}` };
+          return { ...ind, id: `${ind.indicatorId}_${Date.now()}_${randomToken(4)}` };
         }
         seenIds.add(ind.id);
         return ind;
@@ -1163,7 +1164,7 @@ export function useStrategyBuilder(initialState?: BuilderState) {
       const displayName = customAlias !== alias ? customAlias : undefined;
 
       // 고유 ID 생성: timestamp + random string (중복 방지)
-      const uniqueId = `${indicatorId}_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+      const uniqueId = `${indicatorId}_${Date.now()}_${randomToken(4)}`;
 
       return {
         id: uniqueId,

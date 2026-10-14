@@ -289,8 +289,10 @@ class PortfolioAnalyzer:
                         row[f"weight_{sym}"] = result.x[i]
                     
                     results.append(row)
-            except Exception as e:
-                logger.debug(f"목표수익률 {target:.4f}에서 최적화 실패: {e}")
+            except (ValueError, np.linalg.LinAlgError, ArithmeticError, TypeError, IndexError) as e:
+                # SLSQP: NaN/inf 입력·경계 불일치(ValueError), 공분산 특이행렬(LinAlgError),
+                # 부동소수 오류(ArithmeticError), 결과 비중 인덱싱(IndexError)
+                logger.info(f"목표수익률 {target:.4f}에서 최적화 실패: {type(e).__name__}")
                 continue
         
         df = pd.DataFrame(results)

@@ -637,6 +637,8 @@ if __name__ == "__main__":
     )
     
     args = parser.parse_args()
+
+    from kis_backtest.errors import BOUNDARY_ERRORS
     
     examples = {
         "basic": example_basic_yaml_load,
@@ -651,19 +653,16 @@ if __name__ == "__main__":
             print(f"\n{'=' * 70}")
             print(f"예제: {name}")
             print("=" * 70)
+            # 한 예제 실패가 나머지 예제 실행을 막지 않도록 예제별로 처리
             try:
                 func()
-            except Exception as e:
+            except BOUNDARY_ERRORS as e:
                 print(f"❌ 오류: {e}")
-                import traceback
-                traceback.print_exc()
             print()
     else:
         try:
             examples[args.example]()
-        except Exception as e:
+        except BOUNDARY_ERRORS as e:
             print(f"❌ 오류: {e}")
-            import traceback
-            traceback.print_exc()
     
     print("\n✅ 완료!")

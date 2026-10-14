@@ -69,8 +69,8 @@ def write_generated_strategy(name: str, source: str) -> Path:
             suffix=".tmp",
             delete=False,
         ) as stream:
+            # NamedTemporaryFile(mkstemp)은 0o600으로 생성하므로 별도 chmod 불필요
             temporary_path = Path(stream.name)
-            os.chmod(temporary_path, 0o600)
             stream.write(source)
             stream.flush()
             os.fsync(stream.fileno())

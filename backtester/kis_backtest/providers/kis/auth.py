@@ -203,7 +203,9 @@ class KISAuth:
             if jti == cfg.get("paper_app"):
                 return "paper"
             return None
-        except Exception:
+        except (ValueError, TypeError, AttributeError):
+            # base64(binascii.Error)/JSON/UTF-8 디코딩 오류는 ValueError 하위,
+            # 토큰·payload 가 예상 타입(str/dict)이 아니면 AttributeError/TypeError
             return None
 
     @classmethod

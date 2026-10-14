@@ -168,8 +168,6 @@ class LeanExecutor:
             "algorithm-location": "/Algorithm/main.py",
             "data-folder": "/Data",
             "results-destination-folder": "/Results",
-            "debugging": False,
-            "debugging-method": "LocalCmdLine",
             "log-handler": "ConsoleLogHandler",
             "messaging-handler": "QuantConnect.Messaging.Messaging",
             "job-queue-handler": "QuantConnect.Queues.JobQueue",
@@ -207,7 +205,6 @@ class LeanExecutor:
         ]
         
         logger.info(f"[Lean] Docker 실행: {project.run_id}")
-        logger.debug(f"[Lean] 명령어: {' '.join(cmd)}")
         
         try:
             result = subprocess.run(
@@ -263,7 +260,8 @@ class LeanExecutor:
                 timeout=600,
             )
             return result.returncode == 0
-        except Exception as e:
+        except (OSError, subprocess.SubprocessError) as e:
+            # OSError: docker 미설치(FileNotFoundError)/실행 권한, SubprocessError: TimeoutExpired
             logger.error(f"[Lean] 이미지 다운로드 실패: {e}")
             return False
     
@@ -294,5 +292,6 @@ class LeanExecutor:
                 timeout=10,
             )
             return bool(result.stdout.strip())
-        except Exception:
+        except (OSError, subprocess.SubprocessError):
+            # OSError: docker 미설치(FileNotFoundError)/실행 권한, SubprocessError: TimeoutExpired
             return False

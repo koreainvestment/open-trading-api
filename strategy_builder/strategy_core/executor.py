@@ -16,6 +16,7 @@ import os
 import tempfile
 from typing import Any, Callable, Dict, List
 
+from core.errors import BOUNDARY_ERRORS
 from strategy_core.dsl.converter import builder_state_to_dsl
 from strategy_core.dsl.parser import parse_strategy
 from strategy_core.dsl.codegen import StrategyCodeGenerator
@@ -128,8 +129,15 @@ def execute_custom_file(
     if not strategy_class:
         raise ValueError("전략 클래스를 찾을 수 없습니다")
 
-    strategy = strategy_class()
-    results = _run_strategy_on_stocks(strategy, stocks, log, get_stock_name, api_sleep)
+    # 사용자 모듈이 정의·import 한 예외 클래스도 경계에서 잡는다
+    module_errors = _module_exception_types(module)
+    try:
+        strategy = strategy_class()
+    except module_errors as e:
+        raise CustomStrategyError(f"전략 초기화 실패: {type(e).__name__}") from e
+    results = _run_strategy_on_stocks(
+        strategy, stocks, log, get_stock_name, api_sleep, extra_errors=module_errors,
+    )
 
     log("success", "전략 실행 완료")
     return results
@@ -155,6 +163,18 @@ def _load_strategy_from_code(code: str, name_snake: str):
         os.unlink(temp_file)
 
 
+class CustomStrategyError(RuntimeError):
+    """사용자 전략 코드에서 발생한 예외 (BOUNDARY_ERRORS 로 잡히도록 RuntimeError 상속)"""
+
+
+def _module_exception_types(module) -> tuple:
+    """모듈 네임스페이스에 있는 예외 클래스(사용자 정의·import) 목록"""
+    return tuple(
+        attr for attr in vars(module).values()
+        if isinstance(attr, type) and issubclass(attr, Exception) and attr is not Exception
+    )
+
+
 def _find_strategy_class(module):
     """모듈에서 Strategy 클래스 찾기"""
     for attr_name in dir(module):
@@ -170,9 +190,14 @@ def _run_strategy_on_stocks(
     log: Callable,
     get_stock_name: Callable,
     api_sleep: Callable,
+    extra_errors: tuple = (),
 ) -> List[Dict]:
-    """전략을 종목 리스트에 대해 실행하고 결과 반환"""
+    """전략을 종목 리스트에 대해 실행하고 결과 반환
+
+    extra_errors: 사용자 전략 모듈이 정의한 예외 등 BOUNDARY_ERRORS 밖의 타입
+    """
     results = []
+    stock_errors = BOUNDARY_ERRORS + extra_errors
 
     for code in stocks:
         name = get_stock_name(code)
@@ -196,7 +221,8 @@ def _run_strategy_on_stocks(
                 action_type.get(result['action'], "info"),
                 f"  {action_icon.get(result['action'], '─')} {result['action']} | 강도: {result['strength']:.2f} | {result['reason']}"
             )
-        except Exception as e:
+        except stock_errors as e:
+            # 종목별 실행 경계: 한 종목 실패가 나머지 종목 실행을 막지 않도록 ERROR 결과로 기록
             log("error", f"  오류: {str(e)}")
             results.append({
                 'code': code,

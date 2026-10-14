@@ -13,9 +13,11 @@ from dataclasses import dataclass, field
 from functools import reduce
 from itertools import product
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterator, List, Literal, Optional, Tuple
-import random
 
+import numpy as np
 import pandas as pd
+
+from ..errors import BOUNDARY_ERRORS
 
 if TYPE_CHECKING:
     from ..client import LeanClient
@@ -99,25 +101,25 @@ class ParameterGrid:
         Returns:
             무작위로 선택된 파라미터 조합 리스트
         """
-        if seed is not None:
-            random.seed(seed)
+        # 로컬 Generator 사용: seed 재현성 유지 + 전역 random 상태 오염 방지
+        rng = np.random.default_rng(seed)
         
         total = len(self)
         
         if n >= total:
             # 전체보다 많이 요청하면 전체 반환 (셔플)
             all_combos = list(self)
-            random.shuffle(all_combos)
-            return all_combos
+            return [all_combos[int(i)] for i in rng.permutation(total)]
         
         # 큰 그리드: 인덱스 기반 샘플링
         if total > 10000:
-            indices = random.sample(range(total), n)
-            return [self._get_by_index(i) for i in indices]
+            indices = rng.choice(total, size=n, replace=False)
+            return [self._get_by_index(int(i)) for i in indices]
         
         # 작은 그리드: 전체 생성 후 샘플링
         all_combos = list(self)
-        return random.sample(all_combos, n)
+        indices = rng.choice(total, size=n, replace=False)
+        return [all_combos[int(i)] for i in indices]
     
     def _get_by_index(self, index: int) -> Dict[str, Any]:
         """인덱스로 특정 조합 얻기 (대용량 그리드용)"""
@@ -352,7 +354,8 @@ class ParallelExecutor:
                 duration_seconds=duration
             )
             
-        except Exception as e:
+        except BOUNDARY_ERRORS as e:
+            # 배치 per-item: 한 조합 실패가 전체 최적화를 중단시키지 않도록 기록 후 계속
             duration = time.time() - start_time
             logger.warning(f"[Optimizer] 백테스트 실패: {params} - {e}")
             

@@ -15,6 +15,8 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
+from core.errors import BOUNDARY_ERRORS
+
 
 router = APIRouter()
 
@@ -188,7 +190,7 @@ async def import_strategy(file: UploadFile = File(...)) -> FileImportResponse:
     try:
         content = await file.read()
         content_str = content.decode("utf-8")
-    except Exception as e:
+    except (OSError, UnicodeDecodeError) as e:
         raise HTTPException(status_code=400, detail=f"Failed to read file: {e}")
     
     # YAML 파싱 및 검증
@@ -322,7 +324,8 @@ async def validate_strategy(file: UploadFile = File(...)) -> dict:
                 "errors": [f"Invalid YAML: {e}"],
             },
         }
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
+        # 검증 API 경계: 어떤 오류도 valid=False 응답으로 변환
         return {
             "success": False,
             "data": {

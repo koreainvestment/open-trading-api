@@ -3,7 +3,7 @@
 FastAPI 기반 REST API 서버.
 """
 
-from .state import trading_state
+from .state import KIS_AUTH_ERRORS, ModeSwitchCooldownError, trading_state
 
 
 def authenticate(svr: str = "vps") -> bool:
@@ -14,7 +14,7 @@ def authenticate(svr: str = "vps") -> bool:
     """
     try:
         return trading_state.authenticate(mode=svr)
-    except Exception:
+    except (ModeSwitchCooldownError, *KIS_AUTH_ERRORS):
         return False
 
 

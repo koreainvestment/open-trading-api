@@ -16,10 +16,11 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import kis_backtest.strategies.preset  # noqa: F401 — side-effect import (전략 자동 등록)
 from kis_backtest.codegen.generator import LeanCodeGenerator, CodeGenConfig
+from kis_backtest.errors import BOUNDARY_ERRORS
 from kis_backtest.file.loader import StrategyFileLoader
 from kis_backtest.lean.executor import LeanExecutor
 from kis_backtest.lean.project_manager import LeanProjectManager
@@ -28,6 +29,20 @@ from kis_backtest.strategies.registry import StrategyRegistry
 from kis_mcp.schemas import error_response, success_response
 
 logger = logging.getLogger(__name__)
+
+# ─── 예외 분류 상수 ────────────────────────────────────────────────────────────
+
+# Job 파일 직렬화/역직렬화 (파일 I/O, JSON, 필드 누락/형식 오류)
+_JOB_FILE_ERRORS = (OSError, ValueError, TypeError, KeyError)
+
+
+def _is_valid_job_id(job_id: str) -> bool:
+    """job_id 가 서버가 발급한 UUID 형식인지 확인 (경로 조작·로그 위조 방지)."""
+    try:
+        return str(UUID(job_id)) == job_id.lower()
+    except (ValueError, TypeError, AttributeError):
+        return False
+
 
 # ─── Job Store (파일 영속화 + 메모리 캐시) ────────────────────────────────────
 
@@ -94,13 +109,15 @@ class JobStore:
             self._job_path(job.job_id).write_text(
                 json.dumps(data, ensure_ascii=False), encoding="utf-8"
             )
-        except Exception as exc:
-            logger.warning(f"[JobStore] 파일 저장 실패 ({job.job_id}): {exc}")
+        except (OSError, TypeError, ValueError) as exc:  # 파일 쓰기 / JSON 직렬화 불가 값
+            logger.warning(f"[JobStore] 파일 저장 실패 ({job.job_id}): {type(exc).__name__}")
 
     def get(self, job_id: str) -> Optional[BacktestJob]:
         """캐시 우선 조회, 없으면 파일에서 복구."""
         if job_id in self._cache:
             return self._cache[job_id]
+        if not _is_valid_job_id(job_id):
+            return None
         path = self._job_path(job_id)
         if not path.exists():
             return None
@@ -125,8 +142,8 @@ class JobStore:
             )
             self._cache[job_id] = job
             return job
-        except Exception as exc:
-            logger.warning(f"[JobStore] 파일 로드 실패 ({job_id}): {exc}")
+        except _JOB_FILE_ERRORS as exc:  # 파일 읽기 / 손상된 JSON / 필드 누락·형식 오류
+            logger.warning(f"[JobStore] 파일 로드 실패 ({job_id}): {type(exc).__name__}")
             return None
 
     def cleanup(self, max_age_hours: int = 24) -> int:
@@ -138,8 +155,8 @@ class JobStore:
                 if path.stat().st_mtime < cutoff:
                     path.unlink(missing_ok=True)
                     removed += 1
-        except Exception as exc:
-            logger.warning(f"[JobStore] cleanup 실패: {exc}")
+        except OSError as exc:
+            logger.warning(f"[JobStore] cleanup 실패: {type(exc).__name__}")
         return removed
 
 
@@ -197,7 +214,8 @@ def _lean_run_to_result(
                 dt = datetime.fromtimestamp(point[0])
                 val = point[4] if len(point) > 4 else point[1]
                 equity_curve[dt.strftime("%Y-%m-%d")] = float(val)
-            except Exception:
+            except (ValueError, TypeError, OverflowError, OSError):
+                # 비정상 timestamp/값 포인트는 건너뜀 (fromtimestamp 범위 초과는 OverflowError/OSError)
                 pass
 
     # 거래 내역
@@ -296,8 +314,8 @@ async def _run_backtest_task(
                     end_date=end_date,
                     workspace=workspace,
                 )
-            except Exception as bm_exc:
-                logger.warning(f"[MCP job={job_id}] 벤치마크 준비 실패 (무시): {bm_exc}")
+            except BOUNDARY_ERRORS as bm_exc:
+                logger.warning(f"[MCP job={job_id}] 벤치마크 준비 실패 (무시): {type(bm_exc).__name__}")
 
             # Rate limit 방지: 벤치마크 다운로드 후 1초 대기
             await asyncio.sleep(1)
@@ -309,7 +327,10 @@ async def _run_backtest_task(
                 end_date=end_date,
                 workspace=workspace,
             )
-            logger.info(f"[MCP job={job_id}] data result: {data_result}")
+            logger.info(
+                f"[MCP job={job_id}] data result: downloaded={len(data_result['downloaded'])}, "
+                f"skipped={len(data_result['skipped'])}, errors={len(data_result['errors'])}"
+            )
 
             if data_result["errors"] and not data_result["downloaded"] and not data_result["skipped"]:
                 err = data_result["errors"][0]["error"]
@@ -369,7 +390,7 @@ async def _run_backtest_task(
                 job.status = "failed"
                 job.error = f"{error_msg}\n\n💡 {hint}" if hint else error_msg
 
-        except Exception as exc:
+        except BOUNDARY_ERRORS as exc:
             logger.exception(f"[MCP job={job_id}] 실패")
             err_msg = str(exc)
             err_type = _classify_error(err_msg)
@@ -455,7 +476,7 @@ def run_backtest(
         definition = StrategyFileLoader.load_from_string(yaml_content).to_strategy_definition()
     except ValueError as exc:
         return error_response(f"YAML 파싱 오류: {exc}")
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("run_backtest: YAML 로드 실패")
         return error_response(str(exc))
 
@@ -474,7 +495,7 @@ def run_backtest(
             {"job_id": job_id, "status": "running"},
             message="백테스트 시작됨. get_backtest_result(job_id)로 결과를 조회하세요.",
         )
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("run_backtest: job 제출 실패")
         return error_response(str(exc))
 
@@ -513,7 +534,7 @@ def run_preset_backtest(
                 f"전략 '{strategy_id}'를 찾을 수 없습니다.",
                 details={"available": [s["id"] for s in StrategyRegistry.list_all()]},
             )
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("run_preset_backtest: 전략 빌드 실패")
         return error_response(str(exc))
 
@@ -537,7 +558,7 @@ def run_preset_backtest(
             },
             message="백테스트 시작됨. get_backtest_result(job_id)로 결과를 조회하세요.",
         )
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("run_preset_backtest: job 제출 실패")
         return error_response(str(exc))
 
@@ -687,7 +708,7 @@ def retry_backtest(job_id: str) -> dict:
             },
             message="재시도 시작됨. get_backtest_result(new_job_id)로 결과를 조회하세요.",
         )
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         logger.exception("retry_backtest: job 제출 실패")
         return error_response(str(exc))
 
@@ -805,7 +826,7 @@ async def run_batch_backtest(
                 slippage=item.get("slippage", 0.0),
             )
             job_ids.append(jid)
-        except Exception as exc:
+        except BOUNDARY_ERRORS as exc:  # per-item: 한 항목 실패가 배치 전체를 중단시키지 않도록
             submission_errors.append({"index": i, "error": str(exc), "item": item})
 
     if not job_ids:
@@ -841,7 +862,24 @@ async def run_batch_backtest(
 
 # ─── Optimize ─────────────────────────────────────────────────────────────────
 
-async def _run_optimize_task(
+async def _run_optimize_task(parent_job_id: str, **kwargs: Any) -> None:
+    """파라미터 최적화 백그라운드 작업 (asyncio.create_task 대상).
+
+    실패 시 parent job 을 failed 로 기록해 running 상태로 남지 않게 한다.
+    """
+    try:
+        await _optimize_parent_job(parent_job_id=parent_job_id, **kwargs)
+    except BOUNDARY_ERRORS as exc:
+        logger.exception(f"[optimize parent={parent_job_id}] 실패")
+        pj = _job_store.get(parent_job_id)
+        if pj:
+            pj.status = "failed"
+            pj.error = f"파라미터 최적화 실패: {exc}"
+            pj.finished_at = datetime.now()
+            _job_store.save(pj)
+
+
+async def _optimize_parent_job(
     parent_job_id: str,
     strategy_id: str,
     symbols: List[str],
@@ -854,7 +892,7 @@ async def _run_optimize_task(
     tax_rate: float,
     slippage: float = 0.0,
 ) -> None:
-    """파라미터 최적화 백그라운드 작업. asyncio.gather로 sub-job 병렬 실행."""
+    """파라미터 최적화 본체. asyncio.gather로 sub-job 병렬 실행."""
     parent_job = _job_store.get(parent_job_id)
     if parent_job is None:
         return
@@ -883,8 +921,11 @@ async def _run_optimize_task(
                 slippage=slippage,
             )
             sub_job_ids.append(jid)
-        except Exception as exc:
-            logger.warning(f"[optimize parent={parent_job_id}] sub-job 제출 실패 params={params}: {exc}")
+        except BOUNDARY_ERRORS as exc:  # per-item: 한 조합 실패가 최적화 전체를 중단시키지 않도록
+            logger.warning(
+                f"[optimize parent={parent_job_id}] sub-job 제출 실패 "
+                f"(params {len(params)}개): {type(exc).__name__}"
+            )
             sub_job_ids.append(None)
 
     done_count = 0
@@ -1012,7 +1053,7 @@ def run_optimize(
                 f"전략 '{strategy_id}'를 찾을 수 없습니다.",
                 details={"available": [s["id"] for s in StrategyRegistry.list_all()]},
             )
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         return error_response(f"전략 검증 실패: {exc}")
 
     try:
@@ -1021,7 +1062,7 @@ def run_optimize(
         grid = ParameterGrid(specs)
         param_combinations = grid.sample(max_samples, seed=seed) if search_type == "random" else list(grid)
         total_combinations = len(param_combinations)
-    except Exception as exc:
+    except BOUNDARY_ERRORS as exc:
         return error_response(f"파라미터 그리드 생성 실패: {exc}")
 
     if total_combinations == 0:

@@ -21,6 +21,7 @@ import requests
 
 # 웹 소켓 모듈을 선언한다.
 import websockets
+from websockets.exceptions import WebSocketException
 
 # pip install PyYAML (패키지설치)
 import yaml
@@ -43,18 +44,19 @@ token_tmp = os.path.join(
 )  # 토큰 로컬저장시 파일명 년월일
 
 # 접근토큰 관리하는 파일 존재여부 체크, 없으면 생성
-if not os.path.exists(token_tmp):
-    f = open(token_tmp, "w+")
+# "a" 모드: 없으면 생성, 있으면 내용 유지. with 블록으로 파일 핸들 즉시 해제
+with open(token_tmp, "a", encoding="utf-8"):
+    pass
 
 # 앱키, 앱시크리트, 토큰, 계좌번호 등 저장관리, 자신만의 경로와 파일명으로 설정하시기 바랍니다.
 # pip install PyYAML (패키지설치)
 with open(os.path.join(config_root, "kis_devlp.yaml"), encoding="UTF-8") as f:
-    _cfg = yaml.load(f, Loader=yaml.FullLoader)
+    _cfg = yaml.safe_load(f)
 
 _TRENV = tuple()
 _last_auth_time = datetime.now()
 _autoReAuth = False
-_DEBUG = False
+_VERBOSE = False
 _isPaper = False
 _smartSleep = 0.1
 
@@ -73,6 +75,28 @@ _base_headers = {
 }
 
 
+# 웹소켓 재연결 루프에서 잡는 예외: 연결·파싱 오류 + 사용자 콜백(on_result)에서 올라온 오류
+_RUNNER_ERRORS = (
+    WebSocketException, OSError, ValueError, LookupError, TypeError,
+    AttributeError, RuntimeError, ArithmeticError,
+)
+
+
+def _callback_errors(callback) -> tuple:
+    """콜백이 참조하는 예외 클래스(함수 전역·클로저 기준, 사용자 정의 예외 포함)"""
+    func = getattr(callback, "__func__", callback)
+    values = list(getattr(func, "__globals__", {}).values())
+    for cell in getattr(func, "__closure__", None) or ():
+        try:
+            values.append(cell.cell_contents)
+        except ValueError:
+            continue
+    return tuple(
+        t for t in values
+        if isinstance(t, type) and issubclass(t, Exception) and t is not Exception
+    )
+
+
 # 토큰 발급 받아 저장 (토큰값, 토큰 유효시간,1일, 6시간 이내 발급신청시는 기존 토큰값과 동일, 발급시 알림톡 발송)
 def save_token(my_token, my_expired):
     # print(type(my_expired), my_expired)
@@ -88,7 +112,7 @@ def read_token():
     try:
         # 토큰이 저장된 파일 읽기
         with open(token_tmp, encoding="UTF-8") as f:
-            tkg_tmp = yaml.load(f, Loader=yaml.FullLoader)
+            tkg_tmp = yaml.safe_load(f)
 
         # 토큰 만료 일,시간
         exp_dt = datetime.strftime(tkg_tmp["valid-date"], "%Y-%m-%d %H:%M:%S")
@@ -102,8 +126,8 @@ def read_token():
         else:
             # print('Need new token: ', tkg_tmp['valid-date'])
             return None
-    except Exception:
-        # print('read token error: ', e)
+    except (OSError, UnicodeDecodeError, yaml.YAMLError, KeyError, TypeError, ValueError):
+        # 파일 없음/손상(비 UTF-8 포함), 빈 파일(None), 필드 누락 → 토큰 없음으로 처리
         return None
 
 
@@ -247,7 +271,7 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
     global _last_auth_time
     _last_auth_time = datetime.now()
 
-    if _DEBUG:
+    if _VERBOSE:
         print(f"[{_last_auth_time}] => get AUTH Key completed!")
 
 
@@ -264,7 +288,7 @@ def getEnv():
 
 
 def smart_sleep():
-    if _DEBUG:
+    if _VERBOSE:
         print(f"[RateLimit] Sleeping {_smartSleep}s ")
 
     time.sleep(_smartSleep)
@@ -331,7 +355,7 @@ class APIResp:
                 return True
             else:
                 return False
-        except Exception:
+        except AttributeError:
             return False
 
     def getErrorCode(self):
@@ -429,7 +453,7 @@ def _url_fetch(
         elapsed = now - _last_api_call_time
         if elapsed < _smartSleep:
             wait_time = _smartSleep - elapsed
-            if _DEBUG:
+            if _VERBOSE:
                 print(f"[RateLimit] Waiting {wait_time:.3f}s before API call")
             time.sleep(wait_time)
         _last_api_call_time = time.monotonic()
@@ -453,7 +477,7 @@ def _url_fetch(
             for x in appendHeaders.keys():
                 headers[x] = appendHeaders.get(x)
 
-    if _DEBUG:
+    if _VERBOSE:
         print("< Sending Info >")
         print(f"URL: {url}, TR: {tr_id}")
         print(f"<header>\n{headers}")
@@ -467,7 +491,7 @@ def _url_fetch(
 
     if res.status_code == 200:
         ar = APIResp(res)
-        if _DEBUG:
+        if _VERBOSE:
             ar.printAll()
         return ar
     else:
@@ -521,7 +545,7 @@ def auth_ws(svr="prod", product=_cfg["my_prod"]):
     global _last_auth_time
     _last_auth_time = datetime.now()
 
-    if _DEBUG:
+    if _VERBOSE:
         print(f"[{_last_auth_time}] => get AUTH Key completed!")
 
 
@@ -542,7 +566,7 @@ def data_fetch(tr_id, tr_type, params, appendHeaders=None) -> dict:
             for x in appendHeaders.keys():
                 headers[x] = appendHeaders.get(x)
 
-    if _DEBUG:
+    if _VERBOSE:
         print("< Sending Info >")
         print(f"TR: {tr_id}")
         print(f"<header>\n{headers}")
@@ -746,8 +770,8 @@ class KISWebSocket:
                     await asyncio.gather(
                         self.__subscriber(ws),
                     )
-            except Exception as e:
-                print("Connection exception >> ", e)
+            except _RUNNER_ERRORS + _callback_errors(self.on_result) as e:
+                logging.warning("웹소켓 연결 예외(%s), 재시도합니다.", type(e).__name__)
                 self.retry_count += 1
                 await asyncio.sleep(1)
 

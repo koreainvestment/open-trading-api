@@ -10,6 +10,7 @@ from typing import Callable, List, Optional
 import os
 from ...models import Order, Position, OrderSide, OrderType, OrderStatus
 from ...models.trading import AccountBalance, Subscription
+from ...errors import user_code_errors
 from ...exceptions import KISError, KISOrderError
 from .auth import KISAuth
 from .constants import ApiPath, TrId, OrderDivision
@@ -371,7 +372,8 @@ class KISBrokerageProvider:
                     updated_at=datetime.now()
                 )
                 on_fill(order)
-            except Exception as e:
+            except user_code_errors(on_fill) as e:
+                # 사용자 on_fill 콜백 래퍼: 어떤 오류도 WebSocket 수신 루프로 전파하지 않음
                 logger.error(f"Order 변환 오류: {e}")
         
         self._ws_client.subscribe_fills(notice_to_order)
@@ -439,7 +441,8 @@ class KISBrokerageProvider:
                     updated_at=datetime.now()
                 )
                 on_fill(order)
-            except Exception as e:
+            except user_code_errors(on_fill) as e:
+                # 사용자 on_fill 콜백 래퍼: 어떤 오류도 WebSocket 수신 루프로 전파하지 않음
                 logger.error(f"Order 변환 오류: {e}")
         
         self._ws_client.subscribe_fills(notice_to_order)

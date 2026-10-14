@@ -107,7 +107,7 @@ app.add_middleware(
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """전역 예외 핸들러"""
-    logger.error(f"Unhandled exception: {exc}", exc_info=True)
+    logger.error(f"Unhandled exception: {type(exc).__name__}", exc_info=True)
     
     return JSONResponse(
         status_code=500,

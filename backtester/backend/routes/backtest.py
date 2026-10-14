@@ -15,6 +15,9 @@ from backend.schemas.backtest import (
     BacktestRequest,
     BacktestResponse,
 )
+from backend.state import KIS_AUTH_ERRORS
+from kis_backtest.errors import BOUNDARY_ERRORS
+from kis_backtest.exceptions import LeanError
 from kis_backtest.strategies.registry import StrategyRegistry
 from kis_backtest.codegen.generator import LeanCodeGenerator, CodeGenConfig
 from kis_backtest.lean.executor import LeanExecutor, LeanRun
@@ -22,6 +25,17 @@ from kis_backtest.lean.project_manager import LeanProjectManager
 from kis_backtest.lean.data_converter import DataConverter
 from kis_backtest.lean.result_formatter import parse_lean_value
 import kis_backtest.strategies.preset  # 전략 자동 등록
+
+# KIS 데이터 다운로드/저장 중 발생 가능한 예외
+# (인증 실패 + 응답 파싱 IndexError + 프로젝트 예외(KISError 등 LeanError 하위))
+_KIS_DATA_ERRORS = (*KIS_AUTH_ERRORS, IndexError, LeanError)
+
+# prepare_market_data/prepare_benchmark_data 내부에서 잡지 않는 예외
+# (날짜 형식 오류 ValueError, 디렉토리 생성/파일 삭제 실패 OSError)
+_DATA_PREP_ERRORS = (OSError, ValueError)
+
+# 전략 YAML 로드·파라미터 치환 실패
+_STRATEGY_LOAD_ERRORS = (OSError, ValueError, KeyError, TypeError, AttributeError)
 
 
 def _load_benchmark_curve(
@@ -86,8 +100,8 @@ def _load_benchmark_curve(
 
         return curve
 
-    except Exception as e:
-        logging.getLogger(__name__).warning(f"벤치마크 로드 실패: {e}")
+    except (OSError, ValueError) as e:  # 파일 읽기 실패, 날짜/숫자 파싱 실패
+        logging.getLogger(__name__).warning(f"벤치마크 로드 실패: {type(e).__name__}")
         return None
 
 
@@ -126,8 +140,8 @@ def _lean_run_to_api_response(
                 dt = datetime.fromtimestamp(point[0])
                 val = point[4] if len(point) > 4 else point[1]
                 equity_curve[dt.strftime("%Y-%m-%d")] = float(val)
-            except:
-                pass
+            except (TypeError, ValueError, OverflowError, OSError):  # 잘못된 timestamp/값 형식
+                continue
 
     # 거래 내역
     orders = result.get("orders", {})
@@ -334,11 +348,11 @@ async def prepare_market_data(
                     logger.info(f"[Data] 커버리지 부족: {coverage:.1%} < {coverage_threshold:.0%}")
                     return False
 
-                logger.debug(f"[Data] 캐시 사용: {csv_path.name} (커버리지={coverage:.1%})")
+                logger.info(f"[Data] 캐시 사용 (커버리지={coverage:.1%})")
                 return True
 
-        except Exception as e:
-            logger.warning(f"[Data] 날짜 체크 실패: {e}")
+        except (OSError, ValueError) as e:  # 파일 읽기 실패, 날짜 파싱 실패
+            logger.warning(f"[Data] 날짜 체크 실패: {type(e).__name__}")
             return False
     
     # 이미 있는 파일 확인 - 날짜 범위도 체크
@@ -350,7 +364,7 @@ async def prepare_market_data(
                 continue
             else:
                 # 날짜 범위 불일치 - 파일 삭제 후 재다운로드
-                logger.info(f"[Data] {symbol} 날짜 범위 불일치로 재다운로드")
+                logger.info("[Data] 날짜 범위 불일치로 재다운로드")
                 csv_path.unlink()
     
     symbols_to_download = [s for s in symbols if s not in result["skipped"]]
@@ -363,28 +377,28 @@ async def prepare_market_data(
     try:
         auth = KISAuth.from_env()
         provider = KISDataProvider(auth)
-    except Exception as e:
-        logger.warning(f"[Data] KIS 인증 실패: {e} - 기존 캐시만 사용")
+    except KIS_AUTH_ERRORS as e:
+        logger.warning(f"[Data] KIS 인증 실패: {type(e).__name__} - 기존 캐시만 사용")
         for s in symbols_to_download:
             result["errors"].append({"symbol": s, "error": str(e)})
         return result
     
     # 데이터 다운로드
-    for symbol in symbols_to_download:
+    for idx, symbol in enumerate(symbols_to_download, start=1):
         try:
-            logger.info(f"[Data] 다운로드 중: {symbol}")
+            logger.info(f"[Data] 다운로드 중 ({idx}/{len(symbols_to_download)})")
             bars = provider.get_history(symbol, req_start, req_end)
             
             if bars:
                 # Lean CSV 변환
                 DataConverter.bars_to_lean_csv(bars, symbol, output_dir)
                 result["downloaded"].append(symbol)
-                logger.info(f"[Data] 완료: {symbol} ({len(bars)} bars)")
+                logger.info(f"[Data] 완료 ({idx}/{len(symbols_to_download)}, {len(bars)} bars)")
             else:
                 result["errors"].append({"symbol": symbol, "error": "데이터 없음"})
                 
-        except Exception as e:
-            logger.error(f"[Data] {symbol} 다운로드 실패: {e}")
+        except _KIS_DATA_ERRORS as e:
+            logger.error(f"[Data] 다운로드 실패 ({idx}/{len(symbols_to_download)}): {type(e).__name__}")
             result["errors"].append({"symbol": symbol, "error": str(e)})
     
     return result
@@ -451,8 +465,8 @@ async def prepare_benchmark_data(
                         logger.info(f"[Benchmark] 캐시 범위 불일치 - 요청: {req_start}~{req_end}, 캐시: {first_date}~{last_date}")
                         # 낡은 캐시 삭제 — 다운로드 실패 시 절반짜리 데이터가 남지 않도록
                         csv_path.unlink(missing_ok=True)
-        except Exception as e:
-            logger.warning(f"[Benchmark] 캐시 체크 실패: {e}")
+        except (OSError, ValueError) as e:  # 파일 읽기/삭제 실패, 날짜 파싱 실패
+            logger.warning(f"[Benchmark] 캐시 체크 실패: {type(e).__name__}")
             csv_path.unlink(missing_ok=True)  # 손상된 캐시 제거
 
     # KIS API 다운로드
@@ -473,8 +487,8 @@ async def prepare_benchmark_data(
             logger.warning(f"[Benchmark] 데이터 없음: {index_name}")
             return False
 
-    except Exception as e:
-        logger.error(f"[Benchmark] 다운로드 실패: {e}")
+    except _KIS_DATA_ERRORS as e:
+        logger.error(f"[Benchmark] 다운로드 실패: {type(e).__name__}")
         return False
 
 
@@ -527,7 +541,10 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
             end_date=end_date,
             workspace=workspace,
         )
-        logger.info(f"[Data] 결과: {data_result}")
+        logger.info(
+            f"[Data] 결과: 다운로드 {len(data_result['downloaded'])}, "
+            f"캐시 {len(data_result['skipped'])}, 실패 {len(data_result['errors'])}"
+        )
         
         # 데이터 없으면 에러
         if data_result["errors"] and not data_result["downloaded"] and not data_result["skipped"]:
@@ -536,7 +553,7 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
             
     except HTTPException:
         raise
-    except Exception as e:
+    except _DATA_PREP_ERRORS as e:
         raise HTTPException(status_code=500, detail=f"데이터 준비 실패: {e}")
 
     # 벤치마크 데이터 준비 (KOSPI)
@@ -546,8 +563,8 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
             end_date=end_date,
             workspace=workspace,
         )
-    except Exception as e:
-        logger.warning(f"[Benchmark] 준비 실패 (무시): {e}")
+    except _DATA_PREP_ERRORS as e:
+        logger.warning(f"[Benchmark] 준비 실패 (무시): {type(e).__name__}")
 
     # Lean 코드 생성
     try:
@@ -565,7 +582,7 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
             end_date=end_date,
             initial_capital=request.initial_capital,
         )
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=400, detail=f"Code generation failed: {e}")
 
     # Docker 환경 확인
@@ -615,7 +632,7 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
             raise HTTPException(status_code=500, detail=error_detail)
     except HTTPException:
         raise
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=500, detail=f"백테스트 실행 오류: {e}")
 
 
@@ -653,7 +670,7 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
             request.yaml_content,
             param_overrides=request.param_overrides,
         )
-    except Exception as e:
+    except _STRATEGY_LOAD_ERRORS as e:
         raise HTTPException(status_code=400, detail=f"Invalid YAML: {e}")
     
     # 워크스페이스 경로
@@ -668,7 +685,10 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
             end_date=request.end_date,
             workspace=workspace,
         )
-        logger.info(f"[Data] 결과: {data_result}")
+        logger.info(
+            f"[Data] 결과: 다운로드 {len(data_result['downloaded'])}, "
+            f"캐시 {len(data_result['skipped'])}, 실패 {len(data_result['errors'])}"
+        )
         
         # 데이터 없으면 에러
         if data_result["errors"] and not data_result["downloaded"] and not data_result["skipped"]:
@@ -677,7 +697,7 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
             
     except HTTPException:
         raise
-    except Exception as e:
+    except _DATA_PREP_ERRORS as e:
         raise HTTPException(status_code=500, detail=f"데이터 준비 실패: {e}")
 
     # 벤치마크 데이터 준비 (KOSPI)
@@ -687,8 +707,8 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
             end_date=request.end_date,
             workspace=workspace,
         )
-    except Exception as e:
-        logger.warning(f"[Benchmark] 준비 실패 (무시): {e}")
+    except _DATA_PREP_ERRORS as e:
+        logger.warning(f"[Benchmark] 준비 실패 (무시): {type(e).__name__}")
 
     # Lean 코드 생성 (스키마 기반)
     try:
@@ -709,7 +729,7 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
             end_date=request.end_date,
             initial_capital=request.initial_capital,
         )
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=400, detail=f"Code generation failed: {e}")
     
     # Docker 환경 확인
@@ -759,5 +779,5 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
             raise HTTPException(status_code=500, detail=error_detail)
     except HTTPException:
         raise
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=500, detail=f"백테스트 실행 오류: {e}")

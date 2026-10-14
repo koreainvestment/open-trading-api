@@ -7,7 +7,13 @@ TradingState를 통한 상태 관리:
 - 모드 전환 쿨다운
 """
 
+import logging
+
+from core.errors import BOUNDARY_ERRORS
+
 from .state import trading_state
+
+logger = logging.getLogger(__name__)
 
 
 def authenticate(svr: str = "vps") -> bool:
@@ -21,8 +27,9 @@ def authenticate(svr: str = "vps") -> bool:
     """
     try:
         return trading_state.authenticate(mode=svr)
-    except Exception as e:
-        print(f"인증 실패: {e}")
+    except BOUNDARY_ERRORS as e:
+        # 인증 실패는 전파하지 않고 False 로 응답 (ModeSwitchCooldownError 포함)
+        logger.warning("인증 실패: %s", type(e).__name__)
         return False
 
 

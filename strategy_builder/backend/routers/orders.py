@@ -18,6 +18,8 @@ from pydantic import BaseModel
 from core.order_executor import OrderExecutor
 from core.signal import Action, Signal
 from core.data_fetcher import get_deposit, get_holdings, get_pending_orders, cancel_order, clear_balance_cache
+from core.errors import BOUNDARY_ERRORS
+from core.log_sanitize import log_error, log_text, log_token
 from backend import is_authenticated, get_current_mode
 
 logging.basicConfig(level=logging.INFO)
@@ -76,8 +78,8 @@ def _get_cached_account(force_refresh: bool = False) -> dict:
         
         return _account_cache
         
-    except Exception as e:
-        logging.error(f"계좌 정보 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"계좌 정보 조회 에러: {log_error(e)}")
         # 캐시가 있으면 폴백으로 반환
         if _account_cache is not None:
             return {
@@ -273,7 +275,7 @@ async def execute_order(request: OrderRequest):
         _pending_cache_time = datetime.now()
         _optimistic_order_nos.add(str(order_id))
         _optimistic_added_at = datetime.now()
-        logging.info(f"미체결 캐시에 추가: {request.stock_name} {request.action} {request.quantity}주 (TTL {PENDING_CACHE_TTL}초 + Grace {OPTIMISTIC_GRACE_SECONDS}초)")
+        logging.info(f"미체결 캐시에 추가: {log_text(request.stock_name)} {request.action} {request.quantity}주 (TTL {PENDING_CACHE_TTL}초 + Grace {OPTIMISTIC_GRACE_SECONDS}초)")
 
         # 계좌 캐시 클리어 (잔고 갱신 위해, 미체결 캐시는 유지)
         _clear_account_cache()
@@ -285,8 +287,8 @@ async def execute_order(request: OrderRequest):
             logs=logs
         )
 
-    except Exception as e:
-        logging.error(f"주문 실행 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"주문 실행 에러: {log_error(e)}")
         add_log("error", f"주문 실행 에러: {str(e)}")
 
         return OrderResponse(
@@ -488,8 +490,8 @@ async def get_pending_orders_api():
             total_count=len(merged)
         )
 
-    except Exception as e:
-        logging.error(f"미체결 주문 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"미체결 주문 조회 에러: {log_error(e)}")
         if _pending_cache is not None:
             _pending_cache_time = now
             return PendingOrdersResponse(
@@ -522,7 +524,7 @@ async def cancel_order_api(request: CancelOrderRequest):
     env_dv = get_current_mode()
     
     try:
-        logging.info(f"취소 요청 수신: order_no={request.order_no}, org_no='{request.org_no}'")
+        logging.info(f"취소 요청 수신: order_no={log_token(request.order_no)}, org_no={log_token(request.org_no) if request.org_no else ''}")
         result = cancel_order(
             order_no=request.order_no,
             stock_code=request.stock_code,
@@ -540,7 +542,7 @@ async def cancel_order_api(request: CancelOrderRequest):
                     p for p in _pending_cache
                     if p.order_no != request.order_no
                 ]
-                logging.info(f"미체결 캐시에서 제거: 주문번호 {request.order_no}")
+                logging.info(f"미체결 캐시에서 제거: 주문번호 {log_token(request.order_no)}")
             _clear_account_cache()
         else:
             # 취소 실패: 이미 체결되었거나 존재하지 않는 주문
@@ -552,7 +554,7 @@ async def cancel_order_api(request: CancelOrderRequest):
                     if p.order_no != request.order_no
                 ]
             _pending_cache_time = None
-            logging.info(f"취소 실패(체결 완료 추정) - 캐시에서 제거: 주문번호 {request.order_no}")
+            logging.info(f"취소 실패(체결 완료 추정) - 캐시에서 제거: 주문번호 {log_token(request.order_no)}")
 
         return CancelOrderResponse(
             status="success" if result.get("success") else "error",
@@ -561,6 +563,6 @@ async def cancel_order_api(request: CancelOrderRequest):
             message=result.get("message") or ""
         )
         
-    except Exception as e:
-        logging.error(f"주문 취소 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"주문 취소 에러: {log_error(e)}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 import yaml
+from pydantic import ValidationError
 
 from kis_backtest.file.schema import KisStrategyFile
 from kis_backtest.core.strategy import StrategyDefinition
@@ -74,7 +75,8 @@ class StrategyFileLoader:
         
         try:
             return KisStrategyFile.model_validate(data)
-        except Exception as e:
+        except (ValidationError, TypeError) as e:
+            # TypeError: before-validator(auto_fill_aliases)에서 비정상 구조(None 리스트, unhashable id) 처리 시
             raise ValueError(f"Invalid strategy file format: {e}")
     
     @staticmethod
@@ -196,7 +198,8 @@ class StrategyFileLoader:
         
         try:
             return KisStrategyFile.model_validate(data)
-        except Exception as e:
+        except (ValidationError, TypeError) as e:
+            # TypeError: before-validator(auto_fill_aliases)에서 비정상 구조(None 리스트, unhashable id) 처리 시
             raise ValueError(f"Invalid strategy format: {e}")
     
     @staticmethod

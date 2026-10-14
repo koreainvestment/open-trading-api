@@ -60,18 +60,15 @@ export function StockInput({ stocks, onChange }: StockInputProps) {
   // 빠른 선택 종목 로드 (마스터파일에서 개별 조회)
   useEffect(() => {
     let cancelled = false;
+    // resolveStockName은 조회 실패 시 null을 반환하므로(예외 없음) 미수집 종목은 건너뛴다
     async function loadPopular() {
-      try {
-        const resolved: StockWithName[] = [];
-        for (const code of POPULAR_CODES) {
-          if (cancelled) return;
-          const name = await resolveStockName(code);
-          if (name) resolved.push({ code, name });
-        }
-        if (!cancelled) setPopularStocks(resolved);
-      } catch {
-        // 마스터파일 미수집 시 빈 배열 유지
+      const resolved: StockWithName[] = [];
+      for (const code of POPULAR_CODES) {
+        if (cancelled) return;
+        const name = await resolveStockName(code);
+        if (name) resolved.push({ code, name });
       }
+      if (!cancelled) setPopularStocks(resolved);
     }
     loadPopular();
     return () => { cancelled = true; };

@@ -11,6 +11,8 @@ from datetime import datetime
 from typing import Dict, Set
 
 from core import data_fetcher
+from core.errors import BOUNDARY_ERRORS
+from core.log_sanitize import log_error, log_token
 
 logging.basicConfig(level=logging.INFO)
 
@@ -66,11 +68,11 @@ class OrderbookWebSocketManager:
                 self._polling_loop(stock_code)
             )
             self.polling_tasks[stock_code] = task
-            logging.info(f"호가 구독 시작 (polling): {stock_code}")
+            logging.info(f"호가 구독 시작 (polling): {log_token(stock_code)}")
 
         # 클라이언트 추가
         self.subscriptions[stock_code].add(client_ws)
-        logging.info(f"클라이언트 추가: {stock_code} (총 {len(self.subscriptions[stock_code])}명)")
+        logging.info(f"클라이언트 추가: {log_token(stock_code)} (총 {len(self.subscriptions[stock_code])}명)")
 
     async def unsubscribe_orderbook(self, stock_code: str, client_ws):
         """
@@ -85,14 +87,14 @@ class OrderbookWebSocketManager:
 
         # 클라이언트 제거
         self.subscriptions[stock_code].discard(client_ws)
-        logging.info(f"클라이언트 제거: {stock_code} (남은 {len(self.subscriptions[stock_code])}명)")
+        logging.info(f"클라이언트 제거: {log_token(stock_code)} (남은 {len(self.subscriptions[stock_code])}명)")
 
         # 구독자가 없으면 폴링 중단
         if len(self.subscriptions[stock_code]) == 0:
             if stock_code in self.polling_tasks:
                 self.polling_tasks[stock_code].cancel()
                 del self.polling_tasks[stock_code]
-                logging.info(f"호가 구독 해제: {stock_code}")
+                logging.info(f"호가 구독 해제: {log_token(stock_code)}")
 
             del self.subscriptions[stock_code]
 
@@ -130,8 +132,8 @@ class OrderbookWebSocketManager:
                     for client_ws in clients:
                         try:
                             await client_ws.send_json(orderbook_data)
-                        except Exception as e:
-                            logging.error(f"클라이언트 전송 실패: {e}")
+                        except BOUNDARY_ERRORS as e:  # 클라이언트별 전송 경계: 실패한 클라이언트만 제거
+                            logging.error(f"클라이언트 전송 실패: {log_error(e)}")
                             # 연결이 끊긴 클라이언트 제거
                             await self.unsubscribe_orderbook(stock_code, client_ws)
 
@@ -140,8 +142,8 @@ class OrderbookWebSocketManager:
 
             except asyncio.CancelledError:
                 break
-            except Exception as e:
-                logging.error(f"폴링 에러 ({stock_code}): {e}")
+            except BOUNDARY_ERRORS as e:  # 폴링 루프 경계: 루프가 죽지 않도록 기록 후 재시도
+                logging.error(f"폴링 에러 ({log_token(stock_code)}): {log_error(e)}")
                 await asyncio.sleep(1)
 
 

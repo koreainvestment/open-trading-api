@@ -652,6 +652,8 @@ if __name__ == "__main__":
         "close < bb_lower(20, 2)",
     ]
 
+    from core.errors import BOUNDARY_ERRORS
+
     print("DSL Parser Test\n" + "=" * 50)
 
     for test in test_cases:
@@ -661,7 +663,8 @@ if __name__ == "__main__":
             print(f"AST:    {ast}")
             print(f"Days:   {ast.get_required_days()}")
             print()
-        except Exception as e:
+        except BOUNDARY_ERRORS as e:
+            # 테스트 케이스별 실행 경계: 실패 케이스도 기록하고 다음 케이스 진행
             print(f"Input:  {test}")
-            print(f"Error:  {e}")
+            print(f"Error:  {type(e).__name__}")
             print()

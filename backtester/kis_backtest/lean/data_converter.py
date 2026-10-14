@@ -44,8 +44,9 @@ class DataConverter:
             try:
                 csv_path = cls._export_symbol(symbol, df, output_path, market_type)
                 exported[symbol] = csv_path
-                logger.debug(f"  - {symbol}: {csv_path}")
-            except Exception as e:
+            except (ValueError, TypeError, KeyError, AttributeError, OSError) as e:
+                # ValueError: 필수 컬럼 누락/날짜 파싱/NaN 정수 변환, KeyError: 'date' 컬럼 없음,
+                # AttributeError: datetime 아닌 컬럼의 .dt 접근, OSError: CSV 쓰기 실패
                 logger.error(f"  - {symbol} 변환 실패: {e}")
         
         return exported

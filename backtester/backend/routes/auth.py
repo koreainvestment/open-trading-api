@@ -8,10 +8,12 @@ Mode Switching Feature:
 """
 import asyncio
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 from backend import get_current_mode, get_status
+from backend.rate_limit import client_ip_of, signin_rate_limiter
+from kis_backtest.errors import BOUNDARY_ERRORS
 from backend.state import trading_state
 
 router = APIRouter()
@@ -34,7 +36,7 @@ class AuthStatusResponse(BaseModel):
 
 
 @router.post("/login")
-async def login(request: LoginRequest):
+async def signin(request: LoginRequest, http_request: Request):
     """KIS API 인증
 
     Args:
@@ -44,6 +46,14 @@ async def login(request: LoginRequest):
         raise HTTPException(
             status_code=400,
             detail="mode는 'vps' 또는 'prod'만 가능합니다.",
+        )
+
+    retry_after = signin_rate_limiter.hit(client_ip_of(http_request))
+    if retry_after:
+        raise HTTPException(
+            status_code=429,
+            detail=f"인증 요청이 너무 많습니다. {retry_after}초 후 다시 시도하세요.",
+            headers={"Retry-After": str(retry_after)},
         )
 
     try:
@@ -57,7 +67,7 @@ async def login(request: LoginRequest):
             status_code=408,
             detail="인증 시간 초과 (60초). kis_devlp.yaml의 URL 및 appkey/appsecret을 확인하세요.",
         )
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=400, detail=str(e))
 
     status = get_status()
@@ -97,7 +107,7 @@ async def switch_mode(request: SwitchModeRequest):
             status_code=408,
             detail="인증 시간 초과 (60초). kis_devlp.yaml 설정을 확인하세요.",
         )
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=400, detail=str(e))
 
     status = get_status()

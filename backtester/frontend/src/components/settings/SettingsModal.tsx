@@ -15,6 +15,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const { status, isLoading, error, login, switchMode } = useAuth();
   const [masterStatus, setMasterStatus] = useState<MasterStatus | null>(null);
   const [isCollecting, setIsCollecting] = useState(false);
+  const [masterError, setMasterError] = useState<string | null>(null);
   const [cooldownTimer, setCooldownTimer] = useState(0);
 
   useEffect(() => {
@@ -43,19 +44,21 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const fetchMasterStatus = async () => {
     try {
       setMasterStatus(await getMasterStatus());
-    } catch {
-      // 상태 조회 실패 시 무시
+      setMasterError(null);
+    } catch (err) {
+      setMasterError(err instanceof Error ? err.message : "마스터파일 상태 조회 실패");
     }
   };
 
   const handleCollect = async () => {
     setIsCollecting(true);
+    setMasterError(null);
     try {
       await collectMasterFiles();
       await fetchMasterStatus();
       window.dispatchEvent(new Event("symbols-collected"));
-    } catch {
-      // 수집 실패 시 무시
+    } catch (err) {
+      setMasterError(err instanceof Error ? err.message : "마스터파일 수집 실패");
     } finally {
       setIsCollecting(false);
     }
@@ -281,8 +284,15 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   )}
                 </>
               ) : (
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  로딩 중...
+                !masterError && (
+                  <div className="text-sm text-slate-500 dark:text-slate-400">
+                    로딩 중...
+                  </div>
+                )
+              )}
+              {masterError && (
+                <div className="px-2 py-1.5 rounded bg-red-50 dark:bg-red-900/20 text-xs text-red-600 dark:text-red-400">
+                  {masterError}
                 </div>
               )}
               <button

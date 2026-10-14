@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
+from ..errors import user_code_errors
 from ..models.result import BacktestResult
 from .themes import KISTheme, BaseTheme
 from .components import (
@@ -94,7 +95,8 @@ class KISReportGenerator:
                     html = component.render(result)
 
                 rendered_components.append(html)
-            except Exception as e:
+            except user_code_errors(component) as e:
+                # 컴포넌트별 렌더링: 실패한 컴포넌트만 대체 문구로 바꾸고 리포트는 계속 생성
                 logger.error(f"컴포넌트 렌더링 오류 ({name}): {e}")
                 rendered_components.append(f"<p>렌더링 오류: {name}</p>")
 

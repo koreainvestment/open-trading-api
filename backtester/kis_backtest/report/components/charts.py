@@ -272,7 +272,9 @@ class EquityCurveChart:
                 else:
                     idx = equity_index.get_indexer([trade_date], method='nearest')[0]
                     eq_val = equity_values[idx]
-            except Exception:
+            except (KeyError, IndexError, TypeError, ValueError, pd.errors.InvalidIndexError):
+                # tz/타입 불일치 비교(TypeError), 비단조 인덱스(ValueError),
+                # 중복 인덱스 get_indexer(InvalidIndexError) → 해당 마커만 건너뜀
                 continue
 
             text = f"{symbol}<br>{qty:,}주<br>{price:,.0f}원"
@@ -398,7 +400,8 @@ class MonthlyReturnsHeatmap:
             monthly_df.columns = ['return', 'year', 'month']
 
             pivot = monthly_df.pivot(index='year', columns='month', values='return')
-        except Exception:
+        except (ValueError, KeyError, AttributeError, TypeError):
+            # 비 DatetimeIndex(.year 없음), 컬럼 수 불일치/중복 피벗 키(ValueError)
             return '<div class="card"><p class="empty-state">월별 수익률 계산 실패</p></div>'
 
         # 12개월 전체로 리인덱스 (NaN으로 채움)

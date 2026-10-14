@@ -12,9 +12,33 @@ import os
 from datetime import datetime
 from typing import Optional
 
+import requests
+import yaml
+
 import kis_auth as ka
 
 logger = logging.getLogger(__name__)
+
+# ka.auth() 실패 시 발생 가능한 예외
+# - requests.RequestException: 토큰 발급 요청 네트워크 오류
+# - KeyError / TypeError: kis_devlp.yaml 설정 키 누락 또는 설정이 비어 있음(None)
+# - OSError: 토큰 파일 저장 실패
+# - yaml.YAMLError: 설정/토큰 파일 파싱 오류
+# - ValueError: 응답 JSON 디코딩·만료일시 파싱 실패
+# - AttributeError: 토큰 응답에 access_token 등 필드 누락
+KIS_AUTH_ERRORS = (
+    requests.RequestException,
+    KeyError,
+    TypeError,
+    OSError,
+    yaml.YAMLError,
+    ValueError,
+    AttributeError,
+)
+
+
+class ModeSwitchCooldownError(RuntimeError):
+    """쿨다운 중 모드 전환 시도 시 발생"""
 
 
 class TradingState:
@@ -104,7 +128,9 @@ class TradingState:
             if jti == ka._cfg.get("paper_app"):
                 return "vps"
             return None
-        except Exception:
+        except (IndexError, ValueError, AttributeError):
+            # IndexError: JWT 형식 아님, ValueError: base64/JSON 디코딩 실패,
+            # AttributeError: 토큰/페이로드 타입 불일치
             return None
 
     def _try_restore_auth(self) -> None:
@@ -123,7 +149,7 @@ class TradingState:
             self._current_mode = mode
             self._save_mode_file(mode)
             logger.info(f"인증 자동 복원 완료 (mode={mode})")
-        except Exception as e:
+        except KIS_AUTH_ERRORS as e:
             logger.info(f"인증 자동 복원 실패 (미인증 상태로 시작): {e}")
             self._authenticated = False
 
@@ -154,17 +180,20 @@ class TradingState:
         ka._cfg는 모듈 임포트 시 한 번만 로드되므로,
         yaml을 수정한 뒤 인증 시도 시 이 메서드로 재로드해야 반영된다.
         """
-        import yaml as _yaml
         config_path = os.path.join(
             os.path.expanduser("~"), "KIS", "config", "kis_devlp.yaml"
         )
         try:
             with open(config_path, encoding="UTF-8") as f:
-                new_cfg = _yaml.load(f, Loader=_yaml.FullLoader)
-            ka._cfg.clear()
-            ka._cfg.update(new_cfg)
-        except Exception as e:
+                new_cfg = yaml.safe_load(f)
+        except (OSError, UnicodeDecodeError, yaml.YAMLError) as e:
             logger.warning(f"설정 파일 재로드 실패: {e}")
+            return
+        if not isinstance(new_cfg, dict):
+            logger.warning("설정 파일 재로드 실패: 설정 형식이 올바르지 않습니다")
+            return
+        ka._cfg.clear()
+        ka._cfg.update(new_cfg)
 
     def authenticate(self, mode: str = "vps") -> bool:
         """KIS API 인증
@@ -176,19 +205,22 @@ class TradingState:
             인증 성공 여부
 
         Raises:
-            Exception: 쿨다운 중 모드 전환 시도 시
+            ModeSwitchCooldownError: 쿨다운 중 모드 전환 시도 시
+            KIS_AUTH_ERRORS: ka.auth() 인증 실패 시
         """
         switching_mode = self._authenticated and self._current_mode != mode
 
         if switching_mode:
             can_switch, remaining = self.can_switch_mode()
             if not can_switch:
-                raise Exception(
+                raise ModeSwitchCooldownError(
                     f"모드 전환은 1분에 1회만 가능합니다. {remaining}초 후 다시 시도하세요."
                 )
             self._clear_token_file()
             self._authenticated = False
 
+        # 실패 시(어떤 예외든) 미인증으로 되돌리고 예외는 그대로 전파
+        succeeded = False
         try:
             self._reload_config()
             ka.auth(svr=mode)
@@ -197,10 +229,11 @@ class TradingState:
             if switching_mode:
                 self._last_mode_switch = datetime.now()  # 성공 시에만 쿨다운 적용
             self._save_mode_file(mode)
+            succeeded = True
             return True
-        except Exception as e:
-            self._authenticated = False
-            raise e
+        finally:
+            if not succeeded:
+                self._authenticated = False
 
     def can_switch_mode(self) -> tuple[bool, int]:
         """모드 전환 가능 여부 및 남은 쿨다운 시간

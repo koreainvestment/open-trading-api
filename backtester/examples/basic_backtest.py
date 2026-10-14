@@ -23,7 +23,10 @@ from pathlib import Path
 # 프로젝트 루트 추가
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+import requests
+
 from kis_backtest import LeanClient
+from kis_backtest.errors import BOUNDARY_ERRORS
 from kis_backtest.providers.kis import KISAuth, KISDataProvider
 
 # 날짜 설정: 오늘 기준
@@ -33,6 +36,13 @@ ONE_YEAR_AGO = TODAY - timedelta(days=365)
 # 날짜 문자열
 START_DATE = ONE_YEAR_AGO.strftime("%Y-%m-%d")
 END_DATE = TODAY.strftime("%Y-%m-%d")
+
+# 인증 단계 예외: 설정 누락(ValueError/KeyError), 토큰 발급 실패 후 환경 미설정(AttributeError),
+# 토큰 파일 I/O(OSError), 네트워크 오류(requests.RequestException)
+AUTH_ERRORS = (ValueError, KeyError, AttributeError, OSError, requests.RequestException)
+
+# 예제 함수 경계: 한 예제의 실패를 출력하고 다음으로 진행 (Lean·데이터·코드생성 오류 전반)
+BACKTEST_ERRORS = BOUNDARY_ERRORS
 
 
 def create_client():
@@ -47,7 +57,7 @@ def create_client():
         print(f"  ✓ 인증 성공 ({mode_str}, 계좌: {auth.acct_masked})")
 
         return LeanClient(data_provider=data_provider)
-    except Exception as e:
+    except AUTH_ERRORS as e:
         print(f"  ✗ 인증 실패: {e}")
         print("\n💡 KIS API 인증 정보를 설정하세요.")
         return None
@@ -124,10 +134,8 @@ def run_builtin_strategy_backtest():
 
         return result
 
-    except Exception as e:
+    except BACKTEST_ERRORS as e:
         print(f"\n❌ 백테스트 실패: {e}")
-        import traceback
-        traceback.print_exc()
         return None
 
 
@@ -167,7 +175,7 @@ class KRXEquity(PythonData):
             data["Low"] = float(cols[3])
             data["Close"] = float(cols[4])
             data["Volume"] = int(cols[5])
-        except Exception:
+        except (IndexError, ValueError):
             return None
 
         return data
@@ -321,10 +329,8 @@ def run_custom_strategy_backtest():
 
         return result
 
-    except Exception as e:
+    except BACKTEST_ERRORS as e:
         print(f"\n❌ 백테스트 실패: {e}")
-        import traceback
-        traceback.print_exc()
         return None
 
 

@@ -17,6 +17,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import kis_auth as ka
+from core.errors import BOUNDARY_ERRORS
 from strategy.strategy_01_golden_cross import GoldenCrossStrategy
 from strategy.strategy_02_momentum import MomentumStrategy
 from strategy.strategy_03_week52_high import Week52HighStrategy
@@ -85,8 +86,9 @@ def run_all_strategies(stocks: list, verbose: bool = True):
                     "reason": signal.reason
                 })
 
-            except Exception as e:
-                print(f"  {stock['name']:10} [{stock['code']}] 오류: {e}")
+            except BOUNDARY_ERRORS as e:
+                # 종목별 실행 경계: 실패한 종목만 건너뜀 (예외 원문 대신 타입명만 출력)
+                print(f"  {stock['name']:10} [{stock['code']}] 오류: {type(e).__name__}")
 
             time.sleep(0.5)  # API 호출 간격
 

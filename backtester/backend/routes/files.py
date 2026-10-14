@@ -12,6 +12,7 @@ import io
 from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from fastapi.responses import FileResponse, StreamingResponse
 
+from kis_backtest.errors import BOUNDARY_ERRORS
 from backend.schemas.file import (
     FileImportResponse,
     TemplateListResponse,
@@ -27,11 +28,14 @@ router = APIRouter()
 )
 async def list_templates() -> TemplateListResponse:
     """사용 가능한 전략 템플릿 목록"""
-    from kis_backtest.file.templates import list_templates, get_template_path
+    from kis_backtest.file.templates import (
+        get_template_path,
+        list_templates as list_template_names,
+    )
     from kis_backtest.file.loader import StrategyFileLoader
     
     templates = []
-    for name in list_templates():
+    for name in list_template_names():
         try:
             path = get_template_path(name)
             strategy_file = StrategyFileLoader.load(path)
@@ -42,7 +46,8 @@ async def list_templates() -> TemplateListResponse:
                 "category": strategy_file.strategy.category,
                 "tags": strategy_file.metadata.tags,
             })
-        except Exception:
+        except (OSError, ValueError):
+            # 파일 없음/읽기 실패(OSError), YAML·스키마 검증 실패(ValueError)인 템플릿은 건너뜀
             continue
     
     return TemplateListResponse(
@@ -145,7 +150,7 @@ async def import_strategy(file: UploadFile = File(...)) -> FileImportResponse:
     try:
         content = await file.read()
         content_str = content.decode("utf-8")
-    except Exception as e:
+    except (OSError, UnicodeDecodeError) as e:
         raise HTTPException(status_code=400, detail=f"Failed to read file: {e}")
     
     # YAML 파싱 및 검증
@@ -164,7 +169,7 @@ async def import_strategy(file: UploadFile = File(...)) -> FileImportResponse:
             },
             message="전략 Import 성공",
         )
-    except Exception as e:
+    except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=400, detail=f"Invalid strategy file: {e}")
 
 
@@ -287,7 +292,7 @@ async def validate_strategy(file: UploadFile = File(...)) -> dict:
                 "errors": errors,
             },
         }
-    except Exception as e:
+    except (OSError, ValueError, AttributeError) as e:
         return {
             "success": False,
             "data": {

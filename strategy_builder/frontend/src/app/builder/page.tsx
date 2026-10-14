@@ -66,6 +66,7 @@ export default function BuilderPage() {
   const builder = useStrategyBuilder();
   const localStrategies = useLocalStrategies();
   const toast = useToast();
+  const showErrorToast = toast.error;
 
   useEffect(() => {
     async function loadStrategies() {
@@ -81,14 +82,16 @@ export default function BuilderPage() {
             state: s.builder_state as BuilderState,
           }));
         setPresetStrategies(strategies);
-      } catch {
-        // silently fail - strategies will show as empty
+      } catch (err) {
+        // 프리셋 목록은 빈 상태로 두고 사용자에게 실패를 알림
+        const message = err instanceof Error ? err.message : "알 수 없는 오류";
+        showErrorToast(`전략 목록을 불러오지 못했습니다: ${message}`);
       } finally {
         setIsLoadingStrategies(false);
       }
     }
     loadStrategies();
-  }, []);
+  }, [showErrorToast]);
 
   // Reset python preview when builder state changes
   useEffect(() => {

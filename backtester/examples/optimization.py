@@ -20,6 +20,8 @@ from datetime import date, timedelta
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
+import requests
+
 # 프로젝트 루트 추가
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -45,7 +47,9 @@ def create_client():
         print(f"  ✓ 인증 성공 ({mode_str}, 계좌: {auth.acct_masked})")
 
         return LeanClient(data_provider=data_provider)
-    except Exception as e:
+    # 설정 누락(ValueError/KeyError), 토큰 발급 실패 후 환경 미설정(AttributeError),
+    # 토큰 파일 I/O(OSError), 네트워크 오류(requests.RequestException)
+    except (ValueError, KeyError, AttributeError, OSError, requests.RequestException) as e:
         print(f"  ✗ 인증 실패: {e}")
         print("\n💡 KIS API 인증 정보를 설정하세요.")
         return None
@@ -436,13 +440,16 @@ if __name__ == "__main__":
     }
     
     if args.example == "all":
+        from kis_backtest.errors import BOUNDARY_ERRORS
+
         for name, func in examples.items():
             print(f"\n{'=' * 70}")
             print(f"예제: {name}")
             print("=" * 70)
+            # 한 예제 실패가 나머지 예제 실행을 막지 않도록 예제별로 처리
             try:
                 func()
-            except Exception as e:
+            except BOUNDARY_ERRORS as e:
                 print(f"❌ 오류: {e}")
             print()
     else:

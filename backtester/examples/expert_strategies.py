@@ -356,7 +356,8 @@ def story_compare():
             
             print(f"  {i:2}. {strategy['name']:20} → {len(code):,} bytes ✅")
             
-        except Exception as e:
+        # 코드 생성/검증 실패(ValueError), 파라미터 오류(KeyError/TypeError), 파일 저장 실패(OSError)
+        except (ValueError, KeyError, TypeError, OSError) as e:
             results.append({
                 "name": strategy["name"],
                 "id": strategy["id"],
@@ -582,7 +583,8 @@ def show_catalog():
                         default = config.get("default", "N/A")
                         label = config.get("description", key)
                         print(f"    • {key}: 기본값 {default}")
-            except Exception as e:
+            # 전략 빌드/직렬화 실패(ValueError/TypeError), 정의 형식 불일치(KeyError/AttributeError)
+            except (ValueError, TypeError, KeyError, AttributeError) as e:
                 print(f"  ⚠️ 전략 정보 로드 실패: {e}")
     
     print(f"\n{'=' * 70}")

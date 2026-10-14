@@ -6,6 +6,7 @@
 
 import logging
 import zipfile
+import zlib
 from datetime import date, datetime
 from io import BytesIO
 from pathlib import Path
@@ -26,6 +27,17 @@ MASTER_URLS = {
     "kospi": "https://new.real.download.dws.co.kr/common/master/kospi_code.mst.zip",
     "kosdaq": "https://new.real.download.dws.co.kr/common/master/kosdaq_code.mst.zip",
 }
+
+# 마스터파일 다운로드/압축해제/저장 중 발생 가능한 예외
+# (네트워크·HTTP, 파일 I/O, 암호화 zip(RuntimeError), 미지원 압축방식, 압축 데이터 손상)
+_DOWNLOAD_ERRORS = (
+    httpx.HTTPError,
+    OSError,
+    RuntimeError,
+    NotImplementedError,
+    zlib.error,
+    zipfile.LargeZipFile,
+)
 
 # 인메모리 캐시
 _symbol_cache: dict[str, list[dict]] = {}
@@ -123,7 +135,7 @@ def _load_from_csv(exchange: str) -> list[dict]:
                         "exchange": parts[2],
                         "exchange_name": "코스피" if parts[2] == "kospi" else "코스닥",
                     })
-    except Exception as e:
+    except (OSError, UnicodeDecodeError) as e:
         logger.error(f"CSV 로드 오류 ({exchange}): {e}")
 
     return symbols
@@ -140,7 +152,7 @@ def _save_to_csv(exchange: str, symbols: list[dict]):
             for s in symbols:
                 f.write(f"{s['code']},{s['name']},{s['exchange']}\n")
         logger.info(f"CSV 저장 완료: {csv_path} ({len(symbols)}개)")
-    except Exception as e:
+    except OSError as e:
         logger.error(f"CSV 저장 오류 ({exchange}): {e}")
 
 
@@ -320,28 +332,26 @@ def _parse_kospi_kosdaq_mst(content: bytes, exchange: str) -> list[dict]:
     - 9-20 (12바이트): 표준코드
     - 21-60 (40바이트): 한글종목명
     """
+    # bytes 슬라이싱과 errors="ignore" 디코딩만 사용하므로 파싱 중 예외가 발생하지 않음
     symbols = []
-    try:
-        lines = content.split(b"\n")
-        for line_bytes in lines:
-            if len(line_bytes) < 61:
-                continue
+    lines = content.split(b"\n")
+    for line_bytes in lines:
+        if len(line_bytes) < 61:
+            continue
 
-            code = line_bytes[0:9].decode("euc-kr", errors="ignore").strip()
-            name = line_bytes[21:61].decode("euc-kr", errors="ignore").strip()
+        code = line_bytes[0:9].decode("euc-kr", errors="ignore").strip()
+        name = line_bytes[21:61].decode("euc-kr", errors="ignore").strip()
 
-            if len(code) > 6:
-                code = code[-6:]
+        if len(code) > 6:
+            code = code[-6:]
 
-            if code and name:
-                symbols.append({
-                    "code": code,
-                    "name": name,
-                    "exchange": exchange,
-                    "exchange_name": "코스피" if exchange == "kospi" else "코스닥",
-                })
-    except Exception as e:
-        logger.error(f"마스터파일 파싱 오류 ({exchange}): {e}")
+        if code and name:
+            symbols.append({
+                "code": code,
+                "name": name,
+                "exchange": exchange,
+                "exchange_name": "코스피" if exchange == "kospi" else "코스닥",
+            })
 
     return symbols
 
@@ -363,9 +373,10 @@ async def _download_and_parse(exchange: str, timeout: float = 60.0) -> tuple[lis
 
         try:
             with zipfile.ZipFile(BytesIO(content)) as zf:
-                for name in zf.namelist():
-                    extracted = zf.read(name)
-                    break
+                names = zf.namelist()
+                if not names:
+                    return [], "마스터파일 압축에 파일이 없습니다"
+                extracted = zf.read(names[0])
         except zipfile.BadZipFile:
             extracted = content
 
@@ -383,6 +394,6 @@ async def _download_and_parse(exchange: str, timeout: float = 60.0) -> tuple[lis
         error = f"HTTP {e.response.status_code}"
         logger.error(f"HTTP 오류 ({exchange}): {error}")
         return [], error
-    except Exception as e:
+    except _DOWNLOAD_ERRORS as e:
         logger.error(f"수집 실패 ({exchange}): {e}")
         return [], str(e)

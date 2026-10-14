@@ -13,8 +13,14 @@ from datetime import datetime
 from typing import Optional
 
 import kis_auth as ka
+from core.errors import BOUNDARY_ERRORS
+from core.log_sanitize import log_error
 
 logger = logging.getLogger(__name__)
+
+
+class ModeSwitchCooldownError(RuntimeError):
+    """쿨다운 중 모드 전환 시도 시 발생 (RuntimeError 하위 — BOUNDARY_ERRORS 가 덮음)"""
 
 
 class TradingState:
@@ -68,7 +74,7 @@ class TradingState:
             with open(path, "w", encoding="utf-8") as f:
                 f.write(mode)
         except OSError as e:
-            logger.warning(f"모드 파일 저장 실패: {e}")
+            logger.warning(f"모드 파일 저장 실패: {log_error(e)}")
 
     def _delete_mode_file(self) -> None:
         """로그아웃 시 모드 파일 삭제."""
@@ -77,7 +83,7 @@ class TradingState:
             if os.path.exists(path):
                 os.remove(path)
         except OSError as e:
-            logger.warning(f"모드 파일 삭제 실패: {e}")
+            logger.warning(f"모드 파일 삭제 실패: {log_error(e)}")
 
     # ------------------------------------------------------------------
     # 재시작 시 자동 인증 복원
@@ -104,7 +110,9 @@ class TradingState:
             if jti == ka._cfg.get("paper_app"):
                 return "vps"
             return None
-        except Exception:
+        except (IndexError, ValueError, TypeError, AttributeError):
+            # 토큰 형식 오류(IndexError), base64/JSON 디코딩 실패(ValueError 하위),
+            # 예상과 다른 payload 타입(TypeError/AttributeError)
             return None
 
     def _try_restore_auth(self) -> None:
@@ -125,8 +133,9 @@ class TradingState:
             self._current_mode = mode
             self._save_mode_file(mode)  # 감지한 모드를 파일에 저장
             logger.info(f"인증 자동 복원 완료 (mode={mode})")
-        except Exception as e:
-            logger.info(f"인증 자동 복원 실패 (미인증 상태로 시작): {e}")
+        except BOUNDARY_ERRORS as e:
+            # 생성자에서 호출되므로 어떤 실패도 전파하지 않고 미인증 상태로 시작
+            logger.info(f"인증 자동 복원 실패 (미인증 상태로 시작): {log_error(e)}")
             self._authenticated = False
 
     # ------------------------------------------------------------------
@@ -148,7 +157,7 @@ class TradingState:
                 os.remove(token_file)
                 logger.info(f"토큰 삭제: {token_file}")
             except OSError as e:
-                logger.warning(f"토큰 삭제 실패: {e}")
+                logger.warning(f"토큰 삭제 실패: {log_error(e)}")
 
     def _reload_config(self) -> None:
         """kis_devlp.yaml 변경사항을 ka._cfg에 반영한다.
@@ -162,11 +171,11 @@ class TradingState:
         )
         try:
             with open(config_path, encoding="UTF-8") as f:
-                new_cfg = _yaml.load(f, Loader=_yaml.FullLoader)
+                new_cfg = _yaml.safe_load(f)
             ka._cfg.clear()
             ka._cfg.update(new_cfg)
-        except Exception as e:
-            logger.warning(f"설정 파일 재로드 실패: {e}")
+        except (OSError, _yaml.YAMLError, TypeError, ValueError) as e:
+            logger.warning(f"설정 파일 재로드 실패: {log_error(e)}")
 
     def authenticate(self, mode: str = "vps") -> bool:
         """KIS API 인증
@@ -178,7 +187,7 @@ class TradingState:
             인증 성공 여부
 
         Raises:
-            Exception: 쿨다운 중 모드 전환 시도 시
+            ModeSwitchCooldownError: 쿨다운 중 모드 전환 시도 시
         """
         switching_mode = self._authenticated and self._current_mode != mode
 
@@ -186,7 +195,7 @@ class TradingState:
         if switching_mode:
             can_switch, remaining = self.can_switch_mode()
             if not can_switch:
-                raise Exception(
+                raise ModeSwitchCooldownError(
                     f"모드 전환은 1분에 1회만 가능합니다. {remaining}초 후 다시 시도하세요."
                 )
             # 기존 토큰 삭제 후 모드 전환
@@ -202,9 +211,9 @@ class TradingState:
                 self._last_mode_switch = datetime.now()  # 성공 시에만 쿨다운 적용
             self._save_mode_file(mode)
             return True
-        except Exception as e:
+        except BOUNDARY_ERRORS:
             self._authenticated = False
-            raise e
+            raise
     
     def can_switch_mode(self) -> tuple[bool, int]:
         """모드 전환 가능 여부 및 남은 쿨다운 시간

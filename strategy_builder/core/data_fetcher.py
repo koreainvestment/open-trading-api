@@ -14,6 +14,8 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 import kis_auth as ka
+from core.errors import BOUNDARY_ERRORS
+from core.log_sanitize import log_error, log_text, log_token
 
 logging.basicConfig(level=logging.INFO)
 
@@ -139,7 +141,7 @@ def get_daily_prices(
     Note:
         skill: API 실패 시 빈 DataFrame 반환
     """
-    if not _assert_trenv_ready(f"일봉 조회 {stock_code}"):
+    if not _assert_trenv_ready(f"일봉 조회 {log_token(stock_code)}"):
         return pd.DataFrame()
 
     try:
@@ -164,13 +166,13 @@ def get_daily_prices(
         )
 
         if not res.isOK():
-            logging.warning(f"API 호출 실패: {stock_code}")
+            logging.warning(f"API 호출 실패: {log_token(stock_code)}")
             return pd.DataFrame()
 
         df = pd.DataFrame(res.getBody().output2)
 
         if df.empty:
-            logging.warning(f"데이터 없음: {stock_code}")
+            logging.warning(f"데이터 없음: {log_token(stock_code)}")
             return pd.DataFrame()
 
         # 정규화
@@ -196,8 +198,8 @@ def get_daily_prices(
         # 요청한 일수만큼만 반환
         return df.tail(days).reset_index(drop=True)
 
-    except Exception as e:
-        logging.error(f"데이터 조회 에러 ({stock_code}): {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"데이터 조회 에러 ({log_token(stock_code)}): {log_error(e)}")
         return pd.DataFrame()
 
 
@@ -230,7 +232,7 @@ def get_current_price(
     Note:
         skill: API 실패 시 빈 dict 반환
     """
-    if not _assert_trenv_ready(f"현재가 조회 {stock_code}"):
+    if not _assert_trenv_ready(f"현재가 조회 {log_token(stock_code)}"):
         return {}
 
     try:
@@ -247,7 +249,7 @@ def get_current_price(
         )
 
         if not res.isOK():
-            logging.warning(f"현재가 조회 실패: {stock_code}")
+            logging.warning(f"현재가 조회 실패: {log_token(stock_code)}")
             return {}
 
         output = res.getBody().output
@@ -263,8 +265,8 @@ def get_current_price(
             "w52_low": int(output.get("w52_lwpr", 0)),
         }
 
-    except Exception as e:
-        logging.error(f"현재가 조회 에러 ({stock_code}): {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"현재가 조회 에러 ({log_token(stock_code)}): {log_error(e)}")
         return {}
 
 
@@ -330,8 +332,8 @@ def get_holdings(env_dv: str = "real") -> pd.DataFrame:
 
         return df.reset_index(drop=True)
 
-    except Exception as e:
-        logging.error(f"잔고 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"잔고 조회 에러: {log_error(e)}")
         return pd.DataFrame()
 
 
@@ -357,7 +359,7 @@ def get_buyable_amount(
         - amount: 매수가능금액 (미수 미사용)
         - quantity: 매수가능수량 (미수 미사용)
     """
-    if not _assert_trenv_ready(f"매수가능 조회 {stock_code}"):
+    if not _assert_trenv_ready(f"매수가능 조회 {log_token(stock_code)}"):
         return {"amount": 0, "quantity": 0}
 
     try:
@@ -383,7 +385,7 @@ def get_buyable_amount(
         )
 
         if not res.isOK():
-            logging.warning(f"매수가능 조회 실패: {stock_code}")
+            logging.warning(f"매수가능 조회 실패: {log_token(stock_code)}")
             return {"amount": 0, "quantity": 0}
 
         output = res.getBody().output
@@ -393,8 +395,8 @@ def get_buyable_amount(
             "quantity": int(output.get("nrcvb_buy_qty", 0))
         }
 
-    except Exception as e:
-        logging.error(f"매수가능 조회 에러 ({stock_code}): {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"매수가능 조회 에러 ({log_token(stock_code)}): {log_error(e)}")
         return {"amount": 0, "quantity": 0}
 
 
@@ -446,8 +448,8 @@ def get_deposit(env_dv: str = "real") -> dict:
             "profit_loss": int(summary.get("evlu_pfls_smtl_amt", 0)),
         }
 
-    except Exception as e:
-        logging.error(f"예수금 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"예수금 조회 에러: {log_error(e)}")
         return {}
 
 
@@ -483,7 +485,7 @@ def get_orderbook(
     Note:
         skill: API 실패 시 빈 dict 반환
     """
-    if not _assert_trenv_ready(f"호가 조회 {stock_code}"):
+    if not _assert_trenv_ready(f"호가 조회 {log_token(stock_code)}"):
         return {}
 
     try:
@@ -500,7 +502,7 @@ def get_orderbook(
         )
 
         if not res.isOK():
-            logging.warning(f"호가 조회 실패: {stock_code}")
+            logging.warning(f"호가 조회 실패: {log_token(stock_code)}")
             return {}
 
         body = res.getBody()
@@ -540,8 +542,8 @@ def get_orderbook(
             "expected_volume": int(output2.get("antc_cnqn", 0)) if output2 else 0,
         }
 
-    except Exception as e:
-        logging.error(f"호가 조회 에러 ({stock_code}): {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"호가 조회 에러 ({log_token(stock_code)}): {log_error(e)}")
         return {}
 
 
@@ -629,8 +631,8 @@ def get_pending_orders(env_dv: str = "real") -> tuple[pd.DataFrame, bool]:
         
         return df.reset_index(drop=True), True
 
-    except Exception as e:
-        logging.error(f"미체결 주문 조회 에러: {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"미체결 주문 조회 에러: {log_error(e)}")
         return pd.DataFrame(), False
 
 
@@ -663,7 +665,7 @@ def cancel_order(
     Note:
         skill: API 실패 시 success=False 반환
     """
-    if not _assert_trenv_ready(f"주문 취소 {order_no}"):
+    if not _assert_trenv_ready(f"주문 취소 {log_token(order_no)}"):
         return {"success": False, "order_no": order_no, "message": "재인증이 필요합니다"}
 
     try:
@@ -685,7 +687,7 @@ def cancel_order(
             "EXCG_ID_DVSN_CD": "KRX",
         }
         
-        logging.info(f"주문 취소 요청: tr_id={tr_id}, order_no={order_no}, org_no='{org_no}'")
+        logging.info(f"주문 취소 요청: tr_id={tr_id}, order_no={log_token(order_no)}, org_no={log_token(org_no) if org_no else ''}")
         res = ka._url_fetch(
             "/uapi/domestic-stock/v1/trading/order-rvsecncl",
             tr_id, "", params, postFlag=True
@@ -693,7 +695,7 @@ def cancel_order(
         if not res.isOK():
             body = res.getBody()
             error_msg = getattr(body, 'msg1', None) or "취소 실패"
-            logging.warning(f"주문 취소 실패: {order_no} - {error_msg}")
+            logging.warning(f"주문 취소 실패: {log_token(order_no)} - {log_text(error_msg)}")
             return {
                 "success": False,
                 "order_no": order_no,
@@ -708,8 +710,8 @@ def cancel_order(
             "message": "주문이 취소되었습니다"
         }
         
-    except Exception as e:
-        logging.error(f"주문 취소 에러 ({order_no}): {e}")
+    except BOUNDARY_ERRORS as e:
+        logging.error(f"주문 취소 에러 ({log_token(order_no)}): {log_error(e)}")
         return {
             "success": False,
             "order_no": order_no,
