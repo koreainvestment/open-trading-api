@@ -13,27 +13,29 @@ def kosdaq_master_download(base_dir, verbose=False):
     cwd = os.getcwd()
     if (verbose): print(f"current directory is {cwd}")
     ssl._create_default_https_context = ssl._create_unverified_context
-    
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/kosdaq_code.mst.zip",
-                               base_dir + "\\kosdaq_code.zip")
+
+    urllib.request.urlretrieve(
+        "https://new.real.download.dws.co.kr/common/master/kosdaq_code.mst.zip",
+        os.path.join(base_dir, "kosdaq_code.zip"),
+    )
 
     os.chdir(base_dir)
     if (verbose): print(f"change directory to {base_dir}")
     kosdaq_zip = zipfile.ZipFile('kosdaq_code.zip')
     kosdaq_zip.extractall()
-    
+
     kosdaq_zip.close()
 
     if os.path.exists("kosdaq_code.zip"):
         os.remove("kosdaq_code.zip")
 
 def get_kosdaq_master_dataframe(base_dir):
-    file_name = base_dir + "\\kosdaq_code.mst"
-    tmp_fil1 = base_dir + "\\kosdaq_code_part1.tmp"
-    tmp_fil2 = base_dir + "\\kosdaq_code_part2.tmp"
+    file_name = os.path.join(base_dir, "kosdaq_code.mst")
+    tmp_fil1 = os.path.join(base_dir, "kosdaq_code_part1.tmp")
+    tmp_fil2 = os.path.join(base_dir, "kosdaq_code_part2.tmp")
 
-    wf1 = open(tmp_fil1, mode="w")
-    wf2 = open(tmp_fil2, mode="w")
+    wf1 = open(tmp_fil1, mode="w", encoding="cp949")
+    wf2 = open(tmp_fil2, mode="w", encoding="cp949")
 
     with open(file_name, mode="r", encoding="cp949") as f:
         for row in f:
