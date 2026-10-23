@@ -11,6 +11,25 @@ ChatGPT, Claude 등 LLM(Large Language Model)과 AI 에이전트가 이 저장�
 
 # KIS Open API 샘플 코드 저장소 (LLM 지원)
 
+> [!NOTE]
+> **KIS Developers 신규 서비스 오픈 안내**
+>
+> 2026년 10월 23일부터 [KIS Developers](https://apiportal.koreainvestment.com)에서 **OpenAPI AI 에이전트**와 **투자전략 플레이그라운드**를 새롭게 제공합니다.
+>
+> **1. OpenAPI AI 에이전트**
+>
+> OpenAPI 이용 중 궁금한 사항을 AI 에이전트에게 질문해 보세요. API 사용 방법, 샘플코드 작성, 오류 해결 등 개발 과정에서 필요한 도움을 받을 수 있습니다.
+>
+> KIS Developers 로그인 후 화면 우측 하단의 챗봇 버튼을 클릭하여 이용하실 수 있습니다.
+>
+> **2. 투자전략 플레이그라운드**
+>
+> 기존 GitHub에서 샘플코드로 제공하던 투자전략 생성 기능을 이제 웹에서도 직접 체험하실 수 있습니다. 별도의 개발환경 구축 없이 투자전략을 간편하게 생성해 보세요.
+>
+> - 이용 경로: **KIS Developers > AI도구**
+>
+> 자세한 내용은 [KIS Developers 공지사항](https://apiportal.koreainvestment.com/community)에서 확인하실 수 있습니다.
+
 ## 1. 제작 의도 및 대상
 
 ### 🎯 제작 의도
