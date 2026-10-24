@@ -158,6 +158,20 @@ class KISAuth:
         svr = "vps" if is_paper else "prod"
         ka.auth(svr=svr, product=prod_code)
 
+        # 근본 fix (2026-06-30): ka.auth() 후 _TRENV 가 namedtuple 인지 verify.
+        # 종전 동작은 ka.auth() 가 silent return 한 경우 (HTTP 200 != 응답)
+        # _TRENV 가 빈 tuple 그대로 유지되어 tr_env.my_url 접근 시
+        # AttributeError "tuple has no attribute 'my_url'" 발생. caller 가
+        # 진짜 원인 (인증 실패) 모름. _TRENV verify 로 명확한 에러.
+        tr_env = ka.getTREnv()
+        if not hasattr(tr_env, 'my_url'):
+            raise RuntimeError(
+                f"KISAuth: ka.auth(svr={svr}) 후 _TRENV 가 namedtuple "
+                f"아님 (type={type(tr_env).__name__}). 인증 실패 의심 — "
+                f"yaml의 paper_app/paper_sec/my_paper_stock 또는 "
+                f"my_app/my_sec/my_acct_stock 점검 필요."
+            )
+
         # 기존 속성 유지 (호환성)
         # app_key, app_secret는 ka.auth()가 config에서 직접 관리하므로 저장하지 않음
         self.is_paper = is_paper
@@ -165,7 +179,6 @@ class KISAuth:
         self.account_prod = prod_code
 
         # kis_auth에서 base_url 가져오기
-        tr_env = ka.getTREnv()
         self.base_url = tr_env.my_url
 
         mode_str = "모의투자" if is_paper else "실전투자"
