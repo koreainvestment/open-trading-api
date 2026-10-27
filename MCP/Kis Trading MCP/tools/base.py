@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import ast
 from typing import Dict, Any, List
 import json
 import os
@@ -183,8 +184,6 @@ class ApiExecutor:
             
             # 소문자 버전 (함수 파라미터)
             dynamic_mappings[param_name] = trenv_value
-            # 대문자 버전 (API 파라미터) 
-            dynamic_mappings[param_name.upper()] = trenv_value
             
             discovered_mappings.append(f"{param_name}=xxx.{trenv_attr}")
         
@@ -196,6 +195,20 @@ class ApiExecutor:
         
         
         return dynamic_mappings
+
+    @staticmethod
+    def _extract_function_signature(code: str):
+        """다운로드한 코드에서 첫 번째 최상위 함수의 이름과 실제 파라미터명 집합을 AST로 추출"""
+        try:
+            tree = ast.parse(code)
+        except SyntaxError as e:
+            raise Exception(f"API 코드 파싱 실패: {e}")
+        for node in tree.body:
+            if isinstance(node, ast.FunctionDef):
+                a = node.args
+                names = {x.arg for x in a.posonlyargs + a.args + a.kwonlyargs}
+                return node.name, names
+        raise Exception("코드에서 함수를 찾을 수 없습니다.")
 
     @classmethod
     def _modify_api_code(cls, api_code_path: str, params: Dict[str, Any], api_type: str) -> str:
@@ -211,18 +224,21 @@ class ApiExecutor:
             code = re.sub(r"import sys\n", "", code)  # import sys도 제거
 
             # 2. 코드에서 함수명과 시그니처 추출
-            function_match = re.search(r'def\s+(\w+)\s*\((.*?)\):', code, re.DOTALL)
-            if not function_match:
-                raise Exception("코드에서 함수를 찾을 수 없습니다.")
-
-            function_name = cls._validate_function_name(function_match.group(1))
-            function_params = function_match.group(2)
+            # (주의) 정규식으로 시그니처를 잘라내면 반환 타입 표기(-> pd.DataFrame:) 때문에
+            # docstring까지 함께 잡혀 'CANO' 같은 예시 문자열이 파라미터로 오인되므로 AST 사용
+            function_name, function_params = cls._extract_function_signature(code)
+            function_name = cls._validate_function_name(function_name)
 
             # 3. 함수가 max_depth 파라미터를 받는지 확인
             has_max_depth = 'max_depth' in function_params
 
             # 4. 파라미터 조정
-            adjusted_params = params.copy()
+            adjusted_params = {}
+            for key, value in params.items():
+                if key not in function_params and isinstance(key, str) and key.lower() in function_params:
+                    print(f"[정규화] {function_name} 함수 파라미터 {key} → {key.lower()}")
+                    key = key.lower()
+                adjusted_params[key] = value
 
             # max_depth 파라미터 처리
             if has_max_depth:
