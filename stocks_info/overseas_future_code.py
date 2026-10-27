@@ -11,14 +11,14 @@ base_dir = os.getcwd()
 def get_overseas_future_master_dataframe(base_dir):
 
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/ffcode.mst.zip", base_dir + "\\ffcode.mst.zip")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/ffcode.mst.zip", os.path.join(base_dir, "ffcode.mst.zip"))
     os.chdir(base_dir)
 
     nas_zip = zipfile.ZipFile('ffcode.mst.zip')
     nas_zip.extractall()
     nas_zip.close()
 
-    file_name = base_dir + "\\ffcode.mst"
+    file_name = os.path.join(base_dir, "ffcode.mst")
     columns = ['종목코드', '서버자동주문 가능 종목 여부', '서버자동주문 TWAP 가능 종목 여부', '서버자동 경제지표 주문 가능 종목 여부', 
                '필러', '종목한글명', '거래소코드 (ISAM KEY 1)', '품목코드 (ISAM KEY 2)', '품목종류', '출력 소수점', '계산 소수점', 
                '틱사이즈', '틱가치', '계약크기', '가격표시진법', '환산승수', '최다월물여부 0:원월물 1:최다월물', 

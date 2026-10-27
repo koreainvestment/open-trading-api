@@ -55,6 +55,7 @@ _autoReAuth = False
 _DEBUG = False
 _isPaper = False
 _smartSleep = 0.1
+_last_svr = None  # 마지막으로 auth()를 호출한 서버 구분 (prod:실전, vps:모의)
 
 # 기본 헤더값 정의
 _base_headers = {
@@ -66,20 +67,47 @@ _base_headers = {
 
 
 # 토큰 발급 받아 저장 (토큰값, 토큰 유효시간,1일, 6시간 이내 발급신청시는 기존 토큰값과 동일, 발급시 알림톡 발송)
-def save_token(my_token, my_expired):
+# 실전(prod)/모의(vps) 토큰을 서로 다른 파일로 관리
+# (같은 날 실전·모의를 함께 사용할 때 서로의 토큰을 덮어쓰거나 잘못 읽는 문제 방지)
+def _token_path(svr):
+    return f"{token_tmp}_{svr}"
+
+
+def save_token(my_token, my_expired, svr=None):
     # print(type(my_expired), my_expired)
     valid_date = datetime.strptime(my_expired, "%Y-%m-%d %H:%M:%S")
     # print('Save token date: ', valid_date)
-    with open(token_tmp, "w", encoding="utf-8") as f:
+    svr = svr or _last_svr
+    path = _token_path(svr) if svr else token_tmp
+    with open(path, "w", encoding="utf-8") as f:
         f.write(f"token: {my_token}\n")
         f.write(f"valid-date: {valid_date}\n")
 
 
 # 토큰 확인 (토큰값, 토큰 유효시간_1일, 6시간 이내 발급신청시는 기존 토큰값과 동일, 발급시 알림톡 발송)
-def read_token():
+# svr 지정 시 해당 서버의 토큰 파일만 확인
+# svr 미지정 시 마지막으로 auth()한 서버의 토큰 파일 확인
+#   (auth() 호출 전이면 가장 최근 저장된 실전/모의 토큰 파일 → 기존 단일 토큰 파일 순으로 확인)
+def read_token(svr=None):
+    svr = svr or _last_svr
+    if svr:
+        paths = [_token_path(svr)]
+    else:
+        paths = [p for p in (_token_path("prod"), _token_path("vps")) if os.path.exists(p)]
+        paths.sort(key=os.path.getmtime, reverse=True)
+        paths.append(token_tmp)
+
+    for path in paths:
+        token = _read_token_file(path)
+        if token:
+            return token
+    return None
+
+
+def _read_token_file(path):
     try:
         # 토큰이 저장된 파일 읽기
-        with open(token_tmp, encoding="UTF-8") as f:
+        with open(path, encoding="UTF-8") as f:
             tkg_tmp = yaml.load(f, Loader=yaml.FullLoader)
 
         # 토큰 만료 일,시간
@@ -192,6 +220,9 @@ def _getResultObject(json_data):
 # Token 발급, 유효기간 1일, 6시간 이내 발급시 기존 token값 유지, 발급시 알림톡 무조건 발송
 # 모의투자인 경우  svr='vps', 투자계좌(01)이 아닌경우 product='XX' 변경하세요 (계좌번호 뒤 2자리)
 def auth(svr="prod", product=_cfg["my_prod"], url=None):
+    global _last_svr
+    _last_svr = svr
+
     p = {
         "grant_type": "client_credentials",
     }
@@ -209,7 +240,7 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
     p["appsecret"] = _cfg[ak2]
 
     # 기존 발급된 토큰이 있는지 확인
-    saved_token = read_token()  # 기존 발급 토큰 확인
+    saved_token = read_token(svr)  # 기존 발급 토큰 확인
     # print("saved_token: ", saved_token)
     if saved_token is None:  # 기존 발급 토큰 확인이 안되면 발급처리
         url = f"{_cfg[svr]}/oauth2/tokenP"
@@ -222,7 +253,7 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
             my_expired = _getResultObject(
                 res.json()
             ).access_token_token_expired  # 토큰값 만료일시 가져오기
-            save_token(my_token, my_expired)  # 새로 발급 받은 토큰 저장
+            save_token(my_token, my_expired, svr)  # 새로 발급 받은 토큰 저장
         else:
             print("Get Authentification token fail!\nYou have to restart your app!!!")
             return

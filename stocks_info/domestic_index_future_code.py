@@ -14,13 +14,13 @@ def get_domestic_future_master_dataframe(base_dir):
     print("Downloading...")
     
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/fo_idx_code_mts.mst.zip", base_dir + "\\fo_idx_code_mts.mst.zip")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/fo_idx_code_mts.mst.zip", os.path.join(base_dir, "fo_idx_code_mts.mst.zip"))
     os.chdir(base_dir)
 
     fo_idx_code_zip = zipfile.ZipFile('fo_idx_code_mts.mst.zip')
     fo_idx_code_zip.extractall()
     fo_idx_code_zip.close()
-    file_name = base_dir + "\\fo_idx_code_mts.mst"
+    file_name = os.path.join(base_dir, "fo_idx_code_mts.mst")
     
     columns = ['상품종류','단축코드','표준코드',' 한글종목명',' ATM구분',
                ' 행사가',' 월물구분코드',' 기초자산 단축코드',' 기초자산 명']

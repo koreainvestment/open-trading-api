@@ -14,13 +14,13 @@ def get_domestic_cme_future_master_dataframe(base_dir):
     print("Downloading...")
 
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/fo_cme_code.mst.zip", base_dir + "\\fo_cme_code.mst.zip")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/fo_cme_code.mst.zip", os.path.join(base_dir, "fo_cme_code.mst.zip"))
     os.chdir(base_dir)
 
     fo_cme_code_zip = zipfile.ZipFile('fo_cme_code.mst.zip')
     fo_cme_code_zip.extractall()
     fo_cme_code_zip.close()
-    file_name = base_dir + "\\fo_cme_code.mst"
+    file_name = os.path.join(base_dir, "fo_cme_code.mst")
     columns = ['상품종류','단축코드','표준코드',' 한글종목명',
                '행사가',' 기초자산 단축코드',' 기초자산 명']
     df=pd.DataFrame(columns=columns)

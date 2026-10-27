@@ -9,14 +9,14 @@ base_dir = os.getcwd()
 def get_theme_master_dataframe(base_dir):
 
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/theme_code.mst.zip", base_dir + "\\theme_code.zip")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/theme_code.mst.zip", os.path.join(base_dir, "theme_code.zip"))
     os.chdir(base_dir)
 
     kospi_zip = zipfile.ZipFile('theme_code.zip')
     kospi_zip.extractall()
     kospi_zip.close()
 
-    file_name = base_dir + "\\theme_code.mst"
+    file_name = os.path.join(base_dir, "theme_code.mst")
     df = pd.DataFrame(columns = ['테마코드', '테마명', '종목코드'])
 
     ridx = 1

@@ -14,19 +14,19 @@ def get_domestic_com_future_master_dataframe(base_dir):
     print("Downloading...")
 
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/fo_com_code.mst.zip", base_dir + "\\fo_com_code.mst.zip")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/fo_com_code.mst.zip", os.path.join(base_dir, "fo_com_code.mst.zip"))
     os.chdir(base_dir)
 
     fo_com_code_zip = zipfile.ZipFile('fo_com_code.mst.zip')
     fo_com_code_zip.extractall()
     fo_com_code_zip.close()
-    file_name = base_dir + "\\fo_com_code.mst"
+    file_name = os.path.join(base_dir, "fo_com_code.mst")
 
     # df1 : '상품구분','상품종류','단축코드','표준코드','한글종목명'
-    tmp_fil1 = base_dir + "\\fo_com_code_part1.tmp"
-    tmp_fil2 = base_dir + "\\fo_com_code_part2.tmp"
-    wf1 = open(tmp_fil1, mode="w")
-    wf2 = open(tmp_fil2, mode="w")
+    tmp_fil1 = os.path.join(base_dir, "fo_com_code_part1.tmp")
+    tmp_fil2 = os.path.join(base_dir, "fo_com_code_part2.tmp")
+    wf1 = open(tmp_fil1, mode="w", encoding="cp949")
+    wf2 = open(tmp_fil2, mode="w", encoding="cp949")
     with open(file_name, mode="r", encoding="cp949") as f:
         for row in f:
             rf1 = row[0:55]
@@ -44,8 +44,8 @@ def get_domestic_com_future_master_dataframe(base_dir):
     df1 = pd.read_csv(tmp_fil1, header=None, names=part1_columns, encoding='cp949')
 
     # df2 : '월물구분코드','기초자산 단축코드','기초자산 명'
-    tmp_fil3 = base_dir + "\\fo_com_code_part3.tmp"
-    wf3 = open(tmp_fil3, mode="w")
+    tmp_fil3 = os.path.join(base_dir, "fo_com_code_part3.tmp")
+    wf3 = open(tmp_fil3, mode="w", encoding="cp949")
     with open(tmp_fil2, mode="r", encoding="cp949") as f:
         for row in f:
             rf2 = row[:]

@@ -9,14 +9,14 @@ base_dir = os.getcwd()
 def get_sector_master_dataframe(base_dir):
 
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/idxcode.mst.zip", base_dir + "\\idxcode.zip")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/idxcode.mst.zip", os.path.join(base_dir, "idxcode.zip"))
     os.chdir(base_dir)
 
     idxcode_zip = zipfile.ZipFile('idxcode.zip')
     idxcode_zip.extractall()
     idxcode_zip.close()
 
-    file_name = base_dir + "\\idxcode.mst"
+    file_name = os.path.join(base_dir, "idxcode.mst")
     df = pd.DataFrame(columns = ['업종코드', '업종명'])
 
     ridx = 1

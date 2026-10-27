@@ -346,7 +346,7 @@ class LeanProjectManager:
             return "unknown"
         
         try:
-            content = main_py.read_text()
+            content = main_py.read_text(encoding="utf-8")
             
             # 전략 패턴 매칭
             patterns = {

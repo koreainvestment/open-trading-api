@@ -211,12 +211,14 @@ class LeanExecutor:
                 cmd,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=timeout,
             )
             
             finished_at = datetime.now()
             duration = (finished_at - started_at).total_seconds()
-            stdout = result.stdout + result.stderr
+            stdout = (result.stdout or "") + (result.stderr or "")
             
             if result.returncode != 0:
                 error_msg = f"Lean 백테스트 실패 (exit code: {result.returncode})\n{stdout[-2000:]}"
@@ -257,6 +259,8 @@ class LeanExecutor:
                 ["docker", "pull", LEAN_IMAGE],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=600,
             )
             return result.returncode == 0
@@ -273,6 +277,8 @@ class LeanExecutor:
                 ["docker", "info"],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=10,
             )
             return result.returncode == 0
@@ -289,6 +295,8 @@ class LeanExecutor:
                 ["docker", "images", "-q", LEAN_IMAGE],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 timeout=10,
             )
             return bool(result.stdout.strip())

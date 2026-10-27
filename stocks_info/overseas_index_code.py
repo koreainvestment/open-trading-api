@@ -20,19 +20,19 @@ def get_overseas_index_master_dataframe(base_dir):
     print("Downloading...")
     
     ssl._create_default_https_context = ssl._create_unverified_context
-    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/frgn_code.mst.zip", base_dir + "\\frgn_code.mst.zip")
+    urllib.request.urlretrieve("https://new.real.download.dws.co.kr/common/master/frgn_code.mst.zip", os.path.join(base_dir, "frgn_code.mst.zip"))
     os.chdir(base_dir)
 
     frgn_code_zip = zipfile.ZipFile('frgn_code.mst.zip')
     frgn_code_zip.extractall()
     frgn_code_zip.close()
-    file_name = base_dir + "\\frgn_code.mst"
+    file_name = os.path.join(base_dir, "frgn_code.mst")
 
     # df1 : '구분코드','심볼','영문명','한글명'
-    tmp_fil1 = base_dir + "\\frgn_code_part1.tmp"
-    tmp_fil2 = base_dir + "\\frgn_code_part2.tmp"
-    wf1 = open(tmp_fil1, mode="w")
-    wf2 = open(tmp_fil2, mode="w")
+    tmp_fil1 = os.path.join(base_dir, "frgn_code_part1.tmp")
+    tmp_fil2 = os.path.join(base_dir, "frgn_code_part2.tmp")
+    wf1 = open(tmp_fil1, mode="w", encoding="cp949")
+    wf2 = open(tmp_fil2, mode="w", encoding="cp949")
     with open(file_name, mode="r", encoding="cp949") as f:
         for row in f:
             if row[0:1] == 'X':
