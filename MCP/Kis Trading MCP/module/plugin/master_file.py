@@ -48,8 +48,7 @@ class MasterFileManager:
         "etfetn": [],  # ETF/ETN 마스터파일 없음
         "elw": [
             "elw_master"
-        ],
-        "auth": []  # 인증은 마스터파일 불필요
+        ]
     }
 
     # 마스터파일별 URL과 처리 함수 매핑 (한국투자증권 기준)
@@ -307,8 +306,7 @@ class MasterFileManager:
             "overseas_futureoption": "OverseasFutureoptionMaster",
             "domestic_bond": "DomesticBondMaster",
             "etfetn": "EtfetnMaster",
-            "elw": "ElwMaster",
-            "auth": "AuthMaster"
+            "elw": "ElwMaster"
         }
         
         model_name = tool_to_model_mapping.get(tool_name)
@@ -335,19 +333,14 @@ class MasterFileManager:
                     await ctx.info(f"{self.tool_name} 툴의 마스터파일들이 최신 상태입니다.")
                     return
 
-            # 2. 카테고리 레벨에서 테이블 전체 삭제 (한 번만)
-            await self.__clear_category_tables(ctx)
-
-            # 2-1. 해당 폴더의 CSV 파일들 삭제
-            await self.__clear_category_csv_files(ctx)
-
-            # 3. 각 마스터파일별로 업데이트 (삭제 없이 추가만)
+            # 2. 각 마스터파일별로 업데이트 (개별 교체: 성공한 것만 교체,
+            #    실패한 것은 기존 데이터 유지. 미리 지우지 않는다)
             total_record_count = 0
             for master_name in self.required_masters:
                 record_count = await self.__ensure_single_master_updated(ctx, master_name, force_update)
                 total_record_count += record_count
 
-            # 4. 모든 마스터파일 처리 완료 후 툴 전체 업데이트 시간 기록
+            # 3. 모든 마스터파일 처리 완료 후 툴 전체 업데이트 시간 기록
             if total_record_count > 0:
                 self.db_engine.update_master_timestamp(self.tool_name, total_record_count)
                 await ctx.info(f"{self.tool_name} 툴의 모든 마스터파일 업데이트 완료 (총 {total_record_count}개 레코드)")
@@ -427,6 +420,10 @@ class MasterFileManager:
                 await ctx.warning(f"지원하지 않는 마스터파일: {master_name}")
                 df = pd.DataFrame()
 
+            # 3b. 가공 결과가 비었으면 기존 CSV·DB를 유지하고 실패로 알린다
+            if df is None or df.empty:
+                raise Exception(f"{master_name} 가공 결과 비어있음 - 기존 데이터 유지")
+
             # 4. CSV 파일 저장
             await ctx.info(f"CSV 파일 저장 중: {master_name} ({len(df)}개 레코드)")
             csv_saved = await self.__save_csv_file(df, master_name, ctx)
@@ -443,7 +440,7 @@ class MasterFileManager:
                 if not model_class:
                     raise Exception(f"{master_name}에 대한 모델 클래스를 찾을 수 없습니다.")
                 
-                # bulk_replace_master_data 사용 (카테고리 레벨에서 이미 삭제되었으므로 INSERT만)
+                # bulk_replace_master_data 사용 (DELETE+INSERT 단일 트랜잭션 교체)
                 record_count = self.db_engine.bulk_replace_master_data(
                     model_class=model_class,
                     data_list=model_data,
@@ -479,94 +476,6 @@ class MasterFileManager:
         except (ValueError, AttributeError):
             return True  # 날짜 파싱 실패 시 업데이트
 
-    async def __clear_category_tables(self, ctx):
-        """카테고리 레벨에서 해당 툴의 모든 테이블 데이터 삭제"""
-        try:
-            # 툴별 모델 클래스들 가져오기
-            master_models = self.get_master_models_for_tool(self.tool_name)
-            
-            if not master_models:
-                await ctx.info(f"{self.tool_name} 툴에 해당하는 모델이 없습니다.")
-                return
-            
-            # 각 모델의 테이블 데이터 삭제
-            for model_class in master_models:
-                try:
-                    # 기존 데이터 개수 확인
-                    before_count = self.db_engine.count(model_class)
-                    
-                    # 테이블 전체 삭제
-                    session = self.db_engine.get_session()
-                    try:
-                        deleted_count = session.query(model_class).delete()
-                        session.commit()
-                        await ctx.info(f"{model_class.__name__} 테이블 데이터 삭제 완료: {deleted_count}개 레코드")
-                    finally:
-                        session.close()
-                        
-                except Exception as e:
-                    self._log("error", model_class.__name__, "clear_table", str(e))
-                    await ctx.error(f"{model_class.__name__} 테이블 삭제 실패: {str(e)}")
-                    raise
-                    
-        except Exception as e:
-            self._log("error", "all_models", "clear_category_tables", str(e))
-            await ctx.error(f"카테고리 테이블 삭제 실패: {str(e)}")
-            raise
-
-    async def __clear_category_csv_files(self, ctx):
-        """카테고리 레벨에서 해당 툴의 모든 CSV 파일 및 임시 파일 삭제"""
-        try:
-            import glob
-            
-            # 해당 툴의 마스터 디렉토리 경로
-            master_dir = self.master_dir
-            
-            if not os.path.exists(master_dir):
-                await ctx.info(f"마스터 디렉토리가 존재하지 않습니다: {master_dir}")
-                return
-            
-            # CSV 파일 패턴으로 검색
-            csv_pattern = os.path.join(master_dir, "*.csv")
-            csv_files = glob.glob(csv_pattern)
-            
-            # 임시 파일 패턴으로 검색 (.tmp, .tmp.zip 등)
-            tmp_patterns = [
-                os.path.join(master_dir, "*.tmp"),
-                os.path.join(master_dir, "*.tmp.*"),
-                os.path.join(master_dir, "*_part*.tmp"),
-                os.path.join(master_dir, "*_part*.tmp.*")
-            ]
-            
-            tmp_files = []
-            for pattern in tmp_patterns:
-                tmp_files.extend(glob.glob(pattern))
-            
-            all_files = csv_files + tmp_files
-            
-            if not all_files:
-                await ctx.info(f"삭제할 파일이 없습니다: {master_dir}")
-                return
-            
-            # 파일들 삭제
-            deleted_count = 0
-            for file_path in all_files:
-                try:
-                    os.remove(file_path)
-                    deleted_count += 1
-                    file_type = "CSV" if file_path.endswith('.csv') else "TMP"
-                    await ctx.info(f"{file_type} 파일 삭제: {os.path.basename(file_path)}")
-                except Exception as e:
-                    self._log("error", os.path.basename(file_path), "delete_file", str(e))
-                    await ctx.warning(f"파일 삭제 실패: {os.path.basename(file_path)} - {str(e)}")
-            
-            await ctx.info(f"파일 삭제 완료: {deleted_count}개 파일 (CSV + TMP)")
-                    
-        except Exception as e:
-            self._log("error", "all_files", "clear_category_csv_files", str(e))
-            await ctx.error(f"카테고리 파일 삭제 실패: {str(e)}")
-            raise
-
     def __get_model_class(self, master_name: str):
         """마스터파일명에 해당하는 모델 클래스 반환 - TOOL_MASTER_MAPPING 활용"""
         # TOOL_MASTER_MAPPING을 역방향으로 검색하여 마스터파일이 속한 툴 찾기
@@ -582,13 +491,9 @@ class MasterFileManager:
         return None
 
     async def __download_file(self, url: str, file_path: str) -> bool:
-        """파일 다운로드 (ZIP 파일 지원)"""
+        """파일 다운로드 (ZIP 파일 지원, TLS 검증 유지)"""
         try:
             import zipfile
-            import ssl
-
-            # SSL 컨텍스트 설정 (한국투자증권 서버용)
-            ssl._create_default_https_context = ssl._create_unverified_context
 
             response = requests.get(url, timeout=60)  # 대용량 파일을 위해 타임아웃 증가
             response.raise_for_status()
