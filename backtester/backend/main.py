@@ -8,9 +8,9 @@
 """
 
 import logging
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import AsyncGenerator
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
@@ -27,9 +27,9 @@ for _p in _env_paths:
         load_dotenv(_p)
         break
 
-# Lean 워크스페이스 설정 (backtester/.lean-workspace 사용)
+# Lean 워크스페이스 설정: LEAN_WORKSPACE 환경변수 우선, else backtester/.lean-workspace
 _project_root = Path(__file__).resolve().parents[1]  # backtester/
-_workspace_path = _project_root / ".lean-workspace"
+_workspace_path = Path(os.environ.get("LEAN_WORKSPACE") or str(_project_root / ".lean-workspace"))
 from kis_backtest.lean.project_manager import LeanProjectManager
 LeanProjectManager.set_workspace(str(_workspace_path))
 

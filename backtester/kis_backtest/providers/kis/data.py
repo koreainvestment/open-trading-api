@@ -107,6 +107,8 @@ class KISDataProvider:
                 break  # 다른 에러
 
             if not resp.is_ok():
+                if all_data:
+                    raise KISError(f"일봉 조회 중단 - 부분 데이터 폐기: {symbol} - {resp.error_message}")
                 logger.error(f"일봉 조회 실패: {symbol} - {resp.error_message}")
                 break
             
@@ -178,6 +180,8 @@ class KISDataProvider:
             )
             
             if not resp.is_ok():
+                if all_data:
+                    raise KISError(f"분봉 조회 중단 - 부분 데이터 폐기: {symbol} - {resp.error_message}")
                 logger.error(f"분봉 조회 실패: {symbol} - {resp.error_message}")
                 break
             
@@ -407,6 +411,8 @@ class KISDataProvider:
             )
             
             if not resp.is_ok():
+                if all_data:
+                    raise KISError(f"해외주식 조회 중단 - 부분 데이터 폐기: {symbol} - {resp.error_message}")
                 logger.error(f"해외주식 조회 실패: {symbol} - {resp.error_message}")
                 break
             
@@ -509,6 +515,8 @@ class KISDataProvider:
                 break
 
             if not resp.is_ok():
+                if all_bars:
+                    raise KISError(f"지수 조회 중단 - 부분 데이터 폐기: {index_code} - {resp.error_message}")
                 logger.error(f"지수 조회 실패: {resp.error_message}")
                 break
 

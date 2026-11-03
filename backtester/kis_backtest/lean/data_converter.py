@@ -60,13 +60,21 @@ class DataConverter:
         market_type: str = "krx",
     ) -> Path:
         """단일 종목 데이터 변환
-        
+
         Args:
-            symbol: 종목 코드
+            symbol: 종목 코드 (영숫자 1~12자만 허용)
             df: 데이터프레임
             output_dir: 출력 디렉토리
             market_type: "krx" (국내) 또는 "us" (해외)
         """
+        from kis_backtest.utils.symbols import invalid_symbols
+
+        if invalid_symbols([symbol]):
+            raise ValueError(f"Invalid symbol: {symbol!r}")
+        safe_dir = Path(output_dir).resolve()
+        csv_path = safe_dir / f"{symbol.lower()}.csv"
+        if csv_path.parent != safe_dir:
+            raise ValueError(f"Invalid symbol path: {symbol!r}")
         # 컬럼 정규화
         df_out = df.copy()
         
@@ -102,8 +110,7 @@ class DataConverter:
                 df_out[col] = df_out[col].astype(float).round(2)
             df_out['volume'] = df_out['volume'].astype(int)
         
-        # CSV 출력 (헤더 없음)
-        csv_path = output_dir / f"{symbol.lower()}.csv"
+        # CSV 출력 (헤더 없음, 경로는 위에서 검증·확정됨)
         
         df_out[['date_str', 'open', 'high', 'low', 'close', 'volume']].to_csv(
             csv_path,

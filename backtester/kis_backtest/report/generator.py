@@ -3,6 +3,7 @@
 프론트엔드 UI 스타일의 standalone HTML 리포트 생성.
 """
 
+import html
 import logging
 from datetime import datetime
 from pathlib import Path
@@ -120,6 +121,8 @@ class KISReportGenerator:
     ) -> str:
         """전체 HTML 빌드"""
         css = self._get_css()
+        title = html.escape(title or "")
+        subtitle = html.escape(subtitle or "")
 
         return f"""<!DOCTYPE html>
 <html lang="ko">
@@ -128,8 +131,8 @@ class KISReportGenerator:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
-    <script src="https://cdn.plot.ly/plotly-3.3.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet" integrity="sha384-SN6A48CJQjx946+DRb8wsoifC4a8ur9ZS6R+HCTgnBHOKCa6GLXAR3Qn8d1jztxg" crossorigin="anonymous">
+    <script src="https://cdn.plot.ly/plotly-3.3.1.min.js" integrity="sha384-SsOMajmLeeY81sOzGCn88NjTdDwa+nz3Lb1ZNouSdXAz5TBsvD+Pwgf1Iqtxns6c" crossorigin="anonymous"></script>
     <style>
 {css}
     </style>
