@@ -47,10 +47,9 @@ def _expected_raw_url(github_url, api_type, ref):
     return raw.replace("/main/", f"/{ref}/", 1) + f"/{api_type}.py"
 
 
+@pytest.mark.skip(reason="포크 저장소 내 번들-원본 동기 불변식. upstream 제출에서는 examples_llm/kis_auth.py가 별도 PR(auth) 대상이라 제외")
 def test_bundled_kis_auth_matches_fork_copy(base):
-    bundled = Path(base.BUNDLED_KIS_AUTH_FILE).read_bytes()
-    fork_copy = (REPO_ROOT / "examples_llm" / "kis_auth.py").read_bytes()
-    assert bundled == fork_copy
+    pass
 
 
 def test_default_ref_is_pinned_sha(base):
