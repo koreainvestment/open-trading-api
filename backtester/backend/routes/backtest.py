@@ -675,7 +675,7 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
     if not LeanExecutor.check_image():
         raise HTTPException(
             status_code=503,
-            detail="Lean 이미지가 없습니다. 'docker pull quantconnect/lean:latest' 실행 후 재시도해주세요."
+            detail=f"Lean 이미지가 없습니다. 'docker pull {LeanExecutor.LEAN_IMAGE}' 실행 후 재시도해주세요.",
         )
 
     # 프로젝트 생성 및 백테스트 실행
@@ -830,7 +830,7 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
     if not LeanExecutor.check_image():
         raise HTTPException(
             status_code=503,
-            detail="Lean 이미지가 없습니다. 'docker pull quantconnect/lean:latest' 실행 후 재시도해주세요."
+            detail=f"Lean 이미지가 없습니다. 'docker pull {LeanExecutor.LEAN_IMAGE}' 실행 후 재시도해주세요.",
         )
 
     # 프로젝트 생성 및 백테스트 실행

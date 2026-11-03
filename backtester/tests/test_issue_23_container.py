@@ -60,6 +60,19 @@ def test_docker_cmd_hardening_flags():
     assert "/Results" in src
 
 
+def test_missing_image_hints_pinned_digest():
+    import re
+    routes = (HERE / "backend" / "routes" / "backtest.py").read_text(encoding="utf-8")
+    assert "quantconnect/lean:latest" not in routes
+    assert routes.count("docker pull {LeanExecutor.LEAN_IMAGE}") == 2
+    mcp = (HERE / "kis_mcp" / "tools" / "backtest.py").read_text(encoding="utf-8")
+    assert "quantconnect/lean:latest" not in mcp
+    assert "docker pull {LeanExecutor.LEAN_IMAGE}" in mcp
+    assert re.search(r'LEAN_IMAGE = "quantconnect/lean@sha256:[0-9a-f]{64}"',
+                      (HERE / "kis_backtest" / "lean" / "executor.py").read_text(
+                          encoding="utf-8"))
+
+
 def _run_custom(rt, yaml_content):
     req = rt.CustomBacktestRequest(
         yaml_content=yaml_content,
