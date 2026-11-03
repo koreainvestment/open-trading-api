@@ -25,6 +25,10 @@ API_URL = "/uapi/overseas-futureoption/v1/quotations/search-contract-detail"
 # [해외선물옵션] 기본시세 > 해외선물 상품기본정보[해외선물-023]
 ##############################################################################################
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def search_contract_detail(
     qry_cnt: str,  # 요청개수
     tr_cont: str = "",
@@ -99,7 +103,7 @@ def search_contract_detail(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return search_contract_detail(

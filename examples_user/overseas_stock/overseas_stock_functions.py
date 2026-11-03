@@ -17,6 +17,11 @@ logger = logging.getLogger(__name__)
 # [해외주식] 주문/계좌 > 해외주식 지정가주문번호조회 [해외주식-071]
 ##############################################################################################
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
+
 def algo_ordno(
         cano: str,  # [필수] 종합계좌번호
         acnt_prdt_cd: str,  # [필수] 계좌상품코드 (ex. 01)
@@ -60,7 +65,7 @@ def algo_ordno(
         raise ValueError("trad_dt is required")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -92,7 +97,7 @@ def algo_ordno(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return algo_ordno(
@@ -433,7 +438,7 @@ def foreign_margin(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return foreign_margin(
@@ -503,7 +508,7 @@ def inquire_algo_ccnl(
         raise ValueError("acnt_prdt_cd is required")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             dataframe = pd.DataFrame()
         if dataframe3 is None:
@@ -545,7 +550,7 @@ def inquire_algo_ccnl(
         NK200 = res.getBody().ctx_area_nk200
         FK200 = res.getBody().ctx_area_fk200
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_algo_ccnl(
@@ -697,7 +702,7 @@ def inquire_balance(
                 dataframe2 = pd.DataFrame()
         tr_cont, FK200, NK200 = res.getHeader().tr_cont, res.getBody().ctx_area_fk200, res.getBody().ctx_area_nk200
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_balance(
@@ -869,7 +874,7 @@ def inquire_ccnl(
 
         tr_cont, NK200, FK200 = res.getHeader().tr_cont, res.getBody().ctx_area_nk200, res.getBody().ctx_area_fk200
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_ccnl(
@@ -1001,7 +1006,7 @@ def inquire_nccs(
 
         tr_cont, NK200, FK200 = res.getHeader().tr_cont, res.getBody().ctx_area_nk200, res.getBody().ctx_area_fk200
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_nccs(
@@ -1182,7 +1187,7 @@ def inquire_paymt_stdr_balance(
                 dataframe3 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_paymt_stdr_balance(
@@ -1371,7 +1376,7 @@ def inquire_period_profit(
 
         tr_cont, NK200, FK200 = res.getHeader().tr_cont, res.getBody().ctx_area_nk200, res.getBody().ctx_area_fk200
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_period_profit(
@@ -1558,7 +1563,7 @@ def inquire_period_trans(
 
         tr_cont, NK100, FK100 = res.getHeader().tr_cont, res.getBody().ctx_area_nk100, res.getBody().ctx_area_fk100
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_period_trans(
@@ -1756,7 +1761,7 @@ def inquire_present_balance(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_present_balance(
@@ -1892,7 +1897,7 @@ def inquire_psamount(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_psamount(
@@ -1963,7 +1968,7 @@ def market_cap(
             "vol_rang is required (e.g. '0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None or dataframe2 is None:
             return pd.DataFrame(), pd.DataFrame()
         else:
@@ -1999,7 +2004,7 @@ def market_cap(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return market_cap(
@@ -2074,7 +2079,7 @@ def new_highlow(
         raise ValueError("gubn2 is required (e.g. '1')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -2116,7 +2121,7 @@ def new_highlow(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return new_highlow(
@@ -2651,7 +2656,7 @@ def order_resv_list(
         raise ValueError("ovrs_excg_cd is required (e.g. 'NASD')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -2693,7 +2698,7 @@ def order_resv_list(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return order_resv_list(
@@ -2892,7 +2897,7 @@ def price_fluct(
         raise ValueError("vol_rang is required (e.g. '0')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -2931,7 +2936,7 @@ def price_fluct(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return price_fluct(
@@ -2996,7 +3001,7 @@ def trade_growth(
         raise ValueError("vol_rang is required (e.g. '0')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -3034,7 +3039,7 @@ def trade_growth(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_growth(
@@ -3104,7 +3109,7 @@ def trade_pbmn(
             "vol_rang is required (e.g. '0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None or dataframe2 is None:
             return pd.DataFrame(), pd.DataFrame()
         else:
@@ -3146,7 +3151,7 @@ def trade_pbmn(
         tr_cont = res.getHeader().tr_cont
         keyb = res.getBody().keyb if hasattr(res.getBody(), 'keyb') else ""
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_pbmn(
@@ -3216,7 +3221,7 @@ def trade_turnover(
 
     # 재귀 깊이 제한 확인
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -3254,7 +3259,7 @@ def trade_turnover(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_turnover(
@@ -3327,7 +3332,7 @@ def trade_vol(
             "vol_rang is required (e.g. '0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -3367,7 +3372,7 @@ def trade_vol(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_vol(
@@ -3439,7 +3444,7 @@ def updown_rate(
             "vol_rang is required (e.g. '0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None and dataframe2 is None:
             return pd.DataFrame(), pd.DataFrame()
         else:
@@ -3477,7 +3482,7 @@ def updown_rate(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return updown_rate(
@@ -3543,7 +3548,7 @@ def volume_power(
         raise ValueError("vol_rang is required (e.g. '0')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -3581,7 +3586,7 @@ def volume_power(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return volume_power(
@@ -3646,7 +3651,7 @@ def volume_surge(
         raise ValueError("vol_rang is required (e.g. '0')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -3684,7 +3689,7 @@ def volume_surge(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return volume_surge(
@@ -3837,7 +3842,7 @@ def colable_by_company(
         raise ValueError("inqr_sqn_dvsn is required (e.g. '01:이름순,02:코드순')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -3884,7 +3889,7 @@ def colable_by_company(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return colable_by_company(
@@ -3981,7 +3986,7 @@ def countries_holiday(
         NK = res.getBody().ctx_area_nk
         FK = res.getBody().ctx_area_fk
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return countries_holiday(
@@ -4131,7 +4136,7 @@ def dailyprice(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return dailyprice(
@@ -4195,7 +4200,7 @@ def industry_price(
         raise ValueError("excd is required (e.g. 'NYS', 'NAS', 'AMS', 'HKS', 'SHS', 'SZS', 'HSX', 'HNX', 'TSE')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -4230,7 +4235,7 @@ def industry_price(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return industry_price(
@@ -4294,7 +4299,7 @@ def industry_theme(
         raise ValueError("vol_rang is required (e.g. '0')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -4332,7 +4337,7 @@ def industry_theme(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return industry_theme(
@@ -4474,7 +4479,7 @@ def inquire_asking_price(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_asking_price(
@@ -4539,7 +4544,7 @@ def quot_inquire_ccnl(
         raise ValueError("symb is required (e.g. 'TSLA')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -4570,7 +4575,7 @@ def quot_inquire_ccnl(
         tr_cont = res.getHeader().tr_cont
         keyb = res.getBody().keyb if hasattr(res.getBody(), 'keyb') else ""
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return quot_inquire_ccnl(
@@ -4719,7 +4724,7 @@ def inquire_daily_chartprice(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_daily_chartprice(
@@ -4922,7 +4927,7 @@ def inquire_search(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_search(
@@ -5083,7 +5088,7 @@ def inquire_time_indexchartprice(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_time_indexchartprice(
@@ -5236,7 +5241,7 @@ def inquire_time_itemchartprice(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_time_itemchartprice(
@@ -5305,7 +5310,7 @@ def news_title(
     """
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -5338,7 +5343,7 @@ def news_title(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return news_title(
@@ -5414,7 +5419,7 @@ def period_rights(
         raise ValueError("inqr_end_dt is required (e.g. '20250131')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -5449,7 +5454,7 @@ def period_rights(
         NK50 = res.getBody().ctx_area_nk50
         FK50 = res.getBody().ctx_area_fk50
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return period_rights(
@@ -5551,7 +5556,7 @@ def price(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return price(
@@ -5645,7 +5650,7 @@ def price_detail(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return price_detail(
@@ -5797,7 +5802,7 @@ def search_info(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return search_info(

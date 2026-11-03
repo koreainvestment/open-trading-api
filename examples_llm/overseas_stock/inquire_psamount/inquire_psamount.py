@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/overseas-stock/v1/trading/inquire-psamount"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def inquire_psamount(
     cano: str,  # 종합계좌번호
     acnt_prdt_cd: str,  # 계좌상품코드
@@ -123,7 +127,7 @@ def inquire_psamount(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_psamount(

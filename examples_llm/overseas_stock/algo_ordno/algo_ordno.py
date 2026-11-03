@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO)
 # 상수 정의
 API_URL = "/uapi/overseas-stock/v1/trading/algo-ordno"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def algo_ordno(
     cano: str,                    # [필수] 종합계좌번호
     acnt_prdt_cd: str,           # [필수] 계좌상품코드 (ex. 01)
@@ -66,7 +70,7 @@ def algo_ordno(
         raise ValueError("trad_dt is required")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -96,7 +100,7 @@ def algo_ordno(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return algo_ordno(

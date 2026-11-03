@@ -22,6 +22,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/ranking/prefer-disparate-ratio"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def prefer_disparate_ratio(
         fid_vol_cnt: str,  # 거래량 수
         fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -131,7 +135,7 @@ def prefer_disparate_ratio(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return prefer_disparate_ratio(

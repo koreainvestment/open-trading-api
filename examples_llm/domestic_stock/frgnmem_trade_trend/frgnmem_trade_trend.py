@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/quotations/frgnmem-trade-trend"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def frgnmem_trade_trend(
         fid_cond_scr_div_code: str,  # 화면분류코드
         fid_cond_mrkt_div_code: str,  # 조건시장구분코드
@@ -151,7 +155,7 @@ def frgnmem_trade_trend(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return frgnmem_trade_trend(

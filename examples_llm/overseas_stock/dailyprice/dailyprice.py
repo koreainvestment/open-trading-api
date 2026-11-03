@@ -24,6 +24,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/overseas-price/v1/quotations/dailyprice"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def dailyprice(
     auth: str,  # 사용자권한정보
     excd: str,  # 거래소코드
@@ -150,7 +154,7 @@ def dailyprice(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return dailyprice(

@@ -25,6 +25,10 @@ API_URL = "/uapi/overseas-futureoption/v1/quotations/stock-detail"
 # [해외선물옵션] 기본시세 > 해외선물종목상세[v1_해외선물-008]
 ##############################################################################################
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def stock_detail(
     srs_cd: str,  # 종목코드
     tr_cont: str = "",
@@ -85,7 +89,7 @@ def stock_detail(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return stock_detail(

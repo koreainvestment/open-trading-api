@@ -26,6 +26,10 @@ logger = logging.getLogger(__name__)
 API_URL = "/uapi/overseas-price/v1/quotations/search-info"
 
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def search_info(
         prdt_type_cd: str,  # 상품유형코드
         pdno: str,  # 상품번호
@@ -92,7 +96,7 @@ def search_info(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return search_info(

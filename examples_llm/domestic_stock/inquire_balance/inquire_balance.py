@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/trading/inquire-balance"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def inquire_balance(
     env_dv: str,  # 실전모의구분
     cano: str,  # 종합계좌번호
@@ -104,7 +108,7 @@ def inquire_balance(
         raise ValueError("prcs_dvsn is required (e.g. '00: 전일매매포함, 01:전일매매미포함')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -154,7 +158,7 @@ def inquire_balance(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance(

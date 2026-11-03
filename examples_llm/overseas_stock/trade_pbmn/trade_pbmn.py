@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO)
 # 상수 정의
 API_URL = "/uapi/overseas-stock/v1/ranking/trade-pbmn"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def trade_pbmn(
     excd: str,  # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
     nday: str,  # [필수] N일자값 (ex. 0:당일, 1:2일, 2:3일, 3:5일, 4:10일, 5:20일전, 6:30일, 7:60일, 8:120일, 9:1년)
@@ -73,7 +77,7 @@ def trade_pbmn(
         raise ValueError("vol_rang is required (e.g. '0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None or dataframe2 is None:
             return pd.DataFrame(), pd.DataFrame()
         else:
@@ -113,7 +117,7 @@ def trade_pbmn(
         tr_cont = res.getHeader().tr_cont
         keyb = res.getBody().keyb if hasattr(res.getBody(), 'keyb') else ""
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return trade_pbmn(

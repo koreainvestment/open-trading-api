@@ -20,6 +20,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/ranking/finance-ratio"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def finance_ratio(
         fid_trgt_cls_code: str,  # 대상 구분 코드
         fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -138,7 +142,7 @@ def finance_ratio(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             print("Call Next")
             ka.smart_sleep()
             return finance_ratio(

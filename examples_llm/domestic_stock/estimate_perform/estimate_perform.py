@@ -24,6 +24,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/quotations/estimate-perform"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def estimate_perform(
         sht_cd: str,  # 종목코드
         dataframe1: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output1)
@@ -123,7 +127,7 @@ def estimate_perform(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return estimate_perform(

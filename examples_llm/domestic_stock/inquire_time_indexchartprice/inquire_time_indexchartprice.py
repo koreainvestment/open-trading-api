@@ -27,6 +27,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/quotations/inquire-time-indexchartprice"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def inquire_time_indexchartprice(
         fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
         fid_etc_cls_code: str,  # FID 기타 구분 코드
@@ -157,7 +161,7 @@ def inquire_time_indexchartprice(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_time_indexchartprice(

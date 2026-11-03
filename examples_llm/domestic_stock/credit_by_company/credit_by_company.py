@@ -25,6 +25,10 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def credit_by_company(
         fid_rank_sort_cls_code: str,  # 순위 정렬 구분 코드
         fid_slct_yn: str,  # 선택 여부
@@ -130,7 +134,7 @@ def credit_by_company(
         tr_cont = res.getHeader().tr_cont
 
         # 다음 페이지 호출
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return credit_by_company(
