@@ -6,6 +6,11 @@ from multiprocessing import Process, Queue, Manager
 import json
 import time
 import requests
+
+# 모든 KIS HTTP 호출의 (connect, read) 타임아웃. 주문 POST 타임아웃은
+# "상태 불명"으로 취급한다(접수됐을 수 있으므로 자동 재시도 금지).
+REQ_TIMEOUT = (5.0, 30.0)
+
 import asyncio
 import websockets
 import urllib3
@@ -25,7 +30,7 @@ def get_approval(key, secret):
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
     time.sleep(0.05)
-    res = requests.post(URL, headers=headers, data=json.dumps(body))
+    res = requests.post(URL, headers=headers, data=json.dumps(body), timeout=REQ_TIMEOUT)
     approval_key = res.json()["approval_key"]
     return approval_key
 
@@ -187,7 +192,7 @@ def data_processor_worker(worker_id, data_queue, stock_code):
                     aes_iv = message.get('aes_iv')
                     print(f"[Processor-{worker_id}] [PID:{process_id}] [종목:{stock_code}] "
                           f"체결통보 처리 중... (처리건수: {processed_count})")
-                    stocksigningnotice(data, aes_key, aes_iv)
+                    stocksigningnotice_domestic(data, aes_key, aes_iv)
                 
             except Exception as e:
                 error_count += 1
@@ -500,7 +505,7 @@ def main():
         # 1. Approval key 발급
         print("=== Approval Key 발급 중 ===")
         approval_key = get_approval(g_appkey, g_appsecret)
-        print(f"Approval Key: {approval_key}\n")
+        print(f"Approval Key: ****{str(approval_key)[-4:]}\n")
         
         # 2. 각 종목별 데이터 큐 생성 (Manager 사용)
         manager = Manager()
