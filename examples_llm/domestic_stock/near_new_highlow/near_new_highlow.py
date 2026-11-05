@@ -39,7 +39,11 @@ def near_new_highlow(
         fid_aply_rang_prc_1: str,  # 적용 범위 가격1
         fid_aply_rang_prc_2: str,  # 적용 범위 가격2
         tr_cont: str = "",  # 연속 거래 여부
-        dataframe: Optional[pd.DataFrame] = None  # 누적 데이터프레임
+        dataframe: Optional[pd.DataFrame] = None,  # 누적 데이터프레임
+        ctx_area_fk: str = "",  # 연속조회검색조건 (응답 header/body ctx_area_fk)
+        ctx_area_nk: str = "",  # 연속조회키 (응답 header/body ctx_area_nk)
+        depth: int = 0,  # 내부 재귀깊이 (자동관리)
+        max_depth: int = 10  # 최대 재귀 횟수 제한
 ) -> Optional[pd.DataFrame]:
     """
     [국내주식] 순위분석 
@@ -61,6 +65,10 @@ def near_new_highlow(
         fid_aply_rang_prc_2 (str): ~ 가격
         tr_cont (str): 연속 거래 여부
         dataframe (Optional[pd.DataFrame]): 누적 데이터프레임
+        ctx_area_fk (str): 연속조회검색조건
+        ctx_area_nk (str): 연속조회키
+        depth (int): 내부 재귀깊이 (자동관리)
+        max_depth (int): 최대 재귀 횟수 제한
         
     Returns:
         Optional[pd.DataFrame]: 국내주식 신고_신저근접종목 상위 데이터
@@ -101,6 +109,13 @@ def near_new_highlow(
         raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
 
+    if depth > max_depth:
+        logging.warning("Max recursive depth reached (results may be truncated).")
+        if dataframe is None:
+            return pd.DataFrame()
+        else:
+            return dataframe
+
     tr_id = "FHPST01870000"
 
     params = {
@@ -116,6 +131,8 @@ def near_new_highlow(
         "fid_trgt_exls_cls_code": fid_trgt_exls_cls_code,
         "fid_aply_rang_prc_1": fid_aply_rang_prc_1,
         "fid_aply_rang_prc_2": fid_aply_rang_prc_2,
+        "CTX_AREA_FK": ctx_area_fk,  # 연속조회검색조건
+        "CTX_AREA_NK": ctx_area_nk,  # 연속조회키
     }
 
     # API 호출
@@ -136,9 +153,11 @@ def near_new_highlow(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
+        ctx_area_fk = getattr(res.getHeader(), "ctx_area_fk", "") or getattr(res.getBody(), "ctx_area_fk", "") or ""
+        ctx_area_nk = getattr(res.getHeader(), "ctx_area_nk", "") or getattr(res.getBody(), "ctx_area_nk", "") or ""
 
         if _has_next_page(tr_cont):
-            print("Call Next")
+            logging.info("Call Next page...")
             ka.smart_sleep()
             return near_new_highlow(
                 fid_aply_rang_vol,
@@ -153,10 +172,10 @@ def near_new_highlow(
                 fid_trgt_exls_cls_code,
                 fid_aply_rang_prc_1,
                 fid_aply_rang_prc_2,
-                "N", dataframe
+                "N", dataframe, ctx_area_fk, ctx_area_nk, depth + 1, max_depth
             )
         else:
-            print("The End")
+            logging.info("Data fetch complete.")
             return dataframe
     else:
         # 오류 발생 시 처리

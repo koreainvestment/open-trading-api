@@ -39,7 +39,11 @@ def volume_rank(
         fid_vol_cnt: str,  # 필수, 거래량 수
         fid_input_date_1: str,  # 필수, 입력 날짜1
         tr_cont: str = "",  # 선택, 연속 거래 여부
-        dataframe: Optional[pd.DataFrame] = None  # 선택, 누적 데이터프레임
+        dataframe: Optional[pd.DataFrame] = None,  # 선택, 누적 데이터프레임
+        ctx_area_fk: str = "",  # 연속조회검색조건 (응답 header/body ctx_area_fk)
+        ctx_area_nk: str = "",  # 연속조회키 (응답 header/body ctx_area_nk)
+        depth: int = 0,  # 내부 재귀깊이 (자동관리)
+        max_depth: int = 10  # 최대 재귀 횟수 제한
 ) -> Optional[pd.DataFrame]:
     """
     [국내주식] 순위분석
@@ -60,6 +64,10 @@ def volume_rank(
         fid_input_date_1 (str): 입력 날짜1 (공란)
         tr_cont (str): 연속 거래 여부
         dataframe (Optional[pd.DataFrame]): 누적 데이터프레임
+        ctx_area_fk (str): 연속조회검색조건
+        ctx_area_nk (str): 연속조회키
+        depth (int): 내부 재귀깊이 (자동관리)
+        max_depth (int): 최대 재귀 횟수 제한
         
     Returns:
         pd.DataFrame: 순위분석 데이터
@@ -91,6 +99,13 @@ def volume_rank(
     #     raise ValueError("대상 제외 구분 코드 확인요망!!!")
 
 
+    if depth > max_depth:
+        logging.warning("Max recursive depth reached (results may be truncated).")
+        if dataframe is None:
+            return pd.DataFrame()
+        else:
+            return dataframe
+
     tr_id = "FHPST01710000"  # 거래량순위
 
     params = {
@@ -104,7 +119,9 @@ def volume_rank(
         "FID_INPUT_PRICE_1": fid_input_price_1,
         "FID_INPUT_PRICE_2": fid_input_price_2,
         "FID_VOL_CNT": fid_vol_cnt,
-        "FID_INPUT_DATE_1": fid_input_date_1
+        "FID_INPUT_DATE_1": fid_input_date_1,
+        "CTX_AREA_FK": ctx_area_fk,  # 연속조회검색조건
+        "CTX_AREA_NK": ctx_area_nk,  # 연속조회키
     }
 
     res = ka._url_fetch(API_URL, tr_id, tr_cont, params)
@@ -121,18 +138,20 @@ def volume_rank(
             dataframe = current_data
 
         tr_cont = res.getHeader().tr_cont
+        ctx_area_fk = getattr(res.getHeader(), "ctx_area_fk", "") or getattr(res.getBody(), "ctx_area_fk", "") or ""
+        ctx_area_nk = getattr(res.getHeader(), "ctx_area_nk", "") or getattr(res.getBody(), "ctx_area_nk", "") or ""
 
         if _has_next_page(tr_cont):  # 다음 페이지 존재
-            print("Call Next")
+            logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return volume_rank(
                 fid_cond_mrkt_div_code, fid_cond_scr_div_code, fid_input_iscd,
                 fid_div_cls_code, fid_blng_cls_code, fid_trgt_cls_code,
                 fid_trgt_exls_cls_code, fid_input_price_1, fid_input_price_2,
-                fid_vol_cnt, fid_input_date_1, "N", dataframe
+                fid_vol_cnt, fid_input_date_1, "N", dataframe, ctx_area_fk, ctx_area_nk, depth + 1, max_depth
             )
         else:
-            print("The End")
+            logging.info("Data fetch complete.")
             return dataframe
     else:
         res.printError(API_URL)
