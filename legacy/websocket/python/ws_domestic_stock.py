@@ -5,6 +5,11 @@ import sys
 import json
 import time
 import requests
+
+# 모든 KIS HTTP 호출의 (connect, read) 타임아웃. 주문 POST 타임아웃은
+# "상태 불명"으로 취급한다(접수됐을 수 있으므로 자동 재시도 금지).
+REQ_TIMEOUT = (5.0, 30.0)
+
 import asyncio
 import traceback
 import websockets
@@ -42,7 +47,7 @@ def get_approval(key, secret):
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
     time.sleep(0.05)
-    res = requests.post(URL, headers=headers, data=json.dumps(body))
+    res = requests.post(URL, headers=headers, data=json.dumps(body), timeout=REQ_TIMEOUT)
     approval_key = res.json()["approval_key"]
     return approval_key
 
@@ -149,7 +154,7 @@ async def connect():
         url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
 
         g_approval_key = get_approval(g_appkey, g_appsecret)
-        print("approval_key [%s]" % (g_approval_key))
+        print("approval_key [****%s]" % (str(g_approval_key)[-4:] if len(str(g_approval_key)) >= 4 else "****"))
 
         async with websockets.connect(url, ping_interval=None) as websocket:
 
@@ -232,7 +237,7 @@ async def connect():
                         recvstr = data.split('|')  # 수신데이터가 실데이터 이전은 '|'로 나뉘어져있어 split
                         trid0 = recvstr[1]
                         if trid0 == "K0STCNI0" or trid0 == "K0STCNI9" or trid0 == "H0STCNI0" or trid0 == "H0STCNI9":  # 주실체결 통보 처리
-                            stocksigningnotice(recvstr[3], aes_key, aes_iv)
+                            stocksigningnotice_domestic(recvstr[3], aes_key, aes_iv)
 
                     # clearConsole()
                     # break;
