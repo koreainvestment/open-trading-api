@@ -25,6 +25,10 @@ API_URL = "/uapi/overseas-futureoption/v1/quotations/monthly-ccnl"
 # [해외선물옵션] 기본시세 > 해외선물 체결추이(월간)[해외선물-020]
 ##############################################################################################
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def monthly_ccnl(
     srs_cd: str,  # 종목코드
     exch_cd: str,  # 거래소코드
@@ -160,7 +164,7 @@ def monthly_ccnl(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return monthly_ccnl(

@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 # API 정보
 API_URL = "/uapi/overseas-futureoption/v1/trading/inquire-period-trans"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def inquire_period_trans(
     inqr_term_from_dt: str,  # 조회기간FROM일자
     inqr_term_to_dt: str,  # 조회기간TO일자
@@ -133,7 +137,7 @@ def inquire_period_trans(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_period_trans(

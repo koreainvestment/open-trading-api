@@ -22,6 +22,10 @@ logging.basicConfig(level=logging.INFO)
 # 상수 정의
 API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-daily-ccnl"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def opt_daily_ccnl(
     srs_cd: str,                              # [필수] 종목코드 (ex. OESU24 C5500)  
     exch_cd: str,                             # [필수] 거래소코드 (ex. CME)
@@ -82,7 +86,7 @@ def opt_daily_ccnl(
         raise ValueError("qry_cnt is required (e.g. '20')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -122,7 +126,7 @@ def opt_daily_ccnl(
         tr_cont = res.getHeader().tr_cont
         index_key = res.getBody().output1["index_key"]
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return opt_daily_ccnl(

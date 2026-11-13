@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/trading/order-resv-ccnl"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def order_resv_ccnl(
     rsvn_ord_ord_dt: str,       # [필수] 예약주문시작일자
     rsvn_ord_end_dt: str,       # [필수] 예약주문종료일자
@@ -101,7 +105,7 @@ def order_resv_ccnl(
         raise ValueError("cncl_yn is required (e.g. 'Y')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -138,7 +142,7 @@ def order_resv_ccnl(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return order_resv_ccnl(

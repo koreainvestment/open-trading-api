@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 API_URL = "/uapi/elw/v1/quotations/cond-search"
 
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def cond_search(
     fid_cond_mrkt_div_code: str,  # 조건시장분류코드 (필수)
     fid_cond_scr_div_code: str,  # 조건화면분류코드 (필수)
@@ -271,7 +275,7 @@ def cond_search(
         tr_cont = res.getHeader().tr_cont
         
         # 연속 데이터가 있는 경우 재귀 호출
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()  # API 호출 간격 조절
             return cond_search(

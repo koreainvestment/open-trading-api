@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/overseas-price/v1/quotations/inquire-daily-chartprice"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def inquire_daily_chartprice(
     fid_cond_mrkt_div_code: str,  # FID 조건 시장 분류 코드
     fid_input_iscd: str,  # FID 입력 종목코드
@@ -154,7 +158,7 @@ def inquire_daily_chartprice(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_daily_chartprice(
