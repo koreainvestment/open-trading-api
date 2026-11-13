@@ -4,7 +4,7 @@ Lean 백테스트 결과를 API 응답 형식으로 변환.
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from .executor import LeanRun
@@ -211,7 +211,9 @@ class ResultFormatter:
             value = point[4] if len(point) > 4 else point[1]
             
             try:
-                dt = datetime.fromtimestamp(timestamp)
+                # Lean emits UTC epoch seconds: interpret in UTC so KST-local
+                # runs do not shift dates at the KST/UTC day boundary.
+                dt = datetime.fromtimestamp(timestamp, tz=timezone.utc)
                 dates.append(dt.strftime("%Y-%m-%d"))
             except (ValueError, OSError, TypeError):
                 dates.append(str(timestamp))
@@ -245,7 +247,9 @@ class ResultFormatter:
             value = point[1]
             
             try:
-                dt = datetime.fromtimestamp(timestamp)
+                # Lean emits UTC epoch seconds: interpret in UTC so KST-local
+                # runs do not shift dates at the KST/UTC day boundary.
+                dt = datetime.fromtimestamp(timestamp, tz=timezone.utc)
                 dates.append(dt.strftime("%Y-%m-%d"))
             except (ValueError, OSError, TypeError):
                 dates.append(str(timestamp))

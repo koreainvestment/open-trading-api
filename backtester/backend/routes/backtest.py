@@ -3,7 +3,9 @@
 Lean Docker 기반 백테스트 실행.
 """
 
+import asyncio
 import logging
+import math
 from typing import Any, Dict, List, Optional
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -24,6 +26,7 @@ from kis_backtest.lean.executor import LeanExecutor, LeanRun
 from kis_backtest.lean.project_manager import LeanProjectManager
 from kis_backtest.lean.data_converter import DataConverter
 from kis_backtest.lean.result_formatter import parse_lean_value
+from kis_backtest.utils.symbols import invalid_symbols
 import kis_backtest.strategies.preset  # 전략 자동 등록
 
 # KIS 데이터 다운로드/저장 중 발생 가능한 예외
@@ -36,6 +39,29 @@ _DATA_PREP_ERRORS = (OSError, ValueError)
 
 # 전략 YAML 로드·파라미터 치환 실패
 _STRATEGY_LOAD_ERRORS = (OSError, ValueError, KeyError, TypeError, AttributeError)
+
+
+def _require_valid_symbols(symbols) -> None:
+    """종목 코드 형식을 검증한다. 부적합하면 400을 발생시킨다."""
+    bad = invalid_symbols(symbols)
+    if bad:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid symbols: {bad} (allowed: 0-9A-Za-z, 1-12 chars)",
+        )
+
+def _resolve_cost(value, default: float, name: str) -> float:
+    """거래 비용 파라미터 검증·기본값 해결."""
+    if value is None:
+        return default
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{name} must be a number")
+    v = float(value)
+    if not math.isfinite(v):
+        raise ValueError(f"{name} must be finite")
+    if not 0 <= v <= 1:
+        raise ValueError(f"{name} must be between 0 and 1")
+    return v
 
 
 def _load_benchmark_curve(
@@ -273,7 +299,7 @@ def _classify_lean_error(error: str, output: str) -> str:
     return f"백테스트 실패: {error}"
 
 
-async def prepare_market_data(
+def _prepare_market_data_sync(
     symbols: List[str],
     start_date: str,
     end_date: str,
@@ -288,10 +314,34 @@ async def prepare_market_data(
     from kis_backtest.providers.kis.data import KISDataProvider
     
     output_dir = workspace / "data" / "equity" / "krx" / "daily"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     result = {"downloaded": [], "skipped": [], "errors": []}
-    
+
+    # 종목 코드 검증 (경로 순회 방지): 부적합은 파일에 손대지 않고 에러로 기록
+    bad = invalid_symbols(symbols)
+    for s in bad:
+        result["errors"].append({
+            "symbol": s,
+            "error": "Invalid symbol (allowed: 0-9A-Za-z, 1-12 chars)",
+        })
+    symbols = [s for s in (symbols or []) if s not in bad]
+    if not symbols:
+        return result
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    safe_dir = output_dir.resolve()
+
+    # 종목 코드 검증 (경로 순회 방지): 부적합은 파일에 손대지 않고 에러로 기록
+    bad = invalid_symbols(symbols)
+    for s in bad:
+        result["errors"].append({
+            "symbol": s,
+            "error": "Invalid symbol (allowed: 0-9A-Za-z, 1-12 chars)",
+        })
+    symbols = [s for s in (symbols or []) if s not in bad]
+    if not symbols:
+        return result
+
     # 요청 날짜 파싱
     req_start = datetime.strptime(start_date, "%Y-%m-%d").date()
     req_end = datetime.strptime(end_date, "%Y-%m-%d").date()
@@ -357,7 +407,10 @@ async def prepare_market_data(
     
     # 이미 있는 파일 확인 - 날짜 범위도 체크
     for symbol in symbols:
-        csv_path = output_dir / f"{symbol.lower()}.csv"
+        csv_path = (safe_dir / f"{symbol.lower()}.csv")
+        if csv_path.parent != safe_dir or csv_path.suffix != ".csv":
+            result["errors"].append({"symbol": symbol, "error": "Invalid symbol path"})
+            continue
         if csv_path.exists() and csv_path.stat().st_size > 100:
             if check_date_coverage(csv_path):
                 result["skipped"].append(symbol)
@@ -375,7 +428,7 @@ async def prepare_market_data(
     
     # KIS 인증
     try:
-        auth = KISAuth.from_env()
+        auth = KISAuth.from_env(mode="paper")
         provider = KISDataProvider(auth)
     except KIS_AUTH_ERRORS as e:
         logger.warning(f"[Data] KIS 인증 실패: {type(e).__name__} - 기존 캐시만 사용")
@@ -404,7 +457,18 @@ async def prepare_market_data(
     return result
 
 
-async def prepare_benchmark_data(
+async def prepare_market_data(
+    symbols: List[str],
+    start_date: str,
+    end_date: str,
+    workspace: Path,
+) -> dict:
+    """백테스트용 시장 데이터 준비 (KIS API → Lean CSV, 스레드 분리 실행)"""
+    return await asyncio.to_thread(
+        _prepare_market_data_sync, symbols, start_date, end_date, workspace)
+
+
+def _prepare_benchmark_data_sync(
     start_date: str,
     end_date: str,
     workspace: Path,
@@ -471,7 +535,7 @@ async def prepare_benchmark_data(
 
     # KIS API 다운로드
     try:
-        auth = KISAuth.from_env()
+        auth = KISAuth.from_env(mode="paper")
         provider = KISDataProvider(auth)
 
         logger.info(f"[Benchmark] 다운로드 중: {index_name} ({index_code})")
@@ -492,6 +556,17 @@ async def prepare_benchmark_data(
         return False
 
 
+async def prepare_benchmark_data(
+    start_date: str,
+    end_date: str,
+    workspace: Path,
+    index_code: str = "0001",  # KOSPI
+) -> bool:
+    """KOSPI 벤치마크 데이터 준비 (스레드 분리 실행)"""
+    return await asyncio.to_thread(
+        _prepare_benchmark_data_sync, start_date, end_date, workspace, index_code)
+
+
 @router.post(
     "/run",
     response_model=BacktestResponse,
@@ -504,6 +579,9 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
     param_overrides 예시:
         {"period": 21, "oversold": 25}
     """
+
+    # 종목 코드 검증 (경로 순회 방지): 부적합하면 400
+    _require_valid_symbols(request.symbols)
 
     # 전략 빌드 (param_overrides 적용)
     try:
@@ -570,9 +648,9 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
     try:
         # 거래 비용 설정
         config = CodeGenConfig(
-            commission_rate=request.commission_rate or 0.00015,
-            tax_rate=request.tax_rate or 0.002,
-            slippage=request.slippage or 0.0,
+            commission_rate=_resolve_cost(request.commission_rate, 0.00015, "commission_rate"),
+            tax_rate=_resolve_cost(request.tax_rate, 0.002, "tax_rate"),
+            slippage=_resolve_cost(request.slippage, 0.0, "slippage"),
             initial_capital=request.initial_capital,
         )
         generator = LeanCodeGenerator(definition, config=config)
@@ -582,6 +660,8 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
             end_date=end_date,
             initial_capital=request.initial_capital,
         )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=400, detail=f"Code generation failed: {e}")
 
@@ -595,7 +675,7 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
     if not LeanExecutor.check_image():
         raise HTTPException(
             status_code=503,
-            detail="Lean 이미지가 없습니다. 'docker pull quantconnect/lean:latest' 실행 후 재시도해주세요."
+            detail=f"Lean 이미지가 없습니다. 'docker pull {LeanExecutor.LEAN_IMAGE}' 실행 후 재시도해주세요.",
         )
 
     # 프로젝트 생성 및 백테스트 실행
@@ -612,7 +692,7 @@ async def run_backtest(request: BacktestRequest) -> BacktestResponse:
         # 코드 저장
         project.main_py.write_text(code, encoding="utf-8")
 
-        lean_run = LeanExecutor.run(project)
+        lean_run = await asyncio.to_thread(LeanExecutor.run, project)
 
         if lean_run.success:
             result_data = _lean_run_to_api_response(
@@ -664,14 +744,18 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
     """
     from kis_backtest.file.loader import StrategyFileLoader
 
+    # 종목 코드 검증 (경로 순회 방지): 부적합하면 400
+    _require_valid_symbols(request.symbols)
+
     # YAML 파싱 → StrategySchema (타입 안전, param_overrides 적용)
     try:
-        schema = StrategyFileLoader.load_schema_with_params(
+        schema = StrategyFileLoader.load_schema_from_string(
             request.yaml_content,
             param_overrides=request.param_overrides,
         )
     except _STRATEGY_LOAD_ERRORS as e:
-        raise HTTPException(status_code=400, detail=f"Invalid YAML: {e}")
+        logger.error("Custom backtest strategy load failed: %s", e)
+        raise HTTPException(status_code=400, detail="Invalid YAML")
     
     # 워크스페이스 경로
     manager = LeanProjectManager()
@@ -717,9 +801,9 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
         
         # 거래 비용 설정
         config = CodeGenConfig(
-            commission_rate=request.commission_rate or 0.00015,
-            tax_rate=request.tax_rate or 0.002,
-            slippage=request.slippage or 0.0,
+            commission_rate=_resolve_cost(request.commission_rate, 0.00015, "commission_rate"),
+            tax_rate=_resolve_cost(request.tax_rate, 0.002, "tax_rate"),
+            slippage=_resolve_cost(request.slippage, 0.0, "slippage"),
             initial_capital=request.initial_capital,
         )
         generator = LeanCodeGenerator(schema, config=config)
@@ -729,6 +813,10 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
             end_date=request.end_date,
             initial_capital=request.initial_capital,
         )
+    except HTTPException:
+        raise
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except BOUNDARY_ERRORS as e:
         raise HTTPException(status_code=400, detail=f"Code generation failed: {e}")
     
@@ -742,7 +830,7 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
     if not LeanExecutor.check_image():
         raise HTTPException(
             status_code=503,
-            detail="Lean 이미지가 없습니다. 'docker pull quantconnect/lean:latest' 실행 후 재시도해주세요."
+            detail=f"Lean 이미지가 없습니다. 'docker pull {LeanExecutor.LEAN_IMAGE}' 실행 후 재시도해주세요.",
         )
 
     # 프로젝트 생성 및 백테스트 실행
@@ -759,7 +847,7 @@ async def run_custom_backtest(request: CustomBacktestRequest) -> BacktestRespons
         # 코드 저장
         project.main_py.write_text(code, encoding="utf-8")
 
-        lean_run = LeanExecutor.run(project)
+        lean_run = await asyncio.to_thread(LeanExecutor.run, project)
 
         if lean_run.success:
             result_data = _lean_run_to_api_response(

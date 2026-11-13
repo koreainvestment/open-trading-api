@@ -29,9 +29,9 @@ class TrId:
     # 현금 매도 (모의)
     CASH_SELL_PAPER = "VTTC0801U"
     
-    # 주문 취소 (실전/모의)
-    ORDER_CANCEL_REAL = "TTTC0803U"
-    ORDER_CANCEL_PAPER = "VTTC0803U"
+    # 주문 취소·정정 (실전/모의, strategy_builder와 동일)
+    ORDER_CANCEL_REAL = "TTTC0013U"
+    ORDER_CANCEL_PAPER = "VTTC0013U"
     
     # 잔고 조회 (실전/모의)
     BALANCE_REAL = "TTTC8434R"

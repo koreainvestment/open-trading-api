@@ -120,28 +120,52 @@ class KISBrokerageProvider:
             updated_at=datetime.now()
         )
     
-    def cancel_order(self, order_id: str) -> bool:
+    def _find_order(self, order_id: str) -> Optional[Order]:
+        """당일 주문에서 주문번호로 조회. 없으면 None."""
+        try:
+            for order in self.get_orders():
+                if order.id == order_id:
+                    return order
+        except KISError as e:
+            logger.warning(f"주문 조회 실패(취소/정정용): {e}")
+        return None
+
+    def cancel_order(
+        self,
+        order_id: str,
+        quantity: Optional[int] = None,
+        org_no: str = "",
+    ) -> bool:
         """주문 취소
-        
+
         API: /uapi/domestic-stock/v1/trading/order-rvsecncl
-        TR ID: TTTC0803U (실전), VTTC0803U (모의)
+        TR ID: TTTC0013U (실전), VTTC0013U (모의)
+        수량을 생략하면 당일 주문에서 미체결 수량을 조회해 전량 취소한다.
         """
+        if quantity is None:
+            found = self._find_order(order_id)
+            if found is None:
+                logger.warning(f"취소 대상 주문 없음: {order_id}")
+                return False
+            quantity = max(found.quantity - found.filled_quantity, 0)
+
         tr_id = self._get_tr_id(TrId.ORDER_CANCEL_REAL, TrId.ORDER_CANCEL_PAPER)
-        
+
         body = {
             "CANO": self._auth.account_no,
             "ACNT_PRDT_CD": self._auth.account_prod,
-            "KRX_FWDG_ORD_ORGNO": "",
+            "KRX_FWDG_ORD_ORGNO": org_no,
             "ORGN_ODNO": order_id,
             "ORD_DVSN": "00",
             "RVSE_CNCL_DVSN_CD": "02",  # 취소
-            "ORD_QTY": "0",
+            "ORD_QTY": str(quantity),
             "ORD_UNPR": "0",
-            "QTY_ALL_ORD_YN": "Y"  # 전량
+            "QTY_ALL_ORD_YN": "Y",  # 전량
+            "EXCG_ID_DVSN_CD": "KRX",
         }
-        
+
         resp = self._auth.post(ApiPath.DOMESTIC_CANCEL, body, tr_id)
-        
+
         if resp.is_ok():
             logger.info(f"주문 취소 완료: {order_id}")
             return True
@@ -156,12 +180,19 @@ class KISBrokerageProvider:
         price: Optional[float] = None
     ) -> Order:
         """주문 정정
-        
+
         API: /uapi/domestic-stock/v1/trading/order-rvsecncl
-        TR ID: TTTC0803U (실전), VTTC0803U (모의)
+        TR ID: TTTC0013U (실전), VTTC0013U (모의)
+        종목·방향은 당일 주문에서 가져온다.
         """
+        orig = self._find_order(order_id)
+        if orig is None:
+            raise KISOrderError(f"정정 대상 주문 없음: {order_id}")
+        if quantity is None:
+            quantity = max(orig.quantity - orig.filled_quantity, 0)
+
         tr_id = self._get_tr_id(TrId.ORDER_CANCEL_REAL, TrId.ORDER_CANCEL_PAPER)
-        
+
         body = {
             "CANO": self._auth.account_no,
             "ACNT_PRDT_CD": self._auth.account_prod,
@@ -169,25 +200,26 @@ class KISBrokerageProvider:
             "ORGN_ODNO": order_id,
             "ORD_DVSN": "00",
             "RVSE_CNCL_DVSN_CD": "01",  # 정정
-            "ORD_QTY": str(quantity) if quantity else "0",
+            "ORD_QTY": str(quantity),
             "ORD_UNPR": str(int(price)) if price else "0",
-            "QTY_ALL_ORD_YN": "N" if quantity else "Y"
+            "QTY_ALL_ORD_YN": "N",
+            "EXCG_ID_DVSN_CD": "KRX",
         }
-        
+
         resp = self._auth.post(ApiPath.DOMESTIC_CANCEL, body, tr_id)
-        
+
         if not resp.is_ok():
             raise KISOrderError(f"주문 정정 실패: {resp.error_message}")
-        
+
         output = resp.get_output()
         new_order_no = output.get("ODNO", "") if output else order_id
-        
+
         return Order(
             id=new_order_no,
-            symbol="",  # 원래 주문에서 가져와야 함
-            side=OrderSide.BUY,
+            symbol=orig.symbol,
+            side=orig.side,
             order_type=OrderType.LIMIT if price else OrderType.MARKET,
-            quantity=quantity or 0,
+            quantity=quantity,
             price=price,
             filled_quantity=0,
             average_price=0,
@@ -302,16 +334,89 @@ class KISBrokerageProvider:
             currency="KRW"
         )
     
+    @staticmethod
+    def _parse_order(item: dict) -> Order:
+        """일별체결조회 output1 행을 Order로 변환."""
+        ord_qty = int(item.get("ord_qty", 0))
+        filled_qty = int(item.get("tot_ccld_qty", 0))
+        ord_price = float(item.get("ord_unpr", 0))
+        sll_buy = item.get("sll_buy_dvsn_cd", "")
+        if rmn_qty := int(item.get("rmn_qty", 0)):
+            status = OrderStatus.PARTIALLY_FILLED if filled_qty > 0 else OrderStatus.SUBMITTED
+        elif filled_qty > 0:
+            status = OrderStatus.FILLED
+        else:
+            status = OrderStatus.SUBMITTED
+        return Order(
+            id=item.get("odno", ""),
+            symbol=item.get("pdno", ""),
+            side=OrderSide.BUY if sll_buy == "02" else OrderSide.SELL,
+            order_type=OrderType.MARKET if ord_price == 0 else OrderType.LIMIT,
+            quantity=ord_qty,
+            price=ord_price if ord_price > 0 else None,
+            filled_quantity=filled_qty,
+            average_price=float(item.get("avg_prvs", 0)),
+            status=status,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+        )
+
     def get_orders(self, status: Optional[OrderStatus] = None) -> List[Order]:
-        """주문 내역 조회
-        
+        """주문 내역 조회 (당일, CCLD_DVSN + tr_cont 페이징)
+
         API: /uapi/domestic-stock/v1/trading/inquire-daily-ccld
         TR ID: TTTC8001R (실전), VTTC8001R (모의)
-        
-        TODO: 구현 필요
         """
-        logger.warning("주문 내역 조회는 아직 구현되지 않음")
-        return []
+        tr_id = self._get_tr_id(TrId.ORDERS_REAL, TrId.ORDERS_PAPER)
+        today = datetime.now().strftime("%Y%m%d")
+
+        # ccld_dvsn: 00=전체, 01=체결, 02=미체결
+        ccld_dvsn = "00"
+        if status == OrderStatus.FILLED:
+            ccld_dvsn = "01"
+        elif status in (OrderStatus.SUBMITTED, OrderStatus.PENDING):
+            ccld_dvsn = "02"
+
+        params = {
+            "CANO": self._auth.account_no,
+            "ACNT_PRDT_CD": self._auth.account_prod,
+            "INQR_STRT_DT": today,
+            "INQR_END_DT": today,
+            "SLL_BUY_DVSN_CD": "00",
+            "INQR_DVSN": "00",
+            "PDNO": "",
+            "CCLD_DVSN": ccld_dvsn,
+            "ORD_GNO_BRNO": "",
+            "ODNO": "",
+            "INQR_DVSN_3": "00",
+            "INQR_DVSN_1": "",
+            "CTX_AREA_FK100": "",
+            "CTX_AREA_NK100": "",
+        }
+
+        orders: List[Order] = []
+        tr_cont = ""
+        for _ in range(100):  # 무한 루프 방지 상한
+            resp = self._auth.get(ApiPath.DOMESTIC_ORDERS, params, tr_id, tr_cont)
+            if not resp.is_ok():
+                raise KISError(f"주문 내역 조회 실패: {resp.error_message}")
+            for item in resp.get_output1() or []:
+                try:
+                    orders.append(self._parse_order(item))
+                except (ValueError, TypeError, KeyError) as e:
+                    logger.warning(f"주문 파싱 오류: {e}")
+                    continue
+            header = resp.header
+            nxt = getattr(header, "tr_cont", "") if header is not None else ""
+            if nxt not in ("M", "F"):
+                break
+            out = resp.get_output() or {}
+            params["CTX_AREA_FK100"] = out.get("ctx_area_fk100", "")
+            params["CTX_AREA_NK100"] = out.get("ctx_area_nk100", "")
+            tr_cont = "N"
+        else:
+            logger.warning("주문 조회 페이지 상한(100) 도달")
+        return orders
     
     def subscribe_fills(
         self,

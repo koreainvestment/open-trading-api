@@ -4,6 +4,7 @@ Docker 컨테이너로 Lean 백테스트 직접 실행. (Lean CLI 불필요)
 """
 
 import json
+import os
 import logging
 import subprocess
 from dataclasses import dataclass, field
@@ -15,8 +16,10 @@ from .project_manager import LeanProject
 
 logger = logging.getLogger(__name__)
 
-# Lean Docker 이미지
-LEAN_IMAGE = "quantconnect/lean:latest"
+# Lean Docker image is pinned by digest for reproducible, tamper-resistant pulls.
+# To bump: pull the new tag, run `docker images --digests quantconnect/lean`,
+# and replace the sha256 digest below with the new value.
+LEAN_IMAGE = "quantconnect/lean@sha256:a6dae7702a0762f3f6d7a9754c4e53e53b92f80a49db50161fed8e5dd94eaae4"
 
 
 @dataclass
@@ -125,17 +128,17 @@ class LeanExecutor:
         timeout: int = 600,
     ) -> LeanRun:
         """Docker로 Lean 백테스트 실행
-        
+
+        실패(비정상 종료·타임아웃·Docker 없음)는 예외 대신
+        success=False인 LeanRun을 반환한다.
+
         Args:
             project: Lean 프로젝트
             stream_logs: 로그 스트리밍 여부
             timeout: 타임아웃 (초)
-        
+
         Returns:
             LeanRun 결과 객체
-        
-        Raises:
-            RuntimeError: 실행 실패 시
         """
         started_at = datetime.now()
         output_dir = project.output_dir
@@ -194,17 +197,21 @@ class LeanExecutor:
         config_path = project_path / "lean-config.json"
         config_path.write_text(json.dumps(lean_config, indent=2))
         
-        # Docker 명령어 구성
+        # Docker 명령어 구성 (네트워크 차단 + 리소스 제한 + 권한 최소화)
+        # 타임아웃 시 고아 컨테이너가 남지 않도록 --name 지정
+        container_name = f"lean-{project.run_id}"
         cmd = [
             "docker", "run", "--rm",
-            "-v", f"{project_path}:/Algorithm:ro",
-            "-v", f"{data_path}:/Data:ro",
-            "-v", f"{results_path}:/Results",
-            "-v", f"{config_path}:/Lean/Launcher/bin/Debug/config.json:ro",
-            LEAN_IMAGE,
+            "--name", container_name,
+            "--network", "none",
+            "--memory", "4g",
+            "--memory-swap", "4g",
+            "--cpus", "2.0",
+            "--pids-limit", "512",
+            "--cap-drop", "ALL",
         ]
-        
-        logger.info(f"[Lean] Docker 실행: {project.run_id}")
+        if hasattr(os, "getuid"):
+            cmd += ["--user", f"{os.getuid()}:{os.getgid()}"]
         
         try:
             result = subprocess.run(
@@ -223,7 +230,15 @@ class LeanExecutor:
             if result.returncode != 0:
                 error_msg = f"Lean 백테스트 실패 (exit code: {result.returncode})\n{stdout[-2000:]}"
                 logger.error(f"[Lean] {error_msg}")
-                raise RuntimeError(error_msg)
+                return LeanRun(
+                    project=project,
+                    success=False,
+                    output_dir=output_dir,
+                    error=error_msg,
+                    duration_seconds=duration,
+                    started_at=started_at,
+                    finished_at=finished_at,
+                )
             
             # 성공 결과 생성
             run = LeanRun(
@@ -241,14 +256,39 @@ class LeanExecutor:
             return run
             
         except subprocess.TimeoutExpired:
+            finished_at = datetime.now()
+            duration = (finished_at - started_at).total_seconds()
             error_msg = f"Lean 백테스트 타임아웃 ({timeout}초)"
             logger.error(f"[Lean] {error_msg}")
-            raise RuntimeError(error_msg)
-        
+            try:
+                subprocess.run(["docker", "rm", "-f", container_name],
+                               capture_output=True, timeout=30)
+                logger.info(f"[Lean] 타임아웃 컨테이너 정리: {container_name}")
+            except Exception as e:
+                logger.warning(f"[Lean] 컨테이너 정리 실패: {container_name} ({e})")
+            return LeanRun(
+                project=project,
+                success=False,
+                output_dir=output_dir,
+                error=error_msg,
+                duration_seconds=duration,
+                started_at=started_at,
+                finished_at=finished_at,
+            )
+
         except FileNotFoundError:
+            finished_at = datetime.now()
             error_msg = "Docker가 설치되지 않았습니다."
             logger.error(f"[Lean] {error_msg}")
-            raise RuntimeError(error_msg)
+            return LeanRun(
+                project=project,
+                success=False,
+                output_dir=output_dir,
+                error=error_msg,
+                duration_seconds=(finished_at - started_at).total_seconds(),
+                started_at=started_at,
+                finished_at=finished_at,
+            )
     
     @classmethod
     def pull_image(cls) -> bool:
