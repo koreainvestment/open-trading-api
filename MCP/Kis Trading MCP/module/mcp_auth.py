@@ -1,3 +1,4 @@
+import hmac
 import logging
 
 from fastmcp.exceptions import ToolError
@@ -7,6 +8,14 @@ try:
     from fastmcp.server.dependencies import get_http_headers
 except ImportError:
     get_http_headers = None
+
+
+def _secure_compare(a: str, b: str) -> bool:
+    """상수시간 문자열 비교 (타이밍 공격 방지). 타입 오류 시 불일치로 처리."""
+    try:
+        return hmac.compare_digest(a, b)
+    except (TypeError, ValueError):
+        return False
 
 
 class McpAuthMiddleware(Middleware):
@@ -33,7 +42,7 @@ class McpAuthMiddleware(Middleware):
         auth_header = headers.get("authorization") or headers.get("Authorization", "")
         api_key = headers.get("x-api-key") or headers.get("X-Api-Key", "")
 
-        if auth_header == f"Bearer {self.access_token}" or api_key == self.access_token:
+        if _secure_compare(auth_header, f"Bearer {self.access_token}") or _secure_compare(api_key, self.access_token):
             return await call_next(context)
 
         raise ToolError("Unauthorized: invalid or missing MCP access token")

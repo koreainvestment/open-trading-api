@@ -72,7 +72,7 @@ npx -y @koreainvestment/kis-trading-mcp
 | `KIS_ACCT_FUTURE` | 선택 | 실전 선물옵션 계좌번호 |
 | `KIS_PAPER_STOCK` | 선택 | 모의 증권 계좌번호 |
 | `KIS_PAPER_FUTURE` | 선택 | 모의 선물옵션 계좌번호 |
-| `KIS_PROD_TYPE` | 선택 | 계좌상품코드. 기본값은 종합계좌 `01` |
+| `KIS_PROD_TYPE` | 선택 | 계좌상품코드 기본값(종합계좌 `01`). 도구별 상품코드가 우선 적용됨(국내선물옵션 `03`, 해외선물옵션 `08`) |
 
 #### Claude Desktop
 

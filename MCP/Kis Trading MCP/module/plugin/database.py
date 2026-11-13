@@ -182,11 +182,15 @@ class DatabaseEngine:
         try:
             query = session.query(model_class)
             
-            # 필터 적용
+            # 필터 적용 (%가 포함된 문자열은 LIKE 패턴으로 처리)
             if filters:
                 for field, value in filters.items():
                     if hasattr(model_class, field):
-                        query = query.filter(getattr(model_class, field) == value)
+                        column = getattr(model_class, field)
+                        if isinstance(value, str) and "%" in value:
+                            query = query.filter(column.like(value))
+                        else:
+                            query = query.filter(column == value)
                     else:
                         logger.warning(f"Field '{field}' not found in {model_class.__name__}")
             
@@ -276,54 +280,48 @@ class DatabaseEngine:
     
     def bulk_replace_master_data(self, model_class: Type, data_list: List[Dict], master_name: str) -> int:
         """
-        마스터 데이터 추가 (INSERT만) - 카테고리 레벨에서 이미 삭제됨
-        
+        마스터 데이터 교체 (DELETE 후 INSERT, 단일 트랜잭션).
+        빈 데이터는 거부한다. 실패 시 롤백되어 기존 데이터가 유지된다.
+
         Args:
             model_class: 마스터 데이터 모델 클래스
-            data_list: 삽입할 데이터 리스트 (딕셔너리 리스트)
+            data_list: 삽입할 데이터 리스트 (딕셔너리 리스트, 비어 있으면 안 됨)
             master_name: 마스터파일명 (로깅용)
-            
+
         Returns:
             삽입된 레코드 수
         """
+        if not data_list:
+            raise ValueError(f"No data to replace for {master_name} - 기존 데이터 유지")
         session = self.get_session()
         try:
-            # 새 데이터 배치 삽입 (카테고리 레벨에서 이미 삭제되었으므로 INSERT만)
-            if data_list:
-                # 배치 크기 설정 (메모리 효율성을 위해 1000개씩)
-                batch_size = 1000
-                total_inserted = 0
-                
-                for i in range(0, len(data_list), batch_size):
-                    batch = data_list[i:i + batch_size]
-                    batch_objects = []
-                    
-                    for data in batch:
-                        # 모든 값을 문자열로 강제 변환 (SQLAlchemy 타입 추론 방지)
-                        str_data = {key: str(value) if value is not None else None for key, value in data.items()}
-                        
-                        # 딕셔너리를 모델 인스턴스로 변환
-                        obj = model_class(**str_data)
-                        batch_objects.append(obj)
-                    
-                    # 배치 삽입
-                    session.bulk_save_objects(batch_objects)
-                    total_inserted += len(batch_objects)
-                    
-                    # 중간 커밋 (메모리 절약)
-                    if i + batch_size < len(data_list):
-                        session.commit()
-                        logger.info(f"Inserted batch {i//batch_size + 1}: {len(batch_objects)} records")
-                
-                # 최종 커밋
-                session.commit()
-                logger.info(f"Bulk replace completed: {total_inserted} records inserted into {model_class.__name__}")
-                return total_inserted
-            else:
-                logger.warning(f"No data to insert for {master_name}")
-                return 0
-                
-        except SQLAlchemyError as e:
+            # 기존 데이터 삭제 후 새 데이터 배치 삽입 (단일 트랜잭션)
+            session.query(model_class).delete()
+            batch_size = 1000
+            total_inserted = 0
+
+            for i in range(0, len(data_list), batch_size):
+                batch = data_list[i:i + batch_size]
+                batch_objects = []
+
+                for data in batch:
+                    # 모든 값을 문자열로 강제 변환 (SQLAlchemy 타입 추론 방지)
+                    str_data = {key: str(value) if value is not None else None for key, value in data.items()}
+
+                    # 딕셔너리를 모델 인스턴스로 변환
+                    obj = model_class(**str_data)
+                    batch_objects.append(obj)
+
+                # 배치 삽입 (커밋은 마지막에 한 번만)
+                session.bulk_save_objects(batch_objects)
+                total_inserted += len(batch_objects)
+
+            # 최종 커밋 (DELETE+INSERT 원자적 반영)
+            session.commit()
+            logger.info(f"Bulk replace completed: {total_inserted} records inserted into {model_class.__name__}")
+            return total_inserted
+
+        except (SQLAlchemyError, ValueError) as e:
             session.rollback()
             logger.error(f"Failed to bulk replace master data for {master_name}: {e}")
             raise

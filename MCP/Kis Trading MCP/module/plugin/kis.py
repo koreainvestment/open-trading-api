@@ -1,14 +1,27 @@
 import logging
 import os
+import shutil
+import tempfile
+
 import requests
 import yaml
+
+
+def _yaml_dq(value):
+    """YAML 큰따옴표 스칼라용 이스케이프 (폴백 치환 경로에서 사용)."""
+    return (value or "").replace("\\", "\\\\").replace('"', '\\"')
 
 
 def setup_kis_config(force_update=False):
     """KIS 설정 파일 자동 생성 (템플릿 다운로드 + 환경변수로 값 덮어쓰기)
 
+    기존 파일은 기본적으로 보존한다. 덮어쓰기는 force_update=True에 더해
+    MCP_KIS_CONFIG_OVERWRITE=1 명시 옵트인이 있을 때만 수행하고, 그 경우에도
+    필수 환경변수(KIS_APP_KEY/KIS_APP_SECRET)가 모두 있을 때만 갱신한다.
+    덮어쓰기 전 kis_devlp.yaml.bak에 백업하고, 새 파일은 0600·원자적 저장이다.
+
     Args:
-        force_update (bool): True면 기존 파일이 있어도 강제로 덮어쓰기
+        force_update (bool): True여도 옵트인 없이는 기존 파일을 덮어쓰지 않음
     """
 
     # kis_auth.py와 동일한 경로 생성 방식 사용
@@ -19,11 +32,14 @@ def setup_kis_config(force_update=False):
 
     # 설정 파일 경로
     kis_config_path = os.path.join(kis_config_dir, "kis_devlp.yaml")
+    existed = os.path.exists(kis_config_path)
 
-    # 기존 파일 존재 확인
-    if os.path.exists(kis_config_path) and not force_update:
+    # 기존 파일 존재 확인: 기본 보존, 명시 옵트인 때만 갱신 대상으로 둔다
+    if existed and not (force_update
+                        and (os.getenv("MCP_KIS_CONFIG_OVERWRITE") or "") == "1"):
         logging.info(f"✅ KIS 설정 파일이 이미 존재합니다: {kis_config_path}")
-        logging.info("기존 파일을 사용합니다. 강제 업데이트가 필요한 경우 force_update=True 옵션을 사용하세요.")
+        logging.info("기존 파일을 보존합니다. 덮어쓰려면 force_update=True와 "
+                     "MCP_KIS_CONFIG_OVERWRITE=1이 모두 필요합니다.")
         return True
 
     # 1. kis_devlp.yaml 템플릿 다운로드
@@ -48,6 +64,10 @@ def setup_kis_config(force_update=False):
     app_secret = os.getenv("KIS_APP_SECRET")
 
     if not app_key or not app_secret:
+        if existed:
+            logging.error("❌ 필수 환경변수(KIS_APP_KEY/KIS_APP_SECRET)가 없어 "
+                          "기존 설정 파일을 보존합니다. 덮어쓰지 않았습니다.")
+            return False
         logging.warning("⚠️ 필수 환경변수가 설정되지 않았습니다:")
         if not app_key:
             logging.warning("  - KIS_APP_KEY")
@@ -91,7 +111,7 @@ def setup_kis_config(force_update=False):
 
         if hts_id:
             config['my_htsid'] = hts_id
-            logging.info(f"✅ HTS ID 설정 완료: {hts_id}")
+            logging.info("✅ HTS ID 설정 완료")
         else:
             logging.warning("⚠️ KIS_HTS_ID 환경변수가 설정되지 않았습니다.")
 
@@ -135,17 +155,38 @@ def setup_kis_config(force_update=False):
         # 실패 시 기존 문자열 치환 방식 사용
         updated_content = template_content
         if app_key:
-            updated_content = updated_content.replace('my_app: "앱키"', f'my_app: "{app_key}"')
+            updated_content = updated_content.replace('my_app: "앱키"', f'my_app: "{_yaml_dq(app_key)}"')
         if app_secret:
-            updated_content = updated_content.replace('my_sec: "앱키 시크릿"', f'my_sec: "{app_secret}"')
+            updated_content = updated_content.replace('my_sec: "앱키 시크릿"', f'my_sec: "{_yaml_dq(app_secret)}"')
         if hts_id:
-            updated_content = updated_content.replace('my_htsid: "사용자 HTS ID"', f'my_htsid: "{hts_id}"')
+            updated_content = updated_content.replace('my_htsid: "사용자 HTS ID"', f'my_htsid: "{_yaml_dq(hts_id)}"')
         # ... 나머지 기존 로직
 
-    # 4. 수정된 설정을 파일로 저장 (원본 구조 보존)
+    # 4. 수정된 설정을 파일로 저장 (기존 파일은 .bak 백업 후 0600 원자적 저장)
+    if existed:
+        try:
+            shutil.copyfile(kis_config_path, kis_config_path + ".bak")
+            logging.info(f"💾 기존 설정 백업: {kis_config_path}.bak")
+        except Exception as e:
+            logging.error(f"❌ 백업 실패로 덮어쓰기를 중단합니다: {e}")
+            return False
     try:
-        with open(kis_config_path, 'w', encoding='utf-8') as f:
-            f.write(updated_content)
+        fd, tmp_path = tempfile.mkstemp(dir=kis_config_dir, prefix=".kis_devlp_")
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                f.write(updated_content)
+            os.chmod(tmp_path, 0o600)
+            os.replace(tmp_path, kis_config_path)
+            try:
+                os.chmod(kis_config_path, 0o600)
+            except OSError:
+                pass
+        except BaseException:
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
+            raise
 
         logging.info(f"✅ KIS 설정 파일이 생성되었습니다: {kis_config_path}")
 
