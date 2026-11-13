@@ -55,22 +55,18 @@ def asking_price(
     msg = ka.data_fetch(tr_id, tr_type, params)
 
     columns = [
-        "symb",
-        "zdiv",
-        "xymd",
-        "xhms",
-        "kymd",
-        "khms",
-        "bvol",
-        "avol",
-        "bdvl",
-        "advl",
-        "pbid1",
-        "pask1",
-        "vbid1",
-        "vask1",
-        "dbid1",
-        "dask1"
+        "RSYM", "SYMB", "ZDIV", "XYMD", "XHMS", "KYMD", "KHMS",
+        "BVOL", "AVOL", "BDVL", "ADVL",
+        "PBID1", "PASK1", "VBID1", "VASK1", "DBID1", "DASK1",
+        "PBID2", "PASK2", "VBID2", "VASK2", "DBID2", "DASK2",
+        "PBID3", "PASK3", "VBID3", "VASK3", "DBID3", "DASK3",
+        "PBID4", "PASK4", "VBID4", "VASK4", "DBID4", "DASK4",
+        "PBID5", "PASK5", "VBID5", "VASK5", "DBID5", "DASK5",
+        "PBID6", "PASK6", "VBID6", "VASK6", "DBID6", "DASK6",
+        "PBID7", "PASK7", "VBID7", "VASK7", "DBID7", "DASK7",
+        "PBID8", "PASK8", "VBID8", "VASK8", "DBID8", "DASK8",
+        "PBID9", "PASK9", "VBID9", "VASK9", "DBID9", "DASK9",
+        "PBID10", "PASK10", "VBID10", "VASK10", "DBID10", "DASK10"
     ]
 
     return msg, columns 
