@@ -67,7 +67,12 @@ def parse_krx_master(content: bytes, exchange: str) -> list[dict]:
         code = line_bytes[0:9].decode("euc-kr", errors="ignore").strip()
         name = line_bytes[21:61].decode("euc-kr", errors="ignore").strip()
         
-        # 실제 종목코드는 6자리
+        # 9자리 코드(F로 시작)는 거래소 상장 종목이 아닌 펀드이므로 제외.
+        # 뒤 6자리로 자르면 실제 종목코드와 충돌함 (예: F77200030 → 200030)
+        if len(code) > 7:
+            continue
+
+        # 실제 종목코드는 6자리 (ETN 등 7자리 코드는 뒤 6자리 사용)
         if len(code) > 6:
             code = code[-6:]
         
@@ -95,7 +100,11 @@ def append_to_symbol_properties(symbols: list[dict]) -> int:
                     existing_codes.add(code)
     
     # 새 종목만 추가
-    new_symbols = [s for s in symbols if s["code"] not in existing_codes]
+    new_symbols = []
+    for s in symbols:
+        if s["code"] not in existing_codes:
+            existing_codes.add(s["code"])
+            new_symbols.append(s)
     
     if not new_symbols:
         print(f"  추가할 새 종목 없음 (기존 {len(existing_codes)}개)")
