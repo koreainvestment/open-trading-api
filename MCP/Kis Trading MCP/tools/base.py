@@ -1,3 +1,5 @@
+import asyncio
+import logging
 from abc import ABC, abstractmethod
 import ast
 from typing import Dict, Any, List
@@ -15,15 +17,66 @@ from module.plugin import MasterFileManager
 from module.plugin.database import Database
 import module.factory as factory
 
+logger = logging.getLogger(__name__)
+
 ALLOWED_ENV_DV = frozenset({"real", "demo"})
 TRENV_EXPR_PATTERN = re.compile(r"^ka\._TRENV\.\w+$")
 FUNCTION_NAME_PATTERN = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
+
+# 실전 주문 게이트 (이슈 #2): 주문 API 분류·실전 옵트인·읽기전용·허용목록
+# api_path는 조회/주문을 가리지 못하므로(/trading/ 아래 둘 다 존재) 이름 기준으로 분류한다.
+# 조회 예외: order_resv_list(예약주문조회), algo_ordno/foreign_margin 등은 분류 밖(조회)이다.
+_ORDER_API_PREFIXES = ("order", "daytime_order")
+_ORDER_API_NAMES = frozenset({"buy", "sell"})
+_ORDER_READ_EXCEPTIONS = frozenset({"order_resv_list"})
+
+# 동적 trenv 매핑에서 자동 주입하지 않는 시크릿 속성 (이슈 #9)
+_TRENV_SECRET_ATTRS = frozenset({"my_sec", "my_token"})
+ORDER_TIMEOUT = 120  # 주문 계열 자식 실행 타임아웃(초): 토큰 발급+주문 합산
+DEFAULT_TIMEOUT = 15  # 조회 계열 타임아웃(초)
+
+
+def _is_order_api_type(api_type: str) -> bool:
+    """주문(파괴적) API 여부. 조회 예외(order_resv_list 등)는 제외."""
+    return (api_type in _ORDER_API_NAMES
+            or api_type.startswith(_ORDER_API_PREFIXES)) \
+        and api_type not in _ORDER_READ_EXCEPTIONS
+
+
+# 도구별 계좌상품코드 (이슈 #5): 러너의 ka.auth(product)에 전달한다.
+# 주식·채권·ELW·ETF/ETN·해외주식은 종합계좌(01), 국내선물옵션 03, 해외선물옵션 08.
+# cano·acnt_prdt_cd 강제 값(my_acct·my_prod)은 이 product로 해소되므로 일치한다.
+# 모의 해외선물(08)은 kis_auth vps 분기에 08 계좌 선택이 없어 별도 이슈로 다룬다.
+TOOL_PRODUCT_DEFAULTS = {
+    "domestic_stock": "01",
+    "overseas_stock": "01",
+    "domestic_bond": "01",
+    "elw": "01",
+    "etfetn": "01",
+    "auth": "01",
+    "domestic_futureoption": "03",
+    "overseas_futureoption": "08",
+}
+
+
+def _resolve_product(tool_name: str) -> str:
+    """도구명에 대응하는 계좌상품코드. 미등록 도구는 01."""
+    return TOOL_PRODUCT_DEFAULTS.get(tool_name or "", "01")
+# 다운로드 고정 (이슈 #3): main 추적 금지. API 예제는 검증된 커밋 SHA로 고정하고
+# SHA-256 매니페스트(api_hashes.json)로 검증 후 디스크 캐시에 보관한다.
+# kis_auth는 포크 수정본을 패키지에 번들(bundled_kis_auth.py)하므로 내려받지 않는다.
+# 새 검증 커밋으로 올리려면 MCP_API_CODE_REF에 SHA를 주고 api_hashes.json을 재생성한다.
+PINNED_API_REF = "3a9be59a3ed8745720dc3aa9d584bdf3b7830362"
+API_HASHES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "api_hashes.json")
+BUNDLED_KIS_AUTH_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bundled_kis_auth.py")
+API_CACHE_DIRNAME = ".api_cache"
 
 # 사용자 입력을 포함하지 않는 고정 실행 템플릿 (function_name만 서버 검증 후 치환)
 API_RUNNER_TEMPLATE = """
 # MCP API runner (fixed template)
 if __name__ == "__main__":
     import json
+    import re
     import sys
     import kis_auth as ka
 
@@ -31,18 +84,20 @@ if __name__ == "__main__":
         _mcp_cfg = json.load(f)
 
     _env_dv = _mcp_cfg["env_dv"]
+    _product = _mcp_cfg.get("product")
     if _env_dv == "demo":
-        ka.auth("vps")
+        ka.auth("vps") if _product is None else ka.auth("vps", _product)
     else:
-        ka.auth()
+        ka.auth() if _product is None else ka.auth("prod", _product)
 
     _kwargs = {}
     for _k, _v in _mcp_cfg["params"].items():
         if isinstance(_v, dict) and "__expr__" in _v:
             _expr = _v["__expr__"]
-            if not _expr.startswith("ka._TRENV."):
+            _m = re.match(r"^ka\\._TRENV\\.(my_\\w+)$", _expr) if isinstance(_expr, str) else None
+            if not _m:
                 raise ValueError(f"Invalid expression: {_expr}")
-            _kwargs[_k] = eval(_expr)
+            _kwargs[_k] = getattr(ka._TRENV, _m.group(1))
         else:
             _kwargs[_k] = _v
 
@@ -58,6 +113,31 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
+        import json as _json
+        # 주문 거절·빈 결과의 구조화 실패 판정 (이슈 #4): rt_cd 불량 dict,
+        # 주문 API의 빈 결과(DataFrame 등)는 exit 2로 실패를 명시한다.
+        _parts = list(result) if isinstance(result, tuple) else [result]
+        _failed = False
+        _fail_reason = ""
+        for _p in _parts:
+            if isinstance(_p, dict):
+                _rt = _p.get("rt_cd", _p.get("RT_CD", "0"))
+                if str(_rt) not in ("0", ""):
+                    _failed = True
+                    _fail_reason = "rt_cd=%s msg=%s" % (
+                        _rt, _p.get("msg1", _p.get("msg", "")))
+                    break
+        if not _failed and _mcp_cfg.get("is_order"):
+            _dfs = [_p for _p in _parts if hasattr(_p, "empty")]
+            _contents = [_p for _p in _parts
+                         if not hasattr(_p, "empty") and not isinstance(_p, dict)
+                         and _p is not None and _p != "" and _p != [] and _p != {}]
+            if _dfs and all(len(_p) == 0 for _p in _dfs) and not _contents:
+                _failed = True
+                _fail_reason = "empty order result (likely rejected)"
+        if _failed:
+            print(_json.dumps({"ok": False, "error": _fail_reason}, ensure_ascii=False))
+            sys.exit(2)
         if isinstance(result, tuple):
             output = {}
             for i, item in enumerate(result):
@@ -66,7 +146,6 @@ if __name__ == "__main__":
                 else:
                     output[f"output{i+1}"] = str(item)
 
-            import json as _json
             print(_json.dumps(output, ensure_ascii=False, indent=2))
         elif hasattr(result, 'empty') and not result.empty:
             print(result.to_json(orient='records', force_ascii=False))
@@ -114,17 +193,23 @@ class ApiExecutor:
             raise ValueError(f"Invalid function name: {function_name}")
         return function_name
 
+    _SCALAR_TYPES = (str, int, float, bool, type(None))
+
     @classmethod
     def _serialize_params_for_runner(cls, params: Dict[str, Any]) -> Dict[str, Any]:
-        """params.json용 안전한 직렬화 (trenv 표현식은 화이트리스트)"""
+        """params.json용 안전한 직렬화 (trenv 표현식은 화이트리스트, 비스칼라·__expr__ 거부)"""
         serialized = {}
         for key, value in params.items():
             if isinstance(value, str) and value.startswith("ka._TRENV."):
                 if not TRENV_EXPR_PATTERN.match(value):
                     raise ValueError(f"Invalid trenv expression: {value}")
                 serialized[key] = {"__expr__": value}
-            else:
+            elif isinstance(value, dict) and "__expr__" in value:
+                raise ValueError(f"__expr__ param rejected: {key}")
+            elif isinstance(value, cls._SCALAR_TYPES):
                 serialized[key] = value
+            else:
+                raise ValueError(f"Non-scalar param rejected: {key} ({type(value).__name__})")
         return serialized
 
     def _create_temp_directory(self, request_id: str) -> str:
@@ -134,37 +219,83 @@ class ApiExecutor:
         os.makedirs(temp_dir, exist_ok=True)
         return temp_dir
 
-    @classmethod
-    def _download_file(cls, url: str, file_path: str) -> bool:
-        """파일 다운로드"""
-        try:
-            response = requests.get(url, timeout=30)
-            response.raise_for_status()
 
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(response.text)
+    @staticmethod
+    def _api_code_ref() -> str:
+        """API 예제를 가져올 커밋 ref. 기본은 검증된 고정 SHA, MCP_API_CODE_REF로 재지정."""
+        return (os.environ.get("MCP_API_CODE_REF") or "").strip() or PINNED_API_REF
+
+    @classmethod
+    def _pinned_raw_url(cls, github_url: str, api_type: str) -> str:
+        """tree/main URL을 고정 ref의 raw URL로 변환"""
+        raw_url = github_url.replace('/tree/', '/').replace('github.com', 'raw.githubusercontent.com')
+        raw_url = raw_url.replace('/main/', f"/{cls._api_code_ref()}/", 1)
+        return f"{raw_url}/{api_type}.py"
+
+    _api_hashes = None
+
+    @classmethod
+    def _load_api_hashes(cls) -> Dict[str, str]:
+        """SHA-256 매니페스트 로드 (없으면 빈 dict = 전부 차단)"""
+        if cls._api_hashes is None:
+            try:
+                with open(API_HASHES_FILE, 'r', encoding='utf-8') as f:
+                    cls._api_hashes = json.load(f)
+            except (OSError, ValueError):
+                cls._api_hashes = {}
+        return cls._api_hashes
+
+    @classmethod
+    def _verify_api_body(cls, url: str, body: bytes) -> None:
+        """매니페스트 대조. 항목이 없거나 해시가 다르면 거부한다."""
+        import hashlib
+        expected = cls._load_api_hashes().get(url)
+        if not expected:
+            raise ValueError(f"API 코드 해시 미등록(차단): {url}")
+        actual = hashlib.sha256(body).hexdigest()
+        if actual != expected:
+            raise ValueError(f"API 코드 해시 불일치(차단): {url}")
+
+    def _cache_path(self, url: str) -> str:
+        """고정 ref URL 전용 디스크 캐시 경로"""
+        import hashlib
+        cache_dir = os.path.join(self.temp_base_dir, API_CACHE_DIRNAME)
+        os.makedirs(cache_dir, exist_ok=True)
+        return os.path.join(cache_dir, hashlib.sha256(url.encode('utf-8')).hexdigest() + ".py")
+
+    def _ensure_kis_auth(self, temp_dir: str) -> bool:
+        """번들된 kis_auth.py를 실행 디렉토리에 복사 (다운로드 없음)"""
+        try:
+            shutil.copyfile(BUNDLED_KIS_AUTH_FILE, os.path.join(temp_dir, "kis_auth.py"))
             return True
         except Exception as e:
-            print(f"파일 다운로드 실패: {url}, 오류: {str(e)}")
+            logger.warning(f"kis_auth 번들 복사 실패: {str(e)}")
             return False
 
-    def _download_kis_auth(self, temp_dir: str) -> bool:
-        """kis_auth.py 다운로드"""
-        kis_auth_url = "https://raw.githubusercontent.com/koreainvestment/open-trading-api/main/examples_llm/kis_auth.py"
-        kis_auth_path = os.path.join(temp_dir, "kis_auth.py")
-        return self._download_file(kis_auth_url, kis_auth_path)
-
     def _download_api_code(self, github_url: str, temp_dir: str, api_type: str) -> str:
-        """API 코드 다운로드"""
-        # GitHub URL을 raw URL로 변환하고 api_type/api_type.py를 붙여서 실제 파일 경로 생성
-        raw_url = github_url.replace('/tree/', '/').replace('github.com', 'raw.githubusercontent.com')
-        full_url = f"{raw_url}/{api_type}.py"
-        api_code_path = os.path.join(temp_dir, "api_code.py")
-
-        if self._download_file(full_url, api_code_path):
+        """API 코드 준비 (고정 ref + 해시 검증 + 디스크 캐시, 호출마다 내려받지 않음)"""
+        full_url = self._pinned_raw_url(github_url, api_type)
+        cached = self._cache_path(full_url)
+        if os.path.exists(cached):
+            with open(cached, 'rb') as f:
+                self._verify_api_body(full_url, f.read())
+            api_code_path = os.path.join(temp_dir, "api_code.py")
+            shutil.copyfile(cached, api_code_path)
             return api_code_path
-        else:
-            raise Exception(f"API 코드 다운로드 실패: {full_url}")
+        try:
+            response = requests.get(full_url, timeout=30)
+            response.raise_for_status()
+            body = response.content
+            self._verify_api_body(full_url, body)
+        except ValueError:
+            raise
+        except Exception as e:
+            raise Exception(f"API 코드 다운로드 실패: {full_url} ({str(e)})")
+        with open(cached, 'wb') as f:
+            f.write(body)
+        api_code_path = os.path.join(temp_dir, "api_code.py")
+        shutil.copyfile(cached, api_code_path)
+        return api_code_path
 
     @classmethod
     def _extract_trenv_params_from_example(cls, api_code_content: str) -> Dict[str, str]:
@@ -177,21 +308,24 @@ class ApiExecutor:
         
         dynamic_mappings = {}
         discovered_mappings = []
-        
+
         for param_name, trenv_attr in matches:
+            # 시크릿 속성(my_sec 등)은 자동 주입하지 않는다 (이슈 #9)
+            if trenv_attr in _TRENV_SECRET_ATTRS:
+                continue
             # 발견된 매핑을 그대로 사용 (완전 자동화!)
             trenv_value = f'ka._TRENV.{trenv_attr}'
-            
+
             # 소문자 버전 (함수 파라미터)
             dynamic_mappings[param_name] = trenv_value
-            
+
             discovered_mappings.append(f"{param_name}=xxx.{trenv_attr}")
         
         if discovered_mappings:
-            print(f"[🎯자동발견] {len(discovered_mappings)}개 매핑: {', '.join(discovered_mappings)}")
-            print(f"[🎯자동생성] {len(dynamic_mappings)}개 파라미터: {list(dynamic_mappings.keys())}")
+            logger.info(f"[🎯자동발견] {len(discovered_mappings)}개 매핑: {', '.join(discovered_mappings)}")
+            logger.info(f"[🎯자동생성] {len(dynamic_mappings)}개 파라미터: {list(dynamic_mappings.keys())}")
         else:
-            print("[🎯자동발견] .my_xxx 패턴 없음 - 조회성 API로 추정")
+            logger.info("[🎯자동발견] .my_xxx 패턴 없음 - 조회성 API로 추정")
         
         
         return dynamic_mappings
@@ -211,8 +345,8 @@ class ApiExecutor:
         raise Exception("코드에서 함수를 찾을 수 없습니다.")
 
     @classmethod
-    def _modify_api_code(cls, api_code_path: str, params: Dict[str, Any], api_type: str) -> str:
-        """API 코드 수정 (파라미터 적용)"""
+    def _modify_api_code(cls, api_code_path: str, params: Dict[str, Any], api_type: str, tool_name: str = "") -> str:
+        """API 코드 수정 (파라미터 적용). 도구별 상품코드를 페이로드에 심는다."""
         try:
             import re
 
@@ -236,7 +370,7 @@ class ApiExecutor:
             adjusted_params = {}
             for key, value in params.items():
                 if key not in function_params and isinstance(key, str) and key.lower() in function_params:
-                    print(f"[정규화] {function_name} 함수 파라미터 {key} → {key.lower()}")
+                    logger.info(f"[정규화] {function_name} 함수 파라미터 {key} → {key.lower()}")
                     key = key.lower()
                 adjusted_params[key] = value
 
@@ -245,14 +379,14 @@ class ApiExecutor:
                 # 함수가 max_depth를 받는 경우에만 처리
                 if 'max_depth' not in adjusted_params:
                     adjusted_params['max_depth'] = 1
-                    print(f"[기본값] {function_name} 함수에 max_depth=1 설정")
+                    logger.info(f"[기본값] {function_name} 함수에 max_depth=1 설정")
                 else:
-                    print(f"[사용자 설정] {function_name} 함수에 max_depth={adjusted_params['max_depth']} 사용")
+                    logger.info(f"[사용자 설정] {function_name} 함수에 max_depth={adjusted_params['max_depth']} 사용")
             else:
                 # 함수가 max_depth를 받지 않는 경우 제거
                 if 'max_depth' in adjusted_params:
                     del adjusted_params['max_depth']
-                    print(f"[제거] {function_name} 함수는 max_depth 파라미터를 지원하지 않아 제거함")
+                    logger.info(f"[제거] {function_name} 함수는 max_depth 파라미터를 지원하지 않아 제거함")
 
             # 🆕 동적으로 trenv 패턴 추출
             dynamic_mappings = cls._extract_trenv_params_from_example(code)
@@ -271,28 +405,39 @@ class ApiExecutor:
                     if param_name in adjusted_params:
                         original_value = adjusted_params[param_name]
                         adjusted_params[param_name] = correct_value
-                        print(f"[보안강제] {function_name} 함수의 {param_name}='{original_value}' → {correct_value} (LLM값 무시)")
+                        logger.warning(f"[보안강제] {function_name} 함수의 {param_name}='{original_value}' → {correct_value} (LLM값 무시)")
                     else:
                         adjusted_params[param_name] = correct_value
-                        print(f"[자동설정] {function_name} 함수에 {param_name}={correct_value} 설정")
+                        logger.info(f"[자동설정] {function_name} 함수에 {param_name}={correct_value} 설정")
 
             # 거래소ID구분코드 처리 (API 타입 기반 추론)
             if 'excg_id_dvsn_cd' in function_params and 'excg_id_dvsn_cd' not in adjusted_params:
                 if api_type.startswith('domestic'):
-                    adjusted_params['excg_id_dvsn_cd'] = '"KRX"'
-                    print(f"[추론] 국내 API({api_type})로 판단하여 excg_id_dvsn_cd='KRX' 설정")
+                    adjusted_params['excg_id_dvsn_cd'] = 'KRX'
+                    logger.info(f"[추론] 국내 API({api_type})로 판단하여 excg_id_dvsn_cd='KRX' 설정")
                 else:
-                    print(f"[경고] {api_type} API에서 excg_id_dvsn_cd 파라미터가 필요합니다. (예: NASD, NYSE, KRX)")
+                    logger.warning(f"[경고] {api_type} API에서 excg_id_dvsn_cd 파라미터가 필요합니다. (예: NASD, NYSE, KRX)")
                     # overseas_stock 등은 사용자가 명시적으로 제공해야 함
+
+            # 4b. 러너 전달 제외 키 정리 (이슈 #7): 내부 메타(_*)와 종목명 별칭은
+            # 함수 시그니처에 없을 때만 제거한다 (TypeError 방지).
+            stock_aliases = ("stock_name", "stock_name_kr", "korean_name", "company_name")
+            has_stock_name = any(k in params for k in stock_aliases)
+            adjusted_params = {
+                k: v for k, v in adjusted_params.items()
+                if not (k in stock_aliases and k not in function_params)
+                and not (isinstance(k, str) and k.startswith("_")
+                         and k not in function_params)
+            }
 
             # 5. env_dv 검증 (인증 분기 및 API 함수 인자용)
             env_dv = cls._validate_env_dv(adjusted_params.pop("env_dv", "demo"))
             if "env_dv" in function_params:
                 adjusted_params["env_dv"] = env_dv
             if env_dv == "demo":
-                print(f"[모의투자] {function_name} 함수에 ka.auth(\"vps\") 적용")
+                logger.info(f"[모의투자] {function_name} 함수에 ka.auth(\"vps\") 적용")
             else:
-                print(f"[실전투자] {function_name} 함수에 ka.auth() 적용")
+                logger.info(f"[실전투자] {function_name} 함수에 ka.auth() 적용")
 
             runner_code = API_RUNNER_TEMPLATE.replace("__FUNCTION_NAME__", function_name)
 
@@ -300,7 +445,9 @@ class ApiExecutor:
             params_payload = {
                 "env_dv": env_dv,
                 "params": cls._serialize_params_for_runner(adjusted_params),
-                "has_stock_name": "stock_name" in params,
+                "has_stock_name": has_stock_name,
+                "is_order": _is_order_api_type(api_type),
+                "product": _resolve_product(tool_name),
             }
             params_json_path = os.path.join(temp_dir, "params.json")
             with open(params_json_path, "w", encoding="utf-8") as f:
@@ -319,19 +466,38 @@ class ApiExecutor:
         except Exception as e:
             raise Exception(f"코드 수정 실패: {str(e)}")
 
-    def _execute_code(self, temp_dir: str, timeout: int = 15) -> Dict[str, Any]:
-        """코드 실행"""
+    @staticmethod
+    def _minimal_child_env() -> Dict[str, str]:
+        """자식 프로세스용 최소 환경변수 (부모 시크릿 상속 차단)"""
+        env: Dict[str, str] = {}
+        for name in ("PATH", "HOME", "LANG", "LC_ALL", "PYTHONIOENCODING", "TMPDIR", "TEMP", "TMP"):
+            if name in os.environ:
+                env[name] = os.environ[name]
+        env.setdefault("PYTHONIOENCODING", "utf-8")
+        if sys.platform == "win32":
+            for name in ("SYSTEMROOT", "WINDIR", "PATHEXT", "COMSPEC",
+                          "USERPROFILE", "HOMEDRIVE", "HOMEPATH"):
+                if name in os.environ:
+                    env[name] = os.environ[name]
+        return env
+
+    def _execute_code(self, temp_dir: str, api_type: str = None, timeout: int = None) -> Dict[str, Any]:
+        """코드 실행. 주문 계열은 긴 타임아웃을 쓰고 초과 시 상태불명을 반환한다."""
+        is_order = _is_order_api_type(api_type) if api_type else False
+        if timeout is None:
+            timeout = ORDER_TIMEOUT if is_order else DEFAULT_TIMEOUT
         try:
             # 실행할 파일 경로 (상대 경로로 변경)
             api_code_path = "api_code.py"
 
-            # subprocess로 코드 실행
+            # subprocess로 코드 실행 (최소 env 명시: 부모 시크릿 미상속)
             result = subprocess.run(
                 [self.venv_python, api_code_path],
                 cwd=temp_dir,
                 capture_output=True,
                 text=True,
-                timeout=timeout
+                timeout=timeout,
+                env=self._minimal_child_env()
             )
 
             if result.returncode == 0:
@@ -351,6 +517,13 @@ class ApiExecutor:
                 }
 
         except subprocess.TimeoutExpired:
+            if is_order:
+                return {
+                    "success": False,
+                    "order_state": "unknown",
+                    "error": (f"ORDER_STATE_UNKNOWN: 주문 실행이 {timeout}초를 초과했다. "
+                              f"접수 여부가 불명이므로 재주문하지 말고 주문/체결 조회로 확인하라.")
+                }
             return {
                 "success": False,
                 "error": f"실행 시간 초과 ({timeout}초)"
@@ -361,18 +534,21 @@ class ApiExecutor:
                 "error": f"실행 중 오류: {str(e)}"
             }
 
-    def _cleanup_temp_directory(self, temp_dir: str):
-        """임시 디렉토리 정리"""
+    def _cleanup_temp_directory(self, temp_dir: str) -> bool:
+        """임시 디렉토리 정리. 정리 성공 여부를 반환한다."""
         try:
             if os.path.exists(temp_dir):
                 shutil.rmtree(temp_dir, ignore_errors=True)
+            return not os.path.exists(temp_dir)
         except Exception as e:
-            print(f"임시 디렉토리 정리 실패: {temp_dir}, 오류: {str(e)}")
+            logger.warning(f"임시 디렉토리 정리 실패: {temp_dir}, 오류: {str(e)}")
+            return False
 
     async def execute_api(self, ctx: Context, api_type: str, params: Dict[str, Any], github_url: str) -> Dict[str, Any]:
-        """API 실행 메인 함수"""
+        """API 실행 메인 함수 (차단 호출은 스레드로 분리해 이벤트 루프를 막지 않는다)"""
         temp_dir = None
         start_time = time.time()
+        result = None
 
         try:
             await ctx.info(f"API 실행 시작: {api_type}")
@@ -388,18 +564,20 @@ class ApiExecutor:
                 request_id = "unknown"
             temp_dir = self._create_temp_directory(request_id)
 
-            # 2. kis_auth.py 다운로드
-            if not self._download_kis_auth(temp_dir):
-                raise Exception("kis_auth.py 다운로드 실패")
+            # 2. kis_auth.py 준비 (패키지 번들 복사, 다운로드 없음)
+            if not self._ensure_kis_auth(temp_dir):
+                raise Exception("kis_auth.py 번들 준비 실패")
 
-            # 3. API 코드 다운로드
-            api_code_path = self._download_api_code(github_url, temp_dir, api_type)
+            # 3. API 코드 준비 (고정 ref + 검증 + 캐시)
+            api_code_path = await asyncio.to_thread(
+                self._download_api_code, github_url, temp_dir, api_type)
 
             # 4. 코드 수정
-            self._modify_api_code(api_code_path, params, api_type)
+            self._modify_api_code(api_code_path, params, api_type, self.tool_name)
 
-            # 5. 코드 실행
-            execution_result = self._execute_code(temp_dir)
+            # 5. 코드 실행 (주문 계열은 긴 타임아웃, 자동 재시도 없음)
+            execution_result = await asyncio.to_thread(
+                self._execute_code, temp_dir, api_type)
 
             # 6. 실행 시간 계산
             execution_time = time.time() - start_time
@@ -420,12 +598,12 @@ class ApiExecutor:
                 result["data"] = execution_result["output"]
             else:
                 result["error"] = execution_result["error"]
-
-            return result
+                if "order_state" in execution_result:
+                    result["order_state"] = execution_result["order_state"]
 
         except Exception as e:
             await ctx.error(f"API 실행 중 오류: {str(e)}")
-            return {
+            result = {
                 "success": False,
                 "api_type": api_type,
                 "params": params,
@@ -436,9 +614,11 @@ class ApiExecutor:
                 "cleanup_success": False
             }
         finally:
-            # 8. 임시 디렉토리 정리
-            if temp_dir:
-                self._cleanup_temp_directory(temp_dir)
+            # 8. 임시 디렉토리 정리 (실제 결과를 기록한다)
+            if isinstance(result, dict):
+                result["cleanup_success"] = (
+                    self._cleanup_temp_directory(temp_dir) if temp_dir else True)
+        return result
 
 
 class BaseTool(ABC):
@@ -470,12 +650,56 @@ class BaseTool(ABC):
         return f"./configs/{self.tool_name}.json"
 
     # ========== Public Methods ==========
+    @staticmethod
+    def _is_order_api(api_type: str) -> bool:
+        """주문(파괴적) API 여부. 조회 예외(order_resv_list 등)는 제외."""
+        return _is_order_api_type(api_type)
+
+    @classmethod
+    def _check_execution_policy(cls, api_type: str, params: dict, env=None):
+        """실행 정책 게이트. 차단 시 에러 문자열, 허용 시 None.
+
+        - MCP_ALLOWED_APIS가 설정되면 목록 외 api_type을 모두 차단한다.
+        - 주문 API는 MCP_READ_ONLY=1에서 모두 차단한다.
+        - 주문 API + env_dv='real'은 MCP_ALLOW_REAL_ORDERS=1 옵트인 없이 차단한다.
+        """
+        env = os.environ if env is None else env
+        allow = (env.get("MCP_ALLOWED_APIS") or "").strip()
+        if allow:
+            allowed = {a.strip() for a in allow.split(",") if a.strip()}
+            if api_type not in allowed:
+                return (f"API_ALLOWLIST_BLOCKED: '{api_type}'이(가) "
+                        f"MCP_ALLOWED_APIS 허용목록에 없습니다.")
+        if cls._is_order_api(api_type):
+            if (env.get("MCP_READ_ONLY") or "") == "1":
+                return ("READ_ONLY_MODE: 읽기 전용 모드(MCP_READ_ONLY=1)에서는 "
+                        "주문 API를 실행할 수 없습니다.")
+            env_dv = params.get("env_dv", "demo") if isinstance(params, dict) else "demo"
+            if env_dv == "real" and (env.get("MCP_ALLOW_REAL_ORDERS") or "") != "1":
+                return ("REAL_ORDER_BLOCKED: 실전 주문(env_dv='real')은 명시적 옵트인 "
+                        "MCP_ALLOW_REAL_ORDERS=1 없이는 실행할 수 없습니다.")
+        return None
+
+    def _tool_annotations(self) -> Dict[str, Any]:
+        """주문 API 포함 여부에 따른 MCP 도구 어노테이션"""
+        try:
+            apis = (self.config or {}).get("apis", {})
+            has_order = any(self._is_order_api(t) for t in apis)
+        except Exception:
+            has_order = False
+        if has_order:
+            return {"destructiveHint": True, "readOnlyHint": False,
+                    "openWorldHint": True, "idempotentHint": False}
+        return {"destructiveHint": False, "readOnlyHint": True,
+                "openWorldHint": True, "idempotentHint": True}
+
     def register(self, mcp_server: FastMCP) -> None:
         """MCP 서버에 도구 등록"""
         mcp_server.tool(
             self._run,
             name=self.tool_name,
             description=self.description,
+            annotations=self._tool_annotations(),
         )
 
     # ========== Protected Methods ==========
@@ -537,6 +761,8 @@ class BaseTool(ABC):
                 lines.append("- 시장코드(fid_cond_mrkt_div_code)='J'(KRX)/'NX'(넥스트레이드)/'UN'(통합)")
             lines.append("- 매매구분(ord_dv)='buy'(매수)/'sell'(매도)")
             lines.append("- 실전모의구분(env_dv)='real'(실전)/'demo'(모의)")
+            lines.append("- 계좌상품코드(product)는 도구별로 서버가 자동 설정합니다(주식·채권·ELW·ETF/ETN·해외주식 01, 국내선물옵션 03, 해외선물옵션 08). 직접 전달하지 마세요.")
+            lines.append("- 실전 주문 게이트: 주문 API + env_dv='real'은 MCP_ALLOW_REAL_ORDERS=1 옵트인 없이 차단됩니다. MCP_READ_ONLY=1이면 모든 주문 API가 차단됩니다.")
             lines.append("")
             lines.append("⚠️ 중요: API 호출 시 필수 주의사항")
             lines.append("**API 실행 전 반드시 API 상세 문서의 파라미터를 확인하세요. Request Query Params와 Request Body 입력 시 추측이나 과거 실행 값 사용 금지, 확인된 API 상세 문서의 값을 사용하세요.**")
@@ -588,12 +814,18 @@ class BaseTool(ABC):
             if api_type not in self.config['apis']:
                 return {"ok": False, "error": f"지원하지 않는 API 타입: {api_type}"}
 
+            # 3b. 실행 정책 게이트 (실전 주문 옵트인·읽기전용·허용목록)
+            policy_error = self._check_execution_policy(api_type, params)
+            if policy_error is not None:
+                return {"ok": False, "error": policy_error}
 
             # 4. 종목명 자동 처리 (stock_name이 있으면 자동으로 pdno 변환)
             params = await self._process_stock_name(ctx, params)
             
             # 5. 실제 실행 (래핑 함수 선택 → OPEN API 호출)
             data = await self._run_api(ctx, api_type, params)
+            if isinstance(data, dict) and data.get("success") is False:
+                return {"ok": False, "error": data.get("error", "API 실행 실패"), "data": data}
             return {"ok": True, "data": data}
 
         except Exception as e:
@@ -608,7 +840,7 @@ class BaseTool(ABC):
             github_url = api_info.get('github_url')
 
             if not github_url:
-                return {"error": f"GitHub URL이 없습니다: {api_type}"}
+                return {"success": False, "error": f"GitHub URL이 없습니다: {api_type}"}
 
             # ApiExecutor를 사용하여 API 실행
             result = await self.api_executor.execute_api(
@@ -621,7 +853,7 @@ class BaseTool(ABC):
             return result
 
         except Exception as e:
-            return {"error": f"API 실행 중 오류: {str(e)}"}
+            return {"success": False, "error": f"API 실행 중 오류: {str(e)}"}
     
     async def _process_stock_name(self, ctx: Context, params: Dict[str, Any]) -> Dict[str, Any]:
         """종목명/종목코드 자동 처리 (stock_name이 있으면 자동으로 pdno 변환)"""
@@ -646,11 +878,17 @@ class BaseTool(ABC):
             result = await self._find_stock_by_name_or_code(ctx, search_value)
             
             if result["found"]:
-                params["pdno"] = result["code"]
-                await ctx.info(f"종목번호 자동 찾기 성공: {search_value} → {result['code']}")
+                resolved = result["code"]
+                if params.get("pdno") and params["pdno"] != resolved:
+                    await ctx.warning(
+                        f"pdno 충돌: 명시값 {params['pdno']} 유지, "
+                        f"종목명 해석값 {resolved} 무시")
+                else:
+                    params["pdno"] = resolved
+                    await ctx.info(f"종목번호 자동 찾기 성공: {search_value} → {resolved}")
                 # 원본 검색값 보존
                 params["_original_search_value"] = search_value
-                params["_resolved_stock_code"] = result["code"]
+                params["_resolved_stock_code"] = resolved
             else:
                 await ctx.warning(f"종목을 찾을 수 없음: {search_value}")
                 # 종목을 찾지 못해도 원본 파라미터 유지
