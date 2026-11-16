@@ -5,6 +5,11 @@ import sys
 import json
 import time
 import requests
+
+# 모든 KIS HTTP 호출의 (connect, read) 타임아웃. 주문 POST 타임아웃은
+# "상태 불명"으로 취급한다(접수됐을 수 있으므로 자동 재시도 금지).
+REQ_TIMEOUT = (5.0, 30.0)
+
 import asyncio
 import traceback
 import websockets
@@ -44,7 +49,7 @@ def get_approval(key, secret):
     PATH = "oauth2/Approval"
     URL = f"{url}/{PATH}"
     time.sleep(0.05)
-    res = requests.post(URL, headers=headers, data=json.dumps(body))
+    res = requests.post(URL, headers=headers, data=json.dumps(body), timeout=REQ_TIMEOUT)
     approval_key = res.json()["approval_key"]
     return approval_key
 
@@ -78,7 +83,7 @@ def get_access_token(key, secret):
     PATH = "oauth2/tokenP"
     URL = f"{url}/{PATH}"
     time.sleep(0.05)
-    res = requests.post(URL, headers=headers, data=json.dumps(body))
+    res = requests.post(URL, headers=headers, data=json.dumps(body), timeout=REQ_TIMEOUT)
     access_token = res.json()["access_token"]
     return access_token
 
@@ -245,7 +250,7 @@ async def connect():
         # access_token = get_access_token(appkey, appsecret)
         
         g_approval_key = get_approval(g_appkey, g_appsecret)
-        print("approval_key [%s]" % (g_approval_key))
+        print("approval_key [****%s]" % (str(g_approval_key)[-4:] if len(str(g_approval_key)) >= 4 else "****"))
 
         # url = 'ws://ops.koreainvestment.com:31000' # 모의투자계좌
         url = 'ws://ops.koreainvestment.com:21000' # 실전투자계좌
