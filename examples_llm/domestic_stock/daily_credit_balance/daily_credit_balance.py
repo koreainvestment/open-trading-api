@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/quotations/daily-credit-balance"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def daily_credit_balance(
     fid_cond_mrkt_div_code: str,  # [필수] 시장 분류 코드
     fid_cond_scr_div_code: str,   # [필수] 화면 분류 코드  
@@ -71,7 +75,7 @@ def daily_credit_balance(
         raise ValueError("fid_input_date_1 is required (e.g. '20240313')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -98,7 +102,7 @@ def daily_credit_balance(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return daily_credit_balance(

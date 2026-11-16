@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/elw/v1/quotations/udrl-asset-list"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def udrl_asset_list(
     fid_cond_scr_div_code: str,  # 조건화면분류코드
     fid_rank_sort_cls_code: str,  # 순위정렬구분코드
@@ -103,7 +107,7 @@ def udrl_asset_list(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return udrl_asset_list(

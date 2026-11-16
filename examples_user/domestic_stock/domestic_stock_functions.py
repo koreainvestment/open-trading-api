@@ -17,6 +17,11 @@ logger = logging.getLogger(__name__)
 # [국내주식] 기본시세 > 국내주식 시간외잔량 순위[v1_국내주식-093]
 ##############################################################################################
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
+
 def after_hour_balance(
         fid_input_price_1: str,  # 입력 가격1
         fid_cond_mrkt_div_code: str,  # 조건 시장 분류 코드
@@ -136,7 +141,7 @@ def after_hour_balance(
         tr_cont = res.getHeader().tr_cont
 
         # 다음 페이지 호출
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return after_hour_balance(
@@ -301,7 +306,7 @@ def bulk_trans_num(
         # 다음 페이지 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return bulk_trans_num(
@@ -454,7 +459,7 @@ def chk_holiday(
         raise ValueError("bass_dt is required (e.g. 'YYYYMMDD')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -488,7 +493,7 @@ def chk_holiday(
         FK100 = res.getBody().ctx_area_fk
         NK100 = res.getBody().ctx_area_nk
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return chk_holiday(
@@ -598,7 +603,7 @@ def comp_interest(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return comp_interest(
@@ -861,7 +866,7 @@ def credit_balance(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return credit_balance(
@@ -991,7 +996,7 @@ def credit_by_company(
         tr_cont = res.getHeader().tr_cont
 
         # 다음 페이지 호출
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return credit_by_company(
@@ -1065,7 +1070,7 @@ def daily_credit_balance(
         raise ValueError("fid_input_date_1 is required (e.g. '20240313')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -1092,7 +1097,7 @@ def daily_credit_balance(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return daily_credit_balance(
@@ -1349,7 +1354,7 @@ def disparity(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return disparity(
@@ -1491,7 +1496,7 @@ def dividend_rate(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return dividend_rate(
@@ -1618,7 +1623,7 @@ def estimate_perform(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return estimate_perform(
@@ -1782,7 +1787,7 @@ def exp_index_trend(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return exp_index_trend(
@@ -1977,7 +1982,7 @@ def exp_total_index(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return exp_total_index(
@@ -2128,7 +2133,7 @@ def exp_trans_updown(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return exp_trans_updown(
@@ -2236,7 +2241,7 @@ def finance_balance_sheet(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return finance_balance_sheet(
@@ -2338,7 +2343,7 @@ def finance_financial_ratio(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return finance_financial_ratio(
@@ -2441,7 +2446,7 @@ def finance_growth_ratio(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return finance_growth_ratio(
@@ -2539,7 +2544,7 @@ def finance_income_statement(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return finance_income_statement(
@@ -2634,7 +2639,7 @@ def finance_other_major_ratios(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return finance_other_major_ratios(
@@ -2738,7 +2743,7 @@ def finance_profit_ratio(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return finance_profit_ratio(
@@ -2879,7 +2884,7 @@ def finance_ratio(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             print("Call Next")
             ka.smart_sleep()
             return finance_ratio(
@@ -2987,7 +2992,7 @@ def finance_stability_ratio(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return finance_stability_ratio(
@@ -3098,7 +3103,7 @@ def fluctuation(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             print("Call Next")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return fluctuation(
@@ -3449,7 +3454,7 @@ def frgnmem_trade_trend(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return frgnmem_trade_trend(
@@ -3529,7 +3534,7 @@ def hts_top_view(
 
         # 다음 페이지 호출 여부 결정
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return hts_top_view(
@@ -3758,7 +3763,7 @@ def inquire_balance(
         raise ValueError("prcs_dvsn is required (e.g. '00: 전일매매포함, 01:전일매매미포함')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -3808,7 +3813,7 @@ def inquire_balance(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance(
@@ -3907,7 +3912,7 @@ def inquire_balance_rlz_pl(
         raise ValueError("prcs_dvsn is required (e.g. '00:전일매매포함, 01:전일매매미포함')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -3952,7 +3957,7 @@ def inquire_balance_rlz_pl(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance_rlz_pl(
@@ -4224,7 +4229,7 @@ def inquire_daily_ccld(
             "inqr_dvsn_3 is required (e.g. '00 전체 / 01 현금 / 02 신용 / 03 담보 / 04 대주 / 05 대여 / 06 자기융자신규/상환 / 07 유통융자신규/상환')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -4290,7 +4295,7 @@ def inquire_daily_ccld(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_daily_ccld(
@@ -4443,7 +4448,7 @@ def inquire_daily_indexchartprice(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_daily_indexchartprice(
@@ -4859,7 +4864,7 @@ def inquire_elw_price(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_elw_price(
@@ -4990,7 +4995,7 @@ def inquire_index_category_price(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_index_category_price(
@@ -5106,7 +5111,7 @@ def inquire_index_daily_price(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_index_daily_price(
@@ -5205,7 +5210,7 @@ def inquire_index_price(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_index_price(
@@ -5299,7 +5304,7 @@ def inquire_index_tickprice(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_index_tickprice(
@@ -5397,7 +5402,7 @@ def inquire_index_timeprice(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_index_timeprice(
@@ -5907,7 +5912,7 @@ def inquire_period_profit(
         raise ValueError("cblc_dvsn is required (e.g. '00')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -5950,7 +5955,7 @@ def inquire_period_profit(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_period_profit(
@@ -6034,7 +6039,7 @@ def inquire_period_trade_profit(
         raise ValueError("cblc_dvsn is required (e.g. '00')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -6075,7 +6080,7 @@ def inquire_period_trade_profit(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_period_trade_profit(
@@ -6356,7 +6361,7 @@ def inquire_psbl_rvsecncl(
         raise ValueError("inqr_dvsn_2 is required (e.g. '0: 전체, 1: 매도, 2: 매수')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -6387,7 +6392,7 @@ def inquire_psbl_rvsecncl(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_psbl_rvsecncl(
@@ -6481,7 +6486,7 @@ def inquire_psbl_sell(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_psbl_sell(
@@ -6710,7 +6715,7 @@ def inquire_time_indexchartprice(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_time_indexchartprice(
@@ -7074,7 +7079,7 @@ def inquire_vi_status(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_vi_status(
@@ -7718,7 +7723,7 @@ def invest_opbysec(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return invest_opbysec(
@@ -7847,7 +7852,7 @@ def invest_opinion(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return invest_opinion(
@@ -8028,7 +8033,7 @@ def investor_trade_by_stock_daily(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return investor_trade_by_stock_daily(
@@ -8177,7 +8182,7 @@ def ksdinfo_bonus_issue(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_bonus_issue(
@@ -8278,7 +8283,7 @@ def ksdinfo_cap_dcrs(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_cap_dcrs(
@@ -8391,7 +8396,7 @@ def ksdinfo_dividend(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_dividend(
@@ -8494,7 +8499,7 @@ def ksdinfo_forfeit(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_forfeit(
@@ -8599,7 +8604,7 @@ def ksdinfo_list_info(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_list_info(
@@ -8707,7 +8712,7 @@ def ksdinfo_mand_deposit(
         tr_cont = res.getHeader().tr_cont
 
         # 다음 페이지 호출
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_mand_deposit(
@@ -8809,7 +8814,7 @@ def ksdinfo_merger_split(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_merger_split(
@@ -8915,7 +8920,7 @@ def ksdinfo_paidin_capin(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_paidin_capin(
@@ -9014,7 +9019,7 @@ def ksdinfo_pub_offer(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_pub_offer(
@@ -9116,7 +9121,7 @@ def ksdinfo_purreq(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_purreq(
@@ -9225,7 +9230,7 @@ def ksdinfo_rev_split(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_rev_split(
@@ -9324,7 +9329,7 @@ def ksdinfo_sharehld_meet(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_sharehld_meet(
@@ -9466,7 +9471,7 @@ def lendable_by_company(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return lendable_by_company(
@@ -9580,7 +9585,7 @@ def market_cap(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             print("Call Next")
             ka.smart_sleep()
             return market_cap(
@@ -9758,7 +9763,7 @@ def market_value(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             print("Call Next")
             ka.smart_sleep()
             return market_value(
@@ -9945,7 +9950,7 @@ def near_new_highlow(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             print("Call Next")
             ka.smart_sleep()
             return near_new_highlow(
@@ -10067,7 +10072,7 @@ def news_title(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return news_title(
@@ -10591,7 +10596,7 @@ def order_resv_ccnl(
         raise ValueError("cncl_yn is required (e.g. 'Y')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -10628,7 +10633,7 @@ def order_resv_ccnl(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return order_resv_ccnl(
@@ -11085,7 +11090,7 @@ def overtime_fluctuation(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return overtime_fluctuation(
@@ -11235,7 +11240,7 @@ def overtime_volume(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return overtime_volume(
@@ -11382,7 +11387,7 @@ def pension_inquire_balance(
         raise ValueError("inqr_dvsn is required (e.g. '00')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -11421,7 +11426,7 @@ def pension_inquire_balance(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return pension_inquire_balance(
@@ -11501,7 +11506,7 @@ def pension_inquire_daily_ccld(
         raise ValueError("inqr_dvsn_3 is required (e.g. '00: 전체')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -11534,7 +11539,7 @@ def pension_inquire_daily_ccld(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return pension_inquire_daily_ccld(
@@ -11829,7 +11834,7 @@ def period_rights(
         raise ValueError("inqr_end_dt is required (e.g. '20250103')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -11866,7 +11871,7 @@ def period_rights(
         FK100 = res.getBody().ctx_area_fk100
         NK100 = res.getBody().ctx_area_nk100
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return period_rights(
@@ -11995,7 +12000,7 @@ def prefer_disparate_ratio(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return prefer_disparate_ratio(
@@ -12144,7 +12149,7 @@ def profit_asset_index(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             print("Call Next")
             ka.smart_sleep()
             return profit_asset_index(
@@ -12489,7 +12494,7 @@ def quote_balance(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             print("Call Next")
             ka.smart_sleep()
             return quote_balance(
@@ -12596,7 +12601,7 @@ def search_info(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return search_info(
@@ -12691,7 +12696,7 @@ def search_stock_info(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return search_stock_info(
@@ -12821,7 +12826,7 @@ def short_sale(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return short_sale(
@@ -12963,7 +12968,7 @@ def top_interest_stock(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return top_interest_stock(
@@ -13126,7 +13131,7 @@ def traded_by_company(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return traded_by_company(
@@ -13321,7 +13326,7 @@ def volume_power(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return volume_power(
@@ -13446,7 +13451,7 @@ def volume_rank(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             print("Call Next")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return volume_rank(

@@ -16,6 +16,12 @@ logger = logging.getLogger(__name__)
 # [국내선물옵션] 기본시세 > 국내옵션전광판_콜풋[국내선물-022]
 ##############################################################################################
 
+
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
+
 def display_board_callput(
     fid_cond_mrkt_div_code: str,  # [필수] 조건 시장 분류 코드 (ex. O: 옵션)
     fid_cond_scr_div_code: str,   # [필수] 조건 화면 분류 코드 (ex. 20503)
@@ -449,7 +455,7 @@ def inquire_balance(
         raise ValueError("excc_stat_cd is required (e.g. '1' or '2')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -499,7 +505,7 @@ def inquire_balance(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance(
@@ -563,7 +569,7 @@ def inquire_balance_settlement_pl(
         raise ValueError("inqr_dt is required")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -606,7 +612,7 @@ def inquire_balance_settlement_pl(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance_settlement_pl(
@@ -675,7 +681,7 @@ def inquire_balance_valuation_pl(
         raise ValueError("excc_stat_cd is required (e.g. '1:정산, 2:본정산')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -719,7 +725,7 @@ def inquire_balance_valuation_pl(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_balance_valuation_pl(
@@ -816,7 +822,7 @@ def inquire_ccnl(
 
     # 재귀 깊이 제한 확인
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -873,7 +879,7 @@ def inquire_ccnl(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ccnl(
@@ -949,7 +955,7 @@ def inquire_ccnl_bstime(
         raise ValueError("fuop_tr_end_tmd is required (e.g. 'HHMMSS')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -994,7 +1000,7 @@ def inquire_ccnl_bstime(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ccnl_bstime(
@@ -1063,7 +1069,7 @@ def inquire_daily_amount_fee(
         raise ValueError("inqr_end_day is required")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -1107,7 +1113,7 @@ def inquire_daily_amount_fee(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_daily_amount_fee(
@@ -1324,7 +1330,7 @@ def inquire_ngt_balance(
 
     # 재귀 깊이 제한 확인
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         return (
             dataframe1 if dataframe1 is not None else pd.DataFrame(),
             dataframe2 if dataframe2 is not None else pd.DataFrame()
@@ -1368,7 +1374,7 @@ def inquire_ngt_balance(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ngt_balance(
@@ -1460,7 +1466,7 @@ def inquire_ngt_ccnl(
         raise ValueError("ccld_nccs_dvsn is required (e.g. '00:전체, 01:체결, 02:미체결')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -1516,7 +1522,7 @@ def inquire_ngt_ccnl(
         FK200 = res.getBody().ctx_area_fk200
         NK200 = res.getBody().ctx_area_nk200
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_ngt_ccnl(

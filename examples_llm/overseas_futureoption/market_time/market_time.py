@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 # API 정보
 API_URL = "/uapi/overseas-futureoption/v1/quotations/market-time"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def market_time(
     fm_pdgr_cd: str,  # FM상품군코드
     fm_clas_cd: str,  # FM클래스코드
@@ -110,7 +114,7 @@ def market_time(
             
         tr_cont, ctx_area_nk200, ctx_area_fk200 = res.getHeader().tr_cont, res.getBody().ctx_area_nk200, res.getBody().ctx_area_fk200
         
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return market_time(

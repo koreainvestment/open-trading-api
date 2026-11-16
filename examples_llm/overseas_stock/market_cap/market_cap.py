@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO)
 # 상수 정의
 API_URL = "/uapi/overseas-stock/v1/ranking/market-cap"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def market_cap(
     excd: str,  # 거래소명
     vol_rang: str,  # 거래량조건
@@ -64,7 +68,7 @@ def market_cap(
         raise ValueError("vol_rang is required (e.g. '0:전체, 1:1백주이상, 2:1천주이상, 3:1만주이상, 4:10만주이상, 5:100만주이상, 6:1000만주이상')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None or dataframe2 is None:
             return pd.DataFrame(), pd.DataFrame()
         else:
@@ -98,7 +102,7 @@ def market_cap(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return market_cap(

@@ -23,6 +23,10 @@ logging.basicConfig(level=logging.INFO)
 API_URL = "/uapi/domestic-stock/v1/quotations/chk-holiday"
 
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def chk_holiday(
         bass_dt: str,  # 기준일자 (YYYYMMDD)
         NK100: str = "",  # 연속조회키
@@ -61,7 +65,7 @@ def chk_holiday(
         raise ValueError("bass_dt is required (e.g. 'YYYYMMDD')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe is None:
             return pd.DataFrame()
         else:
@@ -95,7 +99,7 @@ def chk_holiday(
         FK100 = res.getBody().ctx_area_fk
         NK100 = res.getBody().ctx_area_nk
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return chk_holiday(

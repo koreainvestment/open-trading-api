@@ -27,6 +27,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/quotations/invest-opinion"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def invest_opinion(
         fid_cond_mrkt_div_code: str,  # 조건시장분류코드
         fid_cond_scr_div_code: str,  # 조건화면분류코드
@@ -130,7 +134,7 @@ def invest_opinion(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return invest_opinion(

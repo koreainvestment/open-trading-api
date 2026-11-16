@@ -16,6 +16,11 @@ logger = logging.getLogger(__name__)
 # [장내채권] 기본시세 > 장내채권 평균단가조회 [국내채권-158]
 ##############################################################################################
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
+
 def avg_unit(
         inqr_strt_dt: str,  # 조회시작일자
         inqr_end_dt: str,  # 조회종료일자
@@ -138,7 +143,7 @@ def avg_unit(
         else:
             dataframe3 = current_data3
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logger.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return avg_unit(
@@ -338,7 +343,7 @@ def inquire_asking_price(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_asking_price(
@@ -462,7 +467,7 @@ def inquire_balance(
         NK200 = res.getBody().ctx_area_nk200
         FK200 = res.getBody().ctx_area_fk200
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_balance(
@@ -563,7 +568,7 @@ def inquire_ccnl(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_ccnl(
@@ -738,7 +743,7 @@ def inquire_daily_ccld(
         ctx_area_nk200 = res.getBody().ctx_area_nk200
         ctx_area_fk200 = res.getBody().ctx_area_fk200
 
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_daily_ccld(
@@ -841,7 +846,7 @@ def inquire_daily_itemchartprice(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_daily_itemchartprice(
@@ -940,7 +945,7 @@ def inquire_daily_price(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_daily_price(
@@ -1036,7 +1041,7 @@ def inquire_price(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_price(
@@ -1146,7 +1151,7 @@ def inquire_psbl_order(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_psbl_order(
@@ -1262,7 +1267,7 @@ def inquire_psbl_rvsecncl(
         ctx_area_nk200 = res.getBody().ctx_area_nk200
         ctx_area_fk200 = res.getBody().ctx_area_fk200
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_psbl_rvsecncl(
@@ -1366,7 +1371,7 @@ def issue_info(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return issue_info(
@@ -1558,7 +1563,7 @@ def search_bond_info(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return search_bond_info(

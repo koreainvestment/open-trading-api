@@ -24,6 +24,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/overseas-futureoption/v1/quotations/inquire-time-optchartprice"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def inquire_time_optchartprice(
     srs_cd: str,  # 종목코드
     exch_cd: str,  # 거래소코드
@@ -96,7 +100,7 @@ def inquire_time_optchartprice(
         raise ValueError("qry_cnt is required (e.g. '20')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None and dataframe2 is None:
             return pd.DataFrame(), pd.DataFrame()
         else:
@@ -136,7 +140,7 @@ def inquire_time_optchartprice(
         tr_cont = res.getHeader().tr_cont
         index_key = res.getBody().output1["index_key"]
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return inquire_time_optchartprice(

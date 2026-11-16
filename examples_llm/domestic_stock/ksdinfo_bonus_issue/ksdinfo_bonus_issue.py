@@ -27,6 +27,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/ksdinfo/bonus-issue"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def ksdinfo_bonus_issue(
         cts: str,  # CTS
         f_dt: str,  # 조회일자From
@@ -105,7 +109,7 @@ def ksdinfo_bonus_issue(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return ksdinfo_bonus_issue(
