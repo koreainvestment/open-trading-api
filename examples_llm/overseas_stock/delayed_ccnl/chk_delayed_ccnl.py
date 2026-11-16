@@ -20,8 +20,9 @@ logging.basicConfig(level=logging.INFO)
 
 # 컬럼 매핑 정의
 COLUMN_MAPPING = {
+    "RSYM": "실시간종목코드",
     "SYMB": "종목코드",
-    "ZDIV": "수수점자리수",
+    "ZDIV": "소숫점자리수",
     "TYMD": "현지영업일자",
     "XYMD": "현지일자",
     "XHMS": "현지시간",
@@ -90,4 +91,4 @@ def main():
     kws.start(on_result=on_result)
 
 if __name__ == "__main__":
-    main() 
+    main()

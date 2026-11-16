@@ -20,22 +20,23 @@ logging.basicConfig(level=logging.INFO)
 
 # 컬럼 매핑 정의
 COLUMN_MAPPING = {
-    "symb": "종목코드",
-    "zdiv": "소숫점자리수",
-    "xymd": "현지일자",
-    "xhms": "현지시간",
-    "kymd": "한국일자",
-    "khms": "한국시간",
-    "bvol": "매수총잔량",
-    "avol": "매도총잔량",
-    "bdvl": "매수총잔량대비",
-    "advl": "매도총잔량대비",
-    "pbid1": "매수호가1",
-    "pask1": "매도호가1",
-    "vbid1": "매수잔량1",
-    "vask1": "매도잔량1",
-    "dbid1": "매수잔량대비1",
-    "dask1": "매도잔량대비1"
+    "RSYM": "실시간종목코드",
+    "SYMB": "종목코드",
+    "ZDIV": "소숫점자리수",
+    "XYMD": "현지일자",
+    "XHMS": "현지시간",
+    "KYMD": "한국일자",
+    "KHMS": "한국시간",
+    "BVOL": "매수총잔량",
+    "AVOL": "매도총잔량",
+    "BDVL": "매수총잔량대비",
+    "ADVL": "매도총잔량대비",
+    "PBID1": "매수호가1",
+    "PASK1": "매도호가1",
+    "VBID1": "매수잔량1",
+    "VASK1": "매도잔량1",
+    "DBID1": "매수잔량대비1",
+    "DASK1": "매도잔량대비1"
 }
 
 # 숫자형 컬럼 정의
@@ -84,4 +85,4 @@ def main():
     kws.start(on_result=on_result)
 
 if __name__ == "__main__":
-    main() 
+    main()
