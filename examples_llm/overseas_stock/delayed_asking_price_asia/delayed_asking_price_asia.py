@@ -56,22 +56,23 @@ def delayed_asking_price_asia(
     msg = ka.data_fetch(tr_id, tr_type, params)
 
     columns = [
-        "symb",
-        "zdiv",
-        "xymd",
-        "xhms",
-        "kymd",
-        "khms",
-        "bvol",
-        "avol",
-        "bdvl",
-        "advl",
-        "pbid1",
-        "pask1",
-        "vbid1",
-        "vask1",
-        "dbid1",
-        "dask1"
+        "RSYM",
+        "SYMB",
+        "ZDIV",
+        "XYMD",
+        "XHMS",
+        "KYMD",
+        "KHMS",
+        "BVOL",
+        "AVOL",
+        "BDVL",
+        "ADVL",
+        "PBID1",
+        "PASK1",
+        "VBID1",
+        "VASK1",
+        "DBID1",
+        "DASK1"
     ]
 
-    return msg, columns 
+    return msg, columns

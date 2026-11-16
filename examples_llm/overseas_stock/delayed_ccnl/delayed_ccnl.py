@@ -58,6 +58,7 @@ def delayed_ccnl(
     msg = ka.data_fetch(tr_id, tr_type, params)
 
     columns = [
+        "RSYM",
         "SYMB",
         "ZDIV",
         "TYMD",
@@ -85,4 +86,4 @@ def delayed_ccnl(
         "MTYP"
     ]
 
-    return msg, columns 
+    return msg, columns
