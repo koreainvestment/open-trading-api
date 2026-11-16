@@ -6,6 +6,7 @@ StrategySchema → Lean Python 코드 변환.
 from __future__ import annotations
 
 import logging
+import math
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -38,6 +39,17 @@ class CodeGenConfig:
     tax_rate: float = 0.002  # 0.2% (KRX 매도세)
     slippage: float = 0.0  # 슬리피지 (기본 0%)
     initial_capital: float = 100_000_000  # 1억원
+
+    def __post_init__(self) -> None:
+        for name in ("commission_rate", "tax_rate", "slippage"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise ValueError(f"{name} must be a number")
+            v = float(value)
+            if not math.isfinite(v):
+                raise ValueError(f"{name} must be finite")
+            if not 0 <= v <= 1:
+                raise ValueError(f"{name} must be between 0 and 1")
 
 
 class LeanCodeGenerator:
@@ -530,11 +542,11 @@ class CustomFeeModel(FeeModel):
     SLIP_RATE = {self.config.slippage}
 
     def _tick(self, price):
-        if price < 1000: return 1
+        if price < 2000: return 1
         elif price < 5000: return 5
-        elif price < 10000: return 10
+        elif price < 20000: return 10
         elif price < 50000: return 50
-        elif price < 100000: return 100
+        elif price < 200000: return 100
         elif price < 500000: return 500
         else: return 1000
 

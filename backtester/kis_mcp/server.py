@@ -17,6 +17,7 @@ from __future__ import annotations
 import logging
 import os
 from datetime import date
+from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional
 
 from mcp.server.fastmcp import FastMCP
@@ -44,6 +45,11 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(name)s — %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+# Lean workspace defaults to <backtester>/.lean-workspace; LEAN_WORKSPACE
+# overrides it (same rule as backend/main.py) so MCP and REST share one root.
+from kis_backtest.lean.project_manager import LeanProjectManager
+LeanProjectManager.set_workspace(os.environ.get("LEAN_WORKSPACE") or str(Path(__file__).resolve().parents[1] / ".lean-workspace"))
 
 # ─── FastMCP App ───────────────────────────────────────────────────────────────
 

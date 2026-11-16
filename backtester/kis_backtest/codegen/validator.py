@@ -5,6 +5,7 @@ Lean에서 지표가 정확히 동작하도록 파라미터를 검증합니다.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -102,6 +103,204 @@ class IndicatorValidator:
             "type": str,
             "allowed": ["up", "down"],
             "description": "방향 (up 또는 down)",
+        },
+        "up_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "down_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "ema_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "long_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "short_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "period1": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "period2": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "period3": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "sum_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "stoch_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "signal_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "rsi_period": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "tenkan": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "kijun": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "senkou_b": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "long_roc": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "short_roc": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "roc1": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "roc2": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "roc3": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "roc4": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "left_bars": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "right_bars": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "cycle": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "wma": {
+            "type": int,
+            "min": 1,
+            "max": 1000,
+            "description": "기간 (1~1000)",
+        },
+        "sigma": {
+            "type": float,
+            "min": 0.01,
+            "max": 100.0,
+            "description": "시그마 (0.01~100)",
+        },
+        "offset": {
+            "type": float,
+            "min": -1000.0,
+            "max": 1000.0,
+            "description": "오프셋 (-1000~1000)",
+        },
+        "scale": {
+            "type": float,
+            "min": 0.01,
+            "max": 10000.0,
+            "description": "스케일 (0.01~10000)",
+        },
+        "volume_factor": {
+            "type": float,
+            "min": 0.1,
+            "max": 10.0,
+            "description": "볼륨 팩터 (0.1~10)",
+        },
+        "af_start": {
+            "type": float,
+            "min": 0.001,
+            "max": 1.0,
+            "description": "AF 시작값 (0.001~1)",
+        },
+        "af_step": {
+            "type": float,
+            "min": 0.001,
+            "max": 1.0,
+            "description": "AF 증가값 (0.001~1)",
+        },
+        "af_max": {
+            "type": float,
+            "min": 0.001,
+            "max": 1.0,
+            "description": "AF 최대값 (0.001~1)",
+        },
+        "width": {
+            "type": float,
+            "min": 0.01,
+            "max": 100.0,
+            "description": "밴드 너비 (0.01~100)",
         },
     }
     
@@ -211,53 +410,70 @@ class IndicatorValidator:
         
         # 3. 파라미터 타입 및 범위 검증
         for param_name, param_value in params.items():
-            if param_name in cls.PARAM_RULES:
-                rule = cls.PARAM_RULES[param_name]
-                
-                # 타입 검증
-                expected_type = rule["type"]
-                if not isinstance(param_value, (expected_type, int if expected_type == float else type(None))):
-                    errors.append(ValidationError(
-                        indicator_id=indicator_id,
-                        param_name=param_name,
-                        message=f"타입 오류: {expected_type.__name__} 예상, {type(param_value).__name__} 받음",
-                        expected=expected_type.__name__,
-                        actual=type(param_value).__name__,
-                    ))
-                    continue
-                
-                # 범위 검증
-                min_val = rule.get("min")
-                max_val = rule.get("max")
-                
-                if min_val is not None and param_value < min_val:
-                    errors.append(ValidationError(
-                        indicator_id=indicator_id,
-                        param_name=param_name,
-                        message=f"값이 너무 작습니다. 최소: {min_val}",
-                        expected=f">= {min_val}",
-                        actual=param_value,
-                    ))
-                
-                if max_val is not None and param_value > max_val:
-                    errors.append(ValidationError(
-                        indicator_id=indicator_id,
-                        param_name=param_name,
-                        message=f"값이 너무 큽니다. 최대: {max_val}",
-                        expected=f"<= {max_val}",
-                        actual=param_value,
-                    ))
-                
-                # 허용값 검증 (string 타입용)
-                allowed = rule.get("allowed")
-                if allowed is not None and param_value not in allowed:
-                    errors.append(ValidationError(
-                        indicator_id=indicator_id,
-                        param_name=param_name,
-                        message=f"허용되지 않는 값: {param_value}. 허용값: {allowed}",
-                        expected=str(allowed),
-                        actual=param_value,
-                    ))
+            if param_name not in cls.PARAM_RULES:
+                errors.append(ValidationError(
+                    indicator_id=indicator_id,
+                    param_name=param_name,
+                    message=f"알 수 없는 파라미터입니다: '{param_name}'",
+                    expected=str(sorted(cls.PARAM_RULES.keys())),
+                    actual=param_name,
+                ))
+                continue
+            rule = cls.PARAM_RULES[param_name]
+
+            # 타입 검증
+            expected_type = rule["type"]
+            if expected_type in (int, float) and isinstance(param_value, bool):
+                errors.append(ValidationError(
+                    indicator_id=indicator_id,
+                    param_name=param_name,
+                    message=f"타입 오류: {expected_type.__name__} 예상, {type(param_value).__name__} 받음 (bool 허용 안 됨)",
+                    expected=expected_type.__name__,
+                    actual=type(param_value).__name__,
+                ))
+                continue
+            if not isinstance(param_value, (expected_type, int if expected_type == float else type(None))):
+                errors.append(ValidationError(
+                    indicator_id=indicator_id,
+                    param_name=param_name,
+                    message=f"타입 오류: {expected_type.__name__} 예상, {type(param_value).__name__} 받음",
+                    expected=expected_type.__name__,
+                    actual=type(param_value).__name__,
+                ))
+                continue
+
+            # 범위 검증
+            min_val = rule.get("min")
+            max_val = rule.get("max")
+
+            if min_val is not None and param_value < min_val:
+                errors.append(ValidationError(
+                    indicator_id=indicator_id,
+                    param_name=param_name,
+                    message=f"값이 너무 작습니다. 최소: {min_val}",
+                    expected=f">= {min_val}",
+                    actual=param_value,
+                ))
+
+            if max_val is not None and param_value > max_val:
+                errors.append(ValidationError(
+                    indicator_id=indicator_id,
+                    param_name=param_name,
+                    message=f"값이 너무 큽니다. 최대: {max_val}",
+                    expected=f"<= {max_val}",
+                    actual=param_value,
+                ))
+
+            # 허용값 검증 (string 타입용)
+            allowed = rule.get("allowed")
+            if allowed is not None and param_value not in allowed:
+                errors.append(ValidationError(
+                    indicator_id=indicator_id,
+                    param_name=param_name,
+                    message=f"허용되지 않는 값: {param_value}. 허용값: {allowed}",
+                    expected=str(allowed),
+                    actual=param_value,
+                ))
         
         # 4. Lean 특수 규칙 경고
         if indicator_id in cls.LEAN_SPECIAL_RULES:
@@ -282,6 +498,32 @@ class IndicatorValidator:
         return ValidationResult(is_valid=is_valid, errors=errors, warnings=warnings)
     
     @classmethod
+    def _safe_format_value(cls, param_name: str, value: Any) -> str:
+        """파라미터 값을 코드 생성용 문자열로 안전하게 변환"""
+        rule = cls.PARAM_RULES.get(param_name)
+        if rule is None:
+            raise ValueError(f"알 수 없는 파라미터입니다: '{param_name}'")
+        expected_type = rule.get("type")
+        if expected_type is int:
+            if isinstance(value, bool) or not isinstance(value, int):
+                raise ValueError(
+                    f"타입 오류: int 예상, {type(value).__name__} 받음 (param='{param_name}')"
+                )
+            return str(int(value))
+        if expected_type is float:
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise ValueError(
+                    f"타입 오류: float 예상, {type(value).__name__} 받음 (param='{param_name}')"
+                )
+            return repr(float(value))
+        if expected_type is str:
+            allowed = rule.get("allowed")
+            if allowed is not None and value not in allowed:
+                raise ValueError(f"허용되지 않는 값: {value}. 허용값: {allowed}")
+            return value
+        raise ValueError(f"지원하지 않는 규칙 타입입니다: '{param_name}'")
+
+    @classmethod
     def get_lean_init_code(
         cls,
         indicator_id: str,
@@ -289,32 +531,37 @@ class IndicatorValidator:
         name: str = "indicator",
     ) -> Tuple[str, int]:
         """Lean 초기화 코드 생성
-        
+
         Args:
             indicator_id: 지표 ID
             params: 파라미터
             name: 변수명
-        
+
         Returns:
             (초기화 코드, warmup 기간)
         """
+        if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", name):
+            raise ValueError(f"유효하지 않은 변수명입니다: '{name}'")
         # 검증
         result = cls.validate(indicator_id, params)
         result.raise_if_invalid()
-        
+
+        # 살균된 값으로 템플릿 포맷 (원시 문자열 주입 방지)
+        sanitized = {k: cls._safe_format_value(k, v) for k, v in params.items()}
+
         # 특수 규칙 확인
         if indicator_id in cls.LEAN_SPECIAL_RULES:
             rule = cls.LEAN_SPECIAL_RULES[indicator_id]
             template = rule["init_template"]
-            init_code = f"{name} = {template.format(**params)}"
+            init_code = f"{name} = {template.format(**sanitized)}"
         else:
             # 기본 템플릿 사용
             indicator_info = INDICATOR_REGISTRY[indicator_id]
-            init_code = indicator_info.init_template.format(name=name, **params)
-        
+            init_code = indicator_info.init_template.format(name=name, **sanitized)
+
         # Warmup 기간 계산
         warmup = cls._calculate_warmup(indicator_id, params)
-        
+
         return init_code, warmup
     
     @classmethod

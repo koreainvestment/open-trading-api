@@ -31,6 +31,7 @@ class OrderbookWebSocketManager:
         self.subscriptions: Dict[str, Set] = {}  # {stock_code: {client_websockets}}
         self.running = False
         self.polling_tasks: Dict[str, asyncio.Task] = {}  # {stock_code: polling_task}
+        self._env_dv: Dict[str, str] = {}  # {stock_code: env_dv} - REST와 동일한 모드 전달
 
     async def start(self):
         """웹소켓 매니저 시작"""
@@ -50,18 +51,21 @@ class OrderbookWebSocketManager:
 
         self.polling_tasks.clear()
         self.subscriptions.clear()
+        self._env_dv.clear()
         logging.info("Orderbook WebSocket Manager 종료")
 
-    async def subscribe_orderbook(self, stock_code: str, client_ws):
+    async def subscribe_orderbook(self, stock_code: str, client_ws, env_dv: str = "vps"):
         """
         실시간 호가 구독
 
         Args:
             stock_code: 종목코드
             client_ws: 클라이언트 웹소켓
+            env_dv: 환경 구분 (real/demo 또는 prod/vps, REST와 동일한 값 전달)
         """
         if stock_code not in self.subscriptions:
             self.subscriptions[stock_code] = set()
+            self._env_dv[stock_code] = env_dv
 
             # 폴링 태스크 시작 (1초마다 호가 조회)
             task = asyncio.create_task(
@@ -97,6 +101,7 @@ class OrderbookWebSocketManager:
                 logging.info(f"호가 구독 해제: {log_token(stock_code)}")
 
             del self.subscriptions[stock_code]
+            self._env_dv.pop(stock_code, None)
 
     async def _polling_loop(self, stock_code: str):
         """
@@ -107,8 +112,10 @@ class OrderbookWebSocketManager:
         """
         while self.running and stock_code in self.subscriptions:
             try:
-                # REST API로 호가 조회
-                orderbook = data_fetcher.get_orderbook(stock_code, env_dv="vps")
+                # REST API로 호가 조회 (동기 호출이므로 스레드 분리)
+                env_dv = self._env_dv.get(stock_code, "vps")
+                orderbook = await asyncio.to_thread(
+                    data_fetcher.get_orderbook, stock_code, env_dv)
 
                 if orderbook:
                     # 클라이언트에게 전달
