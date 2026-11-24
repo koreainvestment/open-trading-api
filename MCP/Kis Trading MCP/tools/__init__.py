@@ -5,4 +5,3 @@ from .elw import ElwTool
 from .etfetn import EtfEtnTool
 from .overseas_futureoption import OverseasFutureOptionTool
 from .overseas_stock import OverseasStockTool
-from .auth import AuthTool
