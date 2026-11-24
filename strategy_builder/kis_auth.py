@@ -4,9 +4,12 @@
 
 import asyncio
 import copy
+import hashlib
 import json
 import logging
 import os
+import re
+import tempfile
 import time
 from base64 import b64decode
 from collections import namedtuple
@@ -47,6 +50,10 @@ token_tmp = os.path.join(
 # "a" 모드: 없으면 생성, 있으면 내용 유지. with 블록으로 파일 핸들 즉시 해제
 with open(token_tmp, "a", encoding="utf-8"):
     pass
+try:
+    os.chmod(token_tmp, 0o600)
+except OSError:
+    pass
 
 # 앱키, 앱시크리트, 토큰, 계좌번호 등 저장관리, 자신만의 경로와 파일명으로 설정하시기 바랍니다.
 # pip install PyYAML (패키지설치)
@@ -54,8 +61,12 @@ with open(os.path.join(config_root, "kis_devlp.yaml"), encoding="UTF-8") as f:
     _cfg = yaml.safe_load(f)
 
 _TRENV = tuple()
+REQ_TIMEOUT = (5.0, 30.0)  # 모든 KIS HTTP 호출의 (connect, read) 타임아웃
 _last_auth_time = datetime.now()
 _autoReAuth = False
+_last_svr = None  # 마지막으로 auth()를 호출한 서버 구분 (prod:실전, vps:모의)
+_last_product = None  # 마지막으로 auth()에 넘긴 상품코드
+_reauth_running = False  # 재인증 재진입 차단용
 _VERBOSE = False
 _isPaper = False
 _smartSleep = 0.1
@@ -73,6 +84,46 @@ _base_headers = {
     "charset": "UTF-8",
     "User-Agent": _cfg["my_agent"],
 }
+
+_SECRET_KEYS = ("authorization", "appsecret", "appkey", "approval_key", "key", "iv", "token", "secretkey")
+_MASKED = "***"
+
+def _redact(obj):
+    if isinstance(obj, dict):
+        return {k: (_MASKED if isinstance(k, str) and k.lower() in _SECRET_KEYS else _redact(v)) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_redact(v) for v in obj]
+    return obj
+
+def _redacted_headers(headers):
+    return _redact(dict(headers))
+
+def _masked_json(payload):
+    try:
+        if isinstance(payload, str):
+            try:
+                payload = json.loads(payload)
+            except (ValueError, TypeError):
+                return re.sub(r'("(?:approval_key|authorization|appsecret|appkey|secretkey|token|key|iv)"\s*:\s*")[^"]*(")', r"\1***\2", payload)
+        return json.dumps(_redact(payload))
+    except (ValueError, TypeError):
+        return "***"
+
+def _mask_ws_raw(raw):
+    if isinstance(raw, (bytes, bytearray)):
+        try:
+            raw = bytes(raw).decode("utf-8", "replace")
+        except Exception:
+            return "***"
+    if not isinstance(raw, str):
+        return "***"
+    s = raw.strip()
+    if s.startswith("{"):
+        try:
+            return json.dumps(_redact(json.loads(s)))
+        except (ValueError, TypeError):
+            pass
+    return re.sub(r'("(?:approval_key|authorization|appsecret|appkey|secretkey|token|key|iv)"\s*:\s*")[^"]*(")', r"\1***\2", raw)
 
 
 # 웹소켓 재연결 루프에서 잡는 예외: 연결·파싱 오류 + 사용자 콜백(on_result)에서 올라온 오류
@@ -98,21 +149,84 @@ def _callback_errors(callback) -> tuple:
 
 
 # 토큰 발급 받아 저장 (토큰값, 토큰 유효시간,1일, 6시간 이내 발급신청시는 기존 토큰값과 동일, 발급시 알림톡 발송)
-def save_token(my_token, my_expired):
+# 실전(prod)/모의(vps) 토큰을 서로 다른 파일로 관리
+# (같은 날 실전·모의를 함께 사용할 때 서로의 토큰을 덮어쓰거나 잘못 읽는 문제 방지)
+def _token_path(svr):
+    return f"{token_tmp}_{svr}"
+
+
+def _appkey_fingerprint(svr):
+    """토큰 파일 귀속용 앱키 지문(sha256 앞 16자). 앱키가 바뀌면 기존 토큰을 폐기한다."""
+    try:
+        key = _cfg["my_app"] if svr == "prod" else _cfg["paper_app"]
+    except (KeyError, TypeError):
+        return ""
+    return hashlib.sha256(key.encode("utf-8")).hexdigest()[:16]
+
+
+def save_token(my_token, my_expired, svr=None):
     # print(type(my_expired), my_expired)
     valid_date = datetime.strptime(my_expired, "%Y-%m-%d %H:%M:%S")
     # print('Save token date: ', valid_date)
-    with open(token_tmp, "w", encoding="utf-8") as f:
-        f.write(f"token: {my_token}\n")
-        f.write(f"valid-date: {valid_date}\n")
+    svr = svr or _last_svr
+    path = _token_path(svr) if svr else token_tmp
+    content = f"token: {my_token}\nvalid-date: {valid_date}\n"
+    if svr:
+        content += f"appkey-sha: {_appkey_fingerprint(svr)}\n"
+    d = os.path.dirname(path) or "."
+    try:
+        os.makedirs(d, exist_ok=True)
+    except OSError:
+        pass
+    fd, tmp = tempfile.mkstemp(dir=d, prefix=".kis_token_")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(content)
+        os.chmod(tmp, 0o600)
+        os.replace(tmp, path)
+        try:
+            os.chmod(path, 0o600)
+        except OSError:
+            pass
+    except BaseException:
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+        raise
 
 
 # 토큰 확인 (토큰값, 토큰 유효시간_1일, 6시간 이내 발급신청시는 기존 토큰값과 동일, 발급시 알림톡 발송)
-def read_token():
+# svr 지정 시 해당 서버의 토큰 파일만 확인
+# svr 미지정 시 마지막으로 auth()한 서버의 토큰 파일 확인
+#   (auth() 호출 전이면 가장 최근 저장된 실전/모의 토큰 파일 → 기존 단일 토큰 파일 순으로 확인)
+def read_token(svr=None):
+    svr = svr or _last_svr
+    if svr:
+        paths = [_token_path(svr)]
+    else:
+        paths = [p for p in (_token_path("prod"), _token_path("vps")) if os.path.exists(p)]
+        paths.sort(key=os.path.getmtime, reverse=True)
+        paths.append(token_tmp)
+
+    for path in paths:
+        token = _read_token_file(path, svr)
+        if token:
+            return token
+    return None
+
+
+def _read_token_file(path, svr=None):
     try:
         # 토큰이 저장된 파일 읽기
-        with open(token_tmp, encoding="UTF-8") as f:
+        with open(path, encoding="UTF-8") as f:
             tkg_tmp = yaml.safe_load(f)
+
+        if svr:
+            expected = _appkey_fingerprint(svr)
+            actual = (tkg_tmp.get("appkey-sha") or "") if isinstance(tkg_tmp, dict) else ""
+            if expected and actual and expected != actual:
+                return None  # 다른 앱키의 토큰은 폐기
 
         # 토큰 만료 일,시간
         exp_dt = datetime.strftime(tkg_tmp["valid-date"], "%Y-%m-%d %H:%M:%S")
@@ -126,14 +240,27 @@ def read_token():
         else:
             # print('Need new token: ', tkg_tmp['valid-date'])
             return None
-    except (OSError, UnicodeDecodeError, yaml.YAMLError, KeyError, TypeError, ValueError):
+    except (OSError, UnicodeDecodeError, yaml.YAMLError, KeyError, TypeError, ValueError, AttributeError):
         # 파일 없음/손상(비 UTF-8 포함), 빈 파일(None), 필드 누락 → 토큰 없음으로 처리
         return None
 
 
 # 토큰 유효시간 체크해서 만료된 토큰이면 재발급처리
+def clear_saved_tokens():
+    """저장된 토큰 파일(당일 + prod/vps 분리본)을 모두 삭제한다. 삭제된 개수를 반환."""
+    removed = 0
+    for path in (token_tmp, f"{token_tmp}_prod", f"{token_tmp}_vps"):
+        try:
+            if os.path.exists(path):
+                os.remove(path)
+                removed += 1
+        except OSError:
+            pass
+    return removed
+
+
 def _getBaseHeader():
-    if _autoReAuth:
+    if _autoReAuth and not _reauth_running:
         reAuth()
     return copy.deepcopy(_base_headers)
 
@@ -170,7 +297,7 @@ def isPaperTrading():  # 모의투자 매매
 def changeTREnv(token_key, svr="prod", product=_cfg["my_prod"]):
     cfg = dict()
 
-    global _isPaper
+    global _isPaper, _smartSleep
     if svr == "prod":  # 실전투자
         ak1 = "my_app"  # 실전투자용 앱키
         ak2 = "my_sec"  # 실전투자용 앱시크리트
@@ -208,7 +335,7 @@ def changeTREnv(token_key, svr="prod", product=_cfg["my_prod"]):
         my_token = _TRENV.my_token
     except AttributeError:
         my_token = ""
-    cfg["my_token"] = my_token if token_key else token_key
+    cfg["my_token"] = token_key if token_key else my_token
     cfg["my_url_ws"] = _cfg["ops" if svr == "prod" else "vops"]
 
     # print(cfg)
@@ -224,6 +351,9 @@ def _getResultObject(json_data):
 # Token 발급, 유효기간 1일, 6시간 이내 발급시 기존 token값 유지, 발급시 알림톡 무조건 발송
 # 모의투자인 경우  svr='vps', 투자계좌(01)이 아닌경우 product='XX' 변경하세요 (계좌번호 뒤 2자리)
 def auth(svr="prod", product=_cfg["my_prod"], url=None):
+    global _last_svr, _last_product
+    _last_svr = svr
+    _last_product = product
     p = {
         "grant_type": "client_credentials",
     }
@@ -241,12 +371,15 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
     p["appsecret"] = _cfg[ak2]
 
     # 기존 발급된 토큰이 있는지 확인
-    saved_token = read_token()  # 기존 발급 토큰 확인
+    saved_token = read_token(svr)  # 기존 발급 토큰 확인
     # print("saved_token: ", saved_token)
     if saved_token is None:  # 기존 발급 토큰 확인이 안되면 발급처리
         url = f"{_cfg[svr]}/oauth2/tokenP"
         res = requests.post(
-            url, data=json.dumps(p), headers=_getBaseHeader()
+            url,
+            data=json.dumps(p),
+            headers=_getBaseHeader(),
+            timeout=REQ_TIMEOUT,
         )  # 토큰 발급
         rescode = res.status_code
         if rescode == 200:  # 토큰 정상 발급
@@ -254,10 +387,11 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
             my_expired = _getResultObject(
                 res.json()
             ).access_token_token_expired  # 토큰값 만료일시 가져오기
-            save_token(my_token, my_expired)  # 새로 발급 받은 토큰 저장
+            save_token(my_token, my_expired, svr)  # 새로 발급 받은 토큰 저장
         else:
-            print("Get Authentification token fail!\nYou have to restart your app!!!")
-            return
+            raise RuntimeError(
+                f"Get Authentification token fail! (HTTP {rescode}): {res.text[:200]}"
+            )
     else:
         my_token = saved_token  # 기존 발급 토큰 확인되어 기존 토큰 사용
 
@@ -277,10 +411,24 @@ def auth(svr="prod", product=_cfg["my_prod"], url=None):
 
 # end of initialize, 토큰 재발급, 토큰 발급시 유효시간 1일
 # 프로그램 실행시 _last_auth_time에 저장하여 유효시간 체크, 유효시간 만료시 토큰 발급 처리
-def reAuth(svr="prod", product=_cfg["my_prod"]):
+def reAuth(svr=None, product=None):
+    """토큰 유효기간(24시간)이 지나면 마지막 auth() 서버·상품으로 재발급한다.
+
+    생략된 인자는 기억한 값을 재사용하므로 모의 세션이 실전으로 바뀌지 않는다.
+    재진입(헤더 생성→재인증→헤더 생성)은 1회로 차단한다.
+    """
+    global _reauth_running
+    if _reauth_running:
+        return
+    svr = svr or _last_svr or "prod"
+    product = product or _last_product or _cfg["my_prod"]
     n2 = datetime.now()
-    if (n2 - _last_auth_time).seconds >= 86400:  # 유효시간 1일
-        auth(svr, product)
+    if (n2 - _last_auth_time).total_seconds() >= 86400:  # 유효시간 1일
+        _reauth_running = True
+        try:
+            auth(svr, product)
+        finally:
+            _reauth_running = False
 
 
 def getEnv():
@@ -305,7 +453,7 @@ def getTREnv():
 def set_order_hash_key(h, p):
     url = f"{getTREnv().my_url}/uapi/hashkey"  # hashkey 발급 API URL
 
-    res = requests.post(url, data=json.dumps(p), headers=h)
+    res = requests.post(url, data=json.dumps(p), headers=h, timeout=REQ_TIMEOUT)
     rescode = res.status_code
     if rescode == 200:
         h["hashkey"] = _getResultObject(res.json()).HASH
@@ -443,7 +591,8 @@ class APIRespError(APIResp):
 
 
 def _url_fetch(
-        api_url, ptr_id, tr_cont, params, appendHeaders=None, postFlag=False, hashFlag=True
+        api_url, ptr_id, tr_cont, params, appendHeaders=None, postFlag=False, hashFlag=True,
+        _retry=False
 ):
     global _last_api_call_time
 
@@ -480,20 +629,28 @@ def _url_fetch(
     if _VERBOSE:
         print("< Sending Info >")
         print(f"URL: {url}, TR: {tr_id}")
-        print(f"<header>\n{headers}")
-        print(f"<body>\n{params}")
+        print(f"<header>\n{_redacted_headers(headers)}")
+        print(f"<body>\n{_redact(params) if isinstance(params, dict) else params}")
 
     if postFlag:
         # if (hashFlag): set_order_hash_key(headers, params)
-        res = requests.post(url, headers=headers, data=json.dumps(params))
+        res = requests.post(url, headers=headers, data=json.dumps(params), timeout=REQ_TIMEOUT)
     else:
-        res = requests.get(url, headers=headers, params=params)
+        res = requests.get(url, headers=headers, params=params, timeout=REQ_TIMEOUT)
 
     if res.status_code == 200:
         ar = APIResp(res)
         if _VERBOSE:
             ar.printAll()
+        try:
+            expired = not ar.isOK() and ar.getErrorCode() == "EGW00123"
+        except Exception:
+            expired = False
+        if expired and not _retry:
+            reAuth()
+            return _url_fetch(api_url, ptr_id, tr_cont, params, appendHeaders, postFlag, hashFlag, True)
         return ar
+
     else:
         print("Error Code : " + str(res.status_code) + " | " + res.text)
         return APIRespError(res.status_code, res.text)
@@ -530,13 +687,14 @@ def auth_ws(svr="prod", product=_cfg["my_prod"]):
     p["secretkey"] = _cfg[ak2]
 
     url = f"{_cfg[svr]}/oauth2/Approval"
-    res = requests.post(url, data=json.dumps(p), headers=_getBaseHeader())  # 토큰 발급
+    res = requests.post(url, data=json.dumps(p), headers=_getBaseHeader(), timeout=REQ_TIMEOUT)  # 토큰 발급
     rescode = res.status_code
     if rescode == 200:  # 토큰 정상 발급
         approval_key = _getResultObject(res.json()).approval_key
     else:
-        print("Get Approval token fail!\nYou have to restart your app!!!")
-        return
+        raise RuntimeError(
+            f"Get Approval token fail! (HTTP {rescode}): {res.text[:200]}"
+        )
 
     changeTREnv(None, svr, product)
 
@@ -549,10 +707,24 @@ def auth_ws(svr="prod", product=_cfg["my_prod"]):
         print(f"[{_last_auth_time}] => get AUTH Key completed!")
 
 
-def reAuth_ws(svr="prod", product=_cfg["my_prod"]):
+def reAuth_ws(svr=None, product=None):
+    """토큰 유효기간(24시간)이 지나면 마지막 auth() 서버·상품으로 재발급한다.
+
+    생략된 인자는 기억한 값을 재사용하므로 모의 세션이 실전으로 바뀌지 않는다.
+    재진입(헤더 생성→재인증→헤더 생성)은 1회로 차단한다.
+    """
+    global _reauth_running
+    if _reauth_running:
+        return
+    svr = svr or _last_svr or "prod"
+    product = product or _last_product or _cfg["my_prod"]
     n2 = datetime.now()
-    if (n2 - _last_auth_time).seconds >= 86400:
-        auth_ws(svr, product)
+    if (n2 - _last_auth_time).total_seconds() >= 86400:  # 유효시간 1일
+        _reauth_running = True
+        try:
+            auth_ws(svr, product)
+        finally:
+            _reauth_running = False
 
 
 def data_fetch(tr_id, tr_type, params, appendHeaders=None) -> dict:
@@ -664,6 +836,14 @@ def add_open_map(
     elif type(data) is str:
         open_map[name]["items"].append(data)
 
+def open_subscription_count():
+    """구독 종목 수 합계(TR 개수가 아니라 items 합계다). 한도 검사의 기준."""
+    total = 0
+    for obj in open_map.values():
+        items = obj.get("items", [])
+        total += len(items) if isinstance(items, list) else 1
+    return total
+
 
 data_map: dict = {}
 
@@ -699,7 +879,6 @@ class KISWebSocket:
     result_all_data: bool = False
 
     retry_count: int = 0
-    amx_retries: int = 0
 
     # init
     def __init__(self, api_url: str, max_retries: int = 3):
@@ -709,7 +888,7 @@ class KISWebSocket:
     # private
     async def __subscriber(self, ws: websockets.ClientConnection):
         async for raw in ws:
-            logging.info("received message >> %s" % raw)
+            logging.info("received message >> %s", _mask_ws_raw(raw))
             show_result = False
 
             df = pd.DataFrame()
@@ -726,9 +905,22 @@ class KISWebSocket:
                 if dm.get("encrypt", None) == "Y":
                     d = aes_cbc_base64_dec(dm["key"], dm["iv"], d)
 
-                df = pd.read_csv(
-                    StringIO(d), header=None, sep="^", names=dm["columns"], dtype=object
-                )
+                try:
+                    record_count = int(d1[2]) if len(d1) > 2 else 1
+                except (ValueError, TypeError):
+                    record_count = 1
+                fields = d.split("^")
+                ncols = len(dm["columns"])
+                if record_count > 1 and ncols and len(fields) == record_count * ncols:
+                    rows = [
+                        fields[i * ncols:(i + 1) * ncols]
+                        for i in range(record_count)
+                    ]
+                    df = pd.DataFrame(rows, columns=dm["columns"], dtype=object)
+                else:
+                    df = pd.read_csv(
+                        StringIO(d), header=None, sep="^", names=dm["columns"], dtype=object
+                    )
 
                 show_result = True
 
@@ -752,13 +944,15 @@ class KISWebSocket:
                 self.on_result(ws, tr_id, df, data_map[tr_id])
 
     async def __runner(self):
-        if len(open_map.keys()) > 40:
+        if open_subscription_count() > 40:
             raise ValueError("Subscription's max is 40")
 
         url = f"{getTREnv().my_url_ws}{self.api_url}"
 
         while self.retry_count < self.max_retries:
             try:
+                # 재연결마다 approval_key를 새로 받는다(구 키 재사용 방지)
+                auth_ws()
                 async with websockets.connect(url) as ws:
                     # request subscribe
                     for name, obj in open_map.items():
@@ -773,7 +967,14 @@ class KISWebSocket:
             except _RUNNER_ERRORS + _callback_errors(self.on_result) as e:
                 logging.warning("웹소켓 연결 예외(%s), 재시도합니다.", type(e).__name__)
                 self.retry_count += 1
-                await asyncio.sleep(1)
+                await asyncio.sleep(min(2 ** self.retry_count, 30))
+            else:
+                # 서버가 정상 종료했으면 백오프 후 재연결하고 카운트를 리셋한다
+                self.retry_count = 0
+                await asyncio.sleep(5)
+        raise ConnectionError(
+            f"웹소켓 재연결 {self.max_retries}회 초과 (마지막 이후로 복구되지 않음)"
+        )
 
     # func
     @classmethod
@@ -790,7 +991,7 @@ class KISWebSocket:
 
         add_data_map(tr_id=msg["body"]["input"]["tr_id"], columns=columns)
 
-        logging.info("send message >> %s" % json.dumps(msg))
+        logging.info("send message >> %s", _masked_json(msg))
 
         await ws.send(json.dumps(msg))
         smart_sleep()
@@ -820,13 +1021,13 @@ class KISWebSocket:
     ):
         add_open_map(request.__name__, request, data, kwargs)
 
-    def unsubscribe(
+    async def unsubscribe(
             self,
             ws: websockets.ClientConnection,
             request: Callable[[str, str, ...], (dict, list[str])],
             data: list | str,
     ):
-        self.send_multiple(ws, request, "2", data)
+        await self.send_multiple(ws, request, "2", data)
 
     # start
     def start(

@@ -223,9 +223,15 @@ class KISAuth:
         Returns:
             KISAuth 인스턴스
         """
-        # mode 미지정 시 JWT jti로 자동 감지, 실패 시 "paper" fallback
+        # mode 미지정 시 JWT jti로 자동 감지. 감지 결과가 live여도 명시 없이는
+        # 실전을 열지 않는다 — 실전은 mode="live" 명시 옵트인으로만 허용한다.
         if mode is None:
-            mode = cls._detect_mode_from_token() or "paper"
+            detected = cls._detect_mode_from_token()
+            if detected == "live":
+                raise ValueError(
+                    "캐시 토큰이 실전용입니다. 실전으로 실행하려면 mode='live'를 명시하세요."
+                )
+            mode = detected or "paper"
 
         # kis_auth 설정 읽기
         env = ka.getEnv()
