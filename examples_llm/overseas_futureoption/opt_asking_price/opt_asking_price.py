@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 # API 정보
 API_URL = "/uapi/overseas-futureoption/v1/quotations/opt-asking-price"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def opt_asking_price(
     srs_cd: str,  # 종목명
     dataframe1: Optional[pd.DataFrame] = None,  # 누적 데이터프레임 (output1)
@@ -115,7 +119,7 @@ def opt_asking_price(
         
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return opt_asking_price(

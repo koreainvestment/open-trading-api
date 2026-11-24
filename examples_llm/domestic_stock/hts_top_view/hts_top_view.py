@@ -26,6 +26,10 @@ logger = logging.getLogger(__name__)
 API_URL = "/uapi/domestic-stock/v1/ranking/hts-top-view"
 
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def hts_top_view(
         tr_cont: str = "",
         dataframe: Optional[pd.DataFrame] = None,
@@ -82,7 +86,7 @@ def hts_top_view(
 
         # 다음 페이지 호출 여부 결정
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return hts_top_view(

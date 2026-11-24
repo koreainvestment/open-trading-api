@@ -27,6 +27,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-bond/v1/quotations/avg-unit"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def avg_unit(
         inqr_strt_dt: str,  # 조회시작일자
         inqr_end_dt: str,  # 조회종료일자
@@ -144,7 +148,7 @@ def avg_unit(
         else:
             dataframe3 = current_data3
 
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logger.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return avg_unit(

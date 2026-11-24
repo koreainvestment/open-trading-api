@@ -24,6 +24,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/domestic-stock/v1/quotations/inquire-vi-status"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def inquire_vi_status(
         fid_div_cls_code: str,  # FID 분류 구분 코드
         fid_cond_scr_div_code: str,  # FID 조건 화면 분류 코드
@@ -135,7 +139,7 @@ def inquire_vi_status(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return inquire_vi_status(

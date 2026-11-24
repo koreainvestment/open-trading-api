@@ -26,6 +26,10 @@ API_URL = "/uapi/domestic-stock/v1/quotations/exp-index-trend"
 
 
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def exp_index_trend(
         fid_mkop_cls_code: str,  # 장운영 구분 코드
         fid_input_hour_1: str,  # 입력 시간1
@@ -105,7 +109,7 @@ def exp_index_trend(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return exp_index_trend(

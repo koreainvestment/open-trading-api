@@ -24,6 +24,10 @@ logger = logging.getLogger(__name__)
 # 상수 정의
 API_URL = "/uapi/overseas-price/v1/quotations/industry-theme"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def industry_theme(
     excd: str,                                    # [필수] 거래소명 (ex. NYS:뉴욕, NAS:나스닥, AMS:아멕스, HKS:홍콩, SHS:상해, SZS:심천, HSX:호치민, HNX:하노이, TSE:도쿄)
     icod: str,                                    # [필수] 업종코드
@@ -70,7 +74,7 @@ def industry_theme(
         raise ValueError("vol_rang is required (e.g. '0')")
 
     if depth > max_depth:
-        logging.warning("Max recursive depth reached.")
+        logging.warning("Max recursive depth reached (results may be truncated).")
         if dataframe1 is None:
             dataframe1 = pd.DataFrame()
         if dataframe2 is None:
@@ -106,7 +110,7 @@ def industry_theme(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:  # 다음 페이지 존재
+        if _has_next_page(tr_cont):  # 다음 페이지 존재
             logging.info("Call Next page...")
             ka.smart_sleep()  # 시스템 안정적 운영을 위한 지연
             return industry_theme(

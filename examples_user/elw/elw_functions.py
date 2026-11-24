@@ -16,6 +16,11 @@ logger = logging.getLogger(__name__)
 # [국내주식] ELW시세 - ELW 비교대상종목조회[국내주식-183]
 ##############################################################################################
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
+
 def compare_stocks(
     fid_cond_scr_div_code: str,  # 조건화면분류코드
     fid_input_iscd: str,  # 입력종목코드
@@ -95,7 +100,7 @@ def compare_stocks(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return compare_stocks(
@@ -366,7 +371,7 @@ def cond_search(
         tr_cont = res.getHeader().tr_cont
         
         # 연속 데이터가 있는 경우 재귀 호출
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()  # API 호출 간격 조절
             return cond_search(
@@ -586,7 +591,7 @@ def expiration_stocks(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return expiration_stocks(
@@ -753,7 +758,7 @@ def indicator(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return indicator(
@@ -862,7 +867,7 @@ def indicator_trend_ccnl(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return indicator_trend_ccnl(
@@ -959,7 +964,7 @@ def indicator_trend_daily(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return indicator_trend_daily(
@@ -1079,7 +1084,7 @@ def indicator_trend_minute(
 
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return indicator_trend_minute(
@@ -1193,7 +1198,7 @@ def lp_trade_trend(
 
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return lp_trade_trend(
@@ -1334,7 +1339,7 @@ def newly_listed(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return newly_listed(
@@ -1508,7 +1513,7 @@ def quick_change(
 
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return quick_change(
@@ -1684,7 +1689,7 @@ def sensitivity(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return sensitivity(
@@ -1795,7 +1800,7 @@ def sensitivity_trend_ccnl(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return sensitivity_trend_ccnl(
@@ -1897,7 +1902,7 @@ def sensitivity_trend_daily(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return sensitivity_trend_daily(
@@ -2004,7 +2009,7 @@ def udrl_asset_list(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return udrl_asset_list(
@@ -2185,7 +2190,7 @@ def udrl_asset_price(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return udrl_asset_price(
@@ -2374,7 +2379,7 @@ def updown_rate(
             
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return updown_rate(
@@ -2486,7 +2491,7 @@ def volatility_trend_ccnl(
         
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return volatility_trend_ccnl(
@@ -2590,7 +2595,7 @@ def volatility_trend_daily(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return volatility_trend_daily(
@@ -2711,7 +2716,7 @@ def volatility_trend_minute(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return volatility_trend_minute(
@@ -2814,7 +2819,7 @@ def volatility_trend_tick(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return volatility_trend_tick(
@@ -2989,7 +2994,7 @@ def volume_rank(
         # 연속 거래 여부 확인
         tr_cont = res.getHeader().tr_cont
 
-        if tr_cont == "M":
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return volume_rank(

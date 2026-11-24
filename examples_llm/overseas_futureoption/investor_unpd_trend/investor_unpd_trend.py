@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 # API 정보
 API_URL = "/uapi/overseas-futureoption/v1/quotations/investor-unpd-trend"
 
+def _has_next_page(tr_cont: str) -> bool:
+    """연속조회 여부: "M"(다음 있음)·"F"(다음 있음)면 True."""
+    return tr_cont in ("M", "F")
+
 def investor_unpd_trend(
     prod_iscd: str,  # 상품
     bsop_date: str,  # 일자
@@ -137,7 +141,7 @@ def investor_unpd_trend(
                 dataframe2 = pd.DataFrame()
         tr_cont = res.getHeader().tr_cont
         
-        if tr_cont in ["M", "F"]:
+        if _has_next_page(tr_cont):
             logger.info("Calling next page...")
             ka.smart_sleep()
             return investor_unpd_trend(
