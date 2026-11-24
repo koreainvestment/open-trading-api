@@ -611,7 +611,7 @@ max_depth (int): 최대 재귀 깊이 (기본값: 10)",Optional[pd.DataFrame]: �
     'ksd_indf_frqc_uder_calc_dcnt': '증권예탁결제원이자지급주기미만',
     'tlg_rcvg_dtl_dtime': '전문수신상세일시'
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_bond/search_bond_info/search_bond_info.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_bond/search_bond_info/chk_search_bond_info.py
-domestic_bond,실시간시세,일반채권 실시간체결가,bond_ccnl," # [장내채권] 실시간시세 > 일반채권 실시간체결가 [실시간-052]  일반채권 실시간체결가[H0BJCNT0] 구독 함수 한국투자증권 웹소켓 API를 통해 일반채권의 실시간 체결가 데이터를 구독합니다. [참고자료] 채권 종목코드 마스터파일은 ""KIS포털 - API문서 - 종목정보파일 - 장내채권 - 채권코드"" 참고 부탁드립니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부
+domestic_bond,실시간시세,일반채권 실시간체결가,bond_ccnl," # [장내채권] 실시간시세 > 일반채권 실시간체결가 [실시간-052]  일반채권 실시간체결가[H0BJCNT0] 구독 함수 한국투자증권 웹소켓 API를 통해 일반채권의 실시간 체결가 데이터를 구독합니다. [참고자료] 채권 종목코드 마스터파일은 ""KIS포털 - API문서 - 종목정보파일 - 장내채권 - 채권코드"" 참고 부탁드립니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간 데이터 구독 결과 메시지
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = bond_ccnl(""1"", ""005930"")
      print(msg, columns)","{
@@ -635,7 +635,7 @@ columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = bon
     ""prdy_vol"": ""전일거래량"",
     ""cntg_type_cls_code"": ""체결유형코드""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_bond/bond_ccnl/bond_ccnl.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_bond/bond_ccnl/chk_bond_ccnl.py
-domestic_bond,실시간시세,일반채권 실시간호가,bond_asking_price, # [장내채권] 실시간시세 > 일반채권 실시간호가 [실시간-053]  일반채권 실시간호가[H0BJASP0] 일반채권 실시간호가 API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타냅니다.
+domestic_bond,실시간시세,일반채권 실시간호가,bond_asking_price, # [장내채권] 실시간시세 > 일반채권 실시간호가 [실시간-053]  일반채권 실시간호가[H0BJASP0] 일반채권 실시간호가 API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타냅니다.
 tr_key (str): [필수] 종목코드. 빈 문자열일 수 없습니다.","message (dict): 실시간 데이터 메시지.
 columns (list[str]): 응답 데이터의 컬럼 정보.","     msg, columns = bond_asking_price(""1"", ""005930"")
      print(msg, columns)
@@ -677,7 +677,7 @@ columns (list[str]): 응답 데이터의 컬럼 정보.","     msg, columns = bo
     ""total_askp_rsqn"": ""총매도호가잔량"",
     ""total_bidp_rsqn"": ""총매수호가잔량""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_bond/bond_asking_price/bond_asking_price.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_bond/bond_asking_price/chk_bond_asking_price.py
-domestic_bond,실시간시세,채권지수 실시간체결가,bond_index_ccnl, # [장내채권] 실시간시세 > 채권지수 실시간체결가 [실시간-060]  채권지수 실시간체결가[H0BICNT0] 채권지수 실시간체결가 API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타냅니다.
+domestic_bond,실시간시세,채권지수 실시간체결가,bond_index_ccnl, # [장내채권] 실시간시세 > 채권지수 실시간체결가 [실시간-060]  채권지수 실시간체결가[H0BICNT0] 채권지수 실시간체결가 API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타냅니다.
 tr_key (str): [필수] 구독할 종목코드. 빈 문자열이 아니어야 합니다.","message (dict): 구독 요청에 대한 응답 메시지.
 columns (list[str]): 실시간 데이터의 컬럼 정보.","     msg, columns = bond_index_ccnl(""1"", ""005930"")
      print(msg, columns)
@@ -6811,7 +6811,7 @@ max_depth (int): 최대 재귀 깊이 (기본값: 10)","Tuple[pd.DataFrame, pd.D
     'bidp': '매수호가',
     'askp': '매도호가'
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/overtime_fluctuation/overtime_fluctuation.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/overtime_fluctuation/chk_overtime_fluctuation.py
-domestic_stock,실시간시세,국내지수 실시간예상체결,index_exp_ccnl," # [국내주식] 실시간시세 > 국내지수 실시간예상체결 [실시간-027]  국내지수 실시간예상체결[H0UPANC0] 구독 함수 이 함수는 한국투자증권 웹소켓 API를 통해 국내지수의 실시간 데이터를 구독합니다. 실시간 데이터는 웹소켓을 통해 지속적으로 업데이트되며, 구독 등록/해제 여부와 종목코드를 통해 데이터를 필터링합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 문자열
+domestic_stock,실시간시세,국내지수 실시간예상체결,index_exp_ccnl," # [국내주식] 실시간시세 > 국내지수 실시간예상체결 [실시간-027]  국내지수 실시간예상체결[H0UPANC0] 구독 함수 이 함수는 한국투자증권 웹소켓 API를 통해 국내지수의 실시간 데이터를 구독합니다. 실시간 데이터는 웹소켓을 통해 지속적으로 업데이트되며, 구독 등록/해제 여부와 종목코드를 통해 데이터를 필터링합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 문자열
 tr_key (str): [필수] 종목코드를 나타내는 문자열. 빈 문자열일 수 없습니다.","message (dict): 실시간 데이터 구독에 대한 응답 메시지
 columns (list[str]): 실시간 데이터의 컬럼 정보 리스트","     msg, columns = index_exp_ccnl(""1"", ""005930"")
      print(msg, columns)","{
@@ -6846,7 +6846,7 @@ columns (list[str]): 실시간 데이터의 컬럼 정보 리스트","     msg, 
     ""qtqt_down_issu_cnt"": ""기세 하락 종목수"",
     ""tick_vrss"": ""TICK대비""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/index_exp_ccnl/index_exp_ccnl.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/index_exp_ccnl/chk_index_exp_ccnl.py
-domestic_stock,실시간시세,국내주식 장운영정보 (통합),market_status_total, # [국내주식] 실시간시세 > 국내주식 장운영정보(통합)  국내주식 장운영정보 (통합)[H0UNMKO0] 실시간 데이터 구독 함수 이 함수는 웹소켓을 통해 실시간으로 국내주식 장운영정보를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 장운영정보 (통합),market_status_total, # [국내주식] 실시간시세 > 국내주식 장운영정보(통합)  국내주식 장운영정보 (통합)[H0UNMKO0] 실시간 데이터 구독 함수 이 함수는 웹소켓을 통해 실시간으로 국내주식 장운영정보를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드, 구독할 종목의 고유 코드","message (dict): 실시간으로 수신된 메시지 데이터
 columns (list[str]): 수신된 데이터의 컬럼 정보","     msg, columns = market_status_total(""1"", ""005930"")
      print(msg, columns)
@@ -6864,14 +6864,14 @@ Note:
     ""OVTM_VI_CLS_CODE"": ""시간외단일가VI적용구분코드"",
     ""EXCH_CLS_CODE"": ""거래소 구분코드""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/market_status_total/market_status_total.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/market_status_total/chk_market_status_total.py
-domestic_stock,실시간시세,국내주식 실시간회원사 (NXT),member_nxt, # [국내주식] 실시간시세 > 국내주식 실시간회원사 (NXT)  국내주식 실시간회원사 (NXT)[H0NXMBC0] 국내주식 실시간회원사 (NXT) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간회원사 (NXT),member_nxt, # [국내주식] 실시간시세 > 국내주식 실시간회원사 (NXT)  국내주식 실시간회원사 (NXT)[H0NXMBC0] 국내주식 실시간회원사 (NXT) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드, 빈 문자열이 아니어야 함","message (dict): 실시간 데이터 메시지
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = member_nxt(""1"", ""005930"")
      print(msg, columns)
 
 Note:
     이 함수는 웹소켓을 통해 실시간 데이터를 구독합니다. 구독을 시작하려면 tr_type을 ""1""로 설정하고,
-    구독을 해제하려면 ""0""으로 설정하십시오.","{
+    구독을 해제하려면 ""2""으로 설정하십시오.","{
     ""MKSC_SHRN_ISCD"": ""유가증권 단축 종목코드"",
     ""SELN2_MBCR_NAME1"": ""매도2 회원사명1"",
     ""SELN2_MBCR_NAME2"": ""매도2 회원사명2"",
@@ -6951,7 +6951,7 @@ Note:
     ""BYOV_MBCR_ENG_NAME4"": ""매수 영문회원사명4"",
     ""BYOV_MBCR_ENG_NAME5"": ""매수 영문회원사명5""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/member_nxt/member_nxt.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/member_nxt/chk_member_nxt.py
-domestic_stock,실시간시세,국내주식 실시간체결통보,ccnl_notice," # [국내주식] 실시간시세 > 국내주식 주식체결통보 [실시간-005]  국내주식 실시간체결통보[H0STCNI0] 국내주식 실시간 체결통보 수신 시에 (1) 주문·정정·취소·거부 접수 통보 와 (2) 체결 통보 가 모두 수신됩니다. (14번째 값(CNTG_YN;체결여부)가 2이면 체결통보, 1이면 주문·정정·취소·거부 접수 통보입니다.) ※ 모의투자는 H0STCNI9 로 변경하여 사용합니다. 실시간 데이터 구독을 위한 웹소켓 함수입니다. 구독을 등록하거나 해제할 수 있습니다.","tr_type (str): [필수] 구독 등록(""1"")/해제(""0"") 여부
+domestic_stock,실시간시세,국내주식 실시간체결통보,ccnl_notice," # [국내주식] 실시간시세 > 국내주식 주식체결통보 [실시간-005]  국내주식 실시간체결통보[H0STCNI0] 국내주식 실시간 체결통보 수신 시에 (1) 주문·정정·취소·거부 접수 통보 와 (2) 체결 통보 가 모두 수신됩니다. (14번째 값(CNTG_YN;체결여부)가 2이면 체결통보, 1이면 주문·정정·취소·거부 접수 통보입니다.) ※ 모의투자는 H0STCNI9 로 변경하여 사용합니다. 실시간 데이터 구독을 위한 웹소켓 함수입니다. 구독을 등록하거나 해제할 수 있습니다.","tr_type (str): [필수] 구독 등록(""1"")/해제(""2"") 여부
 tr_key (str): [필수] 종목코드 (예: ""005930"")
 env_dv (str): 실전모의구분 (real:실전, demo:모의)","message (dict): 메시지 데이터
 columns (list[str]): 컬럼 정보","     msg, columns = ccnl_notice(""1"", ""005930"", env_dv=""real"")
@@ -6986,7 +6986,7 @@ AES256 KEY와 IV를 사용하여 복호화해야 합니다.","{
     ""CNTG_ISNM40"": ""체결일자"",
     ""ODER_PRC"": ""주문가격""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/ccnl_notice/ccnl_notice.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/ccnl_notice/chk_ccnl_notice.py
-domestic_stock,실시간시세,국내주식 시간외 실시간예상체결 (KRX),overtime_exp_ccnl_krx, # [국내주식] 실시간시세 > 국내주식 시간외 실시간예상체결 (KRX) [실시간-024]  국내주식 시간외 실시간예상체결 (KRX)[H0STOAC0] 국내주식 시간외 단일가(16:00~18:00) 시간대에 실시간예상체결 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타냅니다.
+domestic_stock,실시간시세,국내주식 시간외 실시간예상체결 (KRX),overtime_exp_ccnl_krx, # [국내주식] 실시간시세 > 국내주식 시간외 실시간예상체결 (KRX) [실시간-024]  국내주식 시간외 실시간예상체결 (KRX)[H0STOAC0] 국내주식 시간외 단일가(16:00~18:00) 시간대에 실시간예상체결 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타냅니다.
 tr_key (str): [필수] 종목코드. 빈 문자열이 아니어야 합니다.","message (dict): 실시간 데이터 구독에 대한 메시지 데이터.
 columns (list[str]): 실시간 데이터의 컬럼 정보.","     msg, columns = subscribe_overtime_exp_ccnl_krx(""1"", ""005930"")
      print(msg, columns)
@@ -7036,7 +7036,7 @@ columns (list[str]): 실시간 데이터의 컬럼 정보.","     msg, columns =
     ""prdy_smns_hour_acml_vol"": ""전일동시간누적거래량"",
     ""prdy_smns_hour_acml_vol_rate"": ""전일동시간누적거래량비율""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/overtime_exp_ccnl_krx/overtime_exp_ccnl_krx.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/overtime_exp_ccnl_krx/chk_overtime_exp_ccnl_krx.py
-domestic_stock,실시간시세,국내주식 시간외 실시간호가 (KRX),overtime_asking_price_krx, # [국내주식] 실시간시세 > 국내주식 시간외 실시간호가 (KRX) [실시간-025]  국내주식 시간외 실시간호가 (KRX)[H0STOAA0] 국내주식 시간외 실시간호가 API입니다. 국내주식 시간외 단일가(16:00~18:00) 시간대에 실시간호가 데이터 확인 가능합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부
+domestic_stock,실시간시세,국내주식 시간외 실시간호가 (KRX),overtime_asking_price_krx, # [국내주식] 실시간시세 > 국내주식 시간외 실시간호가 (KRX) [실시간-025]  국내주식 시간외 실시간호가 (KRX)[H0STOAA0] 국내주식 시간외 실시간호가 API입니다. 국내주식 시간외 단일가(16:00~18:00) 시간대에 실시간호가 데이터 확인 가능합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 메시지 데이터
 columns (list[str]): 컬럼 정보","     msg, columns = subscribe_overtime_asking_price_krx(""1"", ""005930"")
      print(msg, columns)
@@ -7097,14 +7097,14 @@ columns (list[str]): 컬럼 정보","     msg, columns = subscribe_overtime_aski
     ""ovtm_total_askp_icdc"": ""시간외총매도호가증감"",
     ""ovtm_total_bidp_icdc"": ""시간외총매수호가증감""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/overtime_asking_price_krx/overtime_asking_price_krx.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/overtime_asking_price_krx/chk_overtime_asking_price_krx.py
-domestic_stock,실시간시세,국내주식 실시간프로그램매매 (통합),program_trade_total, # [국내주식] 실시간시세 > 국내주식 실시간프로그램매매 (통합)  국내주식 실시간프로그램매매 (통합)[H0UNPGM0] 국내주식 실시간프로그램매매 (통합) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간프로그램매매 (통합),program_trade_total, # [국내주식] 실시간시세 > 국내주식 실시간프로그램매매 (통합)  국내주식 실시간프로그램매매 (통합)[H0UNPGM0] 국내주식 실시간프로그램매매 (통합) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간 데이터 메시지
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = program_trade_total(""1"", ""005930"")
      print(msg, columns)
 
 Note:
     이 함수는 웹소켓을 통해 실시간 데이터를 구독합니다. 
-    구독을 시작하려면 tr_type을 ""1""로 설정하고, 해제하려면 ""0""으로 설정하세요.","{
+    구독을 시작하려면 tr_type을 ""1""로 설정하고, 해제하려면 ""2""으로 설정하세요.","{
     ""MKSC_SHRN_ISCD"": ""유가증권 단축 종목코드"",
     ""STCK_CNTG_HOUR"": ""주식 체결 시간"",
     ""SELN_CNQN"": ""매도 체결량"",
@@ -7117,7 +7117,7 @@ Note:
     ""SHNU_RSQN"": ""매수호가잔량"",
     ""WHOL_NTBY_QTY"": ""전체순매수호가잔량""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/program_trade_total/program_trade_total.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/program_trade_total/chk_program_trade_total.py
-domestic_stock,실시간시세,국내주식 실시간호가 (통합),asking_price_total, # [국내주식] 실시간시세 > 국내주식 실시간호가 (통합)  국내주식 실시간호가 (통합)[H0UNASP0] 국내주식 실시간호가 (통합) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간호가 (통합),asking_price_total, # [국내주식] 실시간시세 > 국내주식 실시간호가 (통합)  국내주식 실시간호가 (통합)[H0UNASP0] 국내주식 실시간호가 (통합) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간 데이터 메시지
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = subscribe_asking_price(""1"", ""005930"")
      print(msg, columns)
@@ -7190,7 +7190,7 @@ Note:
     ""NMID_TOTAL_RSQN"": ""NXT 중간가잔량합계수량"",
     ""NMID_CLS_CODE"": ""NXT 중간가 매수매도 구분""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/asking_price_total/asking_price_total.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/asking_price_total/chk_asking_price_total.py
-domestic_stock,실시간시세,국내주식 실시간프로그램매매 (KRX),program_trade_krx," # [국내주식] 실시간시세 > 국내주식 실시간프로그램매매 (KRX)  [실시간-048]  국내주식 실시간프로그램매매 (KRX)[H0STPGM0] 구독 함수 이 함수는 한국투자증권 웹소켓 API를 통해 실시간으로 국내 주식의 프로그램 매매 데이터를 구독합니다. 웹소켓을 통해 실시간 데이터를 수신하며, 구독 등록 및 해제를 지원합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 문자열
+domestic_stock,실시간시세,국내주식 실시간프로그램매매 (KRX),program_trade_krx," # [국내주식] 실시간시세 > 국내주식 실시간프로그램매매 (KRX)  [실시간-048]  국내주식 실시간프로그램매매 (KRX)[H0STPGM0] 구독 함수 이 함수는 한국투자증권 웹소켓 API를 통해 실시간으로 국내 주식의 프로그램 매매 데이터를 구독합니다. 웹소켓을 통해 실시간 데이터를 수신하며, 구독 등록 및 해제를 지원합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 문자열
 tr_key (str): [필수] 종목코드. 빈 문자열이 아니어야 하며, 유효한 종목코드 형식이어야 합니다.","message (dict): 웹소켓을 통해 수신된 메시지 데이터
 columns (list[str]): 응답 데이터의 컬럼 정보 리스트","     msg, columns = program_trade_krx(""1"", ""005930"")
      print(msg, columns)
@@ -7208,7 +7208,7 @@ columns (list[str]): 응답 데이터의 컬럼 정보 리스트","     msg, col
     ""shnu_rsqn"": ""매수호가잔량"",
     ""whol_ntby_qty"": ""전체순매수호가잔량""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/program_trade_krx/program_trade_krx.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/program_trade_krx/chk_program_trade_krx.py
-domestic_stock,실시간시세,국내주식 장운영정보 (KRX),market_status_krx,국내주식 장운영정보 (KRX)[H0STMKO0] 실시간 데이터 구독 함수 이 함수는 국내주식 장운영정보를 실시간으로 구독하거나 구독 해제합니다. 연결된 종목의 VI 발동 시와 VI 해제 시에 데이터가 수신됩니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 문자열
+domestic_stock,실시간시세,국내주식 장운영정보 (KRX),market_status_krx,국내주식 장운영정보 (KRX)[H0STMKO0] 실시간 데이터 구독 함수 이 함수는 국내주식 장운영정보를 실시간으로 구독하거나 구독 해제합니다. 연결된 종목의 VI 발동 시와 VI 해제 시에 데이터가 수신됩니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 문자열
 tr_key (str): [필수] 종목코드. 빈 문자열이 아니어야 하며, 유효한 종목코드 형식이어야 합니다.","message (dict): 서버로부터 수신된 메시지 데이터
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = market_status_krx(""1"", ""005930"")
      print(msg, columns)","{
@@ -7224,7 +7224,7 @@ columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = mar
     ""ovtm_vi_cls_code"": ""시간외단일가VI적용구분코드"",
     ""EXCH_CLS_CODE"": ""거래소구분코드""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/market_status_krx/market_status_krx.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/market_status_krx/chk_market_status_krx.py
-domestic_stock,실시간시세,국내주식 실시간체결가 (KRX),ccnl_krx, # [국내주식] 실시간시세 > 국내주식 실시간체결가(KRX) [실시간-003]  국내주식 실시간체결가 (KRX)[H0STCNT0] 구독 함수 이 함수는 한국투자증권 웹소켓 API를 통해 국내 주식의 실시간 체결가 데이터를 구독합니다. 실시간 데이터를 구독하거나 구독 해제할 수 있습니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부
+domestic_stock,실시간시세,국내주식 실시간체결가 (KRX),ccnl_krx, # [국내주식] 실시간시세 > 국내주식 실시간체결가(KRX) [실시간-003]  국내주식 실시간체결가 (KRX)[H0STCNT0] 구독 함수 이 함수는 한국투자증권 웹소켓 API를 통해 국내 주식의 실시간 체결가 데이터를 구독합니다. 실시간 데이터를 구독하거나 구독 해제할 수 있습니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)
 env_dv (str): 실전모의구분 (real:실전, demo:모의)","message (dict): 메시지 데이터
 columns (list[str]): 컬럼 정보","     msg, columns = ccnl_krx(""1"", ""005930"", env_dv=""real"")
@@ -7278,7 +7278,7 @@ columns (list[str]): 컬럼 정보","     msg, columns = ccnl_krx(""1"", ""00593
     ""MRKT_TRTM_CLS_CODE"": ""임의종료구분코드"",
     ""VI_STND_PRC"": ""정적VI발동기준가""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/ccnl_krx/ccnl_krx.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/ccnl_krx/chk_ccnl_krx.py
-domestic_stock,실시간시세,국내지수 실시간프로그램매매,index_program_trade, # [국내주식] 실시간시세 > 국내지수 실시간프로그램매매 [실시간-028]  국내지수 실시간프로그램매매[H0UPPGM0] 구독 함수 이 함수는 한국투자증권의 웹소켓 API를 통해 국내지수의 실시간 프로그램 매매 데이터를 구독합니다. 실시간 데이터를 구독하거나 구독 해제할 수 있습니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 문자열
+domestic_stock,실시간시세,국내지수 실시간프로그램매매,index_program_trade, # [국내주식] 실시간시세 > 국내지수 실시간프로그램매매 [실시간-028]  국내지수 실시간프로그램매매[H0UPPGM0] 구독 함수 이 함수는 한국투자증권의 웹소켓 API를 통해 국내지수의 실시간 프로그램 매매 데이터를 구독합니다. 실시간 데이터를 구독하거나 구독 해제할 수 있습니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 문자열
 tr_key (str): [필수] 종목코드를 나타내는 문자열. 빈 문자열일 수 없습니다.","message (dict): 웹소켓으로부터 수신된 메시지 데이터
 columns (list[str]): 응답 데이터의 컬럼 정보 리스트","     msg, columns = index_program_trade(""1"", ""005930"")
      print(msg, columns)
@@ -7375,7 +7375,7 @@ https://github.com/koreainvestment/open-trading-api/tree/main/stocks_info","{
     ""acml_vol"": ""누적 거래량"",
     ""acml_tr_pbmn"": ""누적 거래 대금""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/index_program_trade/index_program_trade.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/index_program_trade/chk_index_program_trade.py
-domestic_stock,실시간시세,국내주식 실시간회원사 (통합),member_total, # [국내주식] 실시간시세 > 국내주식 실시간회원사 (통합)  국내주식 실시간회원사 (통합)[H0UNMBC0] 국내주식 실시간회원사 (통합) API입니다. 이 함수는 웹소켓을 통해 실시간 데이터를 구독하거나 구독 해제합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간회원사 (통합),member_total, # [국내주식] 실시간시세 > 국내주식 실시간회원사 (통합)  국내주식 실시간회원사 (통합)[H0UNMBC0] 국내주식 실시간회원사 (통합) API입니다. 이 함수는 웹소켓을 통해 실시간 데이터를 구독하거나 구독 해제합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드, 빈 문자열이 아니어야 함","message (dict): 실시간으로 수신된 메시지 데이터
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = member_total(""1"", ""005930"")
      print(msg, columns)
@@ -7461,7 +7461,7 @@ Note:
     ""BYOV_MBCR_ENG_NAME4"": ""매수 영문회원사명4"",
     ""BYOV_MBCR_ENG_NAME5"": ""매수 영문회원사명5""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/member_total/member_total.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/member_total/chk_member_total.py
-domestic_stock,실시간시세,국내지수 실시간체결,index_ccnl," # [국내주식] 실시간시세 > 국내지수 실시간체결 [실시간-026]  국내지수 실시간체결[H0UPCNT0] 구독 함수 이 함수는 한국투자증권의 웹소켓 API를 통해 국내지수의 실시간 데이터를 구독합니다. 실시간 데이터는 웹소켓을 통해 지속적으로 업데이트되며, 구독을 통해 실시간으로 데이터를 수신할 수 있습니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내지수 실시간체결,index_ccnl," # [국내주식] 실시간시세 > 국내지수 실시간체결 [실시간-026]  국내지수 실시간체결[H0UPCNT0] 구독 함수 이 함수는 한국투자증권의 웹소켓 API를 통해 국내지수의 실시간 데이터를 구독합니다. 실시간 데이터는 웹소켓을 통해 지속적으로 업데이트되며, 구독을 통해 실시간으로 데이터를 수신할 수 있습니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 메시지 데이터
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = subscribe_realtime_index(""1"", ""005930"")
      print(msg, columns)","{
@@ -7496,7 +7496,7 @@ columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = sub
     ""qtqt_down_issu_cnt"": ""기세 하락 종목수"",
     ""tick_vrss"": ""TICK대비""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/index_ccnl/index_ccnl.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/index_ccnl/chk_index_ccnl.py
-domestic_stock,실시간시세,국내주식 실시간예상체결 (KRX),exp_ccnl_krx, # [국내주식] 실시간시세 > 국내주식 실시간예상체결 (KRX) [실시간-041]  국내주식 실시간예상체결 (KRX)[H0STANC0] 국내주식 실시간예상체결 API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타냅니다.
+domestic_stock,실시간시세,국내주식 실시간예상체결 (KRX),exp_ccnl_krx, # [국내주식] 실시간시세 > 국내주식 실시간예상체결 (KRX) [실시간-041]  국내주식 실시간예상체결 (KRX)[H0STANC0] 국내주식 실시간예상체결 API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타냅니다.
 tr_key (str): [필수] 종목코드. 빈 문자열이 아니어야 하며, 유효한 종목코드 형식이어야 합니다.","message (dict): 실시간 데이터 구독에 대한 메시지 데이터.
 columns (list[str]): 실시간 데이터의 컬럼 정보.","     msg, columns = exp_ccnl_krx(""1"", ""005930"")
      print(msg, columns)","{
@@ -7546,7 +7546,7 @@ columns (list[str]): 실시간 데이터의 컬럼 정보.","     msg, columns =
     ""hour_cls_code"": ""시간구분코드"",
     ""mrkt_trtm_cls_code"": ""임의종료구분코드""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/exp_ccnl_krx/exp_ccnl_krx.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/exp_ccnl_krx/chk_exp_ccnl_krx.py
-domestic_stock,실시간시세,국내주식 실시간호가 (KRX),asking_price_krx," # [국내주식] 실시간시세 > 국내주식 실시간호가 (KRX) [실시간-004]  국내주식 실시간 호가 데이터 구독 (KRX)[H0STASP0] 이 함수는 한국투자증권 웹소켓 API를 통해 실시간으로 국내주식의 호가 데이터를 구독합니다. 웹소켓을 통해 실시간 데이터를 수신하며, 구독 등록 및 해제 기능을 제공합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부
+domestic_stock,실시간시세,국내주식 실시간호가 (KRX),asking_price_krx," # [국내주식] 실시간시세 > 국내주식 실시간호가 (KRX) [실시간-004]  국내주식 실시간 호가 데이터 구독 (KRX)[H0STASP0] 이 함수는 한국투자증권 웹소켓 API를 통해 실시간으로 국내주식의 호가 데이터를 구독합니다. 웹소켓을 통해 실시간 데이터를 수신하며, 구독 등록 및 해제 기능을 제공합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)
 env_dv (str): 실전모의구분 (real: 실전, demo: 모의)","message (dict): 실시간 데이터 구독에 대한 메시지 데이터
 columns (list[str]): 실시간 데이터의 컬럼 정보","     msg, columns = subscribe_krx_realtime_asking_price(""1"", ""005930"", env_dv=""real"")
@@ -7613,14 +7613,14 @@ columns (list[str]): 실시간 데이터의 컬럼 정보","     msg, columns = 
     ""OVTM_TOTAL_BIDP_ICDC"": ""시간외 총 매수호가 증감"",
     ""STCK_DEAL_CLS_CODE"": ""주식 매매 구분 코드""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/asking_price_krx/asking_price_krx.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/asking_price_krx/chk_asking_price_krx.py
-domestic_stock,실시간시세,국내주식 실시간체결가 (통합),ccnl_total, # [국내주식] 실시간시세 > 국내주식 실시간체결가 (통합)  국내주식 실시간체결가 (통합)[H0UNCNT0] 국내주식 실시간체결가 (통합) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간체결가 (통합),ccnl_total, # [국내주식] 실시간시세 > 국내주식 실시간체결가 (통합)  국내주식 실시간체결가 (통합)[H0UNCNT0] 국내주식 실시간체결가 (통합) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드, 실시간 데이터를 구독할 주식의 종목코드","message (dict): 실시간 체결가 데이터 메시지
 columns (list[str]): 데이터의 컬럼 정보 리스트","     msg, columns = ccnl_total(""1"", ""005930"")
      print(msg, columns)
 
 Note:
     이 함수는 웹소켓을 통해 실시간 데이터를 구독합니다. 구독을 시작하려면 tr_type을 ""1""로 설정하고,
-    구독을 해제하려면 ""0""으로 설정하십시오.","{
+    구독을 해제하려면 ""2""으로 설정하십시오.","{
     ""MKSC_SHRN_ISCD"": ""유가증권 단축 종목코드"",
     ""STCK_CNTG_HOUR"": ""주식 체결 시간"",
     ""STCK_PRPR"": ""주식 현재가"",
@@ -7668,7 +7668,7 @@ Note:
     ""MRKT_TRTM_CLS_CODE"": ""임의종료구분코드"",
     ""VI_STND_PRC"": ""정적VI발동기준가""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/ccnl_total/ccnl_total.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/ccnl_total/chk_ccnl_total.py
-domestic_stock,실시간시세,국내주식 실시간호가 (NXT),asking_price_nxt, # [국내주식] 실시간시세 > 국내주식 실시간호가 (NXT)  국내주식 실시간호가 (NXT)[H0NXASP0] 구독 함수 국내주식 실시간호가 (NXT) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간호가 (NXT),asking_price_nxt, # [국내주식] 실시간시세 > 국내주식 실시간호가 (NXT)  국내주식 실시간호가 (NXT)[H0NXASP0] 구독 함수 국내주식 실시간호가 (NXT) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간 데이터 메시지
 columns (list[str]): 데이터의 컬럼 정보","     msg, columns = subscribe_asking_price(""1"", ""005930"")
      print(msg, columns)
@@ -7741,7 +7741,7 @@ Note:
     ""NMID_TOTAL_RSQN"": ""NXT 중간가잔량합계수량"",
     ""NMID_CLS_CODE"": ""NXT 중간가 매수매도 구분""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/asking_price_nxt/asking_price_nxt.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/asking_price_nxt/chk_asking_price_nxt.py
-domestic_stock,실시간시세,국내주식 실시간프로그램매매 (NXT),program_trade_nxt, # [국내주식] 실시간시세 > 국내주식 실시간프로그램매매 (NXT)  국내주식 실시간프로그램매매 (NXT)[H0NXPGM0] 국내주식 실시간프로그램매매 (NXT) API입니다. 이 함수는 웹소켓을 통해 실시간 데이터를 구독하거나 구독 해제합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간프로그램매매 (NXT),program_trade_nxt, # [국내주식] 실시간시세 > 국내주식 실시간프로그램매매 (NXT)  국내주식 실시간프로그램매매 (NXT)[H0NXPGM0] 국내주식 실시간프로그램매매 (NXT) API입니다. 이 함수는 웹소켓을 통해 실시간 데이터를 구독하거나 구독 해제합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간 데이터 메시지
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = program_trade_nxt(""1"", ""005930"")
      print(msg, columns)
@@ -7760,14 +7760,14 @@ Note:
     ""SHNU_RSQN"": ""매수호가잔량"",
     ""WHOL_NTBY_QTY"": ""전체순매수호가잔량""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/program_trade_nxt/program_trade_nxt.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/program_trade_nxt/chk_program_trade_nxt.py
-domestic_stock,실시간시세,국내주식 실시간체결가 (NXT),ccnl_nxt, # [국내주식] 실시간시세 > 국내주식 실시간체결가 (NXT)  국내주식 실시간체결가 (NXT)[H0NXCNT0] 국내주식 실시간체결가 (NXT) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간체결가 (NXT),ccnl_nxt, # [국내주식] 실시간시세 > 국내주식 실시간체결가 (NXT)  국내주식 실시간체결가 (NXT)[H0NXCNT0] 국내주식 실시간체결가 (NXT) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간 체결가 데이터 메시지
 columns (list[str]): 데이터의 컬럼 정보 리스트","     msg, columns = ccnl_nxt(""1"", ""005930"")
      print(msg, columns)
 
 Note:
     이 함수는 웹소켓을 통해 실시간 데이터를 구독합니다. 구독을 시작하려면 tr_type을 ""1""로 설정하고,
-    구독을 해제하려면 ""0""으로 설정하세요. tr_key는 유효한 종목코드를 입력해야 합니다.","{
+    구독을 해제하려면 ""2""으로 설정하세요. tr_key는 유효한 종목코드를 입력해야 합니다.","{
     ""MKSC_SHRN_ISCD"": ""유가증권 단축 종목코드"",
     ""STCK_CNTG_HOUR"": ""주식 체결 시간"",
     ""STCK_PRPR"": ""주식 현재가"",
@@ -7815,7 +7815,7 @@ Note:
     ""MRKT_TRTM_CLS_CODE"": ""임의종료구분코드"",
     ""VI_STND_PRC"": ""정적VI발동기준가""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/ccnl_nxt/ccnl_nxt.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/ccnl_nxt/chk_ccnl_nxt.py
-domestic_stock,실시간시세,국내주식 실시간예상체결 (NXT),exp_ccnl_nxt, # [국내주식] 실시간시세 > 국내주식 실시간예상체결 (NXT)  국내주식 실시간예상체결 (NXT)[H0NXANC0] 국내주식 실시간예상체결 (NXT) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간예상체결 (NXT),exp_ccnl_nxt, # [국내주식] 실시간시세 > 국내주식 실시간예상체결 (NXT)  국내주식 실시간예상체결 (NXT)[H0NXANC0] 국내주식 실시간예상체결 (NXT) API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간 데이터 메시지
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = exp_ccnl_nxt(""1"", ""005930"")
      print(msg, columns)
@@ -7869,13 +7869,13 @@ Note:
     ""MRKT_TRTM_CLS_CODE"": ""임의종료구분코드"",
     ""VI_STND_PRC"": ""VI 상태값""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/exp_ccnl_nxt/exp_ccnl_nxt.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/exp_ccnl_nxt/chk_exp_ccnl_nxt.py
-domestic_stock,실시간시세,국내주식 실시간회원사 (KRX),member_krx," # [국내주식] 실시간시세 > 국내주식 실시간회원사 (KRX) [실시간-047]  국내주식 실시간 회원사 (KRX) 데이터 구독 함수 [H0STMBC0] 이 함수는 한국투자증권 웹소켓 API를 통해 실시간으로 국내주식 회원사 데이터를 구독합니다. 웹소켓을 통해 실시간 데이터를 수신하며, 구독 등록 및 해제를 지원합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 문자열
+domestic_stock,실시간시세,국내주식 실시간회원사 (KRX),member_krx," # [국내주식] 실시간시세 > 국내주식 실시간회원사 (KRX) [실시간-047]  국내주식 실시간 회원사 (KRX) 데이터 구독 함수 [H0STMBC0] 이 함수는 한국투자증권 웹소켓 API를 통해 실시간으로 국내주식 회원사 데이터를 구독합니다. 웹소켓을 통해 실시간 데이터를 수신하며, 구독 등록 및 해제를 지원합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 문자열
 tr_key (str): [필수] 종목코드를 나타내는 문자열. 빈 문자열일 수 없습니다.","message (dict): 구독 요청에 대한 응답 메시지
 columns (list[str]): 응답 데이터의 컬럼 정보 리스트","     msg, columns = member_krx(""1"", ""005930"")
      print(msg, columns)
 
 Note:
-    실시간 데이터는 웹소켓을 통해 지속적으로 수신됩니다. 구독 해제를 원할 경우, tr_type을 ""0""으로 설정하여 호출하십시오.","{
+    실시간 데이터는 웹소켓을 통해 지속적으로 수신됩니다. 구독 해제를 원할 경우, tr_type을 ""2""으로 설정하여 호출하십시오.","{
     ""mksc_shrn_iscd"": ""유가증권단축종목코드"",
     ""seln2_mbcr_name1"": ""매도2회원사명1"",
     ""seln2_mbcr_name2"": ""매도2회원사명2"",
@@ -7955,7 +7955,7 @@ Note:
     ""byov_mbcr_eng_name4"": ""매수영문회원사명4"",
     ""byov_mbcr_eng_name5"": ""매수영문회원사명5""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/member_krx/member_krx.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/member_krx/chk_member_krx.py
-domestic_stock,실시간시세,국내주식 실시간예상체결 (통합),exp_ccnl_total, # [국내주식] 실시간시세 > 국내주식 실시간예상체결(통합)  국내주식 실시간예상체결 (통합)[H0UNANC0] 국내주식 실시간예상체결 (통합) API입니다. 이 함수는 웹소켓을 통해 실시간 데이터를 구독하거나 구독 해제합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 실시간예상체결 (통합),exp_ccnl_total, # [국내주식] 실시간시세 > 국내주식 실시간예상체결(통합)  국내주식 실시간예상체결 (통합)[H0UNANC0] 국내주식 실시간예상체결 (통합) API입니다. 이 함수는 웹소켓을 통해 실시간 데이터를 구독하거나 구독 해제합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간 데이터 메시지
 columns (list[str]): 데이터의 컬럼 정보","     msg, columns = exp_ccnl_total(""1"", ""005930"")
      print(msg, columns)
@@ -8009,7 +8009,7 @@ Note:
     ""MRKT_TRTM_CLS_CODE"": ""임의종료구분코드"",
     ""VI_STND_PRC"": ""VI 상태값""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/exp_ccnl_total/exp_ccnl_total.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/exp_ccnl_total/chk_exp_ccnl_total.py
-domestic_stock,실시간시세,국내주식 장운영정보 (NXT),market_status_nxt, # [국내주식] 실시간시세 > 국내주식 장운영정보(NXT)  국내주식 장운영정보 (NXT)[H0NXMKO0] 실시간으로 국내주식 장운영정보를 구독하거나 구독 해제하는 웹소켓 API입니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 값
+domestic_stock,실시간시세,국내주식 장운영정보 (NXT),market_status_nxt, # [국내주식] 실시간시세 > 국내주식 장운영정보(NXT)  국내주식 장운영정보 (NXT)[H0NXMKO0] 실시간으로 국내주식 장운영정보를 구독하거나 구독 해제하는 웹소켓 API입니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 값
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 실시간으로 수신된 메시지 데이터
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = market_status_nxt(""1"", ""005930"")
      print(msg, columns)
@@ -8028,7 +8028,7 @@ Note:
     ""OVTM_VI_CLS_CODE"": ""시간외단일가VI적용구분코드"",
     ""EXCH_CLS_CODE"": ""거래소 구분코드""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/market_status_nxt/market_status_nxt.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/market_status_nxt/chk_market_status_nxt.py
-domestic_stock,실시간시세,국내주식 시간외 실시간체결가 (KRX),overtime_ccnl_krx," # [국내주식] 실시간시세 > 국내주식 시간외 실시간체결가 (KRX) [실시간-042]  국내주식 시간외 실시간체결가 (KRX)[H0STOUP0] 국내주식 시간외 실시간체결가 API입니다. 국내주식 시간외 단일가(16:00~18:00) 시간대에 실시간체결가 데이터 확인 가능합니다. 실시간 데이터 구독을 위한 웹소켓 함수입니다. tr_type은 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내며, tr_key는 구독할 종목의 코드를 나타냅니다. [참고자료] 종목코드 마스터파일 파이썬 정제코드는 한국투자증권 Github 참고 부탁드립니다. https://github.com/koreainvestment/open-trading-api/tree/main/stocks_info","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부
+domestic_stock,실시간시세,국내주식 시간외 실시간체결가 (KRX),overtime_ccnl_krx," # [국내주식] 실시간시세 > 국내주식 시간외 실시간체결가 (KRX) [실시간-042]  국내주식 시간외 실시간체결가 (KRX)[H0STOUP0] 국내주식 시간외 실시간체결가 API입니다. 국내주식 시간외 단일가(16:00~18:00) 시간대에 실시간체결가 데이터 확인 가능합니다. 실시간 데이터 구독을 위한 웹소켓 함수입니다. tr_type은 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내며, tr_key는 구독할 종목의 코드를 나타냅니다. [참고자료] 종목코드 마스터파일 파이썬 정제코드는 한국투자증권 Github 참고 부탁드립니다. https://github.com/koreainvestment/open-trading-api/tree/main/stocks_info","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부
 tr_key (str): [필수] 구독할 종목의 코드 (빈 문자열 불가)","message (dict): 메시지 데이터
 columns (list[str]): 컬럼 정보","     msg, columns = overtime_ccnl_krx(""1"", ""005930"")
      print(msg, columns)","{
@@ -8203,7 +8203,7 @@ max_depth (int): 최대 재귀 깊이 (기본값: 10)","Tuple[pd.DataFrame, pd.D
     'etc_corp_shnu_tr_pbmn': '기타 법인 매수2 거래 대금',
     'bold_yn': 'BOLD 여부'
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/investor_trade_by_stock_daily/investor_trade_by_stock_daily.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/domestic_stock/investor_trade_by_stock_daily/chk_investor_trade_by_stock_daily.py
-elw,실시간시세,ELW 실시간호가,elw_asking_price, # [국내주식] 실시간시세 - ELW 실시간호가[실시간-062]  ELW 실시간호가[H0EWASP0] ELW 실시간 호가 정보를 실시간으로 구독하는 웹소켓 API입니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타냅니다.
+elw,실시간시세,ELW 실시간호가,elw_asking_price, # [국내주식] 실시간시세 - ELW 실시간호가[실시간-062]  ELW 실시간호가[H0EWASP0] ELW 실시간 호가 정보를 실시간으로 구독하는 웹소켓 API입니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타냅니다.
 tr_key (str): [필수] 종목코드. 빈 문자열일 수 없습니다.","message (dict): 실시간 데이터 구독에 대한 응답 메시지.
 columns (list[str]): 실시간 데이터의 컬럼 정보.","     msg, columns = elw_asking_price(""1"", ""005930"")
      print(msg, columns)
@@ -8285,7 +8285,7 @@ https://github.com/koreainvestment/open-trading-api/tree/main/stocks_info","{
     ""lp_bidp_rsqn3"": ""LP매수호가잔량3"",
     ""antc_vol"": ""예상거래량""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/elw/elw_asking_price/elw_asking_price.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/elw/elw_asking_price/chk_elw_asking_price.py
-elw,실시간시세,ELW 실시간체결가,elw_ccnl, # [국내주식] 실시간시세 - ELW 실시간체결가[실시간-061]  ELW 실시간체결가[H0EWCNT0] 구독 함수 ELW 실시간체결가 API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타냅니다.
+elw,실시간시세,ELW 실시간체결가,elw_ccnl, # [국내주식] 실시간시세 - ELW 실시간체결가[실시간-061]  ELW 실시간체결가[H0EWCNT0] 구독 함수 ELW 실시간체결가 API를 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타냅니다.
 tr_key (str): [필수] 종목코드를 입력합니다. 빈 문자열이 아니어야 합니다.","message (dict): 메시지 데이터
 columns (list[str]): 실시간 데이터의 컬럼 정보","     msg, columns = elw_ccnl(""1"", ""005930"")
      print(msg, columns)
@@ -8362,7 +8362,7 @@ https://github.com/koreainvestment/open-trading-api/tree/main/stocks_info","{
     ""lp_hldn_rate"": ""LP보유비율"",
     ""lp_ntby_qty"": ""LP순매도량""
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/elw/elw_ccnl/elw_ccnl.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/elw/elw_ccnl/chk_elw_ccnl.py
-elw,실시간시세,ELW 실시간예상체결,elw_exp_ccnl, # [국내주식] 실시간시세 - ELW 실시간예상체결[실시간-063]  ELW 실시간예상체결[H0EWANC0] ELW 실시간예상체결 API입니다. 이 함수는 웹소켓을 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타냅니다.
+elw,실시간시세,ELW 실시간예상체결,elw_exp_ccnl, # [국내주식] 실시간시세 - ELW 실시간예상체결[실시간-063]  ELW 실시간예상체결[H0EWANC0] ELW 실시간예상체결 API입니다. 이 함수는 웹소켓을 통해 실시간 데이터를 구독합니다.,"tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타냅니다.
 tr_key (str): [필수] 종목코드. 빈 문자열일 수 없습니다.","message (dict): 메시지 데이터
 columns (list[str]): 응답 데이터의 컬럼 정보","     msg, columns = elw_exp_ccnl(""1"", ""005930"")
      print(msg, columns)","{
@@ -9183,7 +9183,7 @@ max_depth (int): 최대 재귀 깊이 (기본값: 10)",Optional[pd.DataFrame]: E
     'elw_prpr': '전일대비',
     'hts_ints_vltl': '전일대비부호'
 }",https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/elw/volatility_trend_tick/volatility_trend_tick.py,https://github.com/koreainvestment/open-trading-api/tree/main/examples_llm/elw/volatility_trend_tick/chk_volatility_trend_tick.py
-etfetn,실시간시세,국내ETF NAV추이,etf_nav_trend," # [국내주식] 실시간시세 > 국내ETF NAV추이[실시간-051]  국내ETF NAV추이[H0STNAV0] 실시간 데이터 구독 함수 이 함수는 한국투자증권의 웹소켓 API를 통해 실시간으로 국내 ETF의 NAV 추이를 구독합니다. 구독을 시작하거나 해제할 수 있으며, 실시간 데이터를 수신합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""0"") 여부를 나타내는 문자열
+etfetn,실시간시세,국내ETF NAV추이,etf_nav_trend," # [국내주식] 실시간시세 > 국내ETF NAV추이[실시간-051]  국내ETF NAV추이[H0STNAV0] 실시간 데이터 구독 함수 이 함수는 한국투자증권의 웹소켓 API를 통해 실시간으로 국내 ETF의 NAV 추이를 구독합니다. 구독을 시작하거나 해제할 수 있으며, 실시간 데이터를 수신합니다.","tr_type (str): [필수] 구독 등록(""1"") 또는 해제(""2"") 여부를 나타내는 문자열
 tr_key (str): [필수] 종목코드 (빈 문자열 불가)","message (dict): 수신된 메시지 데이터
 columns (list[str]): 수신된 데이터의 컬럼 정보","     msg, columns = etf_nav_trend(""1"", ""005930"")
      print(msg, columns)","{

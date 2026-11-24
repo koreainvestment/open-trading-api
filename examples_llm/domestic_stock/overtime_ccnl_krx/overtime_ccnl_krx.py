@@ -26,7 +26,7 @@ def overtime_ccnl_krx(
     국내주식 시간외 단일가(16:00~18:00) 시간대에 실시간체결가 데이터 확인 가능합니다.
 
     실시간 데이터 구독을 위한 웹소켓 함수입니다. 
-    tr_type은 구독 등록("1") 또는 해제("0") 여부를 나타내며, 
+    tr_type은 구독 등록("1") 또는 해제("2") 여부를 나타내며, 
     tr_key는 구독할 종목의 코드를 나타냅니다.
 
     [참고자료]
@@ -34,7 +34,7 @@ def overtime_ccnl_krx(
     https://github.com/koreainvestment/open-trading-api/tree/main/stocks_info
 
     Args:
-        tr_type (str): [필수] 구독 등록("1") 또는 해제("0") 여부
+        tr_type (str): [필수] 구독 등록("1") 또는 해제("2") 여부
         tr_key (str): [필수] 구독할 종목의 코드 (빈 문자열 불가)
 
     Returns:

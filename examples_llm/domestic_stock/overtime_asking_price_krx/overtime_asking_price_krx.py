@@ -27,7 +27,7 @@ def overtime_asking_price_krx(
     국내주식 시간외 단일가(16:00~18:00) 시간대에 실시간호가 데이터 확인 가능합니다.
 
     Args:
-        tr_type (str): [필수] 구독 등록("1") 또는 해제("0") 여부
+        tr_type (str): [필수] 구독 등록("1") 또는 해제("2") 여부
         tr_key (str): [필수] 종목코드 (빈 문자열 불가)
 
     Returns:
