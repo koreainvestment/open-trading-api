@@ -107,18 +107,21 @@ class StrategyFileLoader:
         return from_yaml_file(strategy_file)
     
     @staticmethod
-    def load_schema_from_string(content: str) -> "StrategySchema":
+    def load_schema_from_string(
+        content: str, param_overrides: Optional[Dict[str, Any]] = None
+    ) -> "StrategySchema":
         """YAML 문자열에서 StrategySchema 로드 (권장)
 
         Args:
             content: YAML 문자열
+            param_overrides: 파라미터 오버라이드 값 (선택)
 
         Returns:
             StrategySchema 객체
         """
         from kis_backtest.core.converters import from_yaml_file
         strategy_file = StrategyFileLoader.load_from_string(content)
-        return from_yaml_file(strategy_file)
+        return from_yaml_file(strategy_file, param_overrides=param_overrides)
 
     @staticmethod
     def load_schema_with_params(

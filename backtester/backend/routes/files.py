@@ -5,12 +5,14 @@
 
 from typing import List, Literal
 from pathlib import Path
+import os
 import tempfile
 import zipfile
 import io
 
 from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from fastapi.responses import FileResponse, StreamingResponse
+from starlette.background import BackgroundTask
 
 from kis_backtest.errors import BOUNDARY_ERRORS
 from backend.schemas.file import (
@@ -19,6 +21,14 @@ from backend.schemas.file import (
 )
 
 router = APIRouter()
+
+
+def _remove_temp_file(path: str) -> None:
+    """Export용 임시 파일 정리. 없으면 무시한다."""
+    try:
+        os.remove(path)
+    except OSError:
+        pass
 
 
 @router.get(
@@ -216,6 +226,7 @@ async def export_strategy(
             path=temp_path,
             filename=f"{strategy_id}.kis.yaml",
             media_type="application/x-yaml",
+            background=BackgroundTask(_remove_temp_file, temp_path),
         )
 
     elif format == "python":
@@ -234,6 +245,7 @@ async def export_strategy(
             path=temp_path,
             filename=f"{strategy_id}.py",
             media_type="text/x-python",
+            background=BackgroundTask(_remove_temp_file, temp_path),
         )
 
     elif format == "zip":

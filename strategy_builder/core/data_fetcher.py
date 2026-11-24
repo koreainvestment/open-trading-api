@@ -9,7 +9,7 @@ Applied Skills: skills/investment-strategy-framework.md
 import logging
 import threading
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pandas as pd
 
@@ -18,6 +18,10 @@ from core.errors import BOUNDARY_ERRORS
 from core.log_sanitize import log_error, log_text, log_token
 
 logging.basicConfig(level=logging.INFO)
+
+# KIS market dates are KST-based: query-date sites MUST use KST "today",
+# never the server-local date (UTC hosts lag KST by up to 9h at midnight).
+_KST = timezone(timedelta(hours=9))
 
 
 def _assert_trenv_ready(context: str = "") -> bool:
@@ -145,8 +149,8 @@ def get_daily_prices(
         return pd.DataFrame()
 
     try:
-        end_date = datetime.now().strftime("%Y%m%d")
-        start_date = (datetime.now() - timedelta(days=days + 50)).strftime("%Y%m%d")
+        end_date = datetime.now(_KST).strftime("%Y%m%d")
+        start_date = (datetime.now(_KST) - timedelta(days=days + 50)).strftime("%Y%m%d")
 
         # TR_ID 설정
         tr_id = "FHKST03010100"
@@ -572,12 +576,12 @@ def get_pending_orders(env_dv: str = "real") -> tuple[pd.DataFrame, bool]:
         params = {
             "CANO": trenv.my_acct,
             "ACNT_PRDT_CD": trenv.my_prod,
-            "INQR_STRT_DT": datetime.now().strftime("%Y%m%d"),
-            "INQR_END_DT": datetime.now().strftime("%Y%m%d"),
+            "INQR_STRT_DT": datetime.now(_KST).strftime("%Y%m%d"),
+            "INQR_END_DT": datetime.now(_KST).strftime("%Y%m%d"),
             "SLL_BUY_DVSN_CD": "00",  # 전체
             "INQR_DVSN": "00",  # 역순
             "PDNO": "",  # 전체 종목
-            "CCLD_DVSN": "01",  # 미체결
+            "CCLD_DVSN": "02",  # 미체결 (00: 전체, 01: 체결, 02: 미체결)
             "ORD_GNO_BRNO": "",
             "ODNO": "",
             "INQR_DVSN_3": "00",
